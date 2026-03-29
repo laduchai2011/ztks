@@ -1,0 +1,83 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    border: 1px solid gray;
+    box-sizing: border-box;
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 10px;
+
+    > .header {
+        @include center-of-row;
+        justify-content: space-between;
+
+        > div:nth-child(1) {
+            width: 25px;
+        }
+
+        > div:nth-child(3) {
+            @include center-of-row;
+            width: 50px;
+        }
+    }
+
+    > .infor {
+        box-sizing: border-box;
+        padding: 5px;
+        line-height: 24px;
+
+        > .selectedContainer {
+            @include center-of-row;
+
+            > div {
+                width: 50%;
+                box-sizing: border-box;
+                padding: 5px;
+            }
+
+            > div:nth-child(1) {
+                > select {
+                    width: 100%;
+                }
+            }
+
+            > div:nth-child(2) {
+                > input {
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    > .selectedAcount {
+        > div:nth-child(1) {
+            height: 100px;
+            @include center-of-rectangle;
+
+            > img {
+                height: 90%;
+                aspect-ratio: 1/1;
+                box-sizing: border-box;
+                border: 1px solid gray;
+                border-radius: 50%;
+            }
+        }
+
+        > div:nth-child(2) {
+            height: 40px;
+            @include center-of-rectangle;
+        }
+    }
+
+    > .btnContainer {
+        height: 50px;
+        @include center-of-rectangle;
+
+        > button {
+            border: 1px solid green;
+            box-sizing: border-box;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+    }
+}

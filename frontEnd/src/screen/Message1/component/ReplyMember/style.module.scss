@@ -1,0 +1,70 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    border-bottom: 1px solid gray;
+
+    > .header {
+        @include center-of-row;
+        justify-content: space-between;
+        box-sizing: border-box;
+        padding: 5px;
+
+        > div:nth-child(1) {
+            font-weight: 500;
+            font-style: oblique;
+        }
+
+        > div:nth-child(2) {
+            > svg {
+                cursor: pointer;
+            }
+        }
+    }
+
+    > .addedList {
+        max-height: 0;
+        transition: max-height 0.3s linear;
+        overflow-y: scroll;
+        @include small-scroll-yy(1px);
+
+        &.show {
+            max-height: 500px;
+        }
+
+        > .addedMore {
+            @include center-of-rectangle;
+            box-sizing: border-box;
+            padding: 10px;
+            color: blue;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    > .notAddedList {
+        max-height: 0;
+        transition: max-height 0.3s linear;
+        overflow-y: scroll;
+        @include small-scroll-yy(1px);
+
+        &.show {
+            max-height: 500px;
+        }
+
+        > .notAddedMore {
+            @include center-of-rectangle;
+            box-sizing: border-box;
+            padding: 10px;
+            color: blue;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}

@@ -1,0 +1,74 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    height: 35px;
+    background-color: rgb(233, 233, 233);
+    z-index: 1;
+
+    > .selected {
+        @include center-of-row;
+        height: 100%;
+        box-sizing: border-box;
+        border-bottom: 1px solid gray;
+
+        > div {
+            @include center-of-rectangle;
+            height: 100%;
+        }
+
+        > div:nth-child(1) {
+            width: 90%;
+        }
+
+        > div:nth-child(2) {
+            width: 10%;
+
+            > svg {
+                cursor: pointer;
+            }
+        }
+    }
+
+    > .list {
+        max-height: 0;
+        overflow-y: scroll;
+        @include small-scroll-y;
+        transition: max-height 0.3s linear;
+
+        &.show {
+            max-height: 300px;
+        }
+
+        > div:nth-child(1) {
+            > div {
+                height: 35px;
+                box-sizing: border-box;
+                border-bottom: 1px solid gray;
+                background-color: rgb(235, 234, 234);
+                @include center-of-rectangle;
+                cursor: pointer;
+                user-select: none;
+
+                &:hover {
+                    background-color: rgb(209, 209, 209);
+                }
+            }
+        }
+
+        > div:nth-child(2) {
+            box-sizing: border-box;
+            padding: 10px;
+            @include center-of-rectangle;
+            height: 40px;
+
+            > div {
+                user-select: none;
+                color: blue;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}

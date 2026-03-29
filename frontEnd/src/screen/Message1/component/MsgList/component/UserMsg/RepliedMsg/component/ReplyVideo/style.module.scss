@@ -1,0 +1,21 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    height: 100%;
+    aspect-ratio: 1/1;
+    @include center-of-row;
+
+    > .video {
+        height: 100%;
+        aspect-ratio: 1/1;
+        object-fit: contain;
+    }
+
+    > div {
+        width: max-content;
+        color: gray;
+        box-sizing: border-box;
+        padding: 0 5px;
+        @include center-of-row;
+    }
+}

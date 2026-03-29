@@ -1,0 +1,12 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 3px;
+    background-color: rgb(237, 237, 255);
+    @include center-of-row;
+
+    > svg {
+        cursor: pointer;
+    }
+}

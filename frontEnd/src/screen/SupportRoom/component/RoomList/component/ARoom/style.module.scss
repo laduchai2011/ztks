@@ -1,0 +1,96 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    @include center-of-row;
+    box-sizing: border-box;
+    padding: 10px 5px;
+    height: 70px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: rgb(243, 243, 255);
+    }
+
+    > .avatarContainer {
+        width: 50px;
+        height: 100%;
+
+        > img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 50%;
+        }
+    }
+
+    > .contentContainer {
+        height: 100%;
+        flex: 1;
+        box-sizing: border-box;
+        padding: 0 5px;
+
+        > .nameContainer {
+            height: 50%;
+            @include center-of-row;
+            box-sizing: border-box;
+
+            > .name {
+                height: 100%;
+                width: 100%;
+                @include line-clamp(1);
+                font-size: 1.1rem;
+            }
+        }
+
+        > .inforContainer {
+            height: 50%;
+            @include center-of-row;
+            justify-content: space-around;
+
+            > .infor {
+                @include center-of-row;
+
+                > div {
+                    margin: 0 2px;
+                    color: gray;
+                    font-size: 0.9rem;
+                }
+
+                > .role {
+                    font-style: italic;
+                    opacity: 0.5;
+                    text-decoration: line-through;
+
+                    &.pass {
+                        opacity: 1;
+                        text-decoration: none;
+                    }
+                }
+
+                > .read {
+                    color: red;
+                }
+
+                > .send {
+                    color: blue;
+                }
+
+                > .time {
+                    width: 40px;
+                    height: 100%;
+                    @include center-of-rectangle;
+                    font-size: 0.8rem;
+                    color: gray;
+                }
+
+                > .newMsgAmount {
+                    @include center-of-rectangle;
+                    color: white;
+                    background-color: red;
+                    border-radius: 50%;
+                    width: 25px;
+                    height: 25px;
+                }
+            }
+        }
+    }
+}

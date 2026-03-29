@@ -1,0 +1,29 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    width: 100%;
+    box-sizing: border-box;
+    border-top: 1px solid gray;
+    @include center-of-row;
+    background-color: white;
+
+    > div {
+        width: calc(100% / 3);
+        height: 50px;
+        @include center-of-rectangle;
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgb(231, 231, 231);
+        }
+
+        &.selected {
+            background-color: rgb(184, 184, 184);
+        }
+
+        > svg {
+            height: 25px;
+            width: 25px;
+        }
+    }
+}

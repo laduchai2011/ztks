@@ -1,0 +1,47 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    width: 100%;
+    flex: 1;
+    overflow-y: scroll;
+    @include small-scroll-yy(3px);
+
+    > .search {
+        @include center-of-row;
+        justify-content: flex-end;
+
+        > div {
+            @include center-of-row;
+            box-sizing: border-box;
+            padding: 5px;
+            border-radius: 10px;
+            background-color: rgb(233, 233, 233);
+
+            > input {
+                border: none;
+                outline: none;
+                font-size: 1.05rem;
+            }
+
+            > svg {
+                cursor: pointer;
+            }
+        }
+    }
+
+    > .seeMore {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 10px;
+
+        > div {
+            user-select: none;
+            color: blue;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}

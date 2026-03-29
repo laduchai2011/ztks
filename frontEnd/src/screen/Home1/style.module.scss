@@ -1,0 +1,46 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    background-color: #eee;
+    @include center-of-column;
+    z-index: 0;
+
+    > .main {
+        background-color: white;
+        width: 350px;
+        height: 100vh;
+        // height: 500px;
+        display: flex;
+        flex-direction: column;
+
+        @include responsive(sm) {
+            width: 100%;
+        }
+
+        > .header {
+            box-sizing: border-box;
+            padding: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-bottom: 1px solid gray;
+            position: sticky;
+            top: 0;
+            background-color: hwb(240 35% 0%);
+            color: white;
+        }
+
+        > .list {
+            width: 100%;
+            flex: 1;
+            overflow-y: scroll;
+            @include small-scroll-yy(3px);
+            // display: flex;
+            // flex-direction: column;
+        }
+
+        > .headerTab {
+            position: sticky;
+            bottom: 0;
+        }
+    }
+}

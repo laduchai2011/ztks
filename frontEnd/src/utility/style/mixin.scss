@@ -1,0 +1,276 @@
+@mixin background-color-photo {
+    background-color: rgb(205, 205, 205);
+}
+
+@mixin center-of-rectangle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin center-of-row {
+    display: flex;
+    align-items: center;
+}
+
+@mixin center-of-column {
+    display: flex;
+    justify-content: center;
+}
+
+@mixin line-clamp($lines) {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    // Chuẩn (khi được hỗ trợ)
+    line-clamp: $lines;
+}
+
+@mixin small-scroll-y() {
+    &::-webkit-scrollbar {
+        width: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: white;
+    }
+
+    &:hover {
+        &::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+    }
+}
+
+@mixin small-scroll-x() {
+    &::-webkit-scrollbar {
+        height: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: white;
+    }
+
+    &:hover {
+        &::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+    }
+}
+
+@mixin small-scroll-xx($thickness) {
+    &::-webkit-scrollbar {
+        height: $thickness;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: white;
+    }
+
+    &:hover {
+        &::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+    }
+}
+
+@mixin small-scroll-yy($thickness) {
+    &::-webkit-scrollbar {
+        width: $thickness;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: white;
+    }
+
+    &:hover {
+        &::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+    }
+}
+
+@mixin small-scroll-snap-parent {
+    display: flex;
+    flex-grow: 1;
+    overflow-x: auto;
+    @include small-scroll-xx(0);
+    scroll-snap-type: x mandatory; // snap từng item
+    scroll-behavior: smooth; // scroll mượt
+}
+
+@mixin small-scroll-snap-children {
+    width: 100%;
+    height: 100%;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+}
+
+@mixin small-scrollX-snap-parent {
+    @include center-of-row;
+    flex-grow: 1;
+    overflow-x: auto;
+    @include small-scroll-xx(0);
+    scroll-snap-type: x mandatory; // snap từng item
+    scroll-behavior: smooth; // scroll mượt
+}
+
+@mixin small-scrollX-snap-children {
+    width: 100%;
+    height: 100%;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+}
+
+@mixin small-scrollY-snap-parent {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-y: auto;
+    @include small-scroll-yy(0);
+    scroll-snap-type: y mandatory; // snap từng item
+    scroll-behavior: smooth; // scroll mượt
+}
+
+@mixin small-scrollY-snap-children {
+    width: 100%;
+    height: 100%;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+}
+
+// Định nghĩa breakpoint
+$breakpoints: (
+    xs: 480px,
+    sm: 768px,
+    md: 1024px,
+    lg: 1280px,
+    xl: 1440px,
+);
+@mixin responsive($size) {
+    @if not map-has-key($breakpoints, $size) {
+        @error "Breakpoint '#{$size}' is not defined in \$breakpoints map.";
+    }
+
+    @media (max-width: map-get($breakpoints, $size)) {
+        @content;
+    }
+}
+
+@mixin display-grid($minmax, $gap) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(calc($minmax * 1px), 1fr));
+    gap: calc($gap * 1px);
+}
+
+@mixin heightRes($height, $res, $rate) {
+    $breakpoint-value: if(map-has-key($breakpoints, $res), map-get($breakpoints, $res), $res);
+    height: calc($height * $rate);
+    @if unit($height) == 'px' {
+        @include responsive($res) {
+            height: calc(($height / $breakpoint-value) * 100vw * $rate);
+        }
+    }
+}
+@mixin min_heightRes($minHeight, $res, $rate) {
+    $breakpoint-value: if(map-has-key($breakpoints, $res), map-get($breakpoints, $res), $res);
+    min-height: calc($minHeight * $rate);
+    @if unit($minHeight) == 'px' {
+        @include responsive($res) {
+            min-height: calc(($minHeight / $breakpoint-value) * 100vw * $rate);
+        }
+    }
+}
+
+@mixin widthRes($width, $res, $rate) {
+    $breakpoint-value: if(map-has-key($breakpoints, $res), map-get($breakpoints, $res), $res);
+    width: calc($width * $rate);
+    @if unit($width) == 'px' {
+        @include responsive($res) {
+            width: calc(($width / $breakpoint-value) * 100vw * $rate);
+        }
+    }
+}
+@mixin min_widthRes($minWidth, $res, $rate) {
+    $breakpoint-value: if(map-has-key($breakpoints, $res), map-get($breakpoints, $res), $res);
+    min-width: calc($minWidth * $rate);
+    @if unit($minWidth) == 'px' {
+        @include responsive($res) {
+            min-width: calc(($minWidth / $breakpoint-value) * 100vw * $rate);
+        }
+    }
+}
+
+@mixin fontSizeRes($size, $res, $rate) {
+    $breakpoint-value: if(map-has-key($breakpoints, $res), map-get($breakpoints, $res), $res);
+    font-size: calc($size * $rate);
+    @if unit($size) == 'px' {
+        @include responsive($res) {
+            font-size: calc(($size / $breakpoint-value) * 100vw * $rate);
+        }
+    }
+}
+
+@mixin marginRes($param1, $param2, $res, $rate) {
+    $breakpoint-value: if(map-has-key($breakpoints, $res), map-get($breakpoints, $res), $res);
+    margin: calc($param1 * $rate) calc($param2 * $rate);
+    @if unit($param1) == 'px' and unit($param2) == 'px' {
+        @include responsive($res) {
+            margin: calc(($param1 / $breakpoint-value) * 100vw * $rate)
+                calc(($param2 / $breakpoint-value) * 100vw * $rate);
+        }
+    }
+}
+
+@mixin paddingRes($param1, $param2, $res, $rate) {
+    $breakpoint-value: if(map-has-key($breakpoints, $res), map-get($breakpoints, $res), $res);
+    padding: calc($param1 * $rate) calc($param2 * $rate);
+    @if unit($param1) == 'px' and unit($param2) == 'px' {
+        @include responsive($res) {
+            padding: calc(($param1 / $breakpoint-value) * 100vw * $rate)
+                calc(($param2 / $breakpoint-value) * 100vw * $rate);
+        }
+    }
+}
+
+@mixin leftRes($left, $res, $rate) {
+    $breakpoint-value: if(map-has-key($breakpoints, $res), map-get($breakpoints, $res), $res);
+    left: calc($left * $rate);
+    @if unit($left) == 'px' {
+        @include responsive($res) {
+            left: calc(($left / $breakpoint-value) * 100vw * $rate);
+        }
+    }
+}
+
+@mixin topRes($top, $res, $rate) {
+    $breakpoint-value: if(map-has-key($breakpoints, $res), map-get($breakpoints, $res), $res);
+    top: calc($top * $rate);
+    @if unit($top) == 'px' {
+        @include responsive($res) {
+            top: calc(($top / $breakpoint-value) * 100vw * $rate);
+        }
+    }
+}
+
+@mixin rightRes($right, $res, $rate) {
+    $breakpoint-value: if(map-has-key($breakpoints, $res), map-get($breakpoints, $res), $res);
+    right: calc($right * $rate);
+    @if unit($right) == 'px' {
+        @include responsive($res) {
+            right: calc(($right / $breakpoint-value) * 100vw * $rate);
+        }
+    }
+}
+
+@mixin bottomRes($bottom, $res, $rate) {
+    $breakpoint-value: if(map-has-key($breakpoints, $res), map-get($breakpoints, $res), $res);
+    bottom: calc($bottom * $rate);
+    @if unit($bottom) == 'px' {
+        @include responsive($res) {
+            bottom: calc(($bottom / $breakpoint-value) * 100vw * $rate);
+        }
+    }
+}

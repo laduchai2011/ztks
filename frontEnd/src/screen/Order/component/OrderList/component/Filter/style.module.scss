@@ -1,0 +1,110 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+    border-top: 1px solid blue;
+
+    > .chatRoomId {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 5px;
+        @include center-of-row;
+        border: 1px solid gray;
+
+        > select {
+            border: none;
+            outline: none;
+        }
+
+        > input {
+            flex: 1;
+            box-sizing: border-box;
+            padding: 5px;
+            border: none;
+            outline: none;
+        }
+    }
+
+    > .checks {
+        @include center-of-row;
+        justify-content: space-between;
+        box-sizing: border-box;
+        padding: 5px;
+
+        > div:nth-child(1) {
+            @include center-of-row;
+            margin: 0 5px;
+
+            > div {
+                color: blue;
+                font-size: 0.9rem;
+            }
+        }
+
+        > div:nth-child(2) {
+            @include center-of-row;
+            margin: 0 5px;
+
+            > div {
+                color: red;
+                font-size: 0.9rem;
+                text-decoration: line-through;
+            }
+        }
+
+        > div:nth-child(3) {
+            @include center-of-row;
+            margin: 0 5px;
+
+            > div {
+                color: rgb(0, 206, 221);
+                font-size: 0.9rem;
+            }
+        }
+    }
+
+    > .money {
+        box-sizing: border-box;
+        padding: 5px;
+        @include center-of-row;
+        width: 100%;
+
+        > div:nth-child(1) {
+            margin-right: 5px;
+        }
+
+        > .txt {
+            color: gray;
+            font-size: 0.9rem;
+            font-style: italic;
+            margin: 0 5px;
+        }
+
+        > input {
+            width: 35%;
+            outline: none;
+        }
+    }
+
+    > .searchContainer {
+        box-sizing: border-box;
+        padding: 5px;
+        margin-top: 10px;
+        @include center-of-rectangle;
+
+        > div {
+            box-sizing: border-box;
+            border: 1px solid gray;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            user-select: none;
+
+            &:active {
+                background-color: gray;
+                color: white;
+            }
+        }
+    }
+}

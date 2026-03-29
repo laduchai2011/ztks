@@ -1,0 +1,30 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    width: 100%;
+
+    > .total {
+        box-sizing: border-box;
+        padding: 10px;
+        @include center-of-rectangle;
+        font-style: italic;
+        font-weight: 800;
+        color: rgb(204, 0, 255);
+    }
+
+    > .btnContainer {
+        box-sizing: border-box;
+        padding: 10px;
+        margin: 10px;
+        @include center-of-rectangle;
+
+        > .btn {
+            color: blue;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}

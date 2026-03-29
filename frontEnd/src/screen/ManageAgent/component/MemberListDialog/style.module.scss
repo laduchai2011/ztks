@@ -1,0 +1,115 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(161, 161, 161, 0.3);
+    @include center-of-rectangle;
+    opacity: 0;
+    display: none;
+    transition: opacity 0.5s ease-in-out;
+
+    &.opacity {
+        opacity: 1;
+    }
+
+    &.display {
+        display: flex;
+    }
+
+    > .main {
+        background-color: white;
+        width: 300px;
+        border-radius: 15px;
+        overflow: hidden;
+
+        @include responsive(sm) {
+            width: 80%;
+        }
+
+        > .closeContainer {
+            display: flex;
+            justify-content: flex-end;
+            box-sizing: border-box;
+            padding: 5px;
+
+            > svg {
+                cursor: pointer;
+            }
+        }
+
+        > .search {
+            @include center-of-rectangle;
+            box-sizing: border-box;
+            padding: 10px;
+
+            > div {
+                @include center-of-row;
+                background-color: rgb(236, 236, 236);
+                box-sizing: border-box;
+                padding: 5px;
+                border-radius: 5px;
+
+                > input {
+                    border: none;
+                    outline: none;
+                    font-size: 1.05rem;
+                }
+
+                > svg {
+                    cursor: pointer;
+                }
+            }
+        }
+
+        > .list {
+            max-height: 400px;
+            width: 100%;
+            flex: 1;
+            overflow-y: scroll;
+            @include small-scroll-yy(1px);
+
+            > .row {
+                height: 60px;
+                box-sizing: border-box;
+                padding: 5px;
+                @include center-of-row;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: rgb(235, 235, 235);
+                }
+
+                > img {
+                    height: 50px;
+                    width: 50px;
+                    border-radius: 50%;
+                }
+
+                > div {
+                    box-sizing: border-box;
+                    padding: 5px 10px;
+                }
+            }
+        }
+
+        > .seeMore {
+            @include center-of-rectangle;
+            box-sizing: border-box;
+            padding: 10px;
+
+            > div {
+                user-select: none;
+                color: blue;
+                cursor: pointer;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}

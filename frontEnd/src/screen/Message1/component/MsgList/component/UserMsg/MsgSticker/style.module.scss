@@ -1,0 +1,10 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    > .image {
+        height: 200px;
+        cursor: pointer;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+}

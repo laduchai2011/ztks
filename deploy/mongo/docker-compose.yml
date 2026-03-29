@@ -1,0 +1,28 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: mongo_container
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_DATABASE: zalo5k
+    volumes:
+      - /root/mongo_data:/data/db
+    networks:
+      - network_zalo_5kaquarium
+
+networks:
+  network_zalo_5kaquarium:
+    external: true
+
+volumes:
+  mongo_data:

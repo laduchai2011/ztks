@@ -1,0 +1,2 @@
+docker build -t socketapp .
+docker run -dit --name socketapp_container --network network_zalo_5kaquarium -p 6000:6000 --log-driver=json-file --log-opt max-size=10m --log-opt max-file=3 socketapp

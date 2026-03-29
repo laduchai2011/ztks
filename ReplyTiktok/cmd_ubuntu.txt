@@ -1,0 +1,6 @@
+docker build -t playwright .
+
+docker run -it --shm-size=1gb pw-bot
+
+docker build -t playwright .
+docker run -dit -it --shm-size=1gb --name playwright_container  -v /root/photo5k:/app/data playwright

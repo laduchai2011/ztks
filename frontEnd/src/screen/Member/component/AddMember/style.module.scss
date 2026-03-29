@@ -1,0 +1,36 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    border: 1px solid greenyellow;
+    padding: 10px;
+    @include center-of-row;
+    justify-content: space-between;
+
+    > input {
+        box-sizing: border-box;
+        padding: 5px;
+        border: none;
+        outline: none;
+        border-radius: 10px;
+    }
+
+    > div {
+        width: max-content;
+        background-color: rgb(64, 255, 47);
+        box-sizing: border-box;
+        padding: 5px;
+        border: 1px solid rgb(64, 255, 47);
+        border-radius: 10px;
+        cursor: default;
+        user-select: none;
+
+        &:hover {
+            background-color: white;
+        }
+
+        &:active {
+            background-color: rgb(64, 255, 47);
+        }
+    }
+}

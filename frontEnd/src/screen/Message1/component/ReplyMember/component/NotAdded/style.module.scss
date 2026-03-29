@@ -1,0 +1,61 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    @include center-of-row;
+    justify-content: space-between;
+    height: 40px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: rgb(240, 240, 240);
+    }
+
+    > div {
+        box-sizing: border-box;
+        padding: 5px;
+        height: 100%;
+    }
+
+    > .indexContainer {
+        color: blue;
+        @include center-of-rectangle;
+    }
+
+    > .inforContainer {
+        flex: 1;
+        @include center-of-row;
+
+        > img {
+            height: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 50%;
+        }
+
+        > div {
+            box-sizing: border-box;
+            padding: 0 5px;
+            font-size: 1.1rem;
+            @include line-clamp(1);
+        }
+    }
+
+    > .btnContainer {
+        aspect-ratio: 1/1;
+        @include center-of-rectangle;
+
+        > button {
+            box-sizing: border-box;
+            border: 1px solid greenyellow;
+            padding: 5px 10px;
+            border-radius: 10px;
+
+            &:hover {
+                background-color: greenyellow;
+            }
+
+            &:active {
+                background-color: white;
+            }
+        }
+    }
+}

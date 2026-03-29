@@ -1,0 +1,176 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px 5px;
+    margin: 0 5px;
+    border-top: 1px solid blue;
+
+    > div {
+        box-sizing: border-box;
+        padding: 5px;
+    }
+
+    > .index {
+        @include center-of-row;
+        justify-content: space-between;
+
+        > div:nth-child(1) {
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            @include center-of-rectangle;
+            background-color: blue;
+            color: white;
+        }
+
+        > div:nth-child(2) {
+            color: gray;
+            font-style: italic;
+            @include line-clamp(1);
+            flex: 1;
+        }
+
+        > div:nth-child(3) {
+            > svg {
+                cursor: pointer;
+            }
+
+            > svg:nth-child(2) {
+                margin-left: 10px;
+            }
+        }
+    }
+
+    > .label {
+        > div:nth-child(1) {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        > div:nth-child(2) {
+            color: gray;
+            box-sizing: border-box;
+            padding: 0 5px;
+        }
+    }
+
+    > .content {
+        max-height: 300px;
+        overflow-y: scroll;
+        @include small-scroll-yy(1px);
+
+        > div:nth-child(1) {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        > div:nth-child(2) {
+            color: gray;
+            box-sizing: border-box;
+            padding: 0 5px;
+        }
+    }
+
+    > .phone {
+        @include center-of-row;
+
+        > div:nth-child(1) {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        > div:nth-child(2) {
+            color: gray;
+            box-sizing: border-box;
+            padding: 0 5px;
+        }
+    }
+
+    > .chat {
+        @include center-of-row;
+
+        > div:nth-child(1) {
+            box-sizing: border-box;
+            padding: 5px;
+            font-size: 0.9rem;
+            width: max-content;
+            background-color: lab(83.75% -9.73 41.74);
+            border-radius: 10px;
+            color: rgb(255, 255, 0);
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 0 10px rgb(121, 119, 0);
+
+            &:hover {
+                box-shadow: 0 0 20px rgb(121, 119, 0);
+                scale: 1.05;
+            }
+        }
+
+        > div:nth-child(2) {
+            margin-left: 20px;
+            font-style: italic;
+            color: gray;
+        }
+    }
+
+    > .isPay {
+        @include center-of-row;
+
+        > div:nth-child(2) {
+            margin: 0 5px;
+            color: blue;
+            font-style: italic;
+        }
+
+        > div:nth-child(3) {
+            color: red;
+            margin-left: 15px;
+            font-size: 0.9rem;
+            font-style: italic;
+
+            &.paid {
+                color: green;
+            }
+        }
+    }
+
+    > .status {
+        box-sizing: border-box;
+        padding: 5px;
+        border: 1px solid gray;
+
+        > div:nth-child(1) {
+            @include center-of-row;
+
+            > div {
+                width: 50%;
+                box-sizing: border-box;
+                padding: 5px;
+                @include center-of-row;
+                justify-content: space-around;
+                border-bottom: 1px solid gray;
+
+                > svg {
+                    cursor: pointer;
+                }
+            }
+        }
+
+        > div:not(:nth-child(1)) {
+            @include center-of-row;
+
+            > div {
+                width: 50%;
+                box-sizing: border-box;
+                padding: 5px;
+                @include center-of-rectangle;
+            }
+        }
+    }
+
+    > .time {
+        @include center-of-row;
+        justify-content: flex-end;
+        color: gray;
+        font-style: italic;
+    }
+}

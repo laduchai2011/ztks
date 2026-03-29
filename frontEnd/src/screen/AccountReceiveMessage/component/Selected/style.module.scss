@@ -1,0 +1,32 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    @include center-of-rectangle;
+    box-sizing: border-box;
+    padding: 10px;
+    border-bottom: 1px solid blue;
+
+    > .main {
+        > .avatarContainer {
+            @include center-of-rectangle;
+            width: 100%;
+            height: 150px;
+
+            > img {
+                height: 120px;
+                width: 120px;
+                box-sizing: border-box;
+                border: 1px solid gray;
+                border-radius: 50%;
+            }
+        }
+
+        > .nameContainer {
+            @include center-of-rectangle;
+            box-sizing: border-box;
+            padding: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+    }
+}

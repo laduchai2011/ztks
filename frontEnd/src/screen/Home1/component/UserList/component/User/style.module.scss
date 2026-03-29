@@ -1,0 +1,81 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    height: 80px;
+    box-sizing: border-box;
+    border: 1px solid rgb(243, 243, 243);
+    margin: 2px 0;
+    cursor: pointer;
+    @include center-of-row;
+
+    &:hover {
+        background-color: rgb(238, 238, 238);
+    }
+
+    > .avatarContainer {
+        height: 100%;
+        aspect-ratio: 1/1;
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 5px;
+
+        > img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 50%;
+            box-sizing: border-box;
+            border: 1px solid rgb(245, 245, 245);
+        }
+    }
+
+    > .inforContainer {
+        box-sizing: border-box;
+        padding: 5px;
+        height: 100%;
+        @include center-of-row;
+        flex: 1;
+
+        > .infor {
+            flex: 1;
+            height: 100%;
+
+            > .name {
+                flex: 1;
+                font-weight: 600;
+                font-size: 1.1rem;
+                @include line-clamp(1);
+                height: 50%;
+                line-height: 26px;
+            }
+
+            > .note {
+                height: 50%;
+                @include line-clamp(1);
+                line-height: 28px;
+
+                @include center-of-row;
+
+                > div {
+                    margin: 0 2px;
+                }
+            }
+        }
+
+        > .time {
+            width: 40px;
+            height: 100%;
+            @include center-of-rectangle;
+            font-size: 0.8rem;
+            color: gray;
+        }
+
+        > .newMsgAmount {
+            @include center-of-rectangle;
+            color: white;
+            background-color: red;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+        }
+    }
+}

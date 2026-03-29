@@ -1,0 +1,69 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 5px 0;
+    background-color: rgb(240, 240, 240);
+
+    > .icons {
+        @include center-of-row;
+
+        > .icons1 {
+            width: 50%;
+
+            > input {
+                display: none;
+            }
+
+            > svg {
+                margin: 0 5px;
+                cursor: pointer;
+            }
+        }
+
+        > .icons2 {
+            width: 50%;
+
+            > svg {
+                margin: 0 5px;
+                cursor: pointer;
+            }
+        }
+    }
+
+    > .textInput {
+        // @include center-of-row;
+        display: flex;
+        align-items: stretch;
+
+        > div:nth-child(1) {
+            flex: 1;
+            box-sizing: border-box;
+            padding: 3px;
+            @include center-of-rectangle;
+
+            > textarea {
+                width: 100%;
+                border: none;
+                outline: none;
+                border-radius: 5px;
+                resize: none;
+                max-height: 500px;
+            }
+        }
+
+        > div:nth-child(2) {
+            width: 35px;
+            box-sizing: border-box;
+            padding: 3px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+
+            > svg {
+                color: blue;
+                cursor: pointer;
+            }
+        }
+    }
+}

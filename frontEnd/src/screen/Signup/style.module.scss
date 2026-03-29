@@ -1,0 +1,73 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    background-color: #eee;
+    @include center-of-rectangle;
+
+    > .main {
+        background-color: white;
+        width: 350px;
+        height: 100vh;
+
+        > div {
+            @include center-of-rectangle;
+        }
+
+        > div:nth-child(1) {
+            margin-top: 100px;
+
+            > h3 {
+                width: max-content;
+                height: max-content;
+            }
+        }
+
+        > div:not(:nth-child(1)) {
+            margin-top: 20px;
+
+            > div {
+                @include center-of-row;
+                width: 80%;
+                justify-content: space-between;
+
+                > div:nth-child(2) {
+                    > input {
+                        box-sizing: border-box;
+                        padding: 3px;
+                        border-radius: 10px;
+                    }
+
+                    > p {
+                        color: red;
+                        font-size: 0.8rem;
+                        user-select: none;
+                    }
+                }
+            }
+        }
+
+        > div:nth-child(8) {
+            font-size: 0.7rem;
+            color: blue;
+            cursor: pointer;
+            user-select: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        > .signupBtn {
+            > button {
+                box-sizing: border-box;
+                padding: 5px 10px;
+                border-radius: 10px;
+                border: none;
+
+                &:active {
+                    background-color: #cecece;
+                }
+            }
+        }
+    }
+}

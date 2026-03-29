@@ -1,0 +1,82 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(161, 161, 161, 0.3);
+    @include center-of-rectangle;
+    opacity: 0;
+    display: none;
+    transition: opacity 0.5s ease-in-out;
+
+    &.opacity {
+        opacity: 1;
+    }
+
+    &.display {
+        display: flex;
+    }
+
+    > .main {
+        background-color: white;
+        width: 300px;
+        border-radius: 15px;
+
+        @include responsive(sm) {
+            width: 80%;
+        }
+
+        > .closeContainer {
+            display: flex;
+            justify-content: flex-end;
+            box-sizing: border-box;
+            padding: 5px;
+
+            > svg {
+                cursor: pointer;
+            }
+        }
+
+        > .contentContainer {
+            @include center-of-rectangle;
+            color: red;
+            height: 60px;
+            box-sizing: border-box;
+            padding: 5px;
+        }
+
+        > .buttonContainer {
+            display: flex;
+            justify-content: space-around;
+            box-sizing: border-box;
+            padding: 5px;
+
+            > button {
+                width: 80px;
+                height: 30px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            > button:nth-child(1) {
+                background-color: rgb(177, 255, 190);
+
+                &:active {
+                    background-color: rgb(233, 233, 233);
+                }
+            }
+
+            > button:nth-child(2) {
+                background-color: rgb(255, 216, 216);
+
+                &:active {
+                    background-color: rgb(233, 233, 233);
+                }
+            }
+        }
+    }
+}

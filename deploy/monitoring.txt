@@ -1,0 +1,3 @@
+docker run -d -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data -e "ADMIN_PASSWORD=Taokosao2011@" portainer/portainer-ce:latest
+
+https://103.249.200.80:9443

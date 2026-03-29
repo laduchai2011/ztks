@@ -1,0 +1,36 @@
+services:
+  redis:
+    image: redis:7
+    # sysctls:
+    #   vm.overcommit_memory: "1"
+    container_name: redis_container
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+
+    volumes:
+      # dùng config redis.conf trên host
+      # - /etc/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+
+      # nơi lưu dump.rdb + appendonly.aof
+      - ./redis_data:/data
+
+    ports:
+      # chỉ expose nếu cần debug
+      - "6379:6379"
+
+    networks:
+      - network_zalo_5kaquarium
+
+networks:
+  network_zalo_5kaquarium:
+    external: true
+
+volumes:
+  redis_data:

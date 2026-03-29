@@ -1,0 +1,10 @@
+CREATE TABLE cacheRedis (
+    id INT PRIMARY KEY IDENTITY(1,1),
+	[key] NVARCHAR(255) NOT NULL,
+    value NVARCHAR(max) NOT NULL,
+    updateTime DATETIMEOFFSET(7) NOT NULL,
+    createTime DATETIMEOFFSET(7) NOT NULL
+)
+GO
+CREATE NONCLUSTERED INDEX idx_cacheRedis_key ON cacheRedis([key]);
+GO

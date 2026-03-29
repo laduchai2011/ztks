@@ -1,0 +1,12 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    height: 100%;
+    @include center-of-row;
+    box-sizing: border-box;
+    padding: 5px;
+
+    > div {
+        @include line-clamp(1);
+    }
+}

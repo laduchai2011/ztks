@@ -1,0 +1,12 @@
+1 - Chạy nginx với docker compose
+
+2 - cấp SSL bằng Certbot container
+docker compose run --rm certbot certonly --webroot --webroot-path=/var/www/certbot -d yourdomain.com --email youremail@gmail.com --agree-tos --no-eff-email
+vd: docker compose run --rm certbot certonly --webroot --webroot-path=/var/www/certbot -d zalowebhookdev.5kaquarium.com --email laduchai20111995@gmail.com --agree-tos --no-eff-email
+
+3 - Chạy serverConf 
+docker compose restart nginx
+
+4 - Auto renew SSL
+crontab -e
+0 3 * * * docker-compose run --rm certbot renew && docker-compose restart nginx_server

@@ -1,0 +1,22 @@
+- cài đặt
+sudo apt update
+sudo apt install snapd -y
+sudo snap install core
+sudo snap refresh core
+sudo snap install --classic certbot
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+
+- Mở port
+sudo ufw allow 80
+sudo ufw allow 443
+
+// bo
+- Cấp chứng chỉ SSL
+sudo certbot --nginx
+
+- Auto gia hạn chứng chỉ
+sudo certbot renew --dry-run
+
+- Cron job (nếu cần):
+crontab -e
+0 3 * * * certbot renew --quiet

@@ -1,0 +1,43 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    @include center-of-rectangle;
+    background-color: rgba(202, 202, 202, 0.5);
+    z-index: 1000;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+
+    &.display {
+        display: flex;
+    }
+
+    &.opacity {
+        opacity: 1;
+    }
+
+    > .main {
+        background-color: white;
+        width: 300px;
+        border-radius: 20px;
+
+        > .loadding {
+            height: 150px;
+            box-sizing: border-box;
+            padding: 10px;
+        }
+
+        > .text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            box-sizing: border-box;
+            padding: 10px;
+            @include center-of-rectangle;
+        }
+    }
+}

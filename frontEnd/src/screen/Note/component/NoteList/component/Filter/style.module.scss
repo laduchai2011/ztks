@@ -1,0 +1,33 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 5px;
+    @include center-of-row;
+
+    > .main {
+        width: 100%;
+        @include center-of-row;
+        justify-content: space-between;
+
+        > div:nth-child(1) {
+            @include center-of-row;
+        }
+
+        > div:nth-child(2) {
+            @include center-of-row;
+
+            > input {
+                box-sizing: border-box;
+                padding: 3px;
+                border: none;
+                outline: none;
+                border-bottom: 1px solid gray;
+            }
+
+            > svg {
+                cursor: pointer;
+            }
+        }
+    }
+}
