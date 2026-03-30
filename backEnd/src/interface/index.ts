@@ -2,6 +2,7 @@ import { config as mssql_config } from './mssql';
 import { config as redis_config } from './redis';
 import { config as rabbitmq_config } from './rabbitmq';
 import { config as mongo_config } from './mongo';
+import { config as minio_config } from './minio';
 
 import { infor as video_infor } from './video';
 
@@ -25,6 +26,10 @@ interface mongo_interface {
     config?: mongo_config;
 }
 
+interface minio_interface {
+    config?: minio_config;
+}
+
 interface router_res_type {
     message?: string;
     status?: '' | 'success' | 'failure' | 'warn-error' | 'error' | 'notify';
@@ -41,6 +46,7 @@ interface my_interface {
     redis: redis_interface;
     rabbitmq: rabbitmq_interface;
     mongo: mongo_interface;
+    minio: minio_interface;
     router_res_type: router_res_type;
     video: video_interface;
 }

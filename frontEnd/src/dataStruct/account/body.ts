@@ -1,3 +1,5 @@
+import { accountType_type } from '.';
+
 export interface GetReplyAccountBodyField {
     page: number;
     size: number;
@@ -43,5 +45,10 @@ export interface GetMembersBodyField {
 
 export interface AddMemberV1BodyField {
     addedById: number;
+    accountId: number;
+}
+
+export interface CreateAccountInformationBodyField {
+    accountType: accountType_type;
     accountId: number;
 }

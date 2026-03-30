@@ -16,7 +16,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: admin123
       MONGO_INITDB_DATABASE: zalo5k
     volumes:
-      - /root/mongo_data:/data/db
+      - ./mongo_data:/data/db
     networks:
       - network_zalo_5kaquarium
 

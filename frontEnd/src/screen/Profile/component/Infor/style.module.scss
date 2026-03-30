@@ -6,16 +6,28 @@
     align-items: center;
     margin: 20px 0;
 
-    > .avatar {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        object-fit: cover;
-        box-sizing: border-box;
+    > .avatarContainer {
+        position: relative;
+
+        > .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        > svg {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%, -25%);
+        }
     }
 
     > .admin {
         color: blue;
+        font-size: 0.9rem;
+        margin-top: 5px;
     }
 
     > .selectType {

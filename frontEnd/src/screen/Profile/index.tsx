@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '@src/redux';
 import {
     PROFILE,
     // MEMBER_RECEIVE_MESSAGE,
@@ -13,11 +15,19 @@ import {
 } from '@src/const/text';
 import Header from '../Header';
 import Infor from './component/Infor';
+import EditInforDialog from './component/EditInforDialog';
 import { select_enum, route_enum } from '@src/router/type';
+import { AccountInformationField, accountType_enum } from '@src/dataStruct/account';
 
 const Profile = () => {
     const navigate = useNavigate();
     const myId = sessionStorage.getItem('myId');
+
+    const accountInformation: AccountInformationField | undefined = useSelector(
+        (state: RootState) => state.AppSlice.accountInformation
+    );
+
+    const isAdmin = accountInformation?.accountType === accountType_enum.ADMIN;
 
     useEffect(() => {
         if (myId === null) {
@@ -60,21 +70,30 @@ const Profile = () => {
                     <div className={style.option} onClick={() => goToOa()}>
                         {OA}
                     </div>
-                    <div className={style.option} onClick={() => goToMember()}>
-                        {MEMBER}
-                    </div>
-                    <div className={style.option} onClick={() => goToManageAgents()}>
-                        {MANAGE_AGENT}
-                    </div>
-                    <div className={style.option} onClick={() => goToAccountReceiveMessage()}>
-                        {ACCOUNT_RECEIVE_MESSAGE}
-                    </div>
+                    {isAdmin && (
+                        <div className={style.option} onClick={() => goToMember()}>
+                            {MEMBER}
+                        </div>
+                    )}
+                    {isAdmin && (
+                        <div className={style.option} onClick={() => goToManageAgents()}>
+                            {MANAGE_AGENT}
+                        </div>
+                    )}
+                    {isAdmin && (
+                        <div className={style.option} onClick={() => goToAccountReceiveMessage()}>
+                            {ACCOUNT_RECEIVE_MESSAGE}
+                        </div>
+                    )}
                     <div className={style.option} onClick={() => goToSignout()}>
                         {SIGNOUT}
                     </div>
                 </div>
                 <div className={style.headerTab}>
                     <Header selected={select_enum.PROFILE} />
+                </div>
+                <div>
+                    <EditInforDialog />
                 </div>
             </div>
         </div>

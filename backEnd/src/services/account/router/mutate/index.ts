@@ -6,11 +6,12 @@ import Handle_Signup from './handle/Signup';
 import Handle_Signin from './handle/Signin';
 import Handle_Signout from './handle/Signout';
 import Handle_AddMember from './handle/AddMember';
-import Handle_SetMemberReceiveMessage from './handle/SetMemberReceiveMessage';
+// import Handle_SetMemberReceiveMessage from './handle/SetMemberReceiveMessage';
 import Handle_CreateReplyAccount from './handle/CreateReplyAccount';
 import Handle_CreateAccountReceiveMessage from './handle/CreateAccountReceiveMessage';
 import Handle_UpdateAccountReceiveMessage from './handle/UpdateAccountReceiveMessage';
 import Handle_AddMemberV1 from './handle/AddMemberV1';
+import Handle_CreateAccountInformation from './handle/CreateAccountInformation';
 
 dotenv.config();
 
@@ -19,11 +20,12 @@ const handle_signup = new Handle_Signup();
 const handle_signin = new Handle_Signin();
 const handle_signout = new Handle_Signout();
 const handle_addMember = new Handle_AddMember();
-const handle_setMemberReceiveMessage = new Handle_SetMemberReceiveMessage();
+// const handle_setMemberReceiveMessage = new Handle_SetMemberReceiveMessage();
 const handle_createReplyAccount = new Handle_CreateReplyAccount();
 const handle_createAccountReceiveMessage = new Handle_CreateAccountReceiveMessage();
 const handle_updateAccountReceiveMessage = new Handle_UpdateAccountReceiveMessage();
 const handle_addMemberV1 = new Handle_AddMemberV1();
+const handle_createAccountInformation = new Handle_CreateAccountInformation();
 
 router_mutate_account.post('/', (_: Request, res: Response) => {
     res.send('(POST) Express + TypeScript Server: router_mutate_account');
@@ -46,7 +48,7 @@ router_mutate_account.post(
     handle_addMember.main
 );
 
-router_mutate_account.post('/setMemberReceiveMessage', authentication, handle_setMemberReceiveMessage.main);
+// router_mutate_account.post('/setMemberReceiveMessage', authentication, handle_setMemberReceiveMessage.main);
 
 router_mutate_account.post('/signin', handle_signin.main);
 
@@ -75,5 +77,12 @@ router_mutate_account.post(
 );
 
 router_mutate_account.post('/addMemberV1', authentication, handle_addMemberV1.setup, handle_addMemberV1.main);
+
+router_mutate_account.post(
+    '/createAccountInformation',
+    authentication,
+    handle_createAccountInformation.setup,
+    handle_createAccountInformation.main
+);
 
 export default router_mutate_account;

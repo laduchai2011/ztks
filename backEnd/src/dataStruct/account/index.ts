@@ -13,7 +13,7 @@ export interface AccountField {
 
 export interface AccountInformationField {
     addedById: number | null;
-    accountType: string;
+    accountType: accountType_enum;
     accountId: number;
 }
 

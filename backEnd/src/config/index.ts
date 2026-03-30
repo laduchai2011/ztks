@@ -81,4 +81,20 @@ const mongo_config: my_interface['mongo']['config'] = isProduct
           database: 'zalo5kdev',
       };
 
-export { mssql_config, redis_config, rabbitmq_config, mongo_config };
+const minio_config: my_interface['minio']['config'] = isProduct
+    ? {
+          endPoint: process.env.MINIO_SERVER_END_POINT,
+          port: Number(process.env.MINIO_SERVER_PORT),
+          accessKey: process.env.MINIO_SERVER_ACCESS_KEY,
+          secretKey: process.env.MINIO_SERVER_SECRET_KEY,
+          useSSL: process.env.MINIO_SERVER_USE_SSL === 'true',
+      }
+    : {
+          endPoint: '103.249.200.80',
+          port: 9000,
+          accessKey: 'tksstore',
+          secretKey: 'Taokosao2011@',
+          useSSL: false,
+      };
+
+export { mssql_config, redis_config, rabbitmq_config, mongo_config, minio_config };
