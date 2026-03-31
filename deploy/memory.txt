@@ -1,2 +1,0 @@
-giải phóng docker
-docker container prune
