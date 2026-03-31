@@ -15,6 +15,7 @@ import MemberReducer from '@src/redux/slice/Member';
 import NoteReducer from '@src/redux/slice/Note';
 import SignupReducer from '@src/redux/slice/Signup';
 import ProfileReducer from '@src/redux/slice/Profile';
+import ForgetPasswordReducer from '@src/redux/slice/ForgetPassword';
 import { accountRTK } from './query/accountRTK';
 import { myCustomerRTK } from './query/myCustomerRTK';
 import { messageRTK } from './query/messageRTK';
@@ -45,6 +46,7 @@ export const store = configureStore({
         NoteSlice: NoteReducer,
         SignupSlice: SignupReducer,
         ProfileSlice: ProfileReducer,
+        ForgetPasswordSlice: ForgetPasswordReducer,
         [accountRTK.reducerPath]: accountRTK.reducer,
         [myCustomerRTK.reducerPath]: myCustomerRTK.reducer,
         [messageRTK.reducerPath]: messageRTK.reducer,

@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Signup from '@src/screen/Signup';
 import Signin from '@src/screen/Signin';
 import Signout from '@src/screen/Signout';
+import ForgetPassword from '@src/screen/ForgetPassword';
 // import Home from '@src/screen/Home';
 import Home1 from '@src/screen/Home1';
 // import Message from '@src/screen/Message';
@@ -25,6 +26,7 @@ const router = createBrowserRouter(
         { path: route_enum.SIGNUP, element: <Signup /> },
         { path: route_enum.SIGNIN, element: <Signin /> },
         { path: route_enum.SIGNOUT, element: <Signout /> },
+        { path: route_enum.FORGET_PASSWORD, element: <ForgetPassword /> },
         { path: route_enum.HOME, element: <Home1 /> },
         { path: route_enum.MESSAGE1 + '/:id', element: <Message1 /> },
         { path: route_enum.SUPPORT_ROOM, element: <SupportRoom /> },

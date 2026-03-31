@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { SIGNIN, ACCOUNT, PASSWORD } from '@src/const/text';
+import { SIGNIN, ACCOUNT, PASSWORD, SIGNUP, FORGET_PASSWORD } from '@src/const/text';
 import { route_enum } from '@src/router/type';
 import { useSigninMutation } from '@src/redux/query/accountRTK';
 import { AccountField } from '@src/dataStruct/account';
@@ -48,8 +48,10 @@ const Signin = () => {
                 const resData = res.data;
                 if (resData?.isSuccess) {
                     setNote('');
-                    navigate(route_enum.HOME);
-                    window.location.reload();
+                    setTimeout(() => {
+                        navigate(route_enum.HOME);
+                        window.location.reload();
+                    }, 500);
                 } else {
                     setNote('Đăng nhập thất bại');
                 }
@@ -60,11 +62,13 @@ const Signin = () => {
             });
     };
 
-    // const gotoForgetPassword = () => {};
+    const gotoForgetPassword = () => {
+        navigate(route_enum.FORGET_PASSWORD);
+    };
 
-    // const gotoSignup = () => {
-    //     navigate(route_enum.SIGNUP);
-    // };
+    const gotoSignup = () => {
+        navigate(route_enum.SIGNUP);
+    };
 
     return (
         <div className={style.parent}>
@@ -89,10 +93,10 @@ const Signin = () => {
                         <div className={style.btnContainer}>
                             <div onClick={() => handleSignin()}>{SIGNIN}</div>
                         </div>
-                        {/* <div className={style.navContainer}>
+                        <div className={style.navContainer}>
                             <div onClick={() => gotoForgetPassword()}>{FORGET_PASSWORD}</div>
                             <div onClick={() => gotoSignup()}>{SIGNUP}</div>
-                        </div> */}
+                        </div>
                         {note.length > 0 && <div className={style.note}>{note}</div>}
                     </div>
                 )}

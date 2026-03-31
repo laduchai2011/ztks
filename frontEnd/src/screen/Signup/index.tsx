@@ -10,7 +10,7 @@ import { isSpace, isFirstNumber, containsSpecialCharacters, isValidPhoneNumber }
 import { useSignupMutation } from '@src/redux/query/accountRTK';
 import { router_res_type } from '@src/interface';
 import { route_enum } from '@src/router/type';
-import { sendOtp } from './otp';
+import { sendOtp } from '@src/otp/handle';
 import OtpInput from './component/OtpInput';
 import { setIsShow_otpDialog, setToken_otpDialog, set_isLoading } from '@src/redux/slice/Signup';
 

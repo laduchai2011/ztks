@@ -13,6 +13,7 @@ import Handle_UpdateAccountReceiveMessage from './handle/UpdateAccountReceiveMes
 import Handle_AddMemberV1 from './handle/AddMemberV1';
 import Handle_CreateAccountInformation from './handle/CreateAccountInformation';
 import Handle_EditInforAccount from './handle/EditInforAccount';
+import Handle_ForgetPassword from './handle/ForgetPassword';
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ const handle_updateAccountReceiveMessage = new Handle_UpdateAccountReceiveMessag
 const handle_addMemberV1 = new Handle_AddMemberV1();
 const handle_createAccountInformation = new Handle_CreateAccountInformation();
 const handle_editInforAccount = new Handle_EditInforAccount();
+const handle_forgetPassword = new Handle_ForgetPassword();
 
 router_mutate_account.post('/', (_: Request, res: Response) => {
     res.send('(POST) Express + TypeScript Server: router_mutate_account');
@@ -93,5 +95,7 @@ router_mutate_account.post(
     handle_editInforAccount.setup,
     handle_editInforAccount.main
 );
+
+router_mutate_account.post('/forgetPassword', authOtpFirebaseMiddleware, handle_forgetPassword.main);
 
 export default router_mutate_account;

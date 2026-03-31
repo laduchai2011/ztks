@@ -1,0 +1,81 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    background-color: #eee;
+    @include center-of-rectangle;
+
+    > .main {
+        background-color: white;
+        width: 300px;
+        height: 100vh;
+
+        @include responsive(sm) {
+            width: 100%;
+        }
+
+        > .headerContainer {
+            @include center-of-rectangle;
+            font-size: 1.2rem;
+            font-weight: 600;
+            box-sizing: border-box;
+            padding: 20px 0;
+        }
+
+        > .inputContainer {
+            box-sizing: border-box;
+            padding: 10px;
+            > .aInput {
+                @include center-of-row;
+                margin: 10px 0;
+
+                > div {
+                    width: 100px;
+                }
+
+                > input {
+                    border: none;
+                    outline: none;
+                    box-sizing: border-box;
+                    padding: 5px;
+                    background-color: #f1f1f1;
+                    border-radius: 10px;
+                }
+            }
+        }
+
+        > .buttonContainer {
+            @include center-of-rectangle;
+            margin: 20px;
+
+            > div {
+                cursor: pointer;
+                user-select: none;
+                padding: 5px 10px;
+                background-color: #007bff;
+                color: white;
+                border-radius: 5px;
+                font-size: 1rem;
+
+                &:active {
+                    background-color: #0056b3;
+                }
+            }
+        }
+
+        > .options {
+            @include center-of-row;
+            justify-content: space-around;
+
+            > div {
+                font-size: 0.9rem;
+                color: #007bff;
+                cursor: pointer;
+                user-select: none;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}

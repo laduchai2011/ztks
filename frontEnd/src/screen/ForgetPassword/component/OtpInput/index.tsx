@@ -4,7 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE } from '@src/const/text';
-import { setIsShow_otpDialog, setToken_otpDialog, set_isLoading, setData_toastMessage } from '@src/redux/slice/Signup';
+import {
+    setIsShow_otpDialog,
+    setToken_otpDialog,
+    set_isLoading,
+    setData_toastMessage,
+} from '@src/redux/slice/ForgetPassword';
 import { verifyOtp } from '@src/otp/handle';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
@@ -13,7 +18,7 @@ const OtpInput: FC<{ confirmation: any }> = ({ confirmation }) => {
     const parent_element = useRef<HTMLDivElement | null>(null);
     const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
-    const isShow: boolean = useSelector((state: RootState) => state.SignupSlice.otpDialog.isShow);
+    const isShow: boolean = useSelector((state: RootState) => state.ForgetPasswordSlice.otpDialog.isShow);
 
     useEffect(() => {
         if (!parent_element.current) return;

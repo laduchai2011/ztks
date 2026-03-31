@@ -3,6 +3,7 @@ import {
     SIGNUP,
     SIGNIN,
     SIGNOUT,
+    FORGET_PASSWORD,
     MESSAGE,
     SUPPORT_ROOM,
     PROFILE,
@@ -19,6 +20,7 @@ const _HOME = HOME;
 const _SIGNUP = SIGNUP;
 const _SIGNIN = SIGNIN;
 const _SIGNOUT = SIGNOUT;
+const _FORGET_PASSWORD = FORGET_PASSWORD;
 const _MESSAGE = MESSAGE;
 const _MESSAGE1 = MESSAGE;
 const _SUPPORT_ROOM = SUPPORT_ROOM;
@@ -36,6 +38,7 @@ export enum select_enum {
     SIGNUP = _SIGNUP,
     SIGNIN = _SIGNIN,
     SIGNOUT = _SIGNOUT,
+    FORGET_PASSWORD = _FORGET_PASSWORD,
     MESSAGE = _MESSAGE,
     MESSAGE1 = _MESSAGE1,
     SUPPORT_ROOM = _SUPPORT_ROOM,
@@ -53,6 +56,7 @@ export type selected_type =
     | select_enum.SIGNUP
     | select_enum.SIGNIN
     | select_enum.SIGNOUT
+    | select_enum.FORGET_PASSWORD
     | select_enum.MESSAGE
     | select_enum.MESSAGE1
     | select_enum.SUPPORT_ROOM
@@ -70,6 +74,7 @@ export enum route_enum {
     SIGNUP = '/signup',
     SIGNIN = '/signin',
     SIGNOUT = '/signout',
+    FORGET_PASSWORD = '/forget_password',
     MESSAGE = '/message',
     MESSAGE1 = '/message1',
     SUPPORT_ROOM = '/support_room',
@@ -89,6 +94,7 @@ export type routed_type =
     | route_enum.SIGNUP
     | route_enum.SIGNIN
     | route_enum.SIGNOUT
+    | route_enum.FORGET_PASSWORD
     | route_enum.MESSAGE
     | route_enum.MESSAGE1
     | route_enum.SUPPORT_ROOM

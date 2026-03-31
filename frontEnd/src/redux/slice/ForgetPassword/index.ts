@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { state_props } from '@src/screen/Signup/type';
+import { state_props } from '@src/screen/ForgetPassword/type';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
 
 const initialState: state_props = {
@@ -14,8 +14,8 @@ const initialState: state_props = {
     },
 };
 
-const SignupSlice = createSlice({
-    name: 'SignupSlice',
+const ForgetPasswordSlice = createSlice({
+    name: 'ForgetPasswordSlice',
     initialState,
     reducers: {
         set_isLoading: (state, action: PayloadAction<boolean>) => {
@@ -27,14 +27,12 @@ const SignupSlice = createSlice({
         setIsShow_otpDialog: (state, action: PayloadAction<boolean>) => {
             state.otpDialog.isShow = action.payload;
         },
-        // setInput_otpDialog: (state, action: PayloadAction<string>) => {
-        //     state.otpDialog.input = action.payload;
-        // },
         setToken_otpDialog: (state, action: PayloadAction<string>) => {
             state.otpDialog.token = action.payload;
         },
     },
 });
 
-export const { set_isLoading, setData_toastMessage, setIsShow_otpDialog, setToken_otpDialog } = SignupSlice.actions;
-export default SignupSlice.reducer;
+export const { set_isLoading, setData_toastMessage, setIsShow_otpDialog, setToken_otpDialog } =
+    ForgetPasswordSlice.actions;
+export default ForgetPasswordSlice.reducer;

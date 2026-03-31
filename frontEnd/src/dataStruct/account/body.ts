@@ -59,3 +59,9 @@ export interface EditInforAccountBodyField {
     lastName: string;
     avatar: string;
 }
+
+export interface ForgetPasswordBodyField {
+    userName: string;
+    password: string;
+    phone: string;
+}
