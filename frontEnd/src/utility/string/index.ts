@@ -96,3 +96,10 @@ export const formatMoney = (value: string | number) => {
 
 export const avatarnull =
     'https://www.shutterstock.com/image-vector/default-avatar-social-media-display-600nw-2632690107.jpg';
+
+export function formatPhone(phone: string): string {
+    if (phone.startsWith('0')) {
+        return '+84' + phone.slice(1);
+    }
+    return phone;
+}

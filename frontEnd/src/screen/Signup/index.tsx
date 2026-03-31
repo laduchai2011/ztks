@@ -12,11 +12,13 @@ import { router_res_type } from '@src/interface';
 import { route_enum } from '@src/router/type';
 import { sendOtp } from '@src/otp/handle';
 import OtpInput from './component/OtpInput';
+import { formatPhone } from '@src/utility/string';
 import { setIsShow_otpDialog, setToken_otpDialog, set_isLoading } from '@src/redux/slice/Signup';
 
 const Signup = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
+
     const token: string = useSelector((state: RootState) => state.SignupSlice.otpDialog.token);
 
     const [account, setAccount] = useState<AccountField>({
@@ -159,13 +161,6 @@ const Signup = () => {
         setConfirmation(res);
         dispatch(setIsShow_otpDialog(true));
     };
-
-    function formatPhone(phone: string): string {
-        if (phone.startsWith('0')) {
-            return '+84' + phone.slice(1);
-        }
-        return phone;
-    }
 
     return (
         <div className={style.parent}>

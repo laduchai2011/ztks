@@ -20,4 +20,6 @@ export const ACCOUNT_API = {
     UPDATE_ACCOUNT_RECEIVE_MESSAGE: `${BASE_URL}${apiString}/service_account/mutate/updateAccountReceiveMessage`,
     GET_MEMBERS: `${BASE_URL}${apiString}/service_account/query/getMembers`,
     ADD_MEMBERV1: `${BASE_URL}${apiString}/service_account/mutate/addMemberV1`,
+    FORGET_PASSWORD: `${BASE_URL}${apiString}/service_account/mutate/forgetPassword`,
+    CHECK_FORGET_PASSWORD: `${BASE_URL}${apiString}/service_account/query/checkForgetPassword`,
 };

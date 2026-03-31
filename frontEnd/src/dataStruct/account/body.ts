@@ -60,6 +60,11 @@ export interface EditInforAccountBodyField {
     avatar: string;
 }
 
+export interface CheckForgetPasswordBodyField {
+    userName: string;
+    phone: string;
+}
+
 export interface ForgetPasswordBodyField {
     userName: string;
     password: string;

@@ -16,6 +16,8 @@ import {
     UpdateAccountReceiveMessageBodyField,
     GetMembersBodyField,
     AddMemberV1BodyField,
+    ForgetPasswordBodyField,
+    CheckForgetPasswordBodyField,
 } from '@src/dataStruct/account/body';
 import { ACCOUNT_API } from '@src/const/api/account';
 import { router_res_type } from '@src/interface';
@@ -84,10 +86,28 @@ export const accountRTK = createApi({
             }),
             providesTags: ['MemberV1'],
         }),
+        checkForgetPassword: builder.query<MyResponse<AccountField>, CheckForgetPasswordBodyField>({
+            query: (body) => ({
+                url: ACCOUNT_API.CHECK_FORGET_PASSWORD,
+                method: 'POST',
+                body: body,
+            }),
+        }),
         // Mutation (POST)
         signup: builder.mutation<router_res_type, { body: AccountField; token: string }>({
             query: ({ body, token }) => ({
                 url: ACCOUNT_API.SIGNUP,
+                method: 'POST',
+                body,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }),
+            invalidatesTags: ['Account'], // dùng nếu muốn refetch danh sách sau khi thêm
+        }),
+        forgetPassword: builder.mutation<MyResponse<AccountField>, { body: ForgetPasswordBodyField; token: string }>({
+            query: ({ body, token }) => ({
+                url: ACCOUNT_API.FORGET_PASSWORD,
                 method: 'POST',
                 body,
                 headers: {
@@ -179,9 +199,11 @@ export const {
     useGetReplyAccountsQuery,
     useGetNotReplyAccountsQuery,
     useLazyGetMembersQuery,
+    useLazyCheckForgetPasswordQuery,
     useSignupMutation,
     useSigninMutation,
     useSignoutMutation,
+    useForgetPasswordMutation,
     useAddMemberMutation,
     useSetMemberReceiveMessageMutation,
     useCreateReplyAccountMutation,
