@@ -13,6 +13,8 @@ import {
     MANAGE_AGENT,
     MEMBER,
 } from '@src/const/text';
+import MyLoading from './component/MyLoading';
+import MyToastMessage from './component/MyToastMessage';
 import Header from '../Header';
 import Infor from './component/Infor';
 import EditInforDialog from './component/EditInforDialog';
@@ -93,6 +95,8 @@ const Profile = () => {
                     <Header selected={select_enum.PROFILE} />
                 </div>
                 <div>
+                    <MyLoading />
+                    <MyToastMessage />
                     <EditInforDialog />
                 </div>
             </div>

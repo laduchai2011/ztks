@@ -8,7 +8,7 @@ const initialState: state_props = {
         data: { type: undefined, message: '' },
     },
     editInforDialog: {
-        isShow: true,
+        isShow: false,
     },
 };
 

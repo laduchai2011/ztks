@@ -1,12 +1,17 @@
 import { Request, Response } from 'express';
 import multer from 'multer';
 import { PassThrough } from 'stream';
-import { MinioService } from '@src/connect/minio/service';
-import { pipeline } from 'stream/promises';
+import { MinioServiceV1 } from '@src/connect/minio/service';
+// import { pipeline } from 'stream/promises';
 import { MyResponse } from '@src/dataStruct/response';
 import fs from 'fs';
 
-const CHUNK_SIZE = 2 * 1024 * 1024;
+const CHUNK_SIZE = 5 * 1024 * 1024;
+
+const minioService = new MinioServiceV1('images');
+minioService.ensureBucket().catch((err) => {
+    console.error('Error ensuring bucket exists ( images ):', err);
+});
 
 class Handle_UploadAImageToTksstore {
     constructor() {}
@@ -55,7 +60,7 @@ class Handle_UploadAImageToTksstore {
 
             const stream = fs.createReadStream(filePath);
 
-            const result = await MinioService.uploadStream(objectName, stream, req.file.size, req.file.mimetype);
+            const result = await minioService.uploadStream(objectName, stream, req.file.size, req.file.mimetype);
 
             // 🔥 xoá file tạm
             // fs.unlinkSync(filePath);
@@ -90,24 +95,24 @@ class Handle_UploadAImageToTksstore {
             return;
         }
 
-        const finalObjectName = `images/${finalFileName}`;
+        const finalObjectName = `${finalFileName}`;
         const mergedStream = new PassThrough();
 
         try {
             // 🚀 1. TÍNH SIZE SONG SONG
             const stats = await Promise.all(
-                Array.from({ length: totalChunks }, (_, i) => MinioService.stat(`chunks/${fileId}/${i}`))
+                Array.from({ length: totalChunks }, (_, i) => minioService.stat(`chunks/${fileId}/${i}`))
             );
 
             const totalSize = stats.reduce((sum, s) => sum + s.size, 0);
 
             // 🚀 2. upload ngay
-            const uploadPromise = MinioService.uploadStream(finalObjectName, mergedStream, totalSize);
+            const uploadPromise = minioService.uploadStream(finalObjectName, mergedStream, totalSize);
 
             // 🚀 3. merge chunk bằng pipeline (an toàn)
             for (let i = 0; i < totalChunks; i++) {
                 const objectName = `chunks/${fileId}/${i}`;
-                const chunkStream = await MinioService.getStream(objectName);
+                const chunkStream = await minioService.getStream(objectName);
 
                 await new Promise<void>((resolve, reject) => {
                     chunkStream.once('error', reject).once('end', resolve).pipe(mergedStream, { end: false });
@@ -122,7 +127,7 @@ class Handle_UploadAImageToTksstore {
 
             // 🚀 4. cleanup song song
             await Promise.all(
-                Array.from({ length: totalChunks }, (_, i) => MinioService.remove(`chunks/${fileId}/${i}`))
+                Array.from({ length: totalChunks }, (_, i) => minioService.remove(`chunks/${fileId}/${i}`))
             );
 
             myResponse.message = 'Đăng tải thước phim thành công !';
@@ -135,7 +140,7 @@ class Handle_UploadAImageToTksstore {
 
             // ❗ cleanup nếu fail
             await Promise.allSettled(
-                Array.from({ length: totalChunks }, (_, i) => MinioService.remove(`chunks/${fileId}/${i}`))
+                Array.from({ length: totalChunks }, (_, i) => minioService.remove(`chunks/${fileId}/${i}`))
             );
 
             console.error(error.response?.data || error);

@@ -41,18 +41,82 @@
         }
 
         > .contentContainer {
-            @include center-of-rectangle;
-            color: red;
-            height: 60px;
             box-sizing: border-box;
             padding: 5px;
+
+            > .header {
+                font-weight: 600;
+                margin-bottom: 10px;
+                @include center-of-rectangle;
+            }
+
+            > .avatarContainer {
+                height: 150px;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 10px;
+
+                > .box {
+                    height: 100%;
+                    width: 100%;
+                    background-color: rgb(233, 233, 233);
+                    border-radius: 10px;
+                    @include center-of-rectangle;
+                    position: relative;
+
+                    > svg {
+                        position: absolute;
+                        top: 5px;
+                        right: 5px;
+                    }
+
+                    > .btn {
+                        box-sizing: border-box;
+                        padding: 5px 10px;
+                        border-radius: 10px;
+                        background-color: white;
+                        user-select: none;
+                        cursor: pointer;
+
+                        &:active {
+                            background-color: rgb(247, 247, 247);
+                        }
+                    }
+
+                    > input {
+                        display: none;
+                    }
+
+                    > .avatar {
+                        width: 130px;
+                        height: 130px;
+                        border-radius: 50%;
+                        object-fit: cover;
+                    }
+                }
+            }
+
+            > .nameContainer {
+                @include center-of-row;
+                justify-content: space-around;
+
+                > input {
+                    width: 120px;
+                    box-sizing: border-box;
+                    padding: 5px 10px;
+                    border-radius: 10px;
+                    outline: none;
+                    border: none;
+                    background-color: rgb(240, 240, 240);
+                }
+            }
         }
 
         > .buttonContainer {
             display: flex;
             justify-content: space-around;
             box-sizing: border-box;
-            padding: 5px;
+            padding: 10px;
 
             > button {
                 width: 80px;

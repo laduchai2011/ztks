@@ -1,12 +1,10 @@
 import express, { Router } from 'express';
-import dotenv from 'dotenv';
 import authentication from '@src/auth';
 import Handle_UploadAImageToZalo from './handle/UploadAImageToZalo';
 import Handle_UploadAImageToTksstore from './handle/UploadAImageToTksstore';
 
-dotenv.config();
-
 const router_mutate_image_v1: Router = express.Router();
+
 const handle_uploadAImageToZalo = new Handle_UploadAImageToZalo();
 const handle_uploadAImageToTksstore = new Handle_UploadAImageToTksstore();
 

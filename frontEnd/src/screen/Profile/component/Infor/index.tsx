@@ -23,6 +23,7 @@ const Infor = () => {
     const [accountType, setAccountType] = useState<accountType_type | undefined>(undefined);
     const [selectedType, setSelectedType] = useState<SelectedTypeField | null>(null);
     const maxCount = 3;
+    const avatarUrl = account?.avatar || avatarnull;
 
     useEffect(() => {
         if (accountInformation?.accountType === accountType_enum.ADMIN) {
@@ -121,7 +122,7 @@ const Infor = () => {
     return (
         <div className={style.parent}>
             <div className={style.avatarContainer}>
-                <img className={style.avatar} src={avatarnull} alt="avatar" />
+                <img className={style.avatar} src={avatarUrl} alt="avatar" />
                 <IoAddCircleOutline onClick={() => handleShowEdit()} size={20} />
             </div>
             <div className={style.name}>{`${account?.firstName} ${account?.lastName}`}</div>

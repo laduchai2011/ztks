@@ -1,6 +1,6 @@
 // import axiosInstance from '@src/api/axiosInstance';
 // import { VIDEO_API } from '@src/const/api/video';
-import { IMAGE_API } from '@src/const/api/image';
+import { IMAGEV1_API } from '@src/const/api/imageV1';
 // import { MyResponse } from '@src/dataStruct/response';
 // import { MessageField, SendVideoTdFailureBodyField, SendVideoTdSuccessBodyField } from '@src/dataStruct/message';
 
@@ -59,7 +59,7 @@ const CHUNK_SIZE = 2 * 1024 * 1024; // 2MB
 //     return objectName;
 // };
 
-export const uploadImage = async (file: File, id: string) => {
+export const uploadImage = async (file: File, id: string): Promise<{ fileName: string }> => {
     const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
     const uploadId = `${Date.now()}-${id}-${file.name}`;
 
@@ -72,26 +72,31 @@ export const uploadImage = async (file: File, id: string) => {
 
         const formData = new FormData();
         formData.append('chunk', chunk);
-        formData.append('index', index.toString());
-        formData.append('uploadId', uploadId);
-        formData.append('filename', filename);
-        formData.append('totalChunks', totalChunks.toString());
+        formData.append('chunkIndex', index.toString());
+        formData.append('fileId', uploadId);
+        // formData.append('filename', filename);
+        // formData.append('totalChunks', totalChunks.toString());
 
-        await fetch(IMAGE_API.UPLOAD_CHUNK, {
+        await fetch(IMAGEV1_API.UPLOAD_CHUNK, {
             method: 'POST',
             body: formData,
             credentials: 'include',
         });
     }
 
-    await fetch(IMAGE_API.MERGE_CHUNK, {
+    const mergeBody = {
+        fileId: uploadId,
+        totalChunks,
+        finalFileName: filename,
+    };
+    await fetch(IMAGEV1_API.MERGE_CHUNK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ uploadId, filename: filename }),
+        body: JSON.stringify(mergeBody),
         credentials: 'include', // 👈 thêm dòng này
     });
 
-    return { filename: filename };
+    return { fileName: filename };
 };
 
 // export const handleSendVideoTdFailure = async (sendVideoTdFailureBody: SendVideoTdFailureBodyField) => {

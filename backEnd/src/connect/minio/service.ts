@@ -1,7 +1,7 @@
 import { minioClient } from './index';
 import { Readable } from 'stream';
 
-const BUCKET = 'videos';
+const BUCKET = 'images';
 
 export class MinioService {
     static async ensureBucket() {
@@ -10,10 +10,7 @@ export class MinioService {
     }
 
     static async stat(objectName: string) {
-        return minioClient.statObject(
-            BUCKET,
-            objectName
-        );
+        return minioClient.statObject(BUCKET, objectName);
     }
 
     static uploadStream(objectName: string, stream: Readable, size?: number, mimeType?: string) {
@@ -32,5 +29,48 @@ export class MinioService {
 
     static remove(objectName: string) {
         return minioClient.removeObject(BUCKET, objectName);
+    }
+}
+
+export class MinioServiceV1 {
+    private _bucketName: string = '';
+
+    constructor(bucketName: string) {
+        this._bucketName = bucketName;
+
+        // this.ensureBucket().catch((err) => {
+        //     console.error('Error ensuring bucket exists:', err);
+        // });
+    }
+
+    async ensureBucket() {
+        const exists = await minioClient.bucketExists(this._bucketName);
+        if (!exists) await minioClient.makeBucket(this._bucketName);
+    }
+
+    async stat(objectName: string) {
+        return minioClient.statObject(this._bucketName, objectName);
+    }
+
+    async uploadStream(objectName: string, stream: Readable, size?: number, mimeType?: string) {
+        return minioClient.putObject(
+            this._bucketName,
+            objectName,
+            stream,
+            size,
+            mimeType ? { 'Content-Type': mimeType } : undefined
+        );
+    }
+
+    getStream(objectName: string) {
+        return minioClient.getObject(this._bucketName, objectName);
+    }
+
+    getBucketName() {
+        return this._bucketName;
+    }
+
+    remove(objectName: string) {
+        return minioClient.removeObject(this._bucketName, objectName);
     }
 }

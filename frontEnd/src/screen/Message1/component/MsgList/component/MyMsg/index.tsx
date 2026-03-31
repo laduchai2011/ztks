@@ -28,6 +28,7 @@ import { timeAgoSmart } from '@src/utility/time';
 import { useGetChatRoomRoleWithCridAaidQuery } from '@src/redux/query/chatRoomRTK';
 import { useGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
 import { set_repliedMessage } from '@src/redux/slice/MessageV1';
+import { avatarnull } from '@src/utility/string';
 
 const MyMsg: FC<{
     msgList_element?: HTMLDivElement | null;
@@ -45,6 +46,7 @@ const MyMsg: FC<{
     const youString: string | null = isYou ? 'Bạn' : null;
     const [accountWId, setAccountWId] = useState<AccountField | undefined>(undefined);
     const [isAvatar, setIsAvatar] = useState<boolean>(true);
+    const avatarUrl = accountWId?.avatar || avatarnull;
 
     useEffect(() => {
         // const isUserSend_data = eventName.startsWith('user_send');
@@ -189,16 +191,7 @@ const MyMsg: FC<{
                 <div>{msg()}</div>
                 <div className={style.moreInfor}>{timeAgoSmart(data.timestamp)}</div>
             </div>
-            {!isYou && (
-                <div className={style.avatarContainer}>
-                    {isAvatar && (
-                        <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNzSvQMx07eqW79xIar2vd4x_1NUKPZ7kKUw&s"
-                            alt="avatar"
-                        />
-                    )}
-                </div>
-            )}
+            {!isYou && <div className={style.avatarContainer}>{isAvatar && <img src={avatarUrl} alt="avatar" />}</div>}
         </div>
     );
 };

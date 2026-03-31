@@ -52,3 +52,10 @@ export interface CreateAccountInformationBodyField {
     accountType: accountType_type;
     accountId: number;
 }
+
+export interface EditInforAccountBodyField {
+    id: number;
+    firstName: string;
+    lastName: string;
+    avatar: string;
+}
