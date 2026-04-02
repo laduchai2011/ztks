@@ -13,6 +13,7 @@ import {
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { ZaloAppField } from '@src/dataStruct/zalo';
 import { OrderField } from '@src/dataStruct/order';
+import { AccountField } from '@src/dataStruct/account';
 import { formatMoney } from '@src/utility/string';
 import { useLazyGetZaloOaWithIdQuery } from '@src/redux/query/zaloRTK';
 import { useLazyGetOrderWithIdQuery } from '@src/redux/query/orderRTK';
@@ -23,10 +24,13 @@ import { MessageImageBodyField } from '@src/dataStruct/zalo/hookData/body';
 import { useCreateMessageV1Mutation } from '@src/redux/query/messageV1RTK';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { CreateMessageV1BodyField } from '@src/dataStruct/message_v1/body';
+import { useLazyGetMyWalletWithTypeQuery } from '@src/redux/query/walletRTK';
+import { WalletField, WalletType, WalletEnum } from '@src/dataStruct/wallet';
 
 const Pay = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
+    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
     const accountInformation: AccountInformationField | undefined = useSelector(
         (state: RootState) => state.AppSlice.accountInformation
     );
@@ -36,12 +40,14 @@ const Pay = () => {
     const newOrder: OrderField | undefined = useSelector((state: RootState) => state.OrderSlice.payDialog.newOrder);
     const [qrCode, setQrCode] = useState<string>('');
     const [order1, setOrder1] = useState<OrderField | undefined>(undefined);
+    const [wallet, setWallet] = useState<WalletField | undefined>(undefined);
 
     const [getZaloOaWithId] = useLazyGetZaloOaWithIdQuery();
     const [getOrderWithId] = useLazyGetOrderWithIdQuery();
     const [createMessageV1] = useCreateMessageV1Mutation();
     const [getChatRoomsWithId] = useLazyGetChatRoomsWithIdQuery();
     const [getLastMessage] = useLazyGetLastMessageQuery();
+    const [getMyWalletWithType] = useLazyGetMyWalletWithTypeQuery();
 
     useEffect(() => {
         if (!parent_element.current) return;
@@ -115,10 +121,25 @@ const Pay = () => {
     }, [dispatch, getOrderWithId]);
 
     useEffect(() => {
-        if (!order1) return;
-        const des = `ztksPayjorderPayj${order1.id}`;
+        if (!account) return;
+        getMyWalletWithType({ type: WalletEnum.TWO, accountId: account.id })
+            .then((res) => {
+                const resData = res.data;
+
+                if (resData?.isSuccess && resData.data) {
+                    setWallet(resData.data);
+                }
+            })
+            .catch((err) => {
+                console.log('getAllWallets err: ', err);
+            });
+    }, [getMyWalletWithType, account]);
+
+    useEffect(() => {
+        if (!order1 || !wallet) return;
+        const des = `ztksPayjorderPayj${order1.id}j${wallet.id}`;
         setQrCode(`https://qr.sepay.vn/img?acc=VQRQAHJHB9302&bank=MBBank&amount=${order1.money}&des=${des}`);
-    }, [order1]);
+    }, [order1, wallet]);
 
     const handleClose = () => {
         dispatch(setIsShow_payDialog(false));

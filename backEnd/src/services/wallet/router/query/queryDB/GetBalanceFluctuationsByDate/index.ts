@@ -2,17 +2,6 @@ import sql from 'mssql';
 import { BalanceFluctuationField } from '@src/dataStruct/wallet';
 import { GetBalanceFluctuationsByDateBodyField } from '@src/dataStruct/wallet/body';
 
-interface TotalCountField {
-    totalCount: number;
-}
-
-type BalanceFluctuationQueryResult = {
-    recordsets: [BalanceFluctuationField[], TotalCountField[]];
-    recordset: BalanceFluctuationField[]; // tập đầu tiên
-    rowsAffected: number[];
-    output: Record<string, unknown>;
-};
-
 class QueryDB_GetBalanceFluctuationsByDate {
     private _connectionPool: sql.ConnectionPool | undefined;
     private _getBalanceFluctuationsByDateBody: GetBalanceFluctuationsByDateBodyField | undefined;
@@ -27,7 +16,7 @@ class QueryDB_GetBalanceFluctuationsByDate {
         this._getBalanceFluctuationsByDateBody = getBalanceFluctuationsByDateBody;
     }
 
-    async run(): Promise<BalanceFluctuationQueryResult | void> {
+    async run(): Promise<sql.IProcedureResult<BalanceFluctuationField[]> | void> {
         if (this._connectionPool !== undefined && this._getBalanceFluctuationsByDateBody !== undefined) {
             try {
                 const result = await this._connectionPool
@@ -38,7 +27,8 @@ class QueryDB_GetBalanceFluctuationsByDate {
                     .input('toDate', sql.DateTime2, new Date(this._getBalanceFluctuationsByDateBody.toDate))
                     .execute('GetBalanceFluctuationsByDate');
 
-                return result as any as BalanceFluctuationQueryResult;
+                console.log(1111, this._getBalanceFluctuationsByDateBody, result);
+                return result;
             } catch (error) {
                 console.error(error);
             }

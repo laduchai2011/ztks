@@ -13,6 +13,8 @@ import { set_isLoading, setData_toastMessage, setIsShow_editInforDialog } from '
 import { set_accountInformation } from '@src/redux/slice/App';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { IoAddCircleOutline } from 'react-icons/io5';
+import { IoIosEye, IoIosEyeOff } from 'react-icons/io';
+import { GoDotFill } from 'react-icons/go';
 
 const Infor = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -22,6 +24,7 @@ const Infor = () => {
     );
     const [accountType, setAccountType] = useState<accountType_type | undefined>(undefined);
     const [selectedType, setSelectedType] = useState<SelectedTypeField | null>(null);
+    const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
     const maxCount = 3;
     const avatarUrl = account?.avatar || avatarnull;
 
@@ -119,6 +122,10 @@ const Infor = () => {
         dispatch(setIsShow_editInforDialog(true));
     };
 
+    const handleIsShowPassword = (isShow: boolean) => {
+        setIsShowPassword(isShow);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.avatarContainer}>
@@ -145,6 +152,26 @@ const Infor = () => {
                     )}
                 </div>
             )}
+            <div className={style.idContainer}>
+                <div>
+                    <div>
+                        {!isShowPassword && (
+                            <div>
+                                <GoDotFill size={15} />
+                                <GoDotFill size={15} />
+                                <GoDotFill size={15} />
+                                <GoDotFill size={15} />
+                                <GoDotFill size={15} />
+                            </div>
+                        )}
+                        {isShowPassword && <div>{account?.id}</div>}
+                    </div>
+                    <div>
+                        {!isShowPassword && <IoIosEye onClick={() => handleIsShowPassword(true)} size={20} />}
+                        {isShowPassword && <IoIosEyeOff onClick={() => handleIsShowPassword(false)} size={20} />}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

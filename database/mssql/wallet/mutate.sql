@@ -62,6 +62,7 @@ BEGIN
 END;
 GO
 
+-- chua lam
 ALTER PROCEDURE MoneyOut
 	@walletId INT,
 	@subAmount BIGINT,

@@ -1,5 +1,6 @@
 import { memo, useState } from 'react';
 import style from './style.module.scss';
+import { useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { IoCloseOutline } from 'react-icons/io5';
@@ -11,13 +12,15 @@ import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const CreateOrder = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const [isShowParent, setIsShowParent] = useState(false);
-    const [isDisplayBtn, setIsDisplayBtn] = useState(true);
-    const [isShowBtn, setIsShowBtn] = useState(true);
-    const [isDisplayIcon, setIsDisplayIcon] = useState(false);
-    const [isShowIcon, setIsShowIcon] = useState(false);
-    const [chatRoomId, setChatRoomId] = useState('');
-    const [title, setTitle] = useState('');
+    const location = useLocation();
+    const [isShowParent, setIsShowParent] = useState<boolean>(false);
+    const [isDisplayBtn, setIsDisplayBtn] = useState<boolean>(true);
+    const [isShowBtn, setIsShowBtn] = useState<boolean>(true);
+    const [isDisplayIcon, setIsDisplayIcon] = useState<boolean>(false);
+    const [isShowIcon, setIsShowIcon] = useState<boolean>(false);
+    const [chatRoomId, setChatRoomId] = useState<string>(location.state?.chatRoomId ?? '');
+    const [title, setTitle] = useState<string>('');
+
     const [createOrder] = useCreateOrderMutation();
 
     const handleHBtn = () => {

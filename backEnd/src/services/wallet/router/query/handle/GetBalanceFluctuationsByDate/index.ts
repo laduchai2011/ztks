@@ -1,7 +1,7 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { BalanceFluctuationField, PagedBalanceFluctuationField } from '@src/dataStruct/wallet';
+import { BalanceFluctuationField } from '@src/dataStruct/wallet';
 import { GetBalanceFluctuationsByDateBodyField } from '@src/dataStruct/wallet/body';
 import QueryDB_GetBalanceFluctuationsByDate from '../../queryDB/GetBalanceFluctuationsByDate';
 
@@ -15,7 +15,7 @@ class Handle_GetBalanceFluctuationsByDate {
     main = async (req: Request<any, any, GetBalanceFluctuationsByDateBodyField>, res: Response) => {
         const getBalanceFluctuationsByDateBody = req.body;
 
-        const myResponse: MyResponse<PagedBalanceFluctuationField> = {
+        const myResponse: MyResponse<BalanceFluctuationField[]> = {
             isSuccess: false,
             message: 'Bắt đầu (Handle_GetBalanceFluctuationsByDate-main)',
         };
@@ -34,9 +34,8 @@ class Handle_GetBalanceFluctuationsByDate {
 
         try {
             const result = await queryDB.run();
-            if (result?.recordset) {
-                const rows: BalanceFluctuationField[] = result.recordset;
-                myResponse.data = { items: rows, totalCount: result.recordsets[1][0].totalCount };
+            if (result?.recordset.length && result?.recordset.length > 0) {
+                myResponse.data = result.recordset;
                 myResponse.message = 'Lấy những biến động số dư thành công !';
                 myResponse.isSuccess = true;
                 res.status(200).json(myResponse);

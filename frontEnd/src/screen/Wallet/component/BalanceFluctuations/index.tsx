@@ -1,15 +1,17 @@
 import { FC, memo, useState, useEffect } from 'react';
 import style from './style.module.scss';
 import { DateTime } from 'luxon';
-import { WalletField } from '@src/dataStruct/wallet';
+import { WalletField, BalanceFluctuationField } from '@src/dataStruct/wallet';
 import { SEE_MORE } from '@src/const/text';
-import ABalanceFluctuation from './component/ABalanceFluctuation';
 import { useLazyGetBalanceFluctuationsByDateQuery } from '@src/redux/query/walletRTK';
+import ACluster from './component/ACluster';
 
 const BalanceFluctuations: FC<{ wallet: WalletField }> = ({ wallet }) => {
     const [currentDate, setCurrentDate] = useState(
         new Date().toISOString().slice(0, 10) // YYYY-MM-DD
     );
+    const [clusters, setClusters] = useState<BalanceFluctuationField[][]>([]);
+    const [hasMore, setHasMore] = useState<boolean>(true);
 
     const [getBalanceFluctuationsByDate] = useLazyGetBalanceFluctuationsByDateQuery();
 
@@ -36,6 +38,12 @@ const BalanceFluctuations: FC<{ wallet: WalletField }> = ({ wallet }) => {
             .then((res) => {
                 const resData = res.data;
                 console.log('getBalanceFluctuationsByDate', resData);
+                if (resData?.isSuccess && resData.data) {
+                    setClusters((prev) => [...prev, resData.data ?? []]);
+                    setHasMore(true);
+                } else {
+                    setHasMore(false);
+                }
             })
             .catch((err) => {
                 console.error(err);
@@ -55,9 +63,14 @@ const BalanceFluctuations: FC<{ wallet: WalletField }> = ({ wallet }) => {
         loadPreviousDay();
     };
 
+    const list_cluster = clusters.map((item1, index) => {
+        return <ACluster key={index} balanceFluctuations={item1} />;
+    });
+
     return (
         <div className={style.parent}>
             <div className={style.list}>
+                <div className={style.cluster}>{list_cluster}</div>
                 {/* <ABalanceFluctuation />
                 <ABalanceFluctuation /> */}
             </div>

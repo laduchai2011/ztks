@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { MyResponse } from '@src/dataStruct/response';
-import { WalletField, PagedBalanceFluctuationField } from '@src/dataStruct/wallet';
+import { WalletField, BalanceFluctuationField } from '@src/dataStruct/wallet';
 import { GetMyWalletWithTypeBodyField, GetBalanceFluctuationsByDateBodyField } from '@src/dataStruct/wallet/body';
 import { WALLET_API } from '@src/const/api/wallet';
 
@@ -17,7 +17,7 @@ export const walletRTK = createApi({
             }),
         }),
         getBalanceFluctuationsByDate: builder.query<
-            MyResponse<PagedBalanceFluctuationField>,
+            MyResponse<BalanceFluctuationField[]>,
             GetBalanceFluctuationsByDateBodyField
         >({
             query: (body) => ({

@@ -23,11 +23,6 @@ export interface BalanceFluctuationField {
     createTime: string;
 }
 
-export interface PagedBalanceFluctuationField {
-    items: BalanceFluctuationField[];
-    totalCount: number;
-}
-
 export enum BalanceFluctuationEnum {
     PAY_ORDER = 'payOrder',
     PAY_AGENT = 'payAgent',
