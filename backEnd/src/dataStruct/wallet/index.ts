@@ -1,11 +1,18 @@
 export interface WalletField {
     id: number;
     amount: number;
-    type: string;
+    type: WalletType;
     accountId: number;
     updateTime: string;
     createTime: string;
 }
+
+export enum WalletEnum {
+    ONE = '1',
+    TWO = '2',
+}
+
+export type WalletType = WalletEnum.ONE | WalletEnum.TWO;
 
 export interface BalanceFluctuationField {
     id: number;

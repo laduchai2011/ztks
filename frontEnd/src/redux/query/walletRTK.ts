@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { MyResponse } from '@src/dataStruct/response';
 import { WalletField, PagedBalanceFluctuationField } from '@src/dataStruct/wallet';
-import { GetAllWalletsBodyField, GetbalanceFluctuationsBodyField } from '@src/dataStruct/wallet/body';
+import { GetMyWalletWithTypeBodyField, GetBalanceFluctuationsByDateBodyField } from '@src/dataStruct/wallet/body';
 import { WALLET_API } from '@src/const/api/wallet';
 
 export const walletRTK = createApi({
@@ -9,19 +9,19 @@ export const walletRTK = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
     tagTypes: [],
     endpoints: (builder) => ({
-        getAllWallets: builder.query<MyResponse<WalletField[]>, GetAllWalletsBodyField>({
+        getMyWalletWithType: builder.query<MyResponse<WalletField>, GetMyWalletWithTypeBodyField>({
             query: (body) => ({
-                url: WALLET_API.GET_ALL_WALLETS,
+                url: WALLET_API.GET_MY_WALLET_WITH_TYPE,
                 method: 'POST',
                 body,
             }),
         }),
-        getbalanceFluctuations: builder.query<
+        getBalanceFluctuationsByDate: builder.query<
             MyResponse<PagedBalanceFluctuationField>,
-            GetbalanceFluctuationsBodyField
+            GetBalanceFluctuationsByDateBodyField
         >({
             query: (body) => ({
-                url: WALLET_API.GET_BALANCE_FLUCTUATIONS,
+                url: WALLET_API.GET_BALANCE_FLUCTUATIONS_BY_DATE,
                 method: 'POST',
                 body,
             }),
@@ -29,4 +29,4 @@ export const walletRTK = createApi({
     }),
 });
 
-export const { useLazyGetAllWalletsQuery, useLazyGetbalanceFluctuationsQuery } = walletRTK;
+export const { useLazyGetMyWalletWithTypeQuery, useLazyGetBalanceFluctuationsByDateQuery } = walletRTK;

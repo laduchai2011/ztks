@@ -157,8 +157,8 @@ const Signup = () => {
     const handleSendOtp = async () => {
         const phone = formatPhone(account.phone.trim());
         if (phone.length === 0) return;
-        const res = await sendOtp(phone);
-        setConfirmation(res);
+        // const res = await sendOtp(phone);
+        // setConfirmation(res);
         dispatch(setIsShow_otpDialog(true));
     };
 

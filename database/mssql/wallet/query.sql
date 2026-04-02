@@ -1,16 +1,22 @@
 ﻿ALTER PROCEDURE GetAllWallets 
-	@type VARCHAR(8),
-    @accountId INT
+	@accountId INT
 AS
 BEGIN
-    SELECT * FROM dbo.wallet 
-		WHERE 
-			type = @type
-			AND accountId = @accountId
+    SELECT * FROM dbo.wallet WHERE  accountId = @accountId
 END
 GO
 
-ALTER PROCEDURE GetbalanceFluctuations 
+CREATE PROCEDURE GetMyWalletWithType
+	@type VARCHAR(8),
+	@accountId INT
+AS
+BEGIN
+    SELECT * FROM dbo.wallet WHERE  accountId = @accountId AND type = @type
+END
+GO
+
+-- bo
+ALTER PROCEDURE GetBalanceFluctuations 
 	@page INT,
     @size INT,
 	@type VARCHAR(255) = NULL,
@@ -27,7 +33,7 @@ BEGIN
 			AND walletId = @walletId
     )
     SELECT *
-    FROM dbo.balanceFluctuations
+    FROM balanceFluctuations
     WHERE rn BETWEEN ((@page - 1) * @size + 1) AND (@page * @size);
 
     -- Tập kết quả 2: tổng số dòng
@@ -36,5 +42,25 @@ BEGIN
 	WHERE 
 		(@type IS NULL OR type = @type)
 		AND walletId = @walletId
+END
+GO
+
+CREATE PROCEDURE GetBalanceFluctuationsByDate
+    @walletId INT,
+	@type VARCHAR(255) = NULL,
+    @fromDate DATETIME2,
+    @toDate DATETIME2
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT *
+    FROM balanceFluctuation
+    WHERE 
+        walletId = @walletId
+		AND (@type IS NULL OR type = @type)
+        AND createTime >= @fromDate
+        AND createTime < @toDate
+    ORDER BY id DESC;
 END
 GO

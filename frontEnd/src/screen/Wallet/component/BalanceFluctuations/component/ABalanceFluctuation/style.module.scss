@@ -1,0 +1,40 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+    @include center-of-row;
+    height: 70px;
+    cursor: default;
+
+    &:hover {
+        background-color: rgb(236, 236, 236);
+    }
+
+    > .amount {
+        width: 60%;
+
+        &.iColor {
+            color: blue;
+        }
+
+        &.dColor {
+            color: red;
+        }
+    }
+
+    > .type {
+        width: 20%;
+        @include center-of-rectangle;
+    }
+
+    > .hook {
+        width: 20%;
+        @include center-of-rectangle;
+
+        &:hover {
+            text-decoration: underline;
+            color: rgb(0, 238, 255);
+        }
+    }
+}

@@ -19,7 +19,7 @@ BEGIN
 			AND (@walletId IS NULL OR walletId = @walletId)
     )
     SELECT *
-    FROM dbo.payHooks
+    FROM payHooks
     WHERE rn BETWEEN ((@page - 1) * @size + 1) AND (@page * @size);
 
     -- Tập kết quả 2: tổng số dòng

@@ -2,22 +2,22 @@ import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
 import { WalletField } from '@src/dataStruct/wallet';
-import { GetAllWalletsBodyField } from '@src/dataStruct/wallet/body';
-import QueryDB_GetAllWallets from '../../queryDB/GetAllWallets';
+import { GetMyWalletWithTypeBodyField } from '@src/dataStruct/wallet/body';
+import QueryDB_GetMyWalletWithType from '../../queryDB/GetMyWalletWithType';
 import { verifyRefreshToken } from '@src/token';
 
-class Handle_GetAllWallets {
+class Handle_GetMyWalletWithType {
     private _mssql_server = mssql_server;
 
     constructor() {}
 
-    setup = (req: Request<any, any, GetAllWalletsBodyField>, res: Response, next: NextFunction) => {
+    setup = (req: Request<any, any, GetMyWalletWithTypeBodyField>, res: Response, next: NextFunction) => {
         const myResponse: MyResponse<WalletField> = {
             isSuccess: false,
-            message: 'Bắt đầu Handle_GetAllWallets-setup',
+            message: 'Bắt đầu Handle_GetMyWalletWithType-setup',
         };
 
-        const getAllWalletsBody = req.body;
+        const getMyWalletWithTypeBody = req.body;
         const { refreshToken } = req.cookies;
 
         if (typeof refreshToken === 'string') {
@@ -36,9 +36,9 @@ class Handle_GetAllWallets {
             }
 
             const { id } = verify_refreshToken;
-            const getAllWalletsBody_cp = { ...getAllWalletsBody };
-            getAllWalletsBody_cp.accountId = id;
-            res.locals.getAllWalletsBody = getAllWalletsBody_cp;
+            const getMyWalletWithTypeBody_cp = { ...getMyWalletWithTypeBody };
+            getMyWalletWithTypeBody_cp.accountId = id;
+            res.locals.getMyWalletWithTypeBody = getMyWalletWithTypeBody_cp;
 
             next();
         } else {
@@ -49,17 +49,17 @@ class Handle_GetAllWallets {
     };
 
     main = async (_: Request, res: Response) => {
-        const getAllWalletsBody = res.locals.getAllWalletsBody as GetAllWalletsBodyField;
+        const getMyWalletWithTypeBody = res.locals.getMyWalletWithTypeBody as GetMyWalletWithTypeBodyField;
 
-        const myResponse: MyResponse<WalletField[]> = {
+        const myResponse: MyResponse<WalletField> = {
             isSuccess: false,
-            message: 'Bắt đầu Handle_GetAllWallets-main',
+            message: 'Bắt đầu Handle_GetMyWalletWithType-main',
         };
 
         await this._mssql_server.init();
 
-        const queryDB = new QueryDB_GetAllWallets();
-        queryDB.setGetAllWalletsBody(getAllWalletsBody);
+        const queryDB = new QueryDB_GetMyWalletWithType();
+        queryDB.setGetMyWalletWithTypeBody(getMyWalletWithTypeBody);
 
         const connection_pool = this._mssql_server.get_connectionPool();
         if (connection_pool) {
@@ -73,18 +73,18 @@ class Handle_GetAllWallets {
         try {
             const result = await queryDB.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
-                myResponse.data = result?.recordset;
-                myResponse.message = 'Lấy tất cả ví thành công !';
+                myResponse.data = result?.recordset[0];
+                myResponse.message = 'Lấy ví thành công !';
                 myResponse.isSuccess = true;
                 res.status(200).json(myResponse);
                 return;
             } else {
-                myResponse.message = 'Lấy tất cả ví KHÔNG thành công 1 !';
+                myResponse.message = 'Lấy ví KHÔNG thành công !';
                 res.status(204).json(myResponse);
                 return;
             }
         } catch (error) {
-            myResponse.message = 'Lấy tất cả ví KHÔNG thành công 2 !';
+            myResponse.message = 'Lấy ví KHÔNG thành công !!';
             myResponse.err = error;
             res.status(500).json(myResponse);
             return;
@@ -92,4 +92,4 @@ class Handle_GetAllWallets {
     };
 }
 
-export default Handle_GetAllWallets;
+export default Handle_GetMyWalletWithType;

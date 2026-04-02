@@ -1,0 +1,19 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    > .btnContainer {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 10px;
+
+        > div {
+            color: blue;
+            user-select: none;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
