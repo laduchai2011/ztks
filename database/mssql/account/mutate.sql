@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE Signup
+﻿ALTER PROCEDURE Signup
 	  @userName NVARCHAR(100),
 	  @password NVARCHAR(100),
 	  @phone NVARCHAR(15),
@@ -8,9 +8,34 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	INSERT INTO account (userName, password, phone, firstName, lastName, avatar, status, updateTime, createTime)
-	OUTPUT INSERTED.*
-	VALUES (@userName, @password, @phone, @firstName, @lastName, NULL, 'normal', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+		DECLARE @newAccountId INT;
+
+		INSERT INTO account (userName, password, phone, firstName, lastName, avatar, status, updateTime, createTime)
+		VALUES (@userName, @password, @phone, @firstName, @lastName, NULL, 'normal', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+
+		SET @newAccountId = SCOPE_IDENTITY();
+
+		INSERT INTO dbo.recommend (myCode, yourCode, accountId)
+        VALUES (LEFT(REPLACE(NEWID(), '-', ''), 10), NULL, @newAccountId);
+
+        INSERT INTO dbo.wallet (amount, type, accountId, updateTime, createTime)
+        VALUES (0, '1', @newAccountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+
+		INSERT INTO dbo.wallet (amount, type, accountId, updateTime, createTime)
+        VALUES (0, '2', @newAccountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+
+		SELECT * FROM dbo.account WHERE id = @newAccountId;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
 END;
 GO
 
@@ -45,6 +70,75 @@ BEGIN
         VALUES (@addedById, 'member', @newMemberId);
 
 		SELECT * FROM dbo.account WHERE id = @newMemberId;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
+CREATE PROCEDURE EditInforAccount
+	@id INT,
+	@firstName NVARCHAR(20),
+    @lastName NVARCHAR(20),
+    @avatar NVARCHAR(255) = NULL
+AS
+BEGIN
+	UPDATE dbo.account
+	SET firstName = @firstName, 
+        lastName = @lastName, 
+        avatar = ISNULL(@avatar, avatar)
+	WHERE id = @id;
+
+	IF @@ROWCOUNT > 0
+	BEGIN
+		SELECT * FROM dbo.account WHERE id = @id;
+	END
+END
+GO
+
+CREATE PROCEDURE ForgetPassword
+	@userName NVARCHAR(100),
+	@password NVARCHAR(100),
+	@phone NVARCHAR(15)
+AS
+BEGIN
+	UPDATE dbo.account
+	SET password = @password
+	WHERE 
+		status = 'normal'
+		AND userName = @userName 
+		AND phone = @phone;
+
+	IF @@ROWCOUNT > 0
+    BEGIN
+        SELECT * FROM dbo.account 
+        WHERE 
+            status = 'normal'
+            AND userName = @userName 
+            AND phone = @phone;
+    END
+END
+GO
+
+CREATE PROCEDURE CreateAccountInformation
+	@accountType NVARCHAR(255),
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+        INSERT INTO dbo.accountInformation (addedById, accountType, accountId)
+        VALUES (NULL, @accountType, @accountId);
+
+		SELECT * FROM dbo.accountInformation WHERE accountId = @accountId;
 
 		COMMIT TRANSACTION;
 	END TRY
@@ -279,4 +373,20 @@ BEGIN
 		THROW;
 	END CATCH
 END;
+GO
+
+CREATE PROCEDURE AddRecommend
+	@code VARCHAR(255),
+	@accountId INT
+AS
+BEGIN
+	UPDATE dbo.recommend
+	SET yourCode = @code
+	WHERE @accountId = @accountId
+
+	IF @@ROWCOUNT > 0
+	BEGIN
+		SELECT * FROM dbo.recommend WHERE accountId = @accountId
+	END
+END
 GO

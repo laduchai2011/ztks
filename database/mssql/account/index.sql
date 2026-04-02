@@ -32,7 +32,6 @@ GO
 CREATE NONCLUSTERED INDEX idx_addedById ON accountInformation(addedById);
 GO
 
-
 CREATE TABLE accountReceiveMessage (
     accountIdReceiveMessage INT,
 	zaloOaId INT NOT NULL,
@@ -42,4 +41,15 @@ CREATE TABLE accountReceiveMessage (
 	CONSTRAINT UQ_accountReceiveMessage_accountId_zaloOaId UNIQUE (accountId, zaloOaId),
 	CONSTRAINT FK_accountReceiveMessage_Account FOREIGN KEY (accountId) REFERENCES account(id)
 );
+GO
+
+CREATE TABLE recommend (
+    myCode VARCHAR(255) NOT NULL UNIQUE,
+	yourCode VARCHAR(255),
+	accountId INT NOT NULL UNIQUE,
+
+	CONSTRAINT FK_recommend_Account FOREIGN KEY (accountId) REFERENCES account(id)
+);
+GO
+CREATE UNIQUE NONCLUSTERED INDEX idx_recommend_yourCode_unique ON recommend(yourCode) WHERE yourCode IS NOT NULL;
 GO

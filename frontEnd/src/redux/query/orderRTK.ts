@@ -6,7 +6,7 @@ import {
     UpdateOrderBodyField,
     CreateOrderStatusBodyField,
     GetAllOrderStatusBodyField,
-    GetOrderWithIdBodyField,
+    // GetOrderWithIdBodyField,
 } from '@src/dataStruct/order/body';
 import { ORDER_API } from '@src/const/api/order';
 import { MyResponse } from '@src/dataStruct/response';

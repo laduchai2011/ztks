@@ -26,6 +26,7 @@ import { chatRoomRTK } from './query/chatRoomRTK';
 import { orderRTK } from './query/orderRTK';
 import { agentRTK } from './query/agentRTK';
 import { noteRTK } from './query/noteRTK';
+import { walletRTK } from './query/walletRTK';
 
 export const store = configureStore({
     reducer: {
@@ -57,6 +58,7 @@ export const store = configureStore({
         [orderRTK.reducerPath]: orderRTK.reducer,
         [agentRTK.reducerPath]: agentRTK.reducer,
         [noteRTK.reducerPath]: noteRTK.reducer,
+        [walletRTK.reducerPath]: walletRTK.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
@@ -69,7 +71,8 @@ export const store = configureStore({
             chatRoomRTK.middleware,
             orderRTK.middleware,
             agentRTK.middleware,
-            noteRTK.middleware
+            noteRTK.middleware,
+            walletRTK.middleware
         ),
 });
 

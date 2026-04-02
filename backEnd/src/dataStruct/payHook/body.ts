@@ -13,4 +13,14 @@ export interface CreatePayHookBodyField {
     accumulated: number;
     agentPayId: number | null;
     orderId: number | null;
+    walletId: number;
+}
+
+export interface GetPayHooksBodyField {
+    page: number;
+    size: number;
+    referenceCode: string | null;
+    agentPayId: number | null;
+    orderId: number | null;
+    walletId: number | null;
 }

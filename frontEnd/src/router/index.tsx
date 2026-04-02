@@ -19,6 +19,7 @@ import Order from '@src/screen/Order';
 import AccountReceiveMessage from '@src/screen/AccountReceiveMessage';
 import ManageAgent from '@src/screen/ManageAgent';
 import Member from '@src/screen/Member';
+import Wallet from '@src/screen/Wallet';
 import { route_enum } from './type';
 
 const router = createBrowserRouter(
@@ -40,6 +41,7 @@ const router = createBrowserRouter(
         { path: route_enum.ACCOUNT_RECEIVE_MESSAGE, element: <AccountReceiveMessage /> },
         { path: route_enum.MANAGE_AGENT, element: <ManageAgent /> },
         { path: route_enum.MEMBER, element: <Member /> },
+        { path: route_enum.WALLET, element: <Wallet /> },
         { path: '*', element: <NotFoundPage /> }, // Trang 404
     ],
     {

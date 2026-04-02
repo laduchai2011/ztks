@@ -66,3 +66,4 @@ export const PAID = 'Đã thanh toán';
 export const NOT_SEND = 'Chưa gửi';
 export const SENT = 'Đã gửi';
 export const RETURN = 'Hoàn hàng';
+export const WALLET = 'Ví tiền';

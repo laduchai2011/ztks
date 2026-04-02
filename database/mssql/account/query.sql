@@ -9,6 +9,20 @@
 );
 GO
 
+CREATE PROCEDURE CheckForgetPassword
+    @userName NVARCHAR(100),
+	@phone NVARCHAR(15)
+AS
+BEGIN
+	SELECT *
+	FROM dbo.account
+	WHERE 
+		status = 'normal' 
+		AND userName = @userName
+		AND phone = @phone
+END
+GO
+
 
 CREATE PROCEDURE GetMembers
 	@page INT,
@@ -188,6 +202,14 @@ CREATE PROCEDURE GetAccountReceiveMessage
 AS
 BEGIN
 	SELECT * FROM dbo.accountReceiveMessage WHERE accountId = @accountId and zaloOaId = @zaloOaId
+END
+GO
+
+CREATE PROCEDURE GetMyRecommend
+    @accountId INT
+AS
+BEGIN
+	SELECT * FROM dbo.recommend WHERE accountId = @accountId
 END
 GO
 

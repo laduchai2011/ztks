@@ -13,4 +13,5 @@ export interface PayHookField {
     accumulated: number;
     agentPayId: number | null;
     orderId: number | null;
+    walletId: number;
 }

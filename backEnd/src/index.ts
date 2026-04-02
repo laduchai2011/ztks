@@ -142,6 +142,11 @@ app.use(`${apiString}/hello`, (req, res) => {
         const service_agent = (await import('@src/services/agent')).default;
         app.use(`${prefix}/service_agent`, service_agent);
     }
+
+    if (services.includes('wallet')) {
+        const service_wallet = (await import('@src/services/wallet')).default;
+        app.use(`${prefix}/service_wallet`, service_wallet);
+    }
 })();
 
 app.listen(port, () => {

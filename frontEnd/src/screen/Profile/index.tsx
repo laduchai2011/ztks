@@ -12,6 +12,7 @@ import {
     ACCOUNT_RECEIVE_MESSAGE,
     MANAGE_AGENT,
     MEMBER,
+    WALLET,
 } from '@src/const/text';
 import MyLoading from './component/MyLoading';
 import MyToastMessage from './component/MyToastMessage';
@@ -53,6 +54,10 @@ const Profile = () => {
         navigate(route_enum.ACCOUNT_RECEIVE_MESSAGE);
     };
 
+    const goToWallet = () => {
+        navigate(route_enum.WALLET);
+    };
+
     const goToSignout = () => {
         navigate(route_enum.SIGNOUT);
     };
@@ -87,6 +92,9 @@ const Profile = () => {
                             {ACCOUNT_RECEIVE_MESSAGE}
                         </div>
                     )}
+                    <div className={style.option} onClick={() => goToWallet()}>
+                        {WALLET}
+                    </div>
                     <div className={style.option} onClick={() => goToSignout()}>
                         {SIGNOUT}
                     </div>

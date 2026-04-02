@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE CreatePayHook
+﻿ALTER PROCEDURE CreatePayHook
 	@id INT,
     @gateway varchar(255),
     @transactionDate DATETIME,
@@ -12,7 +12,8 @@
 	@referenceCode varchar(255),
     @accumulated decimal(20,2),
 	@agentPayId INT,
-	@orderId INT
+	@orderId INT,
+	@walletId INT
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -20,8 +21,8 @@ BEGIN
         BEGIN TRANSACTION;
 
 		-- Thêm medication
-        INSERT INTO dbo.payHook (id, gateway, transactionDate, accountNumber, subAccount, code, content, transferType, description, transferAmount, referenceCode, accumulated, agentPayId, orderId)
-        VALUES (@id, @gateway, @transactionDate, @accountNumber, @subAccount, @code, @content, @transferType, @description, @transferAmount, @referenceCode, @accumulated, @agentPayId, @orderId)
+        INSERT INTO dbo.payHook (id, gateway, transactionDate, accountNumber, subAccount, code, content, transferType, description, transferAmount, referenceCode, accumulated, agentPayId, orderId, walletId)
+        VALUES (@id, @gateway, @transactionDate, @accountNumber, @subAccount, @code, @content, @transferType, @description, @transferAmount, @referenceCode, @accumulated, @agentPayId, @orderId, @walletId)
 
 		SELECT * FROM dbo.payHook WHERE id = @id;
 
