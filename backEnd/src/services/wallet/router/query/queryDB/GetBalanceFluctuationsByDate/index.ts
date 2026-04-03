@@ -27,7 +27,6 @@ class QueryDB_GetBalanceFluctuationsByDate {
                     .input('toDate', sql.DateTime2, new Date(this._getBalanceFluctuationsByDateBody.toDate))
                     .execute('GetBalanceFluctuationsByDate');
 
-                console.log(1111, this._getBalanceFluctuationsByDateBody, result);
                 return result;
             } catch (error) {
                 console.error(error);

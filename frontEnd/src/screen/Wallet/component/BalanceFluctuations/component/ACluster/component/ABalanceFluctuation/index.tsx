@@ -1,9 +1,20 @@
-import { FC, memo } from 'react';
+import { FC, memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
-import { BalanceFluctuationField } from '@src/dataStruct/wallet';
+import { BalanceFluctuationField, BalanceFluctuationEnum } from '@src/dataStruct/wallet';
 
 const ABalanceFluctuation: FC<{ balanceFluctuation: BalanceFluctuationField }> = ({ balanceFluctuation }) => {
     const payHookId = balanceFluctuation.payHookId;
+    const [typeText, setTypeText] = useState<string>('');
+
+    useEffect(() => {
+        const type = balanceFluctuation.type;
+        if (type === BalanceFluctuationEnum.PAY_ORDER) {
+            setTypeText('Thanh toán đơn hàng');
+        }
+        if (type === BalanceFluctuationEnum.PAY_AGENT) {
+            setTypeText('Thanh toán dịch vụ');
+        }
+    }, [balanceFluctuation]);
 
     const handleAmountColor = () => {
         const amount = balanceFluctuation.amount;
@@ -16,9 +27,11 @@ const ABalanceFluctuation: FC<{ balanceFluctuation: BalanceFluctuationField }> =
 
     return (
         <div className={style.parent}>
-            <div className={`${style.amount} ${handleAmountColor()}`}>amount</div>
-            <div className={style.type}>{balanceFluctuation.type}</div>
-            {payHookId && <div className={style.hook}>{payHookId}</div>}
+            <div className={`${style.amount} ${handleAmountColor()}`}>{balanceFluctuation.amount}</div>
+            <div className={style.infor}>
+                <div className={style.type}>{typeText}</div>
+                {payHookId && <div className={style.hook}>{payHookId}</div>}
+            </div>
         </div>
     );
 };

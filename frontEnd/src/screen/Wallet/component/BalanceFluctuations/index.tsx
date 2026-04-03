@@ -10,6 +10,7 @@ const BalanceFluctuations: FC<{ wallet: WalletField }> = ({ wallet }) => {
     const [currentDate, setCurrentDate] = useState(
         new Date().toISOString().slice(0, 10) // YYYY-MM-DD
     );
+    const [currentDates, setCurrentDates] = useState<string[]>([]);
     const [clusters, setClusters] = useState<BalanceFluctuationField[][]>([]);
     const [hasMore, setHasMore] = useState<boolean>(true);
 
@@ -37,9 +38,10 @@ const BalanceFluctuations: FC<{ wallet: WalletField }> = ({ wallet }) => {
         })
             .then((res) => {
                 const resData = res.data;
-                console.log('getBalanceFluctuationsByDate', resData);
+                console.log(resData);
                 if (resData?.isSuccess && resData.data) {
                     setClusters((prev) => [...prev, resData.data ?? []]);
+                    setCurrentDates((prev) => [...prev, currentDate]);
                     setHasMore(true);
                 } else {
                     setHasMore(false);
@@ -60,19 +62,18 @@ const BalanceFluctuations: FC<{ wallet: WalletField }> = ({ wallet }) => {
     };
 
     const handleSeeMore = () => {
+        if (!hasMore) return;
         loadPreviousDay();
     };
 
-    const list_cluster = clusters.map((item1, index) => {
-        return <ACluster key={index} balanceFluctuations={item1} />;
+    const list_cluster = clusters.map((item, index) => {
+        return <ACluster key={index} balanceFluctuations={item} currentDate={currentDates[index]} />;
     });
 
     return (
         <div className={style.parent}>
             <div className={style.list}>
                 <div className={style.cluster}>{list_cluster}</div>
-                {/* <ABalanceFluctuation />
-                <ABalanceFluctuation /> */}
             </div>
             <div className={style.btnContainer}>
                 <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>

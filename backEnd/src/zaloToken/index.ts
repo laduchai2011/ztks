@@ -119,7 +119,7 @@ export async function refreshAccessToken(zaloApp: ZaloAppField, zaloOa: ZaloOaFi
         }
     } finally {
         if (lock) {
-            await lock.release();
+            await (lock as any).release();
         }
     }
 }

@@ -12,7 +12,9 @@
     }
 
     > .amount {
-        width: 60%;
+        width: 50%;
+        height: 100%;
+        @include center-of-row;
 
         &.iColor {
             color: blue;
@@ -23,18 +25,25 @@
         }
     }
 
-    > .type {
-        width: 20%;
-        @include center-of-rectangle;
-    }
+    > .infor {
+        width: 50%;
+        height: 100%;
 
-    > .hook {
-        width: 20%;
-        @include center-of-rectangle;
+        > .type {
+            @include center-of-rectangle;
+            height: 50%;
+            font-size: 0.9rem;
+        }
 
-        &:hover {
-            text-decoration: underline;
-            color: rgb(0, 238, 255);
+        > .hook {
+            @include center-of-rectangle;
+            height: 50%;
+            font-size: 0.9rem;
+
+            &:hover {
+                text-decoration: underline;
+                color: rgb(0, 238, 255);
+            }
         }
     }
 }

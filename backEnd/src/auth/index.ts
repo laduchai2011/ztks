@@ -162,7 +162,7 @@ async function authentication(req: Request, res: Response, next: NextFunction) {
                 } finally {
                     if (lock) {
                         try {
-                            await lock.release();
+                            await (lock as any).release();
                         } catch (e) {
                             console.error('Không thể release lock:', e);
                         }

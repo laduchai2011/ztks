@@ -89,7 +89,7 @@ export async function refreshAccessToken(refreshOptionField: RefreshOptionField)
         }
     } finally {
         if (lock) {
-            await lock.release();
+            await (lock as any).release();
         }
     }
 }
