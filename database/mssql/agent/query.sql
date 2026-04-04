@@ -46,7 +46,7 @@ CREATE PROCEDURE GetAgentWithAgentAccountId
 	@agentAccountId INT
 AS
 BEGIN
-	 SELECT * FROM agent WHERE agentAccountId = @agentAccountId
+	 SELECT * FROM agent WHERE status = 'normal' AND agentAccountId = @agentAccountId
 END
 GO
 

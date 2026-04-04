@@ -39,7 +39,9 @@ class Handle_GetLastAgentPay {
 
             const { id } = verify_refreshToken;
             const getLastAgentPayBody_cp = { ...getLastAgentPayBody };
-            getLastAgentPayBody_cp.accountId = id;
+            if (getLastAgentPayBody_cp.accountId < 0) {
+                getLastAgentPayBody_cp.accountId = id;
+            }
             res.locals.getLastAgentPayBody = getLastAgentPayBody_cp;
 
             next();

@@ -7,6 +7,7 @@ import {
     GetAgentsBodyField,
     GetLastAgentPayBodyField,
     CreateAgentPayBodyField,
+    GetAgentWithAgentAccountIdBodyField,
 } from '@src/dataStruct/agent/body';
 import { AGENT_API } from '@src/const/api/agent';
 import { MyResponse } from '@src/dataStruct/response';
@@ -19,6 +20,13 @@ export const agentRTK = createApi({
         getAgentWithId: builder.query<MyResponse<AgentField>, { id: number }>({
             query: ({ id }) => `${AGENT_API.GET_AGENT_WITH_ID}?id=${id}`,
             providesTags: (result, error, arg) => [{ type: 'Agent', id: arg.id }],
+        }),
+        getAgentWithAgentAccountId: builder.query<MyResponse<AgentField>, GetAgentWithAgentAccountIdBodyField>({
+            query: (body) => ({
+                url: AGENT_API.GET_AGENT_WITH_AGENT_ACCOUNT_ID,
+                method: 'POST',
+                body,
+            }),
         }),
         getAgents: builder.query<MyResponse<PagedAgentField>, GetAgentsBodyField>({
             query: (body) => ({
@@ -135,6 +143,7 @@ export const agentRTK = createApi({
 
 export const {
     useLazyGetAgentWithIdQuery,
+    useLazyGetAgentWithAgentAccountIdQuery,
     useLazyGetAgentsQuery,
     useLazyGetLastAgentPayQuery,
     useCreateAgentMutation,

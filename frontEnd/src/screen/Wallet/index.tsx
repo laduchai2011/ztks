@@ -6,7 +6,10 @@ import { RootState } from '@src/redux';
 import { WALLET } from '@src/const/text';
 import BalanceFluctuations from './component/BalanceFluctuations';
 import { route_enum } from '@src/router/type';
+import MyLoading from './component/MyLoading';
+import MyToastMessage from './component/MyToastMessage';
 import Overview from './component/Overview';
+import CurrentAgent from './component/CurrentAgent';
 import { useLazyGetMyWalletWithTypeQuery } from '@src/redux/query/walletRTK';
 import { AccountField } from '@src/dataStruct/account';
 import { WalletField, WalletType, WalletEnum } from '@src/dataStruct/wallet';
@@ -72,8 +75,13 @@ const Wallet = () => {
                         >{`${WALLET} 2`}</div>
                     </div>
                     {selectedWallet && <Overview wallet={selectedWallet} />}
+                    {selectedWallet && <CurrentAgent wallet={selectedWallet} setWallet={setSelectedWallet} />}
                     {selectedWallet && <BalanceFluctuations wallet={selectedWallet} />}
                 </div>
+            </div>
+            <div>
+                <MyLoading />
+                <MyToastMessage />
             </div>
         </div>
     );

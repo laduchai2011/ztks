@@ -33,3 +33,5 @@ CREATE NONCLUSTERED INDEX idx_wallet_id ON balanceFluctuation(walletId);
 GO
 CREATE UNIQUE NONCLUSTERED INDEX idx_balanceFluctuation_payHookId_unique ON balanceFluctuation(payHookId) WHERE payHookId IS NOT NULL;
 GO
+CREATE NONCLUSTERED INDEX idx_wallet_createTime ON balanceFluctuation(createTime);
+GO

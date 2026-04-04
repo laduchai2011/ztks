@@ -62,7 +62,7 @@ BEGIN
 END;
 GO
 
--- chua lam
+-- NOT USE
 ALTER PROCEDURE MoneyOut
 	@walletId INT,
 	@subAmount BIGINT,
@@ -94,4 +94,41 @@ BEGIN
 		THROW;
 	END CATCH
 END;
+GO
+
+ALTER PROCEDURE PayAgentFromWallet
+	@walletId INT,
+	@agentId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+	BEGIN TRANSACTION;
+		UPDATE dbo.wallet
+		SET amount = amount - 50000, updateTime = SYSDATETIMEOFFSET()
+		WHERE id = @walletId AND amount >= 50000 AND accountId = @accountId;
+
+		IF @@ROWCOUNT = 0
+        BEGIN
+            -- Không đủ tiền, rollback và trả lỗi
+            ROLLBACK TRANSACTION;
+            THROW 50001, 'Tiền không đủ.', 1;
+        END
+
+		INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, walletId, createTime)
+        VALUES (-50000, 'payAgent', NULL, @walletId, SYSDATETIMEOFFSET());
+		
+		EXEC UpdateAgentPaid @id = @agentId;
+
+		SELECT * FROM dbo.wallet WHERE id = @walletId
+	COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END
 GO
