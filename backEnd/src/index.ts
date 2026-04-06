@@ -52,7 +52,11 @@ app.use(apiString, express.urlencoded({ extended: true }));
 
 //     next();
 // });
-const originArray: string[] = ['http://zalo5k.local.com:3000'];
+const originArray: string[] = [
+    'http://zalo5k.local.com:3000',
+    'http://zalo5k.local.com:3001',
+    'http://zalo5k.local.com:3002',
+];
 app.use(
     cors({
         origin: originArray,

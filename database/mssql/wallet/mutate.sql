@@ -14,6 +14,10 @@ BEGIN
 
         INSERT INTO dbo.wallet (amount, type, accountId, updateTime, createTime)
         VALUES (@amount, @type, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50001, 'Tạo ví không thành công.', 1;
+        END
 
 		SET @newWalletId = SCOPE_IDENTITY();
 
@@ -45,7 +49,6 @@ BEGIN
 		WHERE id = @walletId
 		IF @@ROWCOUNT = 0
         BEGIN
-            -- Không đủ tiền, rollback và trả lỗi
             THROW 50001, 'Cập nhật ví không thành công.', 1;
         END
 
@@ -53,7 +56,6 @@ BEGIN
         VALUES (@addedAmount, 'payOrder', @payHookId, @walletId, SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
         BEGIN
-            -- Không đủ tiền, rollback và trả lỗi
             THROW 50002, 'Cập nhật biến động số dư không thành công.', 2;
         END
 		 
@@ -118,7 +120,6 @@ BEGIN
 		WHERE id = @walletId AND amount >= 50000 AND accountId = @accountId;
 		IF @@ROWCOUNT = 0
         BEGIN
-            -- Không đủ tiền, rollback và trả lỗi
             THROW 50001, 'Tiền không đủ.', 1;
         END
 
@@ -126,7 +127,6 @@ BEGIN
         VALUES (-50000, 'payAgent', NULL, @walletId, SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
         BEGIN
-            -- Không đủ tiền, rollback và trả lỗi
             THROW 50002, 'Tiền không đủ.', 2;
         END
 
@@ -145,7 +145,6 @@ BEGIN
 		WHERE id = @agentPayId;
 		IF @@ROWCOUNT = 0
         BEGIN
-            -- Không đủ tiền, rollback và trả lỗi
             THROW 50004, 'Cập nhật Agent-Pay thất bại.', 4;
         END
 
@@ -158,7 +157,6 @@ BEGIN
 		WHERE id = @agentId;
 		IF @@ROWCOUNT = 0
         BEGIN
-            -- Không đủ tiền, rollback và trả lỗi
             THROW 50006, 'Cập nhật Agent thất bại.', 6;
         END
 

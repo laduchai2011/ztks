@@ -22,6 +22,8 @@ CREATE NONCLUSTERED INDEX idx_chatRoom_id ON [order](chatRoomId);
 GO
 CREATE NONCLUSTERED INDEX idx_zaloOa_id ON [order](zaloOaId);
 GO
+CREATE NONCLUSTERED INDEX idx_phone ON [order](phone);
+GO
 CREATE NONCLUSTERED INDEX idx_account_id ON [order](accountId);
 GO
 

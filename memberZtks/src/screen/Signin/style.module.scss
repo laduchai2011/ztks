@@ -1,0 +1,101 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    background-color: #eee;
+    @include center-of-rectangle;
+
+    > .main {
+        background-color: white;
+        width: 300px;
+        height: 100vh;
+        @include center-of-rectangle;
+
+        @include responsive(sm) {
+            width: 100%;
+        }
+
+        > .main1 {
+            box-sizing: border-box;
+            width: 100%;
+
+            > .headerContainer {
+                @include center-of-rectangle;
+                font-size: 1.2rem;
+                font-weight: 600;
+                box-sizing: border-box;
+                padding: 20px 0;
+            }
+
+            > .inputContainer {
+                box-sizing: border-box;
+                padding: 20px 0;
+
+                > .aInput {
+                    @include center-of-row;
+                    box-sizing: border-box;
+                    padding: 5px;
+
+                    > div {
+                        width: 90px;
+                        font-size: 0.9rem;
+                    }
+
+                    > input {
+                        box-sizing: border-box;
+                        padding: 3px;
+                        flex: 1;
+                        font-size: 1.1rem;
+                        border: none;
+                        outline: none;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+                        border-radius: 10px;
+                    }
+                }
+            }
+
+            > .btnContainer {
+                @include center-of-rectangle;
+
+                > div {
+                    cursor: pointer;
+                    background-color: blue;
+                    color: white;
+                    user-select: none;
+                    box-sizing: border-box;
+                    border: 1px solid blue;
+                    padding: 5px;
+                    border-radius: 10px;
+
+                    &:active {
+                        background-color: white;
+                        color: blue;
+                    }
+                }
+            }
+
+            > .navContainer {
+                box-sizing: border-box;
+                padding: 30px 0;
+                @include center-of-row;
+                justify-content: space-around;
+
+                > div {
+                    width: max-content;
+                    cursor: pointer;
+                    font-size: 0.9rem;
+                    color: blue;
+
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+
+            > .note {
+                margin-top: 30px;
+                color: red;
+                @include center-of-rectangle;
+            }
+        }
+    }
+}

@@ -1,0 +1,56 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    width: 100%;
+    height: 100%;
+
+    > .header {
+        @include center-of-row;
+        justify-content: space-between;
+        @include marginRes(5px, 0px, md, 1);
+
+        @include responsive(sm) {
+            @include marginRes(5px, 0px, md, 1.2);
+        }
+
+        > .btnContainer {
+            @include center-of-row;
+            height: 0;
+            overflow: hidden;
+            transition: height 0.3s ease-in-out;
+
+            &.show {
+                height: 50px;
+            }
+
+            > .formats {
+                @include center-of-row;
+
+                > .format {
+                    @include marginRes(0px, 5px, md, 1);
+                    user-select: none;
+
+                    @include responsive(sm) {
+                        @include marginRes(0px, 5px, md, 1.2);
+                    }
+                }
+            }
+        }
+
+        > .showBtnContainer {
+            @include center-of-rectangle;
+
+            > svg {
+                cursor: pointer;
+            }
+        }
+    }
+
+    > .content {
+        outline: none;
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+        box-sizing: border-box;
+        padding: 10px;
+        border-radius: 10px;
+    }
+}

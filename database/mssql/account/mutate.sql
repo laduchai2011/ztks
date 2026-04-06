@@ -15,17 +15,35 @@ BEGIN
 
 		INSERT INTO account (userName, password, phone, firstName, lastName, avatar, status, updateTime, createTime)
 		VALUES (@userName, @password, @phone, @firstName, @lastName, NULL, 'normal', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50001, 'Đăng ký tài khoản không thành công.', 1;
+        END
 
 		SET @newAccountId = SCOPE_IDENTITY();
 
 		INSERT INTO dbo.recommend (myCode, yourCode, accountId)
         VALUES (LEFT(REPLACE(NEWID(), '-', ''), 10), NULL, @newAccountId);
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50002, 'Tạo mã giới thiệu không thành công.', 2;
+        END
 
         INSERT INTO dbo.wallet (amount, type, accountId, updateTime, createTime)
         VALUES (0, '1', @newAccountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            -- Không đủ tiền, rollback và trả lỗi
+            THROW 50003, 'Tạo ví 1 không thành công.', 3;
+        END
 
 		INSERT INTO dbo.wallet (amount, type, accountId, updateTime, createTime)
         VALUES (0, '2', @newAccountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            -- Không đủ tiền, rollback và trả lỗi
+            THROW 50004, 'Tạo ví 2 không thành công.', 4;
+        END
 
 		SELECT * FROM dbo.account WHERE id = @newAccountId;
 
@@ -137,6 +155,10 @@ BEGIN
 
         INSERT INTO dbo.accountInformation (addedById, accountType, accountId)
         VALUES (NULL, @accountType, @accountId);
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50001, 'Thêm thông tin tài khoản không thành công.', 1;
+        END
 
 		SELECT * FROM dbo.accountInformation WHERE accountId = @accountId;
 
@@ -273,6 +295,10 @@ BEGIN
 			(authorizedAccountId, isRead, isSend, status, chatRoomId, accountId, updateTime, createTime)
 		VALUES
 			(@authorizedAccountId, 1, 0, 'normal', @chatRoomId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50004, 'Thêm chatRoomRole không thành công.', 4;
+        END
 
 		-- 4) Trả kết quả mới insert
 		SELECT *
@@ -304,7 +330,7 @@ BEGIN
 		SELECT @addedById = addedById FROM dbo.accountInformation WHERE accountId = @accountId;
 		IF @addedById IS NULL
 		BEGIN
-			THROW 50002, N'Account này không có quyền thực hiện thao tác.', 1;
+			THROW 50001, N'Account này không có quyền thực hiện thao tác.', 1;
 		END
 
 		IF NOT EXISTS (
@@ -313,12 +339,16 @@ BEGIN
 			WHERE id = @zaloOaId AND accountId = @addedById
 		)
 		BEGIN
-			THROW 50001, N'Bạn không có quyền trên zaloOa này.', 1;
+			THROW 50002, N'Bạn không có quyền trên zaloOa này.', 2;
 		END
 
 		-- Th�m medication
         INSERT INTO dbo.accountReceiveMessage (accountIdReceiveMessage, zaloOaId, accountId)
         VALUES (@accountIdReceiveMessage, @zaloOaId, @accountId);
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50003, 'Thêm accountReceiveMessage không thành công.', 3;
+        END
 
 		SELECT * FROM dbo.accountReceiveMessage WHERE accountId = @accountId AND zaloOaId = @zaloOaId;
 
@@ -347,7 +377,7 @@ BEGIN
 		SELECT @addedById = addedById FROM dbo.accountInformation WHERE accountId = @accountId;
 		IF @addedById IS NULL
 		BEGIN
-			THROW 50002, N'Account này không có quyền thực hiện thao tác.', 1;
+			THROW 50001, N'Account này không có quyền thực hiện thao tác.', 1;
 		END
 
 		IF NOT EXISTS (
@@ -356,12 +386,16 @@ BEGIN
 			WHERE id = @zaloOaId AND accountId = @addedById
 		)
 		BEGIN
-			THROW 50001, N'Bạn không có quyền trên zaloOa này.', 1;
+			THROW 50002, N'Bạn không có quyền trên zaloOa này.', 2;
 		END
 
 		UPDATE dbo.accountReceiveMessage
 		SET accountIdReceiveMessage = @accountIdReceiveMessage
 		WHERE accountId = @accountId AND zaloOaId = @zaloOaId;
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50003, 'Cập nhật accountReceiveMessage không thành công.', 3;
+        END
 
 		SELECT * FROM dbo.accountReceiveMessage WHERE accountId = @accountId AND zaloOaId = @zaloOaId;
 

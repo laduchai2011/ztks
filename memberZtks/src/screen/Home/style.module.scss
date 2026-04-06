@@ -1,0 +1,14 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #eee;
+
+    > .main {
+        margin-top: 50px;
+        width: 1280px;
+        background-color: white;
+    }
+}

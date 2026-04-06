@@ -1,0 +1,44 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    position: fixed;
+    top: 0;
+    @include center-of-row;
+    background-color: aliceblue;
+    width: 100vw;
+    height: 50px;
+
+    > .left {
+        width: 20%;
+    }
+
+    > .center {
+        width: 60%;
+        height: 100%;
+        @include center-of-row;
+
+        > div {
+            height: 100%;
+            width: max-content;
+            font-size: 1.1rem;
+            font-weight: 600px;
+            cursor: pointer;
+            user-select: none;
+            box-sizing: border-box;
+            padding: 10px;
+            @include center-of-rectangle;
+
+            &:hover {
+                background-color: rgb(235, 235, 235);
+            }
+
+            &.selected {
+                background-color: rgb(235, 235, 235);
+            }
+        }
+    }
+
+    > .right {
+        width: 20%;
+    }
+}

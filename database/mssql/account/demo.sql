@@ -12,11 +12,11 @@ INSERT INTO
     )
 VALUES
     (
-        'admin',
-        'admin',
-        '1234567890',
-        'admin',
-        'admin',
+        'memberZtks1',
+        'memberZtks1',
+        '0789860855',
+        'memberZtks1',
+        'memberZtks1',
         NULL,
         'normal',
         TODATETIMEOFFSET(SYSUTCDATETIME(), -5),
@@ -32,9 +32,9 @@ INSERT INTO
     )
 VALUES
     (
-        1,
-        'admin',
-        1
+        7,
+        'memberZtks',
+        8
     );
 
 

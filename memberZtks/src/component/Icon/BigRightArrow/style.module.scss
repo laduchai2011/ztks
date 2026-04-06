@@ -1,0 +1,29 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    --fill: none;
+    --stroke: black;
+    --stroke-width: 1;
+}
+
+.parent {
+    width: 30px;
+    height: 30px;
+    background-color: rgb(212, 212, 212);
+
+    > path:nth-child(1) {
+        fill: var(--fill);
+        stroke: gray;
+    }
+
+    > path:nth-child(2) {
+        stroke: var(--stroke);
+        stroke-width: var(--stroke-width);
+        fill: rgb(189, 189, 189);
+    }
+
+    > path:nth-child(3) {
+        stroke: var(--stroke);
+        stroke-width: var(--stroke-width);
+    }
+}

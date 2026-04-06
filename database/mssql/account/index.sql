@@ -26,7 +26,9 @@ CREATE TABLE accountInformation (
 	accountId INT NOT NULL UNIQUE,
 	
 	CONSTRAINT FK_accountInformation_AddedBy FOREIGN KEY (addedById) REFERENCES account(id),
-	CONSTRAINT FK_accountInformation_Account FOREIGN KEY (accountId) REFERENCES account(id)
+	CONSTRAINT FK_accountInformation_Account FOREIGN KEY (accountId) REFERENCES account(id),
+
+	CONSTRAINT checkType_wallet CHECK (accountType IN ('admin', 'member', 'adminZtks', 'memberZtks'))
 );
 GO
 CREATE NONCLUSTERED INDEX idx_addedById ON accountInformation(addedById);

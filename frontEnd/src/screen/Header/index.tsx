@@ -26,16 +26,20 @@ const Header: FC<{ selected: selected_type }> = ({ selected }) => {
                 childs[1].classList.add(style.selected);
                 break;
             }
-            case select_enum.ORDER: {
+            case select_enum.ZNS: {
                 childs[2].classList.add(style.selected);
                 break;
             }
-            case select_enum.NOTE: {
+            case select_enum.ORDER: {
                 childs[3].classList.add(style.selected);
                 break;
             }
-            case select_enum.PROFILE: {
+            case select_enum.NOTE: {
                 childs[4].classList.add(style.selected);
+                break;
+            }
+            case select_enum.PROFILE: {
+                childs[5].classList.add(style.selected);
                 break;
             }
             default: {
@@ -53,6 +57,10 @@ const Header: FC<{ selected: selected_type }> = ({ selected }) => {
             }
             case select_enum.SUPPORT_ROOM: {
                 navigate(route_enum.SUPPORT_ROOM);
+                break;
+            }
+            case select_enum.ZNS: {
+                navigate(route_enum.ZNS);
                 break;
             }
             case select_enum.ORDER: {
@@ -81,6 +89,9 @@ const Header: FC<{ selected: selected_type }> = ({ selected }) => {
             </div>
             <div onClick={() => handleSelect(select_enum.SUPPORT_ROOM)}>
                 <IoIosPeople />
+            </div>
+            <div onClick={() => handleSelect(select_enum.ZNS)}>
+                <div className={style.zns}>Z</div>
             </div>
             <div onClick={() => handleSelect(select_enum.ORDER)}>
                 <FaShoppingCart />

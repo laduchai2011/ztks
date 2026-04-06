@@ -1,0 +1,38 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    --size: 30;
+    --background: ;
+    --fill: rgba(0, 0, 0, 0);
+    --stroke: black;
+    --animation-time: 0;
+    --stroke-width: 1;
+}
+
+.parent {
+    width: calc(var(--size) * 1px);
+    aspect-ratio: 1/1;
+    stroke: var(--stroke);
+    stroke-width: var(--stroke-width);
+    fill: var(--fill);
+    scale: 1;
+    border-radius: 50%;
+    background-color: var(--background);
+
+    animation: parentAnimation calc(var(--animation-time) * 1s) linear infinite;
+}
+
+:local {
+    @keyframes parentAnimation {
+        0%,
+        100% {
+            scale: 0.9;
+        }
+        50% {
+            scale: 1;
+        }
+        80% {
+            scale: 1.1;
+        }
+    }
+}
