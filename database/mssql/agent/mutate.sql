@@ -17,7 +17,6 @@ BEGIN
 
 		DECLARE @newAgentId INT;
 
-		-- Thêm medication
         INSERT INTO dbo.agent (type, expiry, status, agentAccountId, accountId, updateTime, createTime)
         VALUES ('basic', NULL, 'normal', NULL, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 
@@ -155,7 +154,6 @@ BEGIN
 		
 		DECLARE @newAgentPayId INT;
 
-		-- Thêm medication
         INSERT INTO dbo.agentPay (isPay, agentId, accountId, updateTime, createTime)
         VALUES (0, @agentId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 
@@ -173,7 +171,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE UpdateAgentPaid
+ALTER PROCEDURE UpdateAgentPaid
 	@id INT
 AS
 BEGIN
@@ -184,7 +182,7 @@ BEGIN
 		IF NOT EXISTS (
 			SELECT 1 
 			FROM dbo.agentPay
-			WHERE isPay = 0
+			WHERE isPay = 0 AND id = @id
 		)
 		BEGIN
 			THROW 50001, N'Chưa tồn tại 1 agentPay .', 1;

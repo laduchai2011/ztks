@@ -12,6 +12,7 @@ import Handle_GetNotReplyAccounts from './handle/GetNotReplyAccounts';
 import Handle_GetAccountReceiveMessage from './handle/GetAccountReceiveMessage';
 import Handle_GetMembers from './handle/GetMembers';
 import Handle_CheckForgetPassword from './handle/CheckForgetPassword';
+import Handle_GetMyRecommend from './handle/GetMyRecommend';
 
 dotenv.config();
 const router_query_account: Router = express.Router();
@@ -27,6 +28,7 @@ const handle_getNotReplyAccounts = new Handle_GetNotReplyAccounts();
 const handle_getAccountReceiveMessage = new Handle_GetAccountReceiveMessage();
 const handle_getMembers = new Handle_GetMembers();
 const handle_checkForgetPassword = new Handle_CheckForgetPassword();
+const handle_getMyRecommend = new Handle_GetMyRecommend();
 
 router_query_account.get('/isSignin', authentication, handle_isSignin.main);
 
@@ -54,5 +56,7 @@ router_query_account.post('/getAccountReceiveMessage', authentication, handle_ge
 router_query_account.post('/getMembers', authentication, handle_getMembers.setup, handle_getMembers.main);
 
 router_query_account.post('/checkForgetPassword', handle_checkForgetPassword.main);
+
+router_query_account.post('/getMyRecommend', authentication, handle_getMyRecommend.setup, handle_getMyRecommend.main);
 
 export default router_query_account;

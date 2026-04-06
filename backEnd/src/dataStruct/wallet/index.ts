@@ -27,9 +27,11 @@ export enum BalanceFluctuationEnum {
     PAY_ORDER = 'payOrder',
     PAY_AGENT = 'payAgent',
     TAKE_MONEY = 'takeMoney',
+    RECOMMEND = 'recommend',
 }
 
 export type BalanceFluctuationType =
     | BalanceFluctuationEnum.PAY_ORDER
     | BalanceFluctuationEnum.PAY_AGENT
-    | BalanceFluctuationEnum.TAKE_MONEY;
+    | BalanceFluctuationEnum.TAKE_MONEY
+    | BalanceFluctuationEnum.RECOMMEND;

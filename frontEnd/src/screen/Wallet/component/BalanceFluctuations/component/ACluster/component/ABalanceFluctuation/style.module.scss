@@ -3,47 +3,64 @@
 .parent {
     box-sizing: border-box;
     padding: 10px;
-    @include center-of-row;
-    height: 70px;
+    height: 100px;
     cursor: default;
+    display: flex;
+    flex-direction: column;
 
     &:hover {
         background-color: rgb(236, 236, 236);
     }
 
-    > .amount {
-        width: 50%;
-        height: 100%;
+    > .main {
         @include center-of-row;
+        flex: 1;
 
-        &.iColor {
-            color: blue;
+        > .amount {
+            width: 50%;
+            height: 100%;
+            @include center-of-row;
+
+            &.iColor {
+                color: blue;
+            }
+
+            &.dColor {
+                color: red;
+            }
         }
 
-        &.dColor {
-            color: red;
+        > .infor {
+            width: 50%;
+            height: 100%;
+
+            > .type {
+                @include center-of-rectangle;
+                height: 50%;
+                font-size: 0.9rem;
+            }
+
+            > .hook {
+                @include center-of-rectangle;
+                height: 50%;
+                font-size: 0.9rem;
+
+                &:hover {
+                    text-decoration: underline;
+                    color: rgb(0, 238, 255);
+                }
+            }
         }
     }
 
-    > .infor {
-        width: 50%;
-        height: 100%;
+    > .timeAgo {
+        @include center-of-row;
+        justify-content: flex-end;
 
-        > .type {
-            @include center-of-rectangle;
-            height: 50%;
-            font-size: 0.9rem;
-        }
-
-        > .hook {
-            @include center-of-rectangle;
-            height: 50%;
-            font-size: 0.9rem;
-
-            &:hover {
-                text-decoration: underline;
-                color: rgb(0, 238, 255);
-            }
+        > div {
+            color: gray;
+            font-style: italic;
+            font-size: 0.8rem;
         }
     }
 }

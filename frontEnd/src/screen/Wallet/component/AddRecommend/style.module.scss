@@ -1,0 +1,33 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    @include center-of-rectangle;
+
+    > .main {
+        @include center-of-row;
+
+        > input {
+            margin: 0 5px;
+            border: none;
+            outline: none;
+            background-color: rgb(240, 240, 240);
+            box-sizing: border-box;
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+
+        > div {
+            margin: 0 5px;
+            box-sizing: border-box;
+            padding: 5px 10px;
+            border: 1px solid rgb(0, 255, 34);
+            border-radius: 10px;
+            user-select: none;
+            cursor: default;
+
+            &:active {
+                background-color: rgb(114, 255, 133);
+            }
+        }
+    }
+}

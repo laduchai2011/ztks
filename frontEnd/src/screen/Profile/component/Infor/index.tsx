@@ -3,18 +3,25 @@ import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { avatarnull } from '@src/utility/string';
-import { AccountField, AccountInformationField, accountType_enum, accountType_type } from '@src/dataStruct/account';
+import {
+    AccountField,
+    AccountInformationField,
+    accountType_enum,
+    accountType_type,
+    RecommendField,
+} from '@src/dataStruct/account';
+import { CreateAccountInformationBodyField } from '@src/dataStruct/account/body';
 import { ADMIN, MEMBER } from '@src/const/text';
 import { SelectedTypeField } from './type';
 import axiosInstance from '@src/api/axiosInstance';
 import { MyResponse } from '@src/dataStruct/response';
-import { CreateAccountInformationBodyField } from '@src/dataStruct/account/body';
 import { set_isLoading, setData_toastMessage, setIsShow_editInforDialog } from '@src/redux/slice/Profile';
 import { set_accountInformation } from '@src/redux/slice/App';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import { IoIosEye, IoIosEyeOff } from 'react-icons/io';
 import { GoDotFill } from 'react-icons/go';
+import { useLazyGetMyRecommendQuery } from '@src/redux/query/accountRTK';
 
 const Infor = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -24,9 +31,13 @@ const Infor = () => {
     );
     const [accountType, setAccountType] = useState<accountType_type | undefined>(undefined);
     const [selectedType, setSelectedType] = useState<SelectedTypeField | null>(null);
-    const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
+    const [isShowId, setIsShowId] = useState<boolean>(false);
+    const [recommend, setRecommend] = useState<RecommendField | undefined>(undefined);
+    const [isShowRecommentCode, setIsShowRecommentCode] = useState<boolean>(false);
     const maxCount = 3;
     const avatarUrl = account?.avatar || avatarnull;
+
+    const [getMyRecommend] = useLazyGetMyRecommendQuery();
 
     useEffect(() => {
         if (accountInformation?.accountType === accountType_enum.ADMIN) {
@@ -122,8 +133,26 @@ const Infor = () => {
         dispatch(setIsShow_editInforDialog(true));
     };
 
-    const handleIsShowPassword = (isShow: boolean) => {
-        setIsShowPassword(isShow);
+    const handleIsShowId = (isShow: boolean) => {
+        setIsShowId(isShow);
+    };
+
+    useEffect(() => {
+        if (!account) return;
+        getMyRecommend({ accountId: account.id })
+            .then((res) => {
+                const resData = res.data;
+                if (resData?.isSuccess && resData.data) {
+                    setRecommend(resData.data);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, [account, getMyRecommend]);
+
+    const handleIsShowRecommentCode = (isShow: boolean) => {
+        setIsShowRecommentCode(isShow);
     };
 
     return (
@@ -155,7 +184,7 @@ const Infor = () => {
             <div className={style.idContainer}>
                 <div>
                     <div>
-                        {!isShowPassword && (
+                        {!isShowId && (
                             <div>
                                 <GoDotFill size={15} />
                                 <GoDotFill size={15} />
@@ -164,11 +193,33 @@ const Infor = () => {
                                 <GoDotFill size={15} />
                             </div>
                         )}
-                        {isShowPassword && <div>{account?.id}</div>}
+                        {isShowId && <div>{account?.id}</div>}
                     </div>
                     <div>
-                        {!isShowPassword && <IoIosEye onClick={() => handleIsShowPassword(true)} size={20} />}
-                        {isShowPassword && <IoIosEyeOff onClick={() => handleIsShowPassword(false)} size={20} />}
+                        {!isShowId && <IoIosEye onClick={() => handleIsShowId(true)} size={20} />}
+                        {isShowId && <IoIosEyeOff onClick={() => handleIsShowId(false)} size={20} />}
+                    </div>
+                </div>
+            </div>
+            <div className={style.recommendContainer}>
+                <div>
+                    <div>
+                        {!isShowRecommentCode && (
+                            <div>
+                                <GoDotFill size={15} />
+                                <GoDotFill size={15} />
+                                <GoDotFill size={15} />
+                                <GoDotFill size={15} />
+                                <GoDotFill size={15} />
+                            </div>
+                        )}
+                        {isShowRecommentCode && <div>{recommend?.myCode}</div>}
+                    </div>
+                    <div>
+                        {!isShowRecommentCode && <IoIosEye onClick={() => handleIsShowRecommentCode(true)} size={20} />}
+                        {isShowRecommentCode && (
+                            <IoIosEyeOff onClick={() => handleIsShowRecommentCode(false)} size={20} />
+                        )}
                     </div>
                 </div>
             </div>

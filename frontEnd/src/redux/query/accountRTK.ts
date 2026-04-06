@@ -6,6 +6,7 @@ import {
     AllMembersBodyField,
     PagedAccountField,
     AccountReceiveMessageField,
+    RecommendField,
 } from '@src/dataStruct/account';
 import {
     GetReplyAccountBodyField,
@@ -18,6 +19,8 @@ import {
     AddMemberV1BodyField,
     ForgetPasswordBodyField,
     CheckForgetPasswordBodyField,
+    GetMyRecommendBodyField,
+    AddYourRecommendBodyField,
 } from '@src/dataStruct/account/body';
 import { ACCOUNT_API } from '@src/const/api/account';
 import { router_res_type } from '@src/interface';
@@ -34,6 +37,7 @@ export const accountRTK = createApi({
         'ReplyAccounts',
         'NotReplyAccounts',
         'AccountReceiveMessage',
+        'Recommend',
     ],
     endpoints: (builder) => ({
         getAccountWithId: builder.query<MyResponse<AccountField>, { id: number }>({
@@ -92,6 +96,14 @@ export const accountRTK = createApi({
                 method: 'POST',
                 body: body,
             }),
+        }),
+        getMyRecommend: builder.query<MyResponse<RecommendField>, GetMyRecommendBodyField>({
+            query: (body) => ({
+                url: ACCOUNT_API.GET_MY_RECOMMEND,
+                method: 'POST',
+                body,
+            }),
+            providesTags: ['Recommend'],
         }),
         // Mutation (POST)
         signup: builder.mutation<router_res_type, { body: AccountField; token: string }>({
@@ -188,6 +200,14 @@ export const accountRTK = createApi({
             }),
             invalidatesTags: ['MemberV1'], // dùng nếu muốn refetch danh sách sau khi thêm
         }),
+        addYourRecommend: builder.mutation<MyResponse<RecommendField>, AddYourRecommendBodyField>({
+            query: (body) => ({
+                url: ACCOUNT_API.ADD_YOUR_RECOMMEND,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Recommend'], // dùng nếu muốn refetch danh sách sau khi thêm
+        }),
     }),
 });
 
@@ -200,6 +220,7 @@ export const {
     useGetNotReplyAccountsQuery,
     useLazyGetMembersQuery,
     useLazyCheckForgetPasswordQuery,
+    useLazyGetMyRecommendQuery,
     useSignupMutation,
     useSigninMutation,
     useSignoutMutation,
@@ -211,4 +232,5 @@ export const {
     useCreateAccountReceiveMessageMutation,
     useUpdateAccountReceiveMessageMutation,
     useAddMemberV1Mutation,
+    useAddYourRecommendMutation,
 } = accountRTK;

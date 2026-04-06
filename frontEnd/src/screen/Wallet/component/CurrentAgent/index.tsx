@@ -61,17 +61,20 @@ const CurrentAgent: FC<{
         }
         if (!counter) {
             dispatch(set_isLoading(true));
-            getLastAgentPay({ agentId: agent.id, accountId: accountInformation?.addedById || -1 })
+            getLastAgentPay({ agentId: agent.id, accountId: accountInformation?.addedById || -1 }, false)
                 .then((res) => {
                     const resData = res.data;
                     if (resData?.isSuccess && resData.data) {
-                        setAgentPay(resData.data);
-                        dispatch(
-                            setData_toastMessage({
-                                type: messageType_enum.ERROR,
-                                message: 'Lấy apent-pay thành công !',
-                            })
-                        );
+                        const newAgentPay = resData.data;
+                        if (!newAgentPay.isPay) {
+                            setAgentPay(resData.data);
+                            dispatch(
+                                setData_toastMessage({
+                                    type: messageType_enum.SUCCESS,
+                                    message: 'Lấy apent-pay thành công !',
+                                })
+                            );
+                        }
                     }
                 })
                 .catch((err) => {

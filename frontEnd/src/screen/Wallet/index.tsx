@@ -10,6 +10,7 @@ import MyLoading from './component/MyLoading';
 import MyToastMessage from './component/MyToastMessage';
 import Overview from './component/Overview';
 import CurrentAgent from './component/CurrentAgent';
+import AddRecommend from './component/AddRecommend';
 import { useLazyGetMyWalletWithTypeQuery } from '@src/redux/query/walletRTK';
 import { AccountField } from '@src/dataStruct/account';
 import { WalletField, WalletType, WalletEnum } from '@src/dataStruct/wallet';
@@ -76,6 +77,7 @@ const Wallet = () => {
                     </div>
                     {selectedWallet && <Overview wallet={selectedWallet} />}
                     {selectedWallet && <CurrentAgent wallet={selectedWallet} setWallet={setSelectedWallet} />}
+                    {selectedWallet && <AddRecommend wallet={selectedWallet} />}
                     {selectedWallet && <BalanceFluctuations wallet={selectedWallet} />}
                 </div>
             </div>

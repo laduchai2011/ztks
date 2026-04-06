@@ -31,6 +31,9 @@
         > .contentContainer {
             flex: 1;
             background-color: rgb(251, 255, 254);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
 
             > .types {
                 @include center-of-row;

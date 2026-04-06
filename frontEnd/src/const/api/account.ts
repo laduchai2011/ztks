@@ -22,4 +22,6 @@ export const ACCOUNT_API = {
     ADD_MEMBERV1: `${BASE_URL}${apiString}/service_account/mutate/addMemberV1`,
     FORGET_PASSWORD: `${BASE_URL}${apiString}/service_account/mutate/forgetPassword`,
     CHECK_FORGET_PASSWORD: `${BASE_URL}${apiString}/service_account/query/checkForgetPassword`,
+    GET_MY_RECOMMEND: `${BASE_URL}${apiString}/service_account/query/getMyRecommend`,
+    ADD_YOUR_RECOMMEND: `${BASE_URL}${apiString}/service_account/mutate/addYourRecommend`,
 };

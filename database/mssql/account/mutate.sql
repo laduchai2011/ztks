@@ -375,18 +375,87 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE AddRecommend
-	@code VARCHAR(255),
+ALTER PROCEDURE AddYourRecommend
+	@yourCode VARCHAR(255),
 	@accountId INT
 AS
 BEGIN
-	UPDATE dbo.recommend
-	SET yourCode = @code
-	WHERE @accountId = @accountId
+	SET NOCOUNT ON;
 
-	IF @@ROWCOUNT > 0
-	BEGIN
+	BEGIN TRY
+		BEGIN TRANSACTION;
+
+		DECLARE @rowCount INT;
+
+		IF NOT EXISTS (
+			SELECT 1
+			FROM dbo.recommend 
+			WHERE myCode = @yourCode
+		)
+		BEGIN
+			THROW 50001, N'Mã này không tồn tại .', 1;
+		END
+
+		UPDATE dbo.recommend
+		SET yourCode = @yourCode
+		WHERE accountId = @accountId AND myCode <> @yourCode AND yourCode IS NULL 
+		IF @@ROWCOUNT = 0
+		BEGIN
+			THROW 50002, N'Cập nhật mã giới thiệu không thành công', 2;
+		END
+
+		-- CAP NHAT TIEN
+		DECLARE @my_accountId INT;
+		DECLARE @your_accountId INT;
+		SET @my_accountId = @accountId;
+		SELECT @your_accountId = accountId FROM dbo.recommend WHERE myCode = @yourCode;
+
+		DECLARE @my_walletId INT;
+		DECLARE @your_walletId INT;
+		SELECT @my_walletId = id FROM dbo.wallet WHERE accountId = @my_accountId AND type = '1';
+		SELECT @your_walletId = id FROM dbo.wallet WHERE accountId = @your_accountId AND type = '1';
+		IF @my_walletId IS NULL THROW 50003, N'Không tìm thấy ví của tôi', 3;
+		IF @your_walletId IS NULL THROW 50004, N'Không tìm thấy ví người giới thiệu', 4;
+
+		UPDATE dbo.wallet
+		SET amount = amount + 25000, updateTime = SYSDATETIMEOFFSET()
+		WHERE id = @my_walletId
+		IF @@ROWCOUNT = 0
+		BEGIN
+			THROW 50005, N'Cập nhật ví của tôi không thành công', 5;
+		END
+
+		INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, walletId, createTime)
+        VALUES (25000, 'recommend', NULL, @my_walletId, SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+		BEGIN
+			THROW 50006, N'Thêm biến động số dư của tôi không thành công', 6;
+		END
+
+		UPDATE dbo.wallet
+		SET amount = amount + 25000, updateTime = SYSDATETIMEOFFSET()
+		WHERE id = @your_walletId
+		IF @@ROWCOUNT = 0
+		BEGIN
+			THROW 50007, N'Cập nhật ví của người giới thiệu không thành công', 7;
+		END
+
+		INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, walletId, createTime)
+        VALUES (25000, 'recommend', NULL, @your_walletId, SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+		BEGIN
+			THROW 50008, N'Thêm biến động số dư của người giới thiệu không thành công', 8;
+		END
+		----
+
 		SELECT * FROM dbo.recommend WHERE accountId = @accountId
-	END
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
 END
 GO

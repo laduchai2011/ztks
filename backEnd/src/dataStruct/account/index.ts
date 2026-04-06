@@ -47,3 +47,9 @@ export interface AccountReceiveMessageField {
     zaloOaId: number;
     accountId: number;
 }
+
+export interface RecommendField {
+    myCode: string;
+    yourCode: string | null;
+    accountId: number;
+}

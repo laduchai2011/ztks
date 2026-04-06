@@ -65,10 +65,11 @@
         }
     }
 
-    > .idContainer {
+    > .idContainer,
+    .recommendContainer {
         @include center-of-rectangle;
         box-sizing: border-box;
-        padding: 10px;
+        padding-top: 10px;
 
         > div {
             @include center-of-row;
@@ -78,7 +79,7 @@
             }
 
             > div:nth-child(1) {
-                width: 80px;
+                width: 90px;
 
                 > div {
                     @include center-of-row;

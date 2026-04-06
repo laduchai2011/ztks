@@ -14,6 +14,7 @@ import Handle_AddMemberV1 from './handle/AddMemberV1';
 import Handle_CreateAccountInformation from './handle/CreateAccountInformation';
 import Handle_EditInforAccount from './handle/EditInforAccount';
 import Handle_ForgetPassword from './handle/ForgetPassword';
+import Handle_AddYourRecommend from './handle/AddYourRecommend';
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ const handle_addMemberV1 = new Handle_AddMemberV1();
 const handle_createAccountInformation = new Handle_CreateAccountInformation();
 const handle_editInforAccount = new Handle_EditInforAccount();
 const handle_forgetPassword = new Handle_ForgetPassword();
+const handle_addYourRecommend = new Handle_AddYourRecommend();
 
 router_mutate_account.post('/', (_: Request, res: Response) => {
     res.send('(POST) Express + TypeScript Server: router_mutate_account');
@@ -97,5 +99,7 @@ router_mutate_account.post(
 );
 
 router_mutate_account.post('/forgetPassword', authOtpFirebaseMiddleware, handle_forgetPassword.main);
+
+router_mutate_account.post('/addYourRecommend', handle_addYourRecommend.setup, handle_addYourRecommend.main);
 
 export default router_mutate_account;

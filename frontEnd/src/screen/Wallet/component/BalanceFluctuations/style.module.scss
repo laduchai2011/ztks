@@ -1,6 +1,11 @@
 @use 'src/utility/style/mixin.scss' as *;
 
 .parent {
+    width: 100%;
+    flex: 1;
+    overflow-y: scroll;
+    @include small-scroll-yy(3px);
+
     > .btnContainer {
         @include center-of-rectangle;
         box-sizing: border-box;

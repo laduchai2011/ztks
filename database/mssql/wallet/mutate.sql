@@ -43,14 +43,21 @@ BEGIN
         UPDATE dbo.wallet
 		SET amount = amount + @addedAmount, updateTime = SYSDATETIMEOFFSET()
 		WHERE id = @walletId
+		IF @@ROWCOUNT = 0
+        BEGIN
+            -- Không đủ tiền, rollback và trả lỗi
+            THROW 50001, 'Cập nhật ví không thành công.', 1;
+        END
 
 		INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, walletId, createTime)
         VALUES (@addedAmount, 'payOrder', @payHookId, @walletId, SYSDATETIMEOFFSET());
-
-		IF @@ROWCOUNT > 0
-		BEGIN
-			SELECT * FROM dbo.wallet WHERE id = @walletId
-		END
+		IF @@ROWCOUNT = 0
+        BEGIN
+            -- Không đủ tiền, rollback và trả lỗi
+            THROW 50002, 'Cập nhật biến động số dư không thành công.', 2;
+        END
+		 
+		SELECT * FROM dbo.wallet WHERE id = @walletId
 
 		COMMIT TRANSACTION;
 	END TRY
@@ -98,7 +105,7 @@ GO
 
 ALTER PROCEDURE PayAgentFromWallet
 	@walletId INT,
-	@agentId INT,
+	@agentPayId INT,
 	@accountId INT
 AS
 BEGIN
@@ -109,18 +116,52 @@ BEGIN
 		UPDATE dbo.wallet
 		SET amount = amount - 50000, updateTime = SYSDATETIMEOFFSET()
 		WHERE id = @walletId AND amount >= 50000 AND accountId = @accountId;
-
 		IF @@ROWCOUNT = 0
         BEGIN
             -- Không đủ tiền, rollback và trả lỗi
-            ROLLBACK TRANSACTION;
             THROW 50001, 'Tiền không đủ.', 1;
         END
 
 		INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, walletId, createTime)
         VALUES (-50000, 'payAgent', NULL, @walletId, SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            -- Không đủ tiền, rollback và trả lỗi
+            THROW 50002, 'Tiền không đủ.', 2;
+        END
+
+		--UpdateAgentPaid
+		IF NOT EXISTS (
+			SELECT 1 
+			FROM dbo.agentPay
+			WHERE isPay = 0 AND id = @agentPayId
+		)
+		BEGIN
+			THROW 50003, N'Chưa tồn tại 1 agentPay .', 3;
+		END
 		
-		EXEC UpdateAgentPaid @id = @agentId;
+		UPDATE dbo.agentPay
+		SET isPay = 1
+		WHERE id = @agentPayId;
+		IF @@ROWCOUNT = 0
+        BEGIN
+            -- Không đủ tiền, rollback và trả lỗi
+            THROW 50004, 'Cập nhật Agent-Pay thất bại.', 4;
+        END
+
+		DECLARE @agentId INT;
+		SELECT @agentId = agentId FROM dbo.agentPay WHERE id = @agentPayId;
+		IF @agentId IS NULL THROW 50005, N'Không tìm agentId', 5;
+
+		UPDATE dbo.agent
+		SET expiry = DATEADD(MONTH, 1, SYSDATETIMEOFFSET()), type = 'upgrade'
+		WHERE id = @agentId;
+		IF @@ROWCOUNT = 0
+        BEGIN
+            -- Không đủ tiền, rollback và trả lỗi
+            THROW 50006, 'Cập nhật Agent thất bại.', 6;
+        END
+
 
 		SELECT * FROM dbo.wallet WHERE id = @walletId
 	COMMIT TRANSACTION;

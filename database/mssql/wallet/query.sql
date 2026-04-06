@@ -15,7 +15,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE GetBalanceFluctuationLatestDay
+ALTER PROCEDURE GetBalanceFluctuationLatestDay
     @walletId INT,
     @type VARCHAR(255) = NULL
 AS
@@ -31,11 +31,12 @@ BEGIN
             FROM balanceFluctuation
             WHERE walletId = @walletId
         )
-        AND (@type IS NULL OR type = @type);
+        AND (@type IS NULL OR type = @type)
+		ORDER BY createTime DESC;
 END
 GO
 
-CREATE PROCEDURE GetBalanceFluctuationsByDate
+ALTER PROCEDURE GetBalanceFluctuationsByDate
     @walletId INT,
 	@type VARCHAR(255) = NULL,
     @fromDate DATETIME2,
@@ -51,6 +52,6 @@ BEGIN
 		AND (@type IS NULL OR type = @type)
         AND createTime >= @fromDate
         AND createTime < @toDate
-    ORDER BY id DESC;
+    ORDER BY createTime DESC;
 END
 GO

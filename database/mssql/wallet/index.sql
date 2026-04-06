@@ -26,7 +26,7 @@ CREATE TABLE balanceFluctuation (
 	CONSTRAINT FK_balanceFluctuation_Payhook FOREIGN KEY (payHookId) REFERENCES payHook(id),
 	CONSTRAINT FK_balanceFluctuation_Wallet FOREIGN KEY (walletId) REFERENCES wallet(id),
 
-	CONSTRAINT checkType_balanceFluctuation CHECK (type IN ('payOrder', 'payAgent', 'takeMoney'))
+	CONSTRAINT checkType_balanceFluctuation CHECK (type IN ('payOrder', 'payAgent', 'takeMoney', 'recommend'))
 )
 GO
 CREATE NONCLUSTERED INDEX idx_wallet_id ON balanceFluctuation(walletId);
@@ -35,3 +35,9 @@ CREATE UNIQUE NONCLUSTERED INDEX idx_balanceFluctuation_payHookId_unique ON bala
 GO
 CREATE NONCLUSTERED INDEX idx_wallet_createTime ON balanceFluctuation(createTime);
 GO
+
+-- ALTER TABLE balanceFluctuation
+-- DROP CONSTRAINT checkType_balanceFluctuation;
+-- ALTER TABLE balanceFluctuation
+-- ADD CONSTRAINT checkType_balanceFluctuation
+-- CHECK (type IN ('payOrder', 'payAgent', 'takeMoney', 'recommend'));
