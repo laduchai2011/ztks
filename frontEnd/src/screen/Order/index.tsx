@@ -9,6 +9,7 @@ import OaList from './component/OaList';
 import OrderList from './component/OrderList';
 import EditOrder from './component/EditOrder';
 import Pay from './component/Pay';
+import VoucherList from './component/VoucherList';
 import AddOrderStatusDialog from './component/AddOrderStatusDialog';
 import { select_enum } from '@src/router/type';
 import MyToastMessage from './component/MyToastMessage';
@@ -54,6 +55,7 @@ const Order = () => {
                 <EditOrder />
                 <Pay />
                 <AddOrderStatusDialog />
+                <VoucherList />
             </div>
         </div>
     );

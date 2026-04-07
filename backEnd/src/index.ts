@@ -151,6 +151,11 @@ app.use(`${apiString}/hello`, (req, res) => {
         const service_wallet = (await import('@src/services/wallet')).default;
         app.use(`${prefix}/service_wallet`, service_wallet);
     }
+
+    if (services.includes('voucher')) {
+        const service_voucher = (await import('@src/services/voucher')).default;
+        app.use(`${prefix}/service_voucher`, service_voucher);
+    }
 })();
 
 app.listen(port, () => {

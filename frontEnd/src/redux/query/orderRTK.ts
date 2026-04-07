@@ -7,6 +7,7 @@ import {
     CreateOrderStatusBodyField,
     GetAllOrderStatusBodyField,
     // GetOrderWithIdBodyField,
+    OrderSelectVoucherBodyField,
 } from '@src/dataStruct/order/body';
 import { ORDER_API } from '@src/const/api/order';
 import { MyResponse } from '@src/dataStruct/response';
@@ -92,6 +93,14 @@ export const orderRTK = createApi({
             }),
             invalidatesTags: ['AllOrderStatus'], // dùng nếu muốn refetch danh sách sau khi thêm
         }),
+        orderSelectVoucher: builder.mutation<MyResponse<OrderField>, OrderSelectVoucherBodyField>({
+            query: (body) => ({
+                url: ORDER_API.ORDER_SELECT_VOUCHER,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: (result, error, arg) => [{ type: 'Order', id: arg.id }],
+        }),
     }),
 });
 
@@ -102,4 +111,5 @@ export const {
     useCreateOrderMutation,
     useUpdateOrderMutation,
     useCreateOrderStatusMutation,
+    useOrderSelectVoucherMutation,
 } = orderRTK;

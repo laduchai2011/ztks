@@ -21,6 +21,10 @@ export interface state_props {
         order?: OrderField;
         newOrder?: OrderField;
     };
+    voucherDialog: {
+        isShow: boolean;
+        order?: OrderField;
+    };
     addOrderStatusDialog: {
         isShow: boolean;
         order?: OrderField;

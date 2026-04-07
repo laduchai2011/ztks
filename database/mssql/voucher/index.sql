@@ -15,3 +15,5 @@ CREATE TABLE voucher (
 GO
 CREATE NONCLUSTERED INDEX idx_phone ON voucher(phone);
 GO
+CREATE UNIQUE NONCLUSTERED INDEX idx_voucher_orderId_unique ON voucher(orderId) WHERE orderId IS NOT NULL;
+GO

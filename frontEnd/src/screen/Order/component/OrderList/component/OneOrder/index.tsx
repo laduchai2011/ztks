@@ -28,13 +28,17 @@ import {
     setData_toastMessage,
     set_isLoading,
     setOrder_payDialog,
+    setIsShow_voucherDialog,
+    setOrder_voucherDialog,
 } from '@src/redux/slice/Order';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { OrderField, OrderStatusField } from '@src/dataStruct/order';
+import { VoucherField } from '@src/dataStruct/voucher';
 import { formatMoney } from '@src/utility/string';
 import { timeAgoSmart } from '@src/utility/time';
 import { orderStatusType_enum, orderStatusType_type, defaultContents } from '@src/screen/Order/type';
 import { useLazyGetAllOrderStatusQuery } from '@src/redux/query/orderRTK';
+import { useLazyGetVoucherWithOrderIdQuery } from '@src/redux/query/voucherRTK';
 
 const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -50,8 +54,10 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
     const [order, setOrder] = useState<OrderField>(data);
     const [payText, setPayText] = useState<string>('Chưa thanh toán');
     const [orderStatus, setOrderStatus] = useState<OrderStatusField[]>([]);
+    const [selectedVoucher, setSelectedVoucher] = useState<VoucherField | undefined>(undefined);
 
     const [getAllOrderStatus] = useLazyGetAllOrderStatusQuery();
+    const [getVoucherWithOrderId] = useLazyGetVoucherWithOrderIdQuery();
 
     useEffect(() => {
         if (!payText_element.current) return;
@@ -117,6 +123,19 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
             });
     }, [dispatch, getAllOrderStatus, order.id]);
 
+    useEffect(() => {
+        getVoucherWithOrderId({ orderId: order.id })
+            .then((res) => {
+                const resData = res.data;
+                if (resData?.isSuccess && resData.data) {
+                    setSelectedVoucher(resData.data);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, [order, getVoucherWithOrderId]);
+
     const handleOpenEdit = () => {
         dispatch(set_editOrderDialog({ isShow: true, order: order }));
     };
@@ -137,6 +156,11 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
     const handleOpenPay = () => {
         dispatch(setIsShow_payDialog(true));
         dispatch(setOrder_payDialog(order));
+    };
+
+    const handleOpenVoucherList = () => {
+        dispatch(setIsShow_voucherDialog(true));
+        dispatch(setOrder_voucherDialog(order));
     };
 
     const handleOpenOrderStatus = (option: orderStatusType_type) => {
@@ -221,6 +245,16 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
                 <div>{formatMoney(order.money)}</div>
                 <div ref={payText_element}>{payText}</div>
                 <div>{!order.isPay && <button onClick={() => handleOpenPay()}>{PAY}</button>}</div>
+            </div>
+            <div className={style.voucher}>
+                <div className={style.text}>
+                    {!selectedVoucher && <div className={style.not}>Chưa áp dụng voucher</div>}
+                    {selectedVoucher && <div className={style.ed}>Đã áp dụng voucher</div>}
+                </div>
+                <div className={style.isUsed}>{selectedVoucher && <div>Voucher</div>}</div>
+                <div className={style.list}>
+                    <div onClick={() => handleOpenVoucherList()}>Danh sách</div>
+                </div>
             </div>
             <div className={style.status}>
                 <div>

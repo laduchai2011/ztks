@@ -45,7 +45,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE UpdateOrder
+ALTER PROCEDURE UpdateOrder
 	@id INT,
 	@label NVARCHAR(255),
 	@content NVARCHAR(MAX),
@@ -59,28 +59,29 @@ BEGIN
 	BEGIN TRY
         BEGIN TRANSACTION;
 
-		IF NOT EXISTS (
-			SELECT 1
-			FROM dbo.[order]
-			WHERE 
-				status = 'normal'
-				AND id = @id
-				AND accountId = @accountId
-		)
+		IF NOT EXISTS ( SELECT 1 FROM dbo.[order] WHERE status = 'normal' AND id = @id AND accountId = @accountId )
 		BEGIN
-			THROW 50002, N'Đơn hàng không hợp lệ .', 1;
+			THROW 50001, N'Đơn hàng không hợp lệ .', 1;
+		END
+
+		DECLARE @phone_voucher INT;
+		SELECT @phone_voucher = phone FROM dbo.voucher WHERE orderId = @id;
+		IF @phone_voucher IS NULL THROW 50002, N'Không tìm số điện thoại của voucher', 2;
+
+		IF @phone_voucher <> @phone
+		BEGIN
+			UPDATE dbo.voucher
+			SET orderId = NULL
+			WHERE orderId = @id
 		END
 
         UPDATE dbo.[order]
-		SET 
-			label = @label, 
-			content = @content,
-			money = @money,
-			phone = @phone
-		WHERE 
-			status = 'normal'
-			AND id = @id
-			AND isPay = 0
+		SET label = @label, content = @content, money = @money, phone = @phone
+		WHERE status = 'normal' AND id = @id AND isPay = 0
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50003, 'Cập nhật đơn hàng không thành công.', 3;
+        END
 
 		SELECT * FROM dbo.[order] WHERE id = @id;
 
@@ -92,6 +93,56 @@ BEGIN
 		THROW;
 	END CATCH
 END;
+GO
+
+ALTER PROCEDURE OrderSelectVoucher
+	@id INT,
+	@voucherId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.[order] WHERE status = 'normal' AND id = @id AND accountId = @accountId )
+		BEGIN
+			THROW 50001, N'Đơn hàng không hợp lệ .', 1;
+		END
+
+		DECLARE @phone_order INT;
+		SELECT @phone_order = phone FROM dbo.[order] WHERE id = @id;
+		IF @phone_order IS NULL THROW 50002, N'Không tìm thấy số điện thoại của đơn hàng', 2;
+
+		DECLARE @phone_voucher INT;
+		SELECT @phone_voucher = phone FROM dbo.voucher WHERE id = @voucherId;
+		IF @phone_voucher IS NULL THROW 50003, N'Không tìm thấy số điện thoại của voucher', 3;
+
+		-- So sánh 2 số điện thoại
+		IF @phone_order <> @phone_voucher
+		BEGIN
+			THROW 50004, N'Số điện thoại của voucher không khớp với đơn hàng', 4;
+		END
+
+        UPDATE dbo.voucher
+		SET orderId = @id
+		WHERE id = @voucherId
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50005, 'Cập nhật voucher cho đơn hàng .', 5;
+        END
+
+		SELECT * FROM dbo.[order] WHERE id = @id;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END
 GO
 
 CREATE PROCEDURE CreateOrderStatus

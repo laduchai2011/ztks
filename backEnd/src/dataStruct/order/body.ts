@@ -55,3 +55,9 @@ export interface UpdateOrderPaidBodyField {
     id: number;
     money: number;
 }
+
+export interface OrderSelectVoucherBodyField {
+    id: number;
+    voucherId: number;
+    accountId: number;
+}

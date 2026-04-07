@@ -26,3 +26,11 @@ BEGIN
 		AND phone = @phone
 END
 GO
+
+CREATE PROCEDURE GetVoucherWithOrderId
+	@orderId INT
+AS
+BEGIN
+	SELECT * FROM dbo.voucher WHERE orderId = @orderId
+END
+GO

@@ -20,7 +20,7 @@ const httpServer = createServer(); // ❗ Không dùng Express
 // const io = new Server(httpServer);
 const io = new Server(httpServer, {
     cors: {
-        origin: 'http://zalo5k.local.com:3000',
+        origin: ['http://zalo5k.local.com:3000', 'http://zalo5k.local.com:3001', 'http://zalo5k.local.com:3002'],
         methods: ['GET', 'POST'],
         credentials: true,
     },

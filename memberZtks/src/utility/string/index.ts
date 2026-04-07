@@ -18,14 +18,14 @@ export function isNumber(str: string): boolean {
     return isNumber;
 }
 
-// export function isPositiveInteger(str: string): boolean {
-//     const num = Number(str);
-//     return (
-//         str.trim() !== '' && // không phải chuỗi rỗng
-//         Number.isInteger(num) && // là số nguyên
-//         num > 0 // lớn hơn 0
-//     );
-// }
+export function isPositiveInteger(str: string): boolean {
+    const num = Number(str);
+    return (
+        str.trim() !== '' && // không phải chuỗi rỗng
+        Number.isInteger(num) && // là số nguyên
+        num > 0 // lớn hơn 0
+    );
+}
 
 export function isValidPhoneNumber(phone: string): boolean {
     const regex = /^(0|\+84)[1-9][0-9]{8}$/;

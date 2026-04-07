@@ -1,0 +1,177 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(161, 161, 161, 0.3);
+    @include center-of-rectangle;
+    opacity: 0;
+    display: none;
+    transition: opacity 0.5s ease-in-out;
+
+    &.opacity {
+        opacity: 1;
+    }
+
+    &.display {
+        display: flex;
+    }
+
+    > .main {
+        background-color: white;
+        width: 300px;
+        border-radius: 15px;
+
+        @include responsive(sm) {
+            width: 80%;
+        }
+
+        > .closeContainer {
+            display: flex;
+            justify-content: flex-end;
+            box-sizing: border-box;
+            padding: 5px;
+
+            > svg {
+                cursor: pointer;
+            }
+        }
+
+        > .contentContainer {
+            > .title {
+                box-sizing: border-box;
+                padding: 10px;
+                @include center-of-rectangle;
+                font-weight: 600;
+                margin-bottom: 10px;
+            }
+
+            > .selectedVoucher {
+                margin: 10px 0;
+                padding: 10px;
+
+                > .aVoucher {
+                    position: relative;
+                    height: 70px;
+                    box-sizing: border-box;
+                    padding: 15px;
+                    border-radius: 10px;
+                    background-color: rgb(177, 255, 255);
+
+                    > .voucherContent {
+                        height: 100%;
+                        @include center-of-row;
+                        justify-content: space-between;
+
+                        > div:nth-child(1) {
+                            color: blue;
+                        }
+
+                        > div:nth-child(2) {
+                            color: gray;
+                            font-size: 0.9rem;
+                        }
+                    }
+
+                    > .isUsed {
+                        position: absolute;
+                        top: 0;
+                        right: 5px;
+                        font-size: 0.9rem;
+
+                        > .not {
+                            color: red;
+                        }
+
+                        > .ed {
+                            color: blue;
+                        }
+                    }
+                }
+            }
+
+            > .list {
+                max-height: 500px;
+                overflow-y: scroll;
+                @include small-scroll-yy(1px);
+
+                > .aVoucher {
+                    position: relative;
+                    height: 70px;
+                    box-sizing: border-box;
+                    padding: 10px;
+
+                    > .voucherContent {
+                        height: 100%;
+                        @include center-of-row;
+                        justify-content: space-between;
+
+                        > div:nth-child(1) {
+                            color: blue;
+                        }
+
+                        > div:nth-child(2) {
+                            color: gray;
+                            font-size: 0.9rem;
+                        }
+                    }
+
+                    > .isUsed {
+                        position: absolute;
+                        top: 0;
+                        right: 5px;
+                        font-size: 0.9rem;
+
+                        > .not {
+                            color: red;
+                        }
+
+                        > .ed {
+                            color: blue;
+                        }
+                    }
+
+                    > input {
+                        position: absolute;
+                        top: 0;
+                        left: 5px;
+                    }
+                }
+            }
+        }
+
+        > .buttonContainer {
+            display: flex;
+            justify-content: space-around;
+            box-sizing: border-box;
+            padding: 5px;
+
+            > button {
+                width: 80px;
+                height: 30px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            > button:nth-child(1) {
+                background-color: rgb(177, 255, 190);
+
+                &:active {
+                    background-color: rgb(233, 233, 233);
+                }
+            }
+
+            > button:nth-child(2) {
+                background-color: rgb(255, 216, 216);
+
+                &:active {
+                    background-color: rgb(233, 233, 233);
+                }
+            }
+        }
+    }
+}

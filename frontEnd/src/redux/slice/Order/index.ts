@@ -23,6 +23,10 @@ const initialState: state_props = {
         order: undefined,
         newOrder: undefined,
     },
+    voucherDialog: {
+        isShow: false,
+        order: undefined,
+    },
     addOrderStatusDialog: {
         isShow: false,
         order: undefined,
@@ -65,6 +69,12 @@ const OrderSlice = createSlice({
         setNewOrder_payDialog: (state, action: PayloadAction<OrderField | undefined>) => {
             state.payDialog.newOrder = action.payload;
         },
+        setIsShow_voucherDialog: (state, action: PayloadAction<boolean>) => {
+            state.voucherDialog.isShow = action.payload;
+        },
+        setOrder_voucherDialog: (state, action: PayloadAction<OrderField | undefined>) => {
+            state.voucherDialog.order = action.payload;
+        },
         set_addOrderStatusDialog: (
             state,
             action: PayloadAction<{
@@ -94,6 +104,8 @@ export const {
     setIsShow_payDialog,
     setOrder_payDialog,
     setNewOrder_payDialog,
+    setIsShow_voucherDialog,
+    setOrder_voucherDialog,
     set_addOrderStatusDialog,
     setFinal_addOrderStatusDialog,
 } = OrderSlice.actions;

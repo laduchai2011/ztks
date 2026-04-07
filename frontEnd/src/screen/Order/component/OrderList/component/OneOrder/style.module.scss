@@ -133,6 +133,50 @@
         }
     }
 
+    > .voucher {
+        @include center-of-row;
+        justify-content: space-between;
+
+        > .text {
+            font-size: 0.9rem;
+
+            > .not {
+                color: red;
+            }
+            > .ed {
+                color: rgb(0, 255, 13);
+            }
+        }
+
+        > .isUsed {
+            font-size: 0.9rem;
+
+            > div {
+                background-color: rgb(216, 216, 216);
+                box-sizing: border-box;
+                padding: 5px;
+                border-radius: 5px;
+                cursor: default;
+                user-select: none;
+
+                &:active {
+                    background-color: rgb(243, 243, 243);
+                }
+            }
+        }
+
+        > .list {
+            font-size: 0.9rem;
+            color: blue;
+            cursor: pointer;
+            user-select: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
     > .status {
         box-sizing: border-box;
         padding: 5px;

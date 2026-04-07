@@ -2,6 +2,7 @@ import { FC, memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { BalanceFluctuationField, BalanceFluctuationEnum } from '@src/dataStruct/wallet';
 import { formatMoney } from '@src/utility/string';
+import { detailTime } from '@src/utility/time';
 
 const ABalanceFluctuation: FC<{ balanceFluctuation: BalanceFluctuationField }> = ({ balanceFluctuation }) => {
     const payHookId = balanceFluctuation.payHookId;
@@ -29,16 +30,6 @@ const ABalanceFluctuation: FC<{ balanceFluctuation: BalanceFluctuationField }> =
         }
     };
 
-    const handleTime = () => {
-        const iso = balanceFluctuation.createTime;
-
-        const vnTime = new Date(iso).toLocaleString('vi-VN', {
-            timeZone: 'Asia/Ho_Chi_Minh',
-        });
-
-        return vnTime;
-    };
-
     return (
         <div className={style.parent}>
             <div className={style.main}>
@@ -49,7 +40,7 @@ const ABalanceFluctuation: FC<{ balanceFluctuation: BalanceFluctuationField }> =
                 </div>
             </div>
             <div className={style.timeAgo}>
-                <div>{handleTime()}</div>
+                <div>{detailTime(balanceFluctuation.createTime)}</div>
             </div>
         </div>
     );

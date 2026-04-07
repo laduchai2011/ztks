@@ -10,4 +10,5 @@ export const ORDER_API = {
     CREATE_ORDER: `${BASE_URL}${apiString}/service_order/mutate/createOrder`,
     UPDATE_ORDER: `${BASE_URL}${apiString}/service_order/mutate/updateOrder`,
     CREATE_ORDER_STATUS: `${BASE_URL}${apiString}/service_order/mutate/createOrderStatus`,
+    ORDER_SELECT_VOUCHER: `${BASE_URL}${apiString}/service_order/mutate/orderSelectVoucher`,
 };

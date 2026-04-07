@@ -20,3 +20,13 @@ export function timeAgoSmart(dateInput: string | Date) {
     // >= 7 ngày: hiện ngày cụ thể
     return date.toLocaleDateString('vi-VN');
 }
+
+export const detailTime = (time: string) => {
+    const iso = time;
+
+    const vnTime = new Date(iso).toLocaleString('vi-VN', {
+        timeZone: 'Asia/Ho_Chi_Minh',
+    });
+
+    return vnTime;
+};
