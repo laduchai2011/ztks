@@ -54,10 +54,3 @@ CREATE TABLE recommend (
 GO
 CREATE UNIQUE NONCLUSTERED INDEX idx_recommend_yourCode_unique ON recommend(yourCode) WHERE yourCode IS NOT NULL;
 GO
-
-CREATE TABLE customer (
-    phone NVARCHAR(255) PRIMARY KEY,
-    password NVARCHAR(255) NOT NULL,
-    createTime DATETIMEOFFSET(7) NOT NULL DEFAULT SYSDATETIMEOFFSET(),
-);
-GO

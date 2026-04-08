@@ -11,7 +11,7 @@ const router_query_voucher: Router = express.Router();
 const handle_getVouchers = new Handle_GetVouchers();
 const handle_getVoucherWithOrderId = new Handle_GetVoucherWithOrderId();
 
-router_query_voucher.post('/getVouchers', authentication, handle_getVouchers.main);
+router_query_voucher.post('/getVouchers', handle_getVouchers.main);
 
 router_query_voucher.post('/getVoucherWithOrderId', authentication, handle_getVoucherWithOrderId.main);
 

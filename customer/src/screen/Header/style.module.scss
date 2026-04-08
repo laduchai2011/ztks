@@ -1,0 +1,44 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    background-color: aliceblue;
+    width: 100%;
+
+    > .selectedContainer {
+        box-sizing: border-box;
+        padding: 5px;
+        @include center-of-row;
+        height: 40px;
+
+        > div:nth-child(1) {
+            flex: 1;
+        }
+    }
+
+    > .list {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s linear;
+
+        &.show {
+            max-height: 400px;
+        }
+
+        > div {
+            height: 40px;
+            width: 100%;
+            cursor: pointer;
+            user-select: none;
+            box-sizing: border-box;
+            padding: 10px;
+
+            &:hover {
+                background-color: rgb(235, 235, 235);
+            }
+
+            &.selected {
+                background-color: rgb(235, 235, 235);
+            }
+        }
+    }
+}

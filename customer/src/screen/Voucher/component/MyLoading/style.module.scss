@@ -1,0 +1,28 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(133, 133, 133, 0.3);
+    @include center-of-rectangle;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+
+    &.display {
+        display: flex;
+    }
+
+    &.opacity {
+        opacity: 1;
+    }
+
+    > .loadding {
+        height: 50px;
+        box-sizing: border-box;
+        padding: 10px;
+    }
+}
