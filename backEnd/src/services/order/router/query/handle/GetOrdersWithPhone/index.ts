@@ -1,27 +1,27 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { VoucherField, PagedVoucherField } from '@src/dataStruct/voucher';
-import { GetVouchersBodyField } from '@src/dataStruct/voucher/body';
-import QueryDB_GetVouchers from '../../queryDB/GetVouchers';
+import { OrderField, PagedOrderField } from '@src/dataStruct/order';
+import { GetOrdersWithPhoneBodyField } from '@src/dataStruct/order/body';
+import QueryDB_GetOrdersWithPhone from '../../queryDB/GetOrdersWithPhone';
 
-class Handle_GetVouchers {
+class Handle_GetOrdersWithPhone {
     private _mssql_server = mssql_server;
 
     constructor() {
         this._mssql_server.init();
     }
 
-    main = async (req: Request<any, any, GetVouchersBodyField>, res: Response) => {
-        const getVouchersBody = req.body;
+    main = async (req: Request<any, any, GetOrdersWithPhoneBodyField>, res: Response) => {
+        const getOrdersWithPhoneBody = req.body;
 
-        const myResponse: MyResponse<PagedVoucherField> = {
+        const myResponse: MyResponse<PagedOrderField> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_GetVouchers-main)',
+            message: 'Bắt đầu (Handle_GetOrdersWithPhone-main)',
         };
 
-        const queryDB = new QueryDB_GetVouchers();
-        queryDB.setGetVouchersBody(getVouchersBody);
+        const queryDB = new QueryDB_GetOrdersWithPhone();
+        queryDB.setGetOrdersWithPhoneBody(getOrdersWithPhoneBody);
 
         const connection_pool = this._mssql_server.get_connectionPool();
         if (connection_pool) {
@@ -34,20 +34,20 @@ class Handle_GetVouchers {
 
         try {
             const result = await queryDB.run();
-            if (result?.recordset.length && result?.recordset.length > 0) {
-                const rows: VoucherField[] = result.recordset;
+            if (result?.recordset) {
+                const rows: OrderField[] = result.recordset;
                 myResponse.data = { items: rows, totalCount: result.recordsets[1][0].totalCount };
-                myResponse.message = 'Lấy những voucher thành công !';
+                myResponse.message = 'Lấy những đơn hàng thành công !';
                 myResponse.isSuccess = true;
                 res.status(200).json(myResponse);
                 return;
             } else {
-                myResponse.message = 'Lấy những voucher KHÔNG thành công !';
+                myResponse.message = 'Lấy những đơn hàng KHÔNG thành công !';
                 res.status(204).json(myResponse);
                 return;
             }
         } catch (error) {
-            myResponse.message = 'Lấy những voucher KHÔNG thành công !!';
+            myResponse.message = 'Lấy những đơn hàng KHÔNG thành công !!';
             myResponse.err = error;
             res.status(500).json(myResponse);
             return;
@@ -55,4 +55,4 @@ class Handle_GetVouchers {
     };
 }
 
-export default Handle_GetVouchers;
+export default Handle_GetOrdersWithPhone;

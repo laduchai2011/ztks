@@ -64,6 +64,30 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE GetOrdersWithPhone
+	@page INT,
+    @size INT,
+	@phone INT
+AS
+BEGIN
+	-- Tập kết quả 1: dữ liệu phân trang
+    WITH orders AS (
+        SELECT o.*,
+			ROW_NUMBER() OVER (ORDER BY o.id DESC) AS rn
+        FROM dbo.[order] AS o
+		WHERE status = 'normal' AND phone = @phone
+    )
+    SELECT *
+    FROM orders
+    WHERE rn BETWEEN ((@page - 1) * @size + 1) AND (@page * @size);
+
+    -- Tập kết quả 2: tổng số dòng
+    SELECT COUNT(*) AS totalCount
+	FROM dbo.[order] AS o
+	WHERE status = 'normal' AND phone = @phone
+END
+GO
+
 CREATE PROCEDURE GetAllOrderStatus
 	@orderId INT
 AS

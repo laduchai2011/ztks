@@ -1,6 +1,5 @@
 import express, { Router } from 'express';
 import dotenv from 'dotenv';
-import authentication from '@src/auth';
 import Handle_GetVouchers from './handle/GetVouchers';
 import Handle_GetVoucherWithOrderId from './handle/GetVoucherWithOrderId';
 
@@ -13,6 +12,6 @@ const handle_getVoucherWithOrderId = new Handle_GetVoucherWithOrderId();
 
 router_query_voucher.post('/getVouchers', handle_getVouchers.main);
 
-router_query_voucher.post('/getVoucherWithOrderId', authentication, handle_getVoucherWithOrderId.main);
+router_query_voucher.post('/getVoucherWithOrderId', handle_getVoucherWithOrderId.main);
 
 export default router_query_voucher;

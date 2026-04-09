@@ -61,3 +61,9 @@ export interface OrderSelectVoucherBodyField {
     voucherId: number;
     accountId: number;
 }
+
+export interface GetOrdersWithPhoneBodyField {
+    page: number;
+    size: number;
+    phone: string;
+}

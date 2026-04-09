@@ -2,39 +2,38 @@ import { memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
-import { VoucherField } from '@src/dataStruct/voucher';
-import { GetVouchersBodyField } from '@src/dataStruct/voucher/body';
+import { OrderField } from '@src/dataStruct/order';
+import { GetOrdersWithPhoneBodyField } from '@src/dataStruct/order/body';
 import { SEE_MORE } from '@src/const/text';
-import { formatMoney } from '@src/utility/string';
-import { detailTime } from '@src/utility/time';
-import { useLazyGetVouchersQuery } from '@src/redux/query/voucherRTK';
-import { set_isLoading, setData_toastMessage } from '@src/redux/slice/Voucher';
+import { useLazyGetOrdersWithPhoneQuery } from '@src/redux/query/orderRTK';
+import { set_isLoading, setData_toastMessage } from '@src/redux/slice/Order';
 import { messageType_enum } from '@src/component/ToastMessage/type';
+import OneOrder from './component/OneOrder';
 
 const List = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const getVouchersBody: GetVouchersBodyField | undefined = useSelector(
-        (state: RootState) => state.VoucherSlice.getVouchersBody
+    const getOrdersWithPhoneBody: GetOrdersWithPhoneBodyField | undefined = useSelector(
+        (state: RootState) => state.OrderSlice.getOrdersWithPhoneBody
     );
 
-    const [body, setBody] = useState<GetVouchersBodyField | undefined>(undefined);
-    const [vouchers, setVouchers] = useState<VoucherField[]>([]);
+    const [body, setBody] = useState<GetOrdersWithPhoneBodyField | undefined>(undefined);
+    const [vouchers, setVouchers] = useState<OrderField[]>([]);
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [total, setTotal] = useState<number>(0);
 
-    const [getVouchers] = useLazyGetVouchersQuery();
+    const [getOrdersWithPhone] = useLazyGetOrdersWithPhoneQuery();
 
     useEffect(() => {
-        if (!getVouchersBody) return;
+        if (!getOrdersWithPhoneBody) return;
         dispatch(set_isLoading(true));
-        getVouchers(getVouchersBody)
+        getOrdersWithPhone(getOrdersWithPhoneBody)
             .then((res) => {
                 const resData = res.data;
                 if (resData?.isSuccess && resData.data) {
                     setTotal(resData.data.totalCount);
                     setVouchers(resData.data.items);
-                    setHasMore(resData.data.items.length === getVouchersBody.size);
-                    setBody({ ...getVouchersBody, page: getVouchersBody.page + 1 });
+                    setHasMore(resData.data.items.length === getOrdersWithPhoneBody.size);
+                    setBody({ ...getOrdersWithPhoneBody, page: getOrdersWithPhoneBody.page + 1 });
                 }
             })
             .catch((err) => {
@@ -49,15 +48,16 @@ const List = () => {
             .finally(() => {
                 dispatch(set_isLoading(false));
             });
-    }, [dispatch, getVouchersBody, getVouchers]);
+    }, [dispatch, getOrdersWithPhoneBody, getOrdersWithPhone]);
 
     const handleSeeMore = () => {
         if (!body) return;
         if (!hasMore) return;
         dispatch(set_isLoading(true));
-        getVouchers(body)
+        getOrdersWithPhone(body)
             .then((res) => {
                 const resData = res.data;
+                console.log('getOrdersWithPhone', resData);
                 if (resData?.isSuccess && resData.data) {
                     setTotal(resData.data.totalCount);
                     setVouchers((prev) => [...prev, ...(resData.data?.items || [])]);
@@ -80,19 +80,7 @@ const List = () => {
     };
 
     const list = vouchers.map((item, index) => {
-        return (
-            <div className={style.aVoucher} key={index}>
-                <div className={style.index}>{index + 1}</div>
-                <div className={style.voucherContent}>
-                    <div>{formatMoney(item.money)}</div>
-                    <div>{detailTime(item.timeExpire)}</div>
-                </div>
-                <div className={style.isUsed}>
-                    {!item.isUsed && <div className={style.not}>Chưa sử dụng</div>}
-                    {item.isUsed && <div className={style.ed}>Đã sử dụng</div>}
-                </div>
-            </div>
-        );
+        return <OneOrder key={item.id} index={index + 1} data={item} />;
     });
 
     return (

@@ -3,7 +3,7 @@ import style from './style.module.scss';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { IoIosSearch } from 'react-icons/io';
-import { set_getVouchersBody } from '@src/redux/slice/Voucher';
+import { set_getOrdersWithPhoneBody } from '@src/redux/slice/Order';
 
 const Filter = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -15,7 +15,7 @@ const Filter = () => {
     };
 
     const handleSearch = () => {
-        dispatch(set_getVouchersBody({ page: 1, size: 5, isUsed: null, phone: phoneInput.trim() }));
+        dispatch(set_getOrdersWithPhoneBody({ page: 1, size: 5, phone: phoneInput.trim() }));
     };
 
     return (
