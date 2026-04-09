@@ -17,7 +17,7 @@ const sameSite = process.env.NODE_ENV === 'development' ? 'lax' : 'none';
 // const sameSite = 'none';
 const cookieDomain = isProduct ? '.5kaquarium.com' : 'zalo5k.local.com';
 
-class Handle_Signout {
+class Handle_CustomerSignout {
     async main(req: Request, res: Response) {
         const myResponse: MyResponse<unknown> = {
             isSuccess: false,
@@ -28,7 +28,7 @@ class Handle_Signout {
             const id = req.cookies?.id;
             if (id) {
                 // Xóa dữ liệu token trong Redis
-                const keyServiceRedis = `token-storeAuthToken-${id}_${dev_prefix}`;
+                const keyServiceRedis = `token-storeAuthToken-${id}_${dev_prefix}-customer`;
                 await serviceRedis.deleteData(keyServiceRedis);
             }
 
@@ -55,4 +55,4 @@ class Handle_Signout {
     }
 }
 
-export default Handle_Signout;
+export default Handle_CustomerSignout;

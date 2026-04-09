@@ -1,6 +1,7 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
 import { GetOrdersWithPhoneBodyField } from '@src/dataStruct/order/body';
 import { OrderField } from '@src/dataStruct/order';
+import { VoucherField } from '@src/dataStruct/voucher';
 
 export interface state_props {
     isLoading: boolean;
@@ -11,6 +12,7 @@ export interface state_props {
     voucherDialog: {
         isShow: boolean;
         order?: OrderField;
+        selectedVoucher?: VoucherField;
     };
 }
 

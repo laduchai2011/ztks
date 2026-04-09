@@ -38,6 +38,7 @@ const Signin = () => {
         signin(signinCustomerBody)
             .then((res) => {
                 const resData = res.data;
+                console.log(resData);
                 if (resData?.isSuccess) {
                     setNote('');
                     setTimeout(() => {

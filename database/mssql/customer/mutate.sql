@@ -1,4 +1,4 @@
-CREATE PROCEDURE CreateCustomer
+ALTER PROCEDURE CreateCustomer
 	  @phone NVARCHAR(255),
 	  @password NVARCHAR(255)
 AS
@@ -29,7 +29,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE CustomerForgetPassword
+ALTER PROCEDURE CustomerForgetPassword
 	@phone NVARCHAR(255),
 	@password NVARCHAR(255)
 AS

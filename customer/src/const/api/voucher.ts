@@ -6,4 +6,5 @@ const apiString = isProduct ? '' : '/api';
 export const VOUCHER_API = {
     GET_VOUCHERS: `${BASE_URL}${apiString}/service_voucher/query/getVouchers`,
     GET_VOUCHER_WITH_ORDER_ID: `${BASE_URL}${apiString}/service_voucher/query/getVoucherWithOrderId`,
+    CUSTOMER_USE_VOUCHER: `${BASE_URL}${apiString}/service_voucher/mutate/customerUseVoucher`,
 };

@@ -15,7 +15,7 @@ export const customerRTK = createApi({
     endpoints: (builder) => ({
         signin: builder.mutation<MyResponse<CustomerField>, SigninCustomerBodyField>({
             query: (body) => ({
-                url: CUSTOMER_API.SIGNIN,
+                url: CUSTOMER_API.CUSTOMER_SIGNIN,
                 method: 'POST',
                 body,
             }),
@@ -43,7 +43,18 @@ export const customerRTK = createApi({
                 },
             }),
         }),
+        customerSignout: builder.mutation<MyResponse<unknown>, void>({
+            query: () => ({
+                url: CUSTOMER_API.CUSTOMER_SIGNOUT,
+                method: 'POST',
+            }),
+        }),
     }),
 });
 
-export const { useSigninMutation, useCreateCustomerMutation, useCustomerForgetPasswordMutation } = customerRTK;
+export const {
+    useSigninMutation,
+    useCreateCustomerMutation,
+    useCustomerForgetPasswordMutation,
+    useCustomerSignoutMutation,
+} = customerRTK;

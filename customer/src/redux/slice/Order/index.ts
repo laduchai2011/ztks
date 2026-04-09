@@ -3,6 +3,7 @@ import { state_props } from '@src/screen/Order/type';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
 import { GetOrdersWithPhoneBodyField } from '@src/dataStruct/order/body';
 import { OrderField } from '@src/dataStruct/order';
+import { VoucherField } from '@src/dataStruct/voucher';
 
 const initialState: state_props = {
     isLoading: false,
@@ -13,6 +14,7 @@ const initialState: state_props = {
     voucherDialog: {
         isShow: false,
         order: undefined,
+        selectedVoucher: undefined,
     },
 };
 
@@ -35,6 +37,9 @@ const OrderSlice = createSlice({
         setOrder_voucherDialog: (state, action: PayloadAction<OrderField | undefined>) => {
             state.voucherDialog.order = action.payload;
         },
+        setSelectedVoucher_voucherDialog: (state, action: PayloadAction<VoucherField | undefined>) => {
+            state.voucherDialog.selectedVoucher = action.payload;
+        },
     },
 });
 
@@ -44,5 +49,6 @@ export const {
     set_getOrdersWithPhoneBody,
     setIsShow_voucherDialog,
     setOrder_voucherDialog,
+    setSelectedVoucher_voucherDialog,
 } = OrderSlice.actions;
 export default OrderSlice.reducer;

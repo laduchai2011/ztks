@@ -20,6 +20,7 @@ import {
     setData_toastMessage,
     setIsShow_voucherDialog,
     setOrder_voucherDialog,
+    setSelectedVoucher_voucherDialog,
 } from '@src/redux/slice/Order';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { OrderField, OrderStatusField } from '@src/dataStruct/order';
@@ -33,7 +34,12 @@ import { orderStatusType_enum, defaultContents } from '@src/screen/Order/type';
 const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();
     const payText_element = useRef<HTMLDivElement | null>(null);
-    const [order, setOrder] = useState<OrderField>(data);
+
+    const order: OrderField | undefined = useSelector((state: RootState) => state.OrderSlice.voucherDialog.order);
+    const _selectedVoucher: VoucherField | undefined = useSelector(
+        (state: RootState) => state.OrderSlice.voucherDialog.selectedVoucher
+    );
+
     const [payText, setPayText] = useState<string>('Chưa thanh toán');
     const [orderStatus, setOrderStatus] = useState<OrderStatusField[]>([]);
     const [selectedVoucher, setSelectedVoucher] = useState<VoucherField | undefined>(undefined);
@@ -44,18 +50,24 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
     useEffect(() => {
         if (!payText_element.current) return;
         const payTextElement = payText_element.current;
-        if (order.isPay) {
+        if (data.isPay) {
             setPayText('Đã thanh toán');
             payTextElement.classList.add(style.paid);
         } else {
             setPayText('Chưa thanh toán');
             payTextElement.classList.remove(style.paid);
         }
-    }, [order]);
+    }, [data]);
+
+    useEffect(() => {
+        if (order?.id === data.id) {
+            setSelectedVoucher(_selectedVoucher);
+        }
+    }, [_selectedVoucher, order, data]);
 
     useEffect(() => {
         dispatch(set_isLoading(true));
-        getAllOrderStatus({ orderId: order.id })
+        getAllOrderStatus({ orderId: data.id })
             .then((res) => {
                 const resData = res.data;
                 if (resData?.isSuccess && resData.data) {
@@ -74,10 +86,10 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
             .finally(() => {
                 dispatch(set_isLoading(false));
             });
-    }, [dispatch, getAllOrderStatus, order.id]);
+    }, [dispatch, getAllOrderStatus, data.id]);
 
     useEffect(() => {
-        getVoucherWithOrderId({ orderId: order.id })
+        getVoucherWithOrderId({ orderId: data.id })
             .then((res) => {
                 const resData = res.data;
                 if (resData?.isSuccess && resData.data) {
@@ -87,11 +99,12 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
             .catch((err) => {
                 console.error(err);
             });
-    }, [order, getVoucherWithOrderId]);
+    }, [data, getVoucherWithOrderId]);
 
     const handleOpenVoucherList = () => {
         dispatch(setIsShow_voucherDialog(true));
-        dispatch(setOrder_voucherDialog(order));
+        dispatch(setOrder_voucherDialog(data));
+        dispatch(setSelectedVoucher_voucherDialog(selectedVoucher));
     };
 
     const list_orderStatus = orderStatus.map((item, index) => {
@@ -145,23 +158,23 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
         <div className={style.parent}>
             <div className={style.index}>
                 <div>{index}</div>
-                <div>{order.uuid}</div>
+                <div>{data.uuid}</div>
             </div>
             <div className={style.label}>
                 <div>{TITLE}</div>
-                <div>{order.label}</div>
+                <div>{data.label}</div>
             </div>
             <div className={style.content}>
                 <div>{CONTENT}</div>
-                <div dangerouslySetInnerHTML={{ __html: order.content }} />
+                <div dangerouslySetInnerHTML={{ __html: data.content }} />
             </div>
             <div className={style.phone}>
                 <div>{PHONE_NUMBER}</div>
-                <div>{order.phone}</div>
+                <div>{data.phone}</div>
             </div>
             <div className={style.isPay}>
                 <div>{PAY}</div>
-                <div>{formatMoney(order.money)}</div>
+                <div>{formatMoney(data.money)}</div>
                 <div ref={payText_element}>{payText}</div>
             </div>
             <div className={style.voucher}>
@@ -169,7 +182,9 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
                     {!selectedVoucher && <div className={style.not}>Chưa áp dụng voucher</div>}
                     {selectedVoucher && <div className={style.ed}>Đã áp dụng voucher</div>}
                 </div>
-                <div className={style.isUsed}>{selectedVoucher && <div>Voucher</div>}</div>
+                <div className={style.isUsed}>
+                    {selectedVoucher && <div onClick={() => handleOpenVoucherList()}>Voucher</div>}
+                </div>
                 <div className={style.list}>
                     <div onClick={() => handleOpenVoucherList()}>Danh sách</div>
                 </div>

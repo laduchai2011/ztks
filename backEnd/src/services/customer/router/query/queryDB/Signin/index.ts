@@ -21,9 +21,9 @@ class QueryDB_Signin {
             try {
                 const result = await this._connectionPool
                     .request()
-                    .input('userName', sql.NVarChar(255), this._signinCustomerBody.phone)
+                    .input('phone', sql.NVarChar(255), this._signinCustomerBody.phone)
                     .input('password', sql.NVarChar(255), this._signinCustomerBody.password)
-                    .query(`SELECT * FROM dbo.Signin(@userName, @password)`);
+                    .query(`SELECT * FROM dbo.SigninCustomer(@phone, @password)`);
 
                 return result;
             } catch (error) {

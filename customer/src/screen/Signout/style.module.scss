@@ -1,0 +1,65 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    background-color: #eee;
+    @include center-of-rectangle;
+
+    > .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgb(133, 133, 133, 0.3);
+        @include center-of-rectangle;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+
+        &.display {
+            display: flex;
+        }
+
+        &.opacity {
+            opacity: 1;
+        }
+
+        > .loadding {
+            height: 50px;
+            box-sizing: border-box;
+            padding: 10px;
+        }
+    }
+
+    > .main {
+        background-color: white;
+        width: 300px;
+        height: 100vh;
+        @include center-of-rectangle;
+
+        > .btnSignout {
+            box-sizing: border-box;
+            padding: 10px;
+            border-radius: 15px;
+            background-color: red;
+            color: white;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        > .btnSignin {
+            box-sizing: border-box;
+            padding: 10px;
+            border-radius: 15px;
+            background-color: blue;
+            color: white;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        > .note {
+            color: red;
+            margin-top: 30px;
+        }
+    }
+}

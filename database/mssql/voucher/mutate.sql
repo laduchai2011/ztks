@@ -41,3 +41,78 @@ BEGIN
 	END CATCH
 END;
 GO
+
+ALTER PROCEDURE CustomerUseVoucher
+	@orderId INT,
+	@voucherId INT,
+	@customerId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+		-- Kiểm tra đơn hàng đã thanh toán hay chưa
+		DECLARE @isPay INT;
+		SELECT @isPay = isPay FROM dbo.[order] WHERE id = @orderId;
+		IF @isPay = 1
+		BEGIN
+			THROW 50001, N'Đơn hàng đã thanh toán không thể thay đổi .', 1;
+		END
+
+		DECLARE @customerPhone INT;
+		SELECT @customerPhone = phone FROM dbo.customer WHERE id = @customerId;
+		IF @customerPhone IS NULL THROW 50002, N'Tài khoản không tồn tại', 2;
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.voucher WHERE id = @voucherId AND phone = @customerPhone )
+		BEGIN
+			THROW 50003, N'Voucher này không phải của bạn .', 3;
+		END
+
+		DECLARE @phone_order INT;
+		SELECT @phone_order = phone FROM dbo.[order] WHERE id = @orderId;
+		IF @phone_order IS NULL THROW 50004, N'Không tìm thấy số điện thoại của đơn hàng', 4;
+
+		DECLARE @phone_voucher INT;
+		SELECT @phone_voucher = phone FROM dbo.voucher WHERE id = @voucherId;
+		IF @phone_voucher IS NULL THROW 50005, N'Không tìm thấy số điện thoại của voucher', 5;
+
+		-- So sánh 2 số điện thoại
+		IF @phone_order <> @phone_voucher
+		BEGIN
+			THROW 50006, N'Số điện thoại của voucher không khớp với đơn hàng', 6;
+		END
+
+		DECLARE @selected_voucherId INT;
+		SELECT @selected_voucherId = id FROM dbo.voucher WHERE orderId = @orderId;
+		IF @selected_voucherId IS NOT NULL
+		BEGIN
+			 UPDATE dbo.voucher
+			SET orderId = NULL
+			WHERE id = @selected_voucherId
+			IF @@ROWCOUNT = 0
+			BEGIN
+				THROW 50007, 'Bỏ chọn voucher cũ không thành công .', 7;
+			END
+		END
+
+        UPDATE dbo.voucher
+		SET orderId = @orderId
+		WHERE id = @voucherId
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50008, 'Cập nhật voucher cho đơn hàng không thành công .', 8;
+        END
+
+		SELECT * FROM dbo.voucher WHERE id = @voucherId;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END
+GO

@@ -149,56 +149,6 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE CustomerUseVoucher
-	@orderId INT,
-	@voucherId INT,
-	@customerPhone NVARCHAR(255)
-AS
-BEGIN
-	SET NOCOUNT ON;
-
-	BEGIN TRY
-        BEGIN TRANSACTION;
-
-		IF NOT EXISTS ( SELECT 1 FROM dbo.voucher WHERE id = @voucherId AND phone = @customerPhone )
-		BEGIN
-			THROW 50001, N'Voucher này không phải của bạn .', 1;
-		END
-
-		DECLARE @phone_order INT;
-		SELECT @phone_order = phone FROM dbo.[order] WHERE id = @orderId;
-		IF @phone_order IS NULL THROW 50002, N'Không tìm thấy số điện thoại của đơn hàng', 2;
-
-		DECLARE @phone_voucher INT;
-		SELECT @phone_voucher = phone FROM dbo.voucher WHERE id = @voucherId;
-		IF @phone_voucher IS NULL THROW 50003, N'Không tìm thấy số điện thoại của voucher', 3;
-
-		-- So sánh 2 số điện thoại
-		IF @phone_order <> @phone_voucher
-		BEGIN
-			THROW 50004, N'Số điện thoại của voucher không khớp với đơn hàng', 4;
-		END
-
-        UPDATE dbo.voucher
-		SET orderId = @orderId
-		WHERE id = @voucherId
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50005, 'Cập nhật voucher cho đơn hàng không thành công .', 5;
-        END
-
-		SELECT * FROM dbo.[order] WHERE id = @orderId;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
-END
-GO
-
 CREATE PROCEDURE CreateOrderStatus
 	@type NVARCHAR(255),
 	@content NVARCHAR(255),

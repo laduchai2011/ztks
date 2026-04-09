@@ -103,6 +103,20 @@
                     height: 70px;
                     box-sizing: border-box;
                     padding: 10px;
+                    margin: 10px 0;
+                    background-color: rgb(230, 255, 255);
+
+                    > input {
+                        position: absolute;
+                        top: 0;
+                        left: 5px;
+                    }
+
+                    > .index {
+                        position: absolute;
+                        top: 0;
+                        right: 5px;
+                    }
 
                     > .voucherContent {
                         height: 100%;
@@ -121,7 +135,7 @@
 
                     > .isUsed {
                         position: absolute;
-                        top: 0;
+                        bottom: 0;
                         right: 5px;
                         font-size: 0.9rem;
 
@@ -133,11 +147,21 @@
                             color: blue;
                         }
                     }
+                }
+            }
 
-                    > input {
-                        position: absolute;
-                        top: 0;
-                        left: 5px;
+            > .seeMore {
+                @include center-of-rectangle;
+                height: 50px;
+                width: 100%;
+
+                > div {
+                    color: blue;
+                    cursor: pointer;
+                    user-select: none;
+
+                    &:hover {
+                        text-decoration: underline;
                     }
                 }
             }

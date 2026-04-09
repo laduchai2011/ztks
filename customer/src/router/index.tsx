@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Signup from '@src/screen/Signup';
 import Signin from '@src/screen/Signin';
-// import Signout from '@src/screen/Signout';
+import Signout from '@src/screen/Signout';
 import ForgetPassword from '@src/screen/ForgetPassword';
 import Home from '@src/screen/Home';
 import Voucher from '@src/screen/Voucher';
@@ -14,7 +14,7 @@ const router = createBrowserRouter(
     [
         { path: route_enum.SIGNUP, element: <Signup /> },
         { path: route_enum.SIGNIN, element: <Signin /> },
-        // { path: route_enum.SIGNOUT, element: <Signout /> },
+        { path: route_enum.SIGNOUT, element: <Signout /> },
         { path: route_enum.FORGET_PASSWORD, element: <ForgetPassword /> },
         { path: route_enum.HOME, element: <Home /> },
         { path: route_enum.VOUCHER, element: <Voucher /> },
