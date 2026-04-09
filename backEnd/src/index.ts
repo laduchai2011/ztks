@@ -103,15 +103,8 @@ app.use(`${apiString}/hello`, (req, res) => {
         app.use(`${prefix}/service_account`, service_account);
     }
 
-    // if (services.includes('myCustomer')) {
-    //     const service_myCustomer = (await import('./services/myCustomer')).default;
-    //     app.use(`${prefix}/service_myCustomer`, service_myCustomer);
-    // }
-
     if (services.includes('message')) {
-        // const service_message = (await import('./services/message')).default;
         const service_message_v1 = (await import('./services/message_v1')).default;
-        // app.use(`${prefix}/service_message`, service_message);
         app.use(`${prefix}/service_message_v1`, service_message_v1);
         const hookData = (await import('./services/message_v1/hookData')).hookData;
         hookData();
@@ -155,6 +148,11 @@ app.use(`${apiString}/hello`, (req, res) => {
     if (services.includes('voucher')) {
         const service_voucher = (await import('@src/services/voucher')).default;
         app.use(`${prefix}/service_voucher`, service_voucher);
+    }
+
+    if (services.includes('customer')) {
+        const service_customer = (await import('@src/services/customer')).default;
+        app.use(`${prefix}/service_customer`, service_customer);
     }
 })();
 

@@ -28,3 +28,20 @@ BEGIN
 	END CATCH
 END;
 GO
+
+CREATE PROCEDURE CustomerForgetPassword
+	@phone NVARCHAR(255),
+	@password NVARCHAR(255)
+AS
+BEGIN
+	UPDATE dbo.customer
+	SET password = @password
+	WHERE phone = @phone;
+
+	IF @@ROWCOUNT > 0
+    BEGIN
+        SELECT * FROM dbo.customer 
+        WHERE phone = @phone;
+    END
+END
+GO

@@ -2,9 +2,11 @@ import { configureStore } from '@reduxjs/toolkit';
 import AppReducer from '@src/redux/slice/App';
 import VoucherReducer from '@src/redux/slice/Voucher';
 import OrderReducer from '@src/redux/slice/Order';
-import { accountRTK } from './query/accountRTK';
+import SignupReducer from '@src/redux/slice/Signup';
+import ForgetPasswordReducer from '@src/redux/slice/ForgetPassword';
 import { voucherRTK } from './query/voucherRTK';
 import { orderRTK } from './query/orderRTK';
+import { customerRTK } from './query/customerRTK';
 
 export const store = configureStore({
     reducer: {
@@ -12,12 +14,14 @@ export const store = configureStore({
         AppSlice: AppReducer,
         VoucherSlice: VoucherReducer,
         OrderSlice: OrderReducer,
-        [accountRTK.reducerPath]: accountRTK.reducer,
+        SignupSlice: SignupReducer,
+        ForgetPasswordSlice: ForgetPasswordReducer,
         [voucherRTK.reducerPath]: voucherRTK.reducer,
         [orderRTK.reducerPath]: orderRTK.reducer,
+        [customerRTK.reducerPath]: customerRTK.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(accountRTK.middleware, voucherRTK.middleware, orderRTK.middleware),
+        getDefaultMiddleware().concat(voucherRTK.middleware, orderRTK.middleware, customerRTK.middleware),
 });
 
 // Type hỗ trợ

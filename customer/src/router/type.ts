@@ -1,9 +1,10 @@
-import { HOME, SIGNUP, SIGNIN, SIGNOUT, VOUCHER, ORDER } from '@src/const/text';
+import { HOME, SIGNUP, SIGNIN, SIGNOUT, VOUCHER, ORDER, FORGET_PASSWORD } from '@src/const/text';
 
 const _HOME = HOME;
 const _SIGNUP = SIGNUP;
 const _SIGNIN = SIGNIN;
 const _SIGNOUT = SIGNOUT;
+const _FORGET_PASSWORD = FORGET_PASSWORD;
 const _VOUCHER = VOUCHER;
 const _ORDER = ORDER;
 
@@ -12,6 +13,7 @@ export enum select_enum {
     SIGNUP = _SIGNUP,
     SIGNIN = _SIGNIN,
     SIGNOUT = _SIGNOUT,
+    FORGET_PASSWORD = _FORGET_PASSWORD,
     VOUCHER = _VOUCHER,
     ORDER = _ORDER,
 }
@@ -20,6 +22,7 @@ export type selected_type =
     | select_enum.SIGNUP
     | select_enum.SIGNIN
     | select_enum.SIGNOUT
+    | select_enum.FORGET_PASSWORD
     | select_enum.VOUCHER
     | select_enum.ORDER;
 
@@ -28,6 +31,7 @@ export enum route_enum {
     SIGNUP = '/signup',
     SIGNIN = '/signin',
     SIGNOUT = '/signout',
+    FORGET_PASSWORD = '/forget_password',
     VOUCHER = '/voucher',
     ORDER = '/order',
 }
@@ -36,5 +40,6 @@ export type routed_type =
     | route_enum.SIGNUP
     | route_enum.SIGNIN
     | route_enum.SIGNOUT
+    | route_enum.FORGET_PASSWORD
     | route_enum.VOUCHER
     | route_enum.ORDER;

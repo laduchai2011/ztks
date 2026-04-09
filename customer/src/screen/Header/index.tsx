@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { HOME, VOUCHER, ORDER } from '@src/const/text';
+import { HOME, VOUCHER, ORDER, SIGNIN } from '@src/const/text';
 import { route_enum, select_enum, selected_type } from '@src/router/type';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 
@@ -39,6 +39,10 @@ const Header: FC<{ selected: selected_type }> = ({ selected }) => {
                 navigate(route_enum.ORDER);
                 break;
             }
+            case select_enum.SIGNIN: {
+                navigate(route_enum.SIGNIN);
+                break;
+            }
             default: {
                 //statements;
                 break;
@@ -59,6 +63,7 @@ const Header: FC<{ selected: selected_type }> = ({ selected }) => {
                 <div onClick={() => handleSelect(select_enum.HOME)}>{HOME}</div>
                 <div onClick={() => handleSelect(select_enum.VOUCHER)}>{VOUCHER}</div>
                 <div onClick={() => handleSelect(select_enum.ORDER)}>{ORDER}</div>
+                <div onClick={() => handleSelect(select_enum.SIGNIN)}>{SIGNIN}</div>
             </div>
         </div>
     );
