@@ -22,7 +22,7 @@ class MutateDB_CreateVoucher {
                 const result = await this._connectionPool
                     .request()
                     .input('dayAmount', sql.Int, this._createVoucherBody.dayAmount)
-                    .input('money', sql.BigInt, this._createVoucherBody.money)
+                    .input('money', sql.Decimal(20, 2), this._createVoucherBody.money)
                     .input('phone', sql.NVarChar(255), this._createVoucherBody.phone)
                     .input('memberZtksId', sql.Int, this._createVoucherBody.memberZtksId)
                     .execute('CreateVoucher');

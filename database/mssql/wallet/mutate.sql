@@ -33,6 +33,93 @@ BEGIN
 END;
 GO
 
+ALTER PROCEDURE PayOrder
+	@walletId INT,
+	@addedAmount DECIMAL(20,2),
+	@orderId INT,
+	@payHookId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+		-- Kiểm tra voucher đã dùng hay chưa, đã chết hạn chưa
+		DECLARE @voucherId BIT;
+		DECLARE @isUsed BIT;
+		DECLARE @timeExpire DATETIMEOFFSET(7);
+		DECLARE @money_voucher DECIMAL(20,2);
+		SELECT @voucherId = id, @isUsed = isUsed, @timeExpire = timeExpire, @money_voucher = money FROM dbo.voucher WHERE orderId = @orderId;
+		IF @isUsed = 1
+		BEGIN
+			THROW 50001, N'Voucher đã được sử dụng .', 1;
+		END
+		IF @timeExpire < SYSDATETIMEOFFSET()
+		BEGIN
+			THROW 50002, N'Voucher đã hết hạn .', 2;
+		END
+
+		-- cập nhật tiền nhận được từ chuyển khoản
+        UPDATE dbo.wallet
+		SET amount = amount + @addedAmount, updateTime = SYSDATETIMEOFFSET()
+		WHERE id = @walletId
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50003, 'Cập nhật ví không thành công.', 3;
+        END
+		INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, voucherId, orderId, walletId, createTime)
+        VALUES (@addedAmount, 'payOrder', @payHookId, @voucherId, @orderId, @walletId, SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50004, 'Cập nhật biến động số dư không thành công.', 4;
+        END
+
+		-- cập nhật tiền nhận được từ voucher
+		IF ( @voucherId IS NOT NULL )
+		BEGIN
+			UPDATE dbo.wallet
+			SET amount = amount + @money_voucher, updateTime = SYSDATETIMEOFFSET()
+			WHERE id = @walletId
+			IF @@ROWCOUNT = 0
+			BEGIN
+				THROW 50005, 'Hoàn tiền từ voucher tới ví không thành công.', 5;
+			END
+			INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, voucherId, orderId, walletId, createTime)
+			VALUES (@money_voucher, 'voucher', @payHookId, @voucherId, @orderId, @walletId, SYSDATETIMEOFFSET());
+			IF @@ROWCOUNT = 0
+			BEGIN
+				THROW 50006, 'Cập nhật biến động số dư hoàn tiền từ voucher không thành công.', 6;
+			END
+		END
+
+		-- trừ tiền phí dịch vụ 1%
+		UPDATE dbo.wallet
+		SET amount = amount - (@addedAmount + COALESCE(@money_voucher, 0)) * 0.01, updateTime = SYSDATETIMEOFFSET()
+		WHERE id = @walletId
+		IF @@ROWCOUNT = 0
+		BEGIN
+			THROW 50007, 'Cập nhật ví khấu trừ phí không thành công.', 7;
+		END
+		INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, voucherId, orderId, walletId, createTime)
+		VALUES (- (@addedAmount + COALESCE(@money_voucher, 0)) * 0.01, 'cost1%', @payHookId, @voucherId, @orderId, @walletId, SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+		BEGIN
+			THROW 50008, 'Cập nhật biến động số dư khấu trừ phí không thành công.', 8;
+		END
+		
+		SELECT * FROM dbo.wallet WHERE id = @walletId
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
 ALTER PROCEDURE MoneyIn
 	@walletId INT,
 	@addedAmount BIGINT,

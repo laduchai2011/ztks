@@ -24,7 +24,7 @@ class MutateDB_UpdateOrder {
                     .input('id', sql.Int, this._updateOrderBody.id)
                     .input('label', sql.NVarChar(255), this._updateOrderBody.label)
                     .input('content', sql.NVarChar(sql.MAX), this._updateOrderBody.content)
-                    .input('money', sql.BigInt, this._updateOrderBody.money)
+                    .input('money', sql.Decimal(20, 2), this._updateOrderBody.money)
                     .input('phone', sql.NVarChar(255), this._updateOrderBody.phone)
                     .input('accountId', sql.Int, this._updateOrderBody.accountId)
                     .execute('UpdateOrder');

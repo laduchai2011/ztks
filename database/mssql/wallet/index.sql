@@ -1,6 +1,6 @@
 CREATE TABLE wallet (
     id INT PRIMARY KEY IDENTITY(1,1),
-	amount BIGINT NOT NULL, 
+	amount DECIMAL(20,2) NOT NULL, 
 	type VARCHAR(8) NOT NULL,
     accountId INT NOT NULL, 
     updateTime DATETIMEOFFSET(7) NOT NULL,
@@ -17,7 +17,7 @@ GO
 
 CREATE TABLE balanceFluctuation (
 	id INT PRIMARY KEY IDENTITY(1,1),
-	amount BIGINT NOT NULL, 
+	amount DECIMAL(20,2) NOT NULL, 
 	type VARCHAR(255) NOT NULL,
 	payHookId INT,
 	voucherId INT,

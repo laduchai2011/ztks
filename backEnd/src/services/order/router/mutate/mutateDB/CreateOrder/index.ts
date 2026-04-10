@@ -24,7 +24,7 @@ class MutateDB_CreateOrder {
                     .input('uuid', sql.NVarChar(255), this._createOrderBody.uuid)
                     .input('label', sql.NVarChar(255), this._createOrderBody.label)
                     .input('content', sql.NVarChar(sql.MAX), this._createOrderBody.content)
-                    .input('money', sql.BigInt, this._createOrderBody.money)
+                    .input('money', sql.Decimal(20, 2), this._createOrderBody.money)
                     .input('phone', sql.NVarChar(255), this._createOrderBody.phone)
                     .input('chatRoomId', sql.Int, this._createOrderBody.chatRoomId)
                     .input('zaloOaId', sql.Int, this._createOrderBody.zaloOaId)

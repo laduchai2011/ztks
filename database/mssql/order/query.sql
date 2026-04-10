@@ -1,9 +1,9 @@
-﻿CREATE PROCEDURE GetOrders
+﻿ALTER PROCEDURE GetOrders
 	@page INT,
     @size INT,
 	@uuid NVARCHAR(255) = NULL,
-	@moneyFrom BIGINT = NULL,
-    @moneyTo BIGINT = NULL,
+	@moneyFrom DECIMAL(20,2) = NULL,
+    @moneyTo DECIMAL(20,2) = NULL,
 	@isPay BIT = NULL,
 	@phone NVARCHAR(255) = NULL,
 	@chatRoomId INT = NULL,

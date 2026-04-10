@@ -21,7 +21,7 @@ class MutateDB_CreateWallet {
             try {
                 const result = await this._connectionPool
                     .request()
-                    .input('amount', sql.BigInt, 0)
+                    .input('amount', sql.Decimal(20, 2), 0)
                     .input('type', sql.NVarChar(255), this._createWalletBody.type)
                     .input('accountId', sql.Int, this._createWalletBody.accountId)
                     .execute('CreateWallet');
