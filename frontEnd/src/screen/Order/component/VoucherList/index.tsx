@@ -7,17 +7,16 @@ import { CLOSE, AGREE, EXIT, VOUCHER_LIST } from '@src/const/text';
 import { setIsShow_voucherDialog } from '@src/redux/slice/Order';
 import { OrderField } from '@src/dataStruct/order';
 import { formatMoney } from '@src/utility/string';
-import { AccountField } from '@src/dataStruct/account';
+// import { AccountField } from '@src/dataStruct/account';
 import { VoucherField } from '@src/dataStruct/voucher';
 import { useLazyGetVouchersQuery, useLazyGetVoucherWithOrderIdQuery } from '@src/redux/query/voucherRTK';
 import { detailTime } from '@src/utility/time';
-import { useOrderSelectVoucherMutation } from '@src/redux/query/orderRTK';
 
 const VoucherList = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
 
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
+    // const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
     const isShow: boolean = useSelector((state: RootState) => state.OrderSlice.voucherDialog.isShow);
     const order: OrderField | undefined = useSelector((state: RootState) => state.OrderSlice.voucherDialog.order);
 
@@ -27,7 +26,6 @@ const VoucherList = () => {
     const [page, setPage] = useState<number>(1);
 
     const [getVouchers] = useLazyGetVouchersQuery();
-    const [orderSelectVoucher] = useOrderSelectVoucherMutation();
     const [getVoucherWithOrderId] = useLazyGetVoucherWithOrderIdQuery();
 
     useEffect(() => {
@@ -83,37 +81,39 @@ const VoucherList = () => {
         dispatch(setIsShow_voucherDialog(false));
     };
 
-    const handleSelecVoucher = (_vouchered: VoucherField) => {
-        setSelectedVoucher(_vouchered);
-    };
-
     const handleAgree = () => {
-        if (!order || !account || !selectedVoucher) return;
-        orderSelectVoucher({ id: order.id, voucherId: selectedVoucher.id, accountId: account.id })
-            .then((res) => {
-                const resData = res.data;
-                console.log('orderSelectVoucher', resData);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+        handleClose();
     };
 
     const list_voucher = vouchers.map((item, index) => {
+        const stype_used = item.isUsed && item.orderId === order?.id ? style.used : '';
+        const isExpired = new Date(item.timeExpire) < new Date();
+
         return (
-            <div className={style.aVoucher} key={index}>
+            <div className={`${style.aVoucher} ${stype_used}`} key={index}>
+                <div className={style.index}>{index + 1}</div>
                 <div className={style.voucherContent}>
                     <div>{formatMoney(item.money)}</div>
                     <div>{detailTime(item.timeExpire)}</div>
                 </div>
-                <div className={style.isUsed}>
-                    {!item.isUsed && <div className={style.not}>Chưa sử dụng</div>}
-                    {item.isUsed && <div className={style.ed}>Đã sử dụng</div>}
+                <div className={style.is}>
+                    <div>
+                        {!item.isUsed && <div className={style.not}>Chưa sử dụng</div>}
+                        {item.isUsed && <div className={style.ed}>Đã sử dụng</div>}
+                    </div>
+                    <div>
+                        {!isExpired && <div className={style.not}>Chưa hết hạn</div>}
+                        {isExpired && <div className={style.ed}>Đã hết hạn</div>}
+                    </div>
                 </div>
-                <input checked={item === selectedVoucher} type="checkbox" onChange={() => handleSelecVoucher(item)} />
             </div>
         );
     });
+
+    const handleIsExpired = (selectedVoucher: VoucherField) => {
+        if (!selectedVoucher) return;
+        return new Date(selectedVoucher.timeExpire) < new Date();
+    };
 
     return (
         <div className={style.parent} ref={parent_element}>
@@ -130,9 +130,17 @@ const VoucherList = () => {
                                     <div>{formatMoney(selectedVoucher.money)}</div>
                                     <div>{detailTime(selectedVoucher.timeExpire)}</div>
                                 </div>
-                                <div className={style.isUsed}>
-                                    {!selectedVoucher.isUsed && <div className={style.not}>Chưa sử dụng</div>}
-                                    {selectedVoucher.isUsed && <div className={style.ed}>Đã sử dụng</div>}
+                                <div className={style.is}>
+                                    <div>
+                                        {!selectedVoucher.isUsed && <div className={style.not}>Chưa sử dụng</div>}
+                                        {selectedVoucher.isUsed && <div className={style.ed}>Đã sử dụng</div>}
+                                    </div>
+                                    <div>
+                                        {!handleIsExpired(selectedVoucher) && (
+                                            <div className={style.not}>Chưa hết hạn</div>
+                                        )}
+                                        {handleIsExpired(selectedVoucher) && <div className={style.ed}>Đã hết hạn</div>}
+                                    </div>
                                 </div>
                             </div>
                         )}

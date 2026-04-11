@@ -35,7 +35,8 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();
     const payText_element = useRef<HTMLDivElement | null>(null);
 
-    const order: OrderField | undefined = useSelector((state: RootState) => state.OrderSlice.voucherDialog.order);
+    // const order: OrderField | undefined = useSelector((state: RootState) => state.OrderSlice.voucherDialog.order);
+    const order: OrderField = data;
     const _selectedVoucher: VoucherField | undefined = useSelector(
         (state: RootState) => state.OrderSlice.voucherDialog.selectedVoucher
     );
@@ -43,6 +44,7 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
     const [payText, setPayText] = useState<string>('Chưa thanh toán');
     const [orderStatus, setOrderStatus] = useState<OrderStatusField[]>([]);
     const [selectedVoucher, setSelectedVoucher] = useState<VoucherField | undefined>(undefined);
+    const [finalMoney, setFinalMoney] = useState<number>(0);
 
     const [getAllOrderStatus] = useLazyGetAllOrderStatusQuery();
     const [getVoucherWithOrderId] = useLazyGetVoucherWithOrderIdQuery();
@@ -60,10 +62,22 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
     }, [data]);
 
     useEffect(() => {
+        if (!order || !_selectedVoucher) return;
         if (order?.id === data.id) {
             setSelectedVoucher(_selectedVoucher);
         }
     }, [_selectedVoucher, order, data]);
+
+    useEffect(() => {
+        if (!order) return;
+        if (selectedVoucher) {
+            const final_money: number =
+                order.money - selectedVoucher.money >= 0 ? order.money - selectedVoucher.money : 0;
+            setFinalMoney(final_money);
+        } else {
+            setFinalMoney(order.money);
+        }
+    }, [selectedVoucher, order]);
 
     useEffect(() => {
         dispatch(set_isLoading(true));
@@ -174,7 +188,7 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
             </div>
             <div className={style.isPay}>
                 <div>{PAY}</div>
-                <div>{formatMoney(data.money)}</div>
+                <div>{formatMoney(finalMoney)}</div>
                 <div ref={payText_element}>{payText}</div>
             </div>
             <div className={style.voucher}>

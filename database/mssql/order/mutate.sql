@@ -30,6 +30,7 @@ BEGIN
 
         INSERT INTO dbo.[order] (uuid, label, content, money, isPay, phone, status, chatRoomId, zaloOaId, accountId, updateTime, createTime)
         VALUES (@uuid, @label, @content, @money, 0, @phone, 'normal', @chatRoomId, @zaloOaId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
 		BEGIN
 			THROW 50002, N'Thêm dữ liệu không thành công .', 2;
 		END
@@ -178,6 +179,7 @@ BEGIN
 
         INSERT INTO dbo.orderStatus (type, content, orderId, updateTime, createTime)
         VALUES (@type, @content, @orderId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
 		BEGIN
 			THROW 50002, N'Thêm trạng thái không thành công .', 2;
 		END
@@ -196,9 +198,10 @@ BEGIN
 END;
 GO
 
+-- bo
 ALTER PROCEDURE UpdateOrderPaid
 	@id INT,
-	@money BIGINT
+	@money DECIMAL(20,2)
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -208,7 +211,8 @@ BEGIN
 
         UPDATE dbo.[order]
 		SET isPay = 1
-		WHERE status = 'normal' AND id = @id AND @money >= money;
+		WHERE status = 'normal' AND id = @id AND money <= @money;
+		IF @@ROWCOUNT = 0
 		BEGIN
 			THROW 50001, N'Cập nhật đơn hàng không thành công .', 1;
 		END

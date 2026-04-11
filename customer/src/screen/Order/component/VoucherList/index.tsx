@@ -93,6 +93,36 @@ const VoucherList = () => {
     };
 
     const handleSelectVoucher = (_vouchered: VoucherField) => {
+        if (order?.isPay) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.WARN,
+                    message: 'Đã thanh toán nên không thể thay đổi !',
+                })
+            );
+        }
+
+        if (_vouchered.isUsed) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.WARN,
+                    message: 'Voucher này đã được sử dụng !',
+                })
+            );
+        }
+
+        const timeExpire = _vouchered.timeExpire;
+        const isExpired = new Date(timeExpire) < new Date();
+
+        if (isExpired) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.WARN,
+                    message: 'Voucher đã hết hạn !',
+                })
+            );
+        }
+
         setSelectVoucher(_vouchered);
     };
 
@@ -130,6 +160,39 @@ const VoucherList = () => {
         }
 
         if (!order || !selectVoucher) return;
+
+        if (order.isPay) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Đã thanh toán nên không thể thay đổi !',
+                })
+            );
+        }
+
+        if (selectVoucher.isUsed) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Voucher này đã được sử dụng !',
+                })
+            );
+            return;
+        }
+
+        const timeExpire = selectVoucher?.timeExpire;
+        const isExpired = new Date(timeExpire) < new Date();
+
+        if (isExpired) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Voucher đã hết hạn !',
+                })
+            );
+            return;
+        }
+
         customerUseVoucher({ orderId: order.id, voucherId: selectVoucher.id, customerId: customer?.id || -1 })
             .then((res) => {
                 const resData = res.data;
@@ -161,9 +224,16 @@ const VoucherList = () => {
             });
     };
 
+    const handleIsExpired = (selectVoucher: VoucherField) => {
+        return new Date(selectVoucher.timeExpire) < new Date();
+    };
+
     const list_voucher = vouchers.map((item, index) => {
+        const stype_used = item.isUsed && item.orderId === order?.id ? style.used : '';
+        const isExpired = new Date(item.timeExpire) < new Date();
+
         return (
-            <div className={style.aVoucher} key={index}>
+            <div className={`${style.aVoucher} ${stype_used}`} key={index}>
                 <input
                     checked={item.id === selectVoucher?.id}
                     type="checkbox"
@@ -174,9 +244,15 @@ const VoucherList = () => {
                     <div>{formatMoney(item.money)}</div>
                     <div>{detailTime(item.timeExpire)}</div>
                 </div>
-                <div className={style.isUsed}>
-                    {!item.isUsed && <div className={style.not}>Chưa sử dụng</div>}
-                    {item.isUsed && <div className={style.ed}>Đã sử dụng</div>}
+                <div className={style.is}>
+                    <div>
+                        {!item.isUsed && <div className={style.not}>Chưa sử dụng</div>}
+                        {item.isUsed && <div className={style.ed}>Đã sử dụng</div>}
+                    </div>
+                    <div>
+                        {!isExpired && <div className={style.not}>Chưa hết hạn</div>}
+                        {isExpired && <div className={style.ed}>Đã hết hạn</div>}
+                    </div>
                 </div>
             </div>
         );
@@ -197,9 +273,17 @@ const VoucherList = () => {
                                     <div>{formatMoney(selectVoucher.money)}</div>
                                     <div>{detailTime(selectVoucher.timeExpire)}</div>
                                 </div>
-                                <div className={style.isUsed}>
-                                    {!selectVoucher.isUsed && <div className={style.not}>Chưa sử dụng</div>}
-                                    {selectVoucher.isUsed && <div className={style.ed}>Đã sử dụng</div>}
+                                <div className={style.is}>
+                                    <div>
+                                        {!selectVoucher.isUsed && <div className={style.not}>Chưa sử dụng</div>}
+                                        {selectVoucher.isUsed && <div className={style.ed}>Đã sử dụng</div>}
+                                    </div>
+                                    <div>
+                                        {!handleIsExpired(selectVoucher) && (
+                                            <div className={style.not}>Chưa hết hạn</div>
+                                        )}
+                                        {handleIsExpired(selectVoucher) && <div className={style.ed}>Đã hết hạn</div>}
+                                    </div>
                                 </div>
                             </div>
                         )}

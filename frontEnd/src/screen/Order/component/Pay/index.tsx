@@ -14,6 +14,7 @@ import { messageType_enum } from '@src/component/ToastMessage/type';
 import { ZaloAppField } from '@src/dataStruct/zalo';
 import { OrderField } from '@src/dataStruct/order';
 import { AccountField } from '@src/dataStruct/account';
+import { VoucherField } from '@src/dataStruct/voucher';
 import { formatMoney } from '@src/utility/string';
 import { useLazyGetZaloOaWithIdQuery } from '@src/redux/query/zaloRTK';
 import { useLazyGetOrderWithIdQuery } from '@src/redux/query/orderRTK';
@@ -25,7 +26,8 @@ import { useCreateMessageV1Mutation } from '@src/redux/query/messageV1RTK';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { CreateMessageV1BodyField } from '@src/dataStruct/message_v1/body';
 import { useLazyGetMyWalletWithTypeQuery } from '@src/redux/query/walletRTK';
-import { WalletField, WalletType, WalletEnum } from '@src/dataStruct/wallet';
+import { useLazyGetVoucherWithOrderIdQuery } from '@src/redux/query/voucherRTK';
+import { WalletField, WalletEnum } from '@src/dataStruct/wallet';
 
 const Pay = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -41,6 +43,8 @@ const Pay = () => {
     const [qrCode, setQrCode] = useState<string>('');
     const [order1, setOrder1] = useState<OrderField | undefined>(undefined);
     const [wallet, setWallet] = useState<WalletField | undefined>(undefined);
+    const [selectedVoucher, setSelectedVoucher] = useState<VoucherField | undefined>(undefined);
+    const [finalMoney, setFinalMoney] = useState<number>(0);
 
     const [getZaloOaWithId] = useLazyGetZaloOaWithIdQuery();
     const [getOrderWithId] = useLazyGetOrderWithIdQuery();
@@ -48,6 +52,7 @@ const Pay = () => {
     const [getChatRoomsWithId] = useLazyGetChatRoomsWithIdQuery();
     const [getLastMessage] = useLazyGetLastMessageQuery();
     const [getMyWalletWithType] = useLazyGetMyWalletWithTypeQuery();
+    const [getVoucherWithOrderId] = useLazyGetVoucherWithOrderIdQuery();
 
     useEffect(() => {
         if (!parent_element.current) return;
@@ -136,10 +141,35 @@ const Pay = () => {
     }, [getMyWalletWithType, account]);
 
     useEffect(() => {
+        if (!order) return;
+        getVoucherWithOrderId({ orderId: order.id })
+            .then((res) => {
+                const resData = res.data;
+                if (resData?.isSuccess && resData.data) {
+                    setSelectedVoucher(resData.data);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, [order, getVoucherWithOrderId]);
+
+    useEffect(() => {
+        if (!order1) return;
+        if (selectedVoucher) {
+            const final_money: number =
+                order1.money - selectedVoucher.money >= 0 ? order1.money - selectedVoucher.money : 0;
+            setFinalMoney(final_money);
+        } else {
+            setFinalMoney(order1.money);
+        }
+    }, [selectedVoucher, order1]);
+
+    useEffect(() => {
         if (!order1 || !wallet) return;
         const des = `ztksPayjorderPayj${order1.id}j${wallet.id}`;
-        setQrCode(`https://qr.sepay.vn/img?acc=VQRQAHJHB9302&bank=MBBank&amount=${order1.money}&des=${des}`);
-    }, [order1, wallet]);
+        setQrCode(`https://qr.sepay.vn/img?acc=VQRQAHJHB9302&bank=MBBank&amount=${finalMoney}&des=${des}`);
+    }, [order1, wallet, finalMoney]);
 
     const handleClose = () => {
         dispatch(setIsShow_payDialog(false));
@@ -278,7 +308,9 @@ const Pay = () => {
                         </div>
                     )}
                     {!order1?.isPay && <div>{qrCode.length > 0 && <img src={qrCode} alt="qrCode" />}</div>}
-                    {order1 && !order1?.isPay && <div className={style.money}>{formatMoney(order1.money)}</div>}
+                    {order1 && !order1?.isPay && finalMoney > 0 && (
+                        <div className={style.money}>{formatMoney(finalMoney)}</div>
+                    )}
                 </div>
             </div>
         </div>

@@ -46,7 +46,7 @@ BEGIN
         BEGIN TRANSACTION;
 
 		-- Kiểm tra voucher đã dùng hay chưa, đã chết hạn chưa
-		DECLARE @voucherId BIT;
+		DECLARE @voucherId INT;
 		DECLARE @isUsed BIT;
 		DECLARE @timeExpire DATETIMEOFFSET(7);
 		DECLARE @money_voucher DECIMAL(20,2);
@@ -60,36 +60,52 @@ BEGIN
 			THROW 50002, N'Voucher đã hết hạn .', 2;
 		END
 
+		DECLARE @money_order DECIMAL(20,2);
+		SELECT @money_order = money FROM dbo.[order] WHERE id = @orderId;
+		IF @money_order IS NULL THROW 50002, N'Không tìm thấy tiền trong đơn hàng .', 2;
+		IF @money_order > @addedAmount + COALESCE(@money_voucher, 0)
+		BEGIN
+			THROW 50003, N'Tiền chuyển vào không đủ .', 3;
+		END
+
 		-- cập nhật tiền nhận được từ chuyển khoản
         UPDATE dbo.wallet
 		SET amount = amount + @addedAmount, updateTime = SYSDATETIMEOFFSET()
 		WHERE id = @walletId
 		IF @@ROWCOUNT = 0
         BEGIN
-            THROW 50003, 'Cập nhật ví không thành công.', 3;
+            THROW 50004, 'Cập nhật ví không thành công.', 4;
         END
 		INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, voucherId, orderId, walletId, createTime)
-        VALUES (@addedAmount, 'payOrder', @payHookId, @voucherId, @orderId, @walletId, SYSDATETIMEOFFSET());
+        VALUES (@addedAmount, 'payOrder', @payHookId, NULL, @orderId, @walletId, SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
         BEGIN
-            THROW 50004, 'Cập nhật biến động số dư không thành công.', 4;
+            THROW 50005, 'Cập nhật biến động số dư không thành công.', 5;
         END
 
 		-- cập nhật tiền nhận được từ voucher
 		IF ( @voucherId IS NOT NULL )
 		BEGIN
+			UPDATE dbo.voucher
+			SET isUsed = 1
+			WHERE id = @voucherId
+			IF @@ROWCOUNT = 0
+			BEGIN
+				THROW 5006, 'Cập nhật trạng thái sử dụng voucher không thành công.', 6;
+			END
+
 			UPDATE dbo.wallet
 			SET amount = amount + @money_voucher, updateTime = SYSDATETIMEOFFSET()
 			WHERE id = @walletId
 			IF @@ROWCOUNT = 0
 			BEGIN
-				THROW 50005, 'Hoàn tiền từ voucher tới ví không thành công.', 5;
+				THROW 50007, 'Hoàn tiền từ voucher tới ví không thành công.', 7;
 			END
 			INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, voucherId, orderId, walletId, createTime)
-			VALUES (@money_voucher, 'voucher', @payHookId, @voucherId, @orderId, @walletId, SYSDATETIMEOFFSET());
+			VALUES (@money_voucher, 'voucher', NULL, @voucherId, NULL, @walletId, SYSDATETIMEOFFSET());
 			IF @@ROWCOUNT = 0
 			BEGIN
-				THROW 50006, 'Cập nhật biến động số dư hoàn tiền từ voucher không thành công.', 6;
+				THROW 50008, 'Cập nhật biến động số dư hoàn tiền từ voucher không thành công.', 8;
 			END
 		END
 
@@ -99,16 +115,24 @@ BEGIN
 		WHERE id = @walletId
 		IF @@ROWCOUNT = 0
 		BEGIN
-			THROW 50007, 'Cập nhật ví khấu trừ phí không thành công.', 7;
+			THROW 50009, 'Cập nhật ví khấu trừ phí không thành công.', 9;
 		END
 		INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, voucherId, orderId, walletId, createTime)
-		VALUES (- (@addedAmount + COALESCE(@money_voucher, 0)) * 0.01, 'cost1%', @payHookId, @voucherId, @orderId, @walletId, SYSDATETIMEOFFSET());
+		VALUES (- (@addedAmount + COALESCE(@money_voucher, 0)) * 0.01, 'cost1%', NULL, NULL, NULL, @walletId, SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
 		BEGIN
-			THROW 50008, 'Cập nhật biến động số dư khấu trừ phí không thành công.', 8;
+			THROW 50010, 'Cập nhật biến động số dư khấu trừ phí không thành công.', 10;
+		END
+
+		UPDATE dbo.[order]
+		SET isPay = 1
+		WHERE status = 'normal' AND id = @orderId
+		IF @@ROWCOUNT = 0
+		BEGIN
+			THROW 50011, N'Cập nhật đơn hàng không thành công .', 11;
 		END
 		
-		SELECT * FROM dbo.wallet WHERE id = @walletId
+		SELECT * FROM dbo.[order] WHERE id = @orderId;
 
 		COMMIT TRANSACTION;
 	END TRY
@@ -117,9 +141,10 @@ BEGIN
 			ROLLBACK TRANSACTION;
 		THROW;
 	END CATCH
-END;
+END
 GO
 
+-- bo
 ALTER PROCEDURE MoneyIn
 	@walletId INT,
 	@addedAmount BIGINT,

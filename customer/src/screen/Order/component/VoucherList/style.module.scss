@@ -76,18 +76,23 @@
                         }
                     }
 
-                    > .isUsed {
+                    > .is {
                         position: absolute;
-                        top: 0;
+                        bottom: 0;
                         right: 5px;
                         font-size: 0.9rem;
+                        @include center-of-row;
 
-                        > .not {
-                            color: red;
-                        }
+                        > div {
+                            margin: 0 10px;
 
-                        > .ed {
-                            color: blue;
+                            > .not {
+                                color: blue;
+                            }
+
+                            > .ed {
+                                color: red;
+                            }
                         }
                     }
                 }
@@ -104,7 +109,12 @@
                     box-sizing: border-box;
                     padding: 10px;
                     margin: 10px 0;
-                    background-color: rgb(230, 255, 255);
+                    background-color: rgb(227, 255, 255);
+                    margin: 5px 0;
+
+                    &.used {
+                        background-color: rgb(167, 255, 255);
+                    }
 
                     > input {
                         position: absolute;
@@ -133,18 +143,23 @@
                         }
                     }
 
-                    > .isUsed {
+                    > .is {
                         position: absolute;
                         bottom: 0;
                         right: 5px;
                         font-size: 0.9rem;
+                        @include center-of-row;
 
-                        > .not {
-                            color: red;
-                        }
+                        > div {
+                            margin: 0 10px;
 
-                        > .ed {
-                            color: blue;
+                            > .not {
+                                color: blue;
+                            }
+
+                            > .ed {
+                                color: red;
+                            }
                         }
                     }
                 }

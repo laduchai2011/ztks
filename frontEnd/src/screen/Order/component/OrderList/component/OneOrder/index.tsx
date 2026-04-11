@@ -55,6 +55,7 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
     const [payText, setPayText] = useState<string>('Chưa thanh toán');
     const [orderStatus, setOrderStatus] = useState<OrderStatusField[]>([]);
     const [selectedVoucher, setSelectedVoucher] = useState<VoucherField | undefined>(undefined);
+    const [finalMoney, setFinalMoney] = useState<number>(0);
 
     const [getAllOrderStatus] = useLazyGetAllOrderStatusQuery();
     const [getVoucherWithOrderId] = useLazyGetVoucherWithOrderIdQuery();
@@ -99,6 +100,17 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
             setOrderStatus((prev) => [newOrderStatus, ...prev]);
         }
     }, [newOrderStatus, order.id]);
+
+    useEffect(() => {
+        if (!order) return;
+        if (selectedVoucher) {
+            const final_money: number =
+                order.money - selectedVoucher.money >= 0 ? order.money - selectedVoucher.money : 0;
+            setFinalMoney(final_money);
+        } else {
+            setFinalMoney(order.money);
+        }
+    }, [selectedVoucher, order]);
 
     useEffect(() => {
         dispatch(set_isLoading(true));
@@ -242,7 +254,7 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
             </div>
             <div className={style.isPay}>
                 <div>{PAY}</div>
-                <div>{formatMoney(order.money)}</div>
+                <div>{formatMoney(finalMoney)}</div>
                 <div ref={payText_element}>{payText}</div>
                 <div>{!order.isPay && <button onClick={() => handleOpenPay()}>{PAY}</button>}</div>
             </div>

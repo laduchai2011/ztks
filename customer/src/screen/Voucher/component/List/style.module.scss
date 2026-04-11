@@ -21,13 +21,13 @@
             box-sizing: border-box;
             padding: 15px;
             border-radius: 10px;
-            background-color: rgb(211, 255, 255);
+            background-color: rgb(227, 255, 255);
             margin: 5px 0;
 
             > .index {
                 position: absolute;
                 top: 0;
-                left: 5px;
+                right: 5px;
                 font-size: 0.9rem;
             }
 
@@ -48,7 +48,7 @@
 
             > .isUsed {
                 position: absolute;
-                top: 0;
+                bottom: 0;
                 right: 5px;
                 font-size: 0.9rem;
 

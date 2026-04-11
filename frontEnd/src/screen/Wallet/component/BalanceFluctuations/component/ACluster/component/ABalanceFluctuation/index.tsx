@@ -19,6 +19,12 @@ const ABalanceFluctuation: FC<{ balanceFluctuation: BalanceFluctuationField }> =
         if (type === BalanceFluctuationEnum.RECOMMEND) {
             setTypeText('Giới thiệu thành công');
         }
+        if (type === BalanceFluctuationEnum.VOUCHER) {
+            setTypeText('Hoàn tiền voucher');
+        }
+        if (type === BalanceFluctuationEnum.COST1) {
+            setTypeText('Khấu trừ 1%');
+        }
     }, [balanceFluctuation]);
 
     const handleAmountColor = () => {

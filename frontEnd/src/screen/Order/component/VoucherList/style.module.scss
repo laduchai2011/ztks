@@ -11,6 +11,7 @@
     opacity: 0;
     display: none;
     transition: opacity 0.5s ease-in-out;
+    z-index: 100;
 
     &.opacity {
         opacity: 1;
@@ -76,18 +77,23 @@
                         }
                     }
 
-                    > .isUsed {
+                    > .is {
                         position: absolute;
-                        top: 0;
+                        bottom: 0;
                         right: 5px;
                         font-size: 0.9rem;
+                        @include center-of-row;
 
-                        > .not {
-                            color: red;
-                        }
+                        > div {
+                            margin: 0 10px;
 
-                        > .ed {
-                            color: blue;
+                            > .not {
+                                color: blue;
+                            }
+
+                            > .ed {
+                                color: red;
+                            }
                         }
                     }
                 }
@@ -102,7 +108,21 @@
                     position: relative;
                     height: 70px;
                     box-sizing: border-box;
-                    padding: 10px;
+                    padding: 15px;
+                    border-radius: 10px;
+                    background-color: rgb(227, 255, 255);
+                    margin: 5px 0;
+
+                    &.used {
+                        background-color: rgb(167, 255, 255);
+                    }
+
+                    > .index {
+                        position: absolute;
+                        top: 0;
+                        right: 5px;
+                        font-size: 0.9rem;
+                    }
 
                     > .voucherContent {
                         height: 100%;
@@ -119,25 +139,24 @@
                         }
                     }
 
-                    > .isUsed {
+                    > .is {
                         position: absolute;
-                        top: 0;
+                        bottom: 0;
                         right: 5px;
                         font-size: 0.9rem;
+                        @include center-of-row;
 
-                        > .not {
-                            color: red;
+                        > div {
+                            margin: 0 10px;
+
+                            > .not {
+                                color: blue;
+                            }
+
+                            > .ed {
+                                color: red;
+                            }
                         }
-
-                        > .ed {
-                            color: blue;
-                        }
-                    }
-
-                    > input {
-                        position: absolute;
-                        top: 0;
-                        left: 5px;
                     }
                 }
             }
