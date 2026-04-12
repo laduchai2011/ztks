@@ -1,4 +1,4 @@
-ALTER PROCEDURE CreateCustomer
+CREATE PROCEDURE CreateCustomer
 	  @phone NVARCHAR(255),
 	  @password NVARCHAR(255)
 AS
@@ -29,7 +29,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE CustomerForgetPassword
+CREATE PROCEDURE CustomerForgetPassword
 	@phone NVARCHAR(255),
 	@password NVARCHAR(255)
 AS
@@ -37,11 +37,11 @@ BEGIN
 	UPDATE dbo.customer
 	SET password = @password
 	WHERE phone = @phone;
-
-	IF @@ROWCOUNT > 0
+	IF @@ROWCOUNT = 0
     BEGIN
-        SELECT * FROM dbo.customer 
-        WHERE phone = @phone;
+		THROW 50001, 'Cập nhật mật khẩu không thành công.', 1;
     END
+
+    SELECT * FROM dbo.customer WHERE phone = @phone;
 END
 GO

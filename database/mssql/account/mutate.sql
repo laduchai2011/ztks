@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE Signup
+﻿CREATE PROCEDURE Signup
 	  @userName NVARCHAR(100),
 	  @password NVARCHAR(100),
 	  @phone NVARCHAR(15),
@@ -242,7 +242,6 @@ BEGIN
 END
 GO
 
-
 CREATE PROCEDURE CreateReplyAccount
 	@authorizedAccountId NVARCHAR(255),
 	@chatRoomId INT,
@@ -267,43 +266,27 @@ BEGIN
 		END
 
 		-- 1) Check chatRoom có tồn tại không
-		IF NOT EXISTS (
-			SELECT 1
-			FROM dbo.chatRoom
-			WHERE 
-				id = @chatRoomId
-				AND accountId = @accountId
-		)
+		IF NOT EXISTS ( SELECT 1 FROM dbo.chatRoom WHERE id = @chatRoomId AND accountId = @accountId )
 		BEGIN
-			THROW 50002, N'ChatRoom không tồn tại hoặc đã bị khóa.', 1;
+			THROW 50002, N'ChatRoom không tồn tại hoặc đã bị khóa.', 2;
 		END
 
 		-- 2) Check đã tồn tại role chưa (tránh insert trùng)
-		IF EXISTS (
-			SELECT 1
-			FROM dbo.chatRoomRole
-			WHERE 
-				chatRoomId = @chatRoomId
-				AND authorizedAccountId = @authorizedAccountId
-		)
+		IF EXISTS ( SELECT 1 FROM dbo.chatRoomRole WHERE chatRoomId = @chatRoomId AND authorizedAccountId = @authorizedAccountId )
 		BEGIN
-			THROW 50003, N'Role này đã tồn tại trong chatRoom.', 1;
+			THROW 50003, N'Role này đã tồn tại trong chatRoom.', 3;
 		END
 
 		-- 3) Nếu pass hết check thì mới INSERT
-		INSERT INTO dbo.chatRoomRole
-			(authorizedAccountId, isRead, isSend, status, chatRoomId, accountId, updateTime, createTime)
-		VALUES
-			(@authorizedAccountId, 1, 0, 'normal', @chatRoomId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+		INSERT INTO dbo.chatRoomRole(authorizedAccountId, isRead, isSend, status, chatRoomId, accountId, updateTime, createTime)
+		VALUES(@authorizedAccountId, 1, 0, 'normal', @chatRoomId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50004, 'Thêm chatRoomRole không thành công.', 4;
         END
 
 		-- 4) Trả kết quả mới insert
-		SELECT *
-		FROM dbo.account
-		WHERE status = 'normal' AND id = @authorizedAccountId
+		SELECT * FROM dbo.account WHERE status = 'normal' AND id = @authorizedAccountId
 
 		COMMIT TRANSACTION;
 	END TRY
@@ -342,7 +325,6 @@ BEGIN
 			THROW 50002, N'Bạn không có quyền trên zaloOa này.', 2;
 		END
 
-		-- Th�m medication
         INSERT INTO dbo.accountReceiveMessage (accountIdReceiveMessage, zaloOaId, accountId)
         VALUES (@accountIdReceiveMessage, @zaloOaId, @accountId);
 		IF @@ROWCOUNT = 0
@@ -409,7 +391,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE AddYourRecommend
+CREATE PROCEDURE AddYourRecommend
 	@yourCode VARCHAR(255),
 	@accountId INT
 AS

@@ -12,11 +12,19 @@ BEGIN
 
         INSERT INTO dbo.chatRoom (userIdByApp, status, zaloOaId, accountId, updateTime, createTime)
         VALUES (@userIdByApp, 'normal', @zaloOaId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50001, 'Cập nhật chatRoom không thành công.', 1;
+        END
 
 		SET @newChatRoomId = SCOPE_IDENTITY();
 
 		INSERT INTO dbo.chatRoomRole (authorizedAccountId, isRead, isSend, status, chatRoomId, accountId, updateTime, createTime)
         VALUES (@accountId, 1, 1, 'normal', @newChatRoomId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50002, 'Cập nhật chatRoomRole không thành công.', 2;
+        END
 
 		SELECT * FROM dbo.chatRoom WHERE id = @newChatRoomId;
 
@@ -55,6 +63,10 @@ BEGIN
 			isRead = @isRead,
 			isSend = @isSend
 		WHERE id = @id and accountId = @accountId;
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50001, 'Cập nhật chatRoomRole không thành công.', 1;
+        END
 
 		SELECT * FROM dbo.chatRoomRole WHERE id = @id AND accountId = @accountId;
 

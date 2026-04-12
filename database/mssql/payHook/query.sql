@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE GetPayHooks
+﻿CREATE PROCEDURE GetPayHooks
 	@page INT,
     @size INT,
 	@referenceCode VARCHAR = NULL,

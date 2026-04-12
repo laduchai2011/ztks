@@ -56,12 +56,6 @@ export interface UpdateOrderPaidBodyField {
     money: number;
 }
 
-export interface OrderSelectVoucherBodyField {
-    id: number;
-    voucherId: number;
-    accountId: number;
-}
-
 export interface GetOrdersWithPhoneBodyField {
     page: number;
     size: number;

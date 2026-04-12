@@ -1,4 +1,4 @@
-CREATE PROCEDURE CreateZaloOaToken
+﻿CREATE PROCEDURE CreateZaloOaToken
 	@refreshToken NVARCHAR(MAX),
 	@zaloOaId INT
 AS
@@ -10,7 +10,10 @@ BEGIN
 
         INSERT INTO dbo.zaloOaToken (refreshToken, zaloOaId)
         VALUES (@refreshToken, @zaloOaId);
-
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50001, 'Tạo zaloOaToken không thành công.', 1;
+        END
 
 		SELECT * FROM dbo.chatSession WHERE zaloOaId = @zaloOaId;
 
@@ -37,6 +40,10 @@ BEGIN
 		UPDATE dbo.zaloOaToken
 		SET refreshToken = @refreshToken
 		WHERE zaloOaId = @zaloOaId
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50001, 'Cập nhật refreshToken của zaloOa không thành công.', 1;
+        END
 
 		SELECT * FROM dbo.zaloOaToken WHERE zaloOaId = @zaloOaId;
 

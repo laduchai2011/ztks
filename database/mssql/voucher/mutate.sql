@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE CreateVoucher
+﻿CREATE PROCEDURE CreateVoucher
 	@dayAmount INT, 
 	@money DECIMAL(20,2), 
 	@phone NVARCHAR(255),
@@ -10,11 +10,7 @@ BEGIN
 	BEGIN TRY
         BEGIN TRANSACTION;
 
-		IF NOT EXISTS (
-			SELECT 1
-			FROM dbo.accountInformation
-			WHERE accountId = @memberZtksId AND accountType = 'memberZtks'
-		)
+		IF NOT EXISTS ( SELECT 1 FROM dbo.accountInformation WHERE accountId = @memberZtksId AND accountType = 'memberZtks' )
 		BEGIN
 			THROW 50001, N'Không phải tài khoản memberZtks .', 1;
 		END
@@ -42,7 +38,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE CustomerUseVoucher
+CREATE PROCEDURE CustomerUseVoucher
 	@orderId INT,
 	@voucherId INT,
 	@customerId INT

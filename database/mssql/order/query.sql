@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE GetOrders
+﻿CREATE PROCEDURE GetOrders
 	@page INT,
     @size INT,
 	@uuid NVARCHAR(255) = NULL,

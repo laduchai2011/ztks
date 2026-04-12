@@ -18,6 +18,10 @@ BEGIN
 
         INSERT INTO dbo.chatSession (label, code, isReady, status, selectedAccountId, zaloOaId, accountId, updateTime, createTime)
         VALUES (@label, @code, @isReady, 'normal', @selectedAccountId, @zaloOaId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50001, 'Cập nhật chatSession không thành công.', 1;
+        END
 
 		SET @newChatSessionId = SCOPE_IDENTITY();
 
@@ -46,10 +50,11 @@ BEGIN
 
 		UPDATE dbo.chatSession
 		SET selectedAccountId = @selectedAccountId
-		WHERE 
-			status = 'normal'
-			AND id = @id
-			AND accountId = @accountId;
+		WHERE status = 'normal' AND id = @id AND accountId = @accountId;
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50001, 'Cập nhật chatSession không thành công.', 1;
+        END
 
 		SELECT * FROM dbo.chatSession WHERE id = @id;
 
@@ -76,10 +81,11 @@ BEGIN
 
 		UPDATE dbo.chatSession
 		SET isReady = @isReady
-		WHERE 
-			status = 'normal'
-			AND id = @id
-			AND accountId = @accountId;
+		WHERE status = 'normal' AND id = @id AND accountId = @accountId;
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50001, 'Cập nhật chatSession không thành công.', 1;
+        END
 
 		SELECT * FROM dbo.chatSession WHERE id = @id;
 

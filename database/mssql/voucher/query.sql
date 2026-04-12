@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE GetVouchers
+﻿CREATE PROCEDURE GetVouchers
 	@page INT,
     @size INT,
 	@isUsed BIT = NULL,

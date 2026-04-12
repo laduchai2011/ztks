@@ -7,7 +7,6 @@ import {
     CreateOrderStatusBodyField,
     GetAllOrderStatusBodyField,
     // GetOrderWithIdBodyField,
-    OrderSelectVoucherBodyField,
 } from '@src/dataStruct/order/body';
 import { ORDER_API } from '@src/const/api/order';
 import { MyResponse } from '@src/dataStruct/response';

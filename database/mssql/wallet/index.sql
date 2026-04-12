@@ -55,3 +55,20 @@ GO
 -- ALTER TABLE balanceFluctuation
 -- ADD CONSTRAINT checkType_balanceFluctuation
 -- CHECK (type IN ('payOrder', 'payAgent', 'takeMoney', 'recommend', 'voucher', 'cost1%'));
+
+SELECT * 
+FROM sys.check_constraints 
+WHERE name = 'checkType_balanceFluctuation';
+
+DROP TABLE IF EXISTS balanceFluctuation;
+DROP TABLE IF EXISTS wallet;
+GO
+
+DECLARE @sql NVARCHAR(MAX);
+
+SELECT @sql = 
+    'ALTER TABLE [' + OBJECT_NAME(parent_object_id) + '] DROP CONSTRAINT [checkType_wallet]'
+FROM sys.check_constraints
+WHERE name = 'checkType_wallet';
+
+EXEC(@sql);

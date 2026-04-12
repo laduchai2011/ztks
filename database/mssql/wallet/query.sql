@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE GetAllWallets 
+﻿CREATE PROCEDURE GetAllWallets 
 	@accountId INT
 AS
 BEGIN
@@ -15,7 +15,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetBalanceFluctuationLatestDay
+CREATE PROCEDURE GetBalanceFluctuationLatestDay
     @walletId INT,
     @type VARCHAR(255) = NULL
 AS
@@ -36,7 +36,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetBalanceFluctuationsByDate
+CREATE PROCEDURE GetBalanceFluctuationsByDate
     @walletId INT,
 	@type VARCHAR(255) = NULL,
     @fromDate DATETIME2,

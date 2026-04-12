@@ -11,9 +11,12 @@ BEGIN
         BEGIN TRANSACTION;
 		DECLARE @newNoteId INT;
 
-		-- Th�m medication
         INSERT INTO dbo.note (note, status, chatRoomId, zaloOaId, accountId, updateTime, createTime)
         VALUES (@note, 'normal', @chatRoomId, @zaloOaId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50001, 'Thêm ghi chú không thành công .', 1;
+        END
 
 		SET @newNoteId = SCOPE_IDENTITY();
 
@@ -39,22 +42,18 @@ BEGIN
 	BEGIN TRY
         BEGIN TRANSACTION;
 
-		IF NOT EXISTS (
-			SELECT 1
-			FROM dbo.note
-			WHERE 
-				id = @id
-				AND accountId = @accountId
-		)
+		IF NOT EXISTS ( SELECT 1 FROM dbo.note WHERE id = @id AND accountId = @accountId )
 		BEGIN
-			THROW 50002, N'Ghi chú không hợp lệ .', 1;
+			THROW 50001, N'Ghi chú không hợp lệ .', 1;
 		END
 
         UPDATE dbo.note
 		SET note = @note
-		WHERE 
-			status = 'normal'
-			AND id = @id
+		WHERE status = 'normal' AND id = @id
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50002, 'Cập nhật ghi chú không thành công .', 2;
+        END
 
 		SELECT * FROM dbo.note WHERE id = @id;
 
