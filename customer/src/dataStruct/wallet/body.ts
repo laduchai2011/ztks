@@ -6,12 +6,6 @@ export interface CreateWalletBodyField {
     accountId: number;
 }
 
-export interface MoneyInBodyField {
-    walletId: number;
-    addedAmount: number;
-    payHookId: number | null;
-}
-
 export interface MoneyOutBodyField {
     walletId: number;
     subAmount: number;
