@@ -15,13 +15,6 @@ dotenv.config();
 
 const services = (process.env.SERVICES ?? '').split(',').map((s) => s.trim());
 
-// import service_image from './services/image';
-// import service_video from './services/video';
-// import service_account from '@src/services/account';
-// import service_myCustomer from './services/myCustomer';
-// import service_message from './services/message';
-// import service_note from './services/note';
-
 const app: Express = express();
 
 const isProduct = process.env.NODE_ENV === 'production';
@@ -34,47 +27,36 @@ app.use(cookieParser());
 app.use(apiString, express.json());
 app.use(apiString, express.urlencoded({ extended: true }));
 
-// app.use((req, res, next) => {
-//     const allowedOrigins = ['http://zalo5k.local.com:3000'];
-//     const origin = req.headers.origin as string;
-//     if (allowedOrigins.includes(origin)) {
-//         res.header('Access-Control-Allow-Origin', origin);
-//     }
-//     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-//     res.header('Access-Control-Allow-Headers', 'Content-Type');
-//     res.header('Access-Control-Allow-Credentials', 'true');
+// const originArray: string[] = [
+//     'http://zalo5k.local.com:3000',
+//     'http://zalo5k.local.com:3001',
+//     'http://zalo5k.local.com:3002',
+// ];
+// app.use(
+//     cors({
+//         origin: originArray,
+//         methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+//         credentials: true,
+//     })
+// );
 
-//     // 👉 Quan trọng: xử lý preflight
-//     if (req.method === 'OPTIONS') {
-//         res.sendStatus(200);
-//         return;
-//     }
-
-//     next();
-// });
-const originArray: string[] = [
-    'http://zalo5k.local.com:3000',
-    'http://zalo5k.local.com:3001',
-    'http://zalo5k.local.com:3002',
-];
+// app.use(
+//     cors({
+//         origin: 'https://oa.zalo.me', // hoặc chrome-extension://<id>
+//         methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+//         allowedHeaders: ['Content-Type'],
+//     })
+// );
+// app.options('*', cors());
 app.use(
     cors({
-        origin: originArray,
-        methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
-        credentials: true,
+        origin: '*', // hoặc cụ thể: https://oa.zalo.me
     })
 );
 
 app.use(`${apiString}/hello`, (req, res) => {
     res.send('hello');
 });
-
-// app.use(`${apiString}/service_image`, service_image);
-// app.use(`${apiString}/service_video`, service_video);
-// app.use(`${apiString}/service_account`, service_account);
-// app.use(`${apiString}/service_myCustomer`, service_myCustomer);
-// app.use(`${apiString}/service_message`, service_message);
-// app.use(`${apiString}/service_note`, service_note);
 
 (async () => {
     await mssql_server.init();
@@ -96,6 +78,8 @@ app.use(`${apiString}/hello`, (req, res) => {
     if (services.includes('video')) {
         const service_video = (await import('./services/video')).default;
         app.use(`${prefix}/service_video`, service_video);
+        const service_video_v1 = (await import('./services/video_v1')).default;
+        app.use(`${prefix}/service_video_v1`, service_video_v1);
     }
 
     if (services.includes('account')) {

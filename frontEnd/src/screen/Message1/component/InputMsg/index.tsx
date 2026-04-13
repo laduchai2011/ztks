@@ -17,9 +17,11 @@ import { MessageV1Field } from '@src/dataStruct/message_v1';
 import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
 import { MessageImageBodyField } from '@src/dataStruct/zalo/hookData/body';
 import ReplyContainer from './component/ReplyContainer';
-import { set_repliedMessage, setData_toastMessage } from '@src/redux/slice/MessageV1';
+import { set_repliedMessage, setData_toastMessage, set_isLoading } from '@src/redux/slice/MessageV1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { uploadAImageToZalo } from '../../handle';
+import { uploadAImageToZalo, uploadVideo } from '../../handle';
+import { AccountField } from '@src/dataStruct/account';
+import { BASE_URL_API } from '@src/const/api/baseUrl';
 
 const InputMsg = () => {
     const navigate = useNavigate();
@@ -27,12 +29,15 @@ const InputMsg = () => {
     const { id } = useParams<{ id: string }>();
     const textarea_element = useRef<HTMLTextAreaElement | null>(null);
     const imageInput_element = useRef<HTMLInputElement | null>(null);
+    const videoInput_element = useRef<HTMLInputElement | null>(null);
+    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
     const repliedMessage: MessageV1Field<ZaloMessageType> | undefined = useSelector(
         (state: RootState) => state.MessageV1Slice.repliedMessage
     );
     const id_imageInput = useId();
+    const id_videoInput = useId();
     const [text, setText] = useState<string>('');
     const [lastMessage, setLastMessage] = useState<MessageV1Field<ZaloMessageType> | undefined>(undefined);
     const [createMessageV1] = useCreateMessageV1Mutation();
@@ -132,6 +137,10 @@ const InputMsg = () => {
         imageInput_element.current?.click();
     };
 
+    const handleVideoIconClick = () => {
+        videoInput_element.current?.click();
+    };
+
     const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
 
@@ -203,6 +212,47 @@ const InputMsg = () => {
         }
     };
 
+    const handleVideoChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const files = event.target.files;
+
+        if (!files) return;
+
+        const file = files[0];
+
+        if (!account) return;
+        if (!zaloApp) return;
+        if (!zaloOa) return;
+        if (!lastMessage) return;
+
+        try {
+            dispatch(set_isLoading(true));
+            const resData_video = await uploadVideo(file, account.id.toString());
+            console.log(111111, resData_video);
+            if (!resData_video) {
+                dispatch(
+                    setData_toastMessage({
+                        type: messageType_enum.ERROR,
+                        message: 'Đăng tải hình ảnh thất bại !',
+                    })
+                );
+                return;
+            }
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.SUCCESS,
+                    message: 'Đăng tải hình ảnh thành công !',
+                })
+            );
+            const fileName = resData_video.fileName;
+            const videoUrl = `${BASE_URL_API}/service_video_v1/query/video/${fileName}`;
+            console.log('videoUrl', videoUrl);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            dispatch(set_isLoading(false));
+        }
+    };
+
     const handleGoToOrder = () => {
         navigate(route_enum.ORDER, {
             state: { chatRoomId: id || '' },
@@ -227,7 +277,14 @@ const InputMsg = () => {
                         id={id_imageInput}
                         accept="image/*"
                     />
-                    <MdOutlineOndemandVideo size={20} />
+                    <MdOutlineOndemandVideo id={id_videoInput} onClick={handleVideoIconClick} size={20} />
+                    <input
+                        ref={videoInput_element}
+                        onChange={handleVideoChange}
+                        type="file"
+                        id={id_videoInput}
+                        accept="video/*"
+                    />
                     <MdAttachFile size={20} />
                     <PiSmileyStickerLight size={20} />
                 </div>

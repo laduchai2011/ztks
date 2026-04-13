@@ -2,18 +2,17 @@ import { Request, Response } from 'express';
 import multer from 'multer';
 import { PassThrough } from 'stream';
 import { MinioServiceV1 } from '@src/connect/minio/service';
-// import { pipeline } from 'stream/promises';
 import { MyResponse } from '@src/dataStruct/response';
 import fs from 'fs';
 
 const CHUNK_SIZE = 5 * 1024 * 1024;
 
-const minioService = new MinioServiceV1('images');
+const minioService = new MinioServiceV1('videos-to-send-zalo');
 minioService.ensureBucket().catch((err) => {
-    console.error('Error ensuring bucket exists ( images ):', err);
+    console.error('Error ensuring bucket exists ( videos ):', err);
 });
 
-class Handle_UploadAImageToTksStore {
+class Handle_UploadAVideoToTksStore {
     constructor() {}
 
     upload = (): multer.Multer => {
@@ -150,4 +149,4 @@ class Handle_UploadAImageToTksStore {
     };
 }
 
-export default Handle_UploadAImageToTksStore;
+export default Handle_UploadAVideoToTksStore;

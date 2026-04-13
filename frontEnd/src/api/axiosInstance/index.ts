@@ -7,7 +7,7 @@ const apiString = isProduct ? '' : '/api';
 
 const axiosInstance = axios.create({
     baseURL: `${BASE_URL}${apiString}`,
-    timeout: 5000,
+    timeout: 0,
     headers: {
         'Content-Type': 'application/json',
     },

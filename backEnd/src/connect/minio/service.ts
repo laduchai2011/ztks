@@ -66,6 +66,10 @@ export class MinioServiceV1 {
         return minioClient.getObject(this._bucketName, objectName);
     }
 
+    getStreamVideo(objectName: string, offset: number, length?: number) {
+        return minioClient.getPartialObject(this._bucketName, objectName, offset, length);
+    }
+
     getBucketName() {
         return this._bucketName;
     }

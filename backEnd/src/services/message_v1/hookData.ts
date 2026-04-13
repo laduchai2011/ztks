@@ -56,8 +56,8 @@ const timeExpireat = 60 * 3; // 3p
 
 export function hookData() {
     consumeHookData(`zalo_hook_data_queue${prefix}`, async (data) => {
-        // console.log('Hook Data Received:');
-        // console.dir(data, { depth: null });
+        console.log('Hook Data Received:');
+        console.dir(data, { depth: null });
         const app_id = data.app_id;
         const oa_id = determineOaId(data);
         const sender_id_of_user = determineSenderIdOfUser(data);
@@ -215,7 +215,7 @@ export function hookData() {
                 const socketMsg: SocketMessageField = {
                     chatRoomId: doc.chat_room_id,
                     _id: kq_message.insertedId.toString(),
-                    allChatRoomRoles: allChatRoomRoles
+                    allChatRoomRoles: allChatRoomRoles,
                 };
 
                 sendStringMessage(`store_msg_success${prefix}`, JSON.stringify(socketMsg));
