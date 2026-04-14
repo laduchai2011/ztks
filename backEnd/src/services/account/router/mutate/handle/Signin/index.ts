@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import MutateDB_Signin from '../../mutateDB/Signin';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { MyResponse } from '@src/dataStruct/response';
-import { generateAccessToken, generateRefreshToken } from '@src/token';
+import { generateAccessToken, generateRefreshToken, generateSocketToken } from '@src/token';
 import { SignOptions } from 'jsonwebtoken';
 import { MyJwtPayload } from '@src/token';
 import { StoreAuthToken } from '@src/auth/type';
@@ -85,9 +85,13 @@ class Handle_Signin {
                     const signOptions_refreshToken: SignOptions = {
                         expiresIn: '1y',
                     };
+                    const signOptions_socketToken: SignOptions = {
+                        expiresIn: '1y',
+                    };
 
                     const accessToken = generateAccessToken(myJwtPayload, signOptions_accessToken);
                     const refreshToken = generateRefreshToken(myJwtPayload, signOptions_refreshToken);
+                    const socketToken = generateSocketToken(myJwtPayload, signOptions_socketToken);
 
                     const resultget = await mssqlGetValue(keyServiceRedis);
 
@@ -133,6 +137,12 @@ class Handle_Signin {
                         })
                         .cookie('refreshToken', refreshToken, {
                             httpOnly: true,
+                            secure: secure_cookie,
+                            sameSite: sameSite,
+                            expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+                            domain: cookieDomain,
+                        })
+                        .cookie('socketToken', socketToken, {
                             secure: secure_cookie,
                             sameSite: sameSite,
                             expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),

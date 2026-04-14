@@ -27,30 +27,16 @@ app.use(cookieParser());
 app.use(apiString, express.json());
 app.use(apiString, express.urlencoded({ extended: true }));
 
-// const originArray: string[] = [
-//     'http://zalo5k.local.com:3000',
-//     'http://zalo5k.local.com:3001',
-//     'http://zalo5k.local.com:3002',
-// ];
-// app.use(
-//     cors({
-//         origin: originArray,
-//         methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
-//         credentials: true,
-//     })
-// );
-
-// app.use(
-//     cors({
-//         origin: 'https://oa.zalo.me', // hoặc chrome-extension://<id>
-//         methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
-//         allowedHeaders: ['Content-Type'],
-//     })
-// );
-// app.options('*', cors());
+const originArray: string[] = [
+    'http://zalo5k.local.com:3000',
+    'http://zalo5k.local.com:3001',
+    'http://zalo5k.local.com:3002',
+];
 app.use(
     cors({
-        origin: '*', // hoặc cụ thể: https://oa.zalo.me
+        origin: originArray,
+        methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+        credentials: true,
     })
 );
 
