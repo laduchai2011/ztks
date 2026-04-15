@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { PagedMessageV1Field, MessageV1Field, NewMessageV1Field } from '@src/dataStruct/message_v1';
-import { MessageV1BodyField, CreateMessageV1BodyField } from '@src/dataStruct/message_v1/body';
+import { MessageV1BodyField, CreateMessageV1BodyField, VideoMessageBodyField } from '@src/dataStruct/message_v1/body';
 import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
 import { MESSAGEV1_API } from '@src/const/api/messageV1';
 import { MyResponse } from '@src/dataStruct/response';
@@ -47,6 +47,13 @@ export const messageV1RTK = createApi({
             query: ({ chatRoomId }) => `${MESSAGEV1_API.DEL_ALL_NEW_MESSAGE}?chatRoomId=${chatRoomId}`,
             keepUnusedDataFor: 0,
         }),
+        videoMessage: builder.mutation<MyResponse<any>, VideoMessageBodyField>({
+            query: (body) => ({
+                url: MESSAGEV1_API.VIDEO_MESSAGE,
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
@@ -59,4 +66,5 @@ export const {
     useLazyGetAllNewMessagesQuery,
     useCreateMessageV1Mutation,
     useLazyDelAllNewMessagesQuery,
+    useVideoMessageMutation,
 } = messageV1RTK;

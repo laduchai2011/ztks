@@ -88,6 +88,14 @@ BEGIN
 		AND (@id IS NULL OR ai.accountId = @id) 
 END
 GO
+--> chuyen sang dung
+ALTER PROCEDURE GetMyAccountInformation
+    @accountId INT
+AS
+BEGIN
+	SELECT * FROM accountInformation WHERE accountId = @accountId
+END
+GO
 
 CREATE PROCEDURE GetMe
     @id INT

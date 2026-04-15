@@ -78,7 +78,6 @@ BEGIN
         BEGIN TRANSACTION;
 		DECLARE @newMemberId INT;
 
-		-- Th�m medication
         INSERT INTO dbo.account (userName, password, phone, firstName, lastName, avatar, status, updateTime, createTime)
         VALUES (@userName, @password, @phone, @firstName, @lastName, null, 'normal', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 

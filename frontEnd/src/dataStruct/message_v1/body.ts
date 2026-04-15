@@ -18,3 +18,16 @@ export interface AllNewMessagesBodyField {
     chatRoomId: number;
     accountId: number;
 }
+
+export interface DelNewMessagesBodyField {
+    chatRoomId: number;
+    accountId: number;
+}
+
+export interface VideoMessageBodyField {
+    zaloAppId: number;
+    zaloOaId: number;
+    chatRoomId: number;
+    accountId: number;
+    videoName: string;
+}

@@ -11,6 +11,15 @@ export const prefix_cache_account = {
     time: 60 * 5, // 5p
 };
 
+export const prefix_cache_accountInformation = {
+    key: {
+        with_accountId: isProduct
+            ? 'prefix_cache_accountInformation_with_accountId'
+            : 'prefix_cache_accountInformation_with_accountId_dev',
+    },
+    time: 60 * 5, // 5p
+};
+
 export const prefix_cache_replyAccounts = {
     key: {
         with_chatRoomId: isProduct

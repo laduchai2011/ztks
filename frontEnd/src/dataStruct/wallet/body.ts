@@ -33,3 +33,10 @@ export interface PayAgentFromWalletBodyField {
     agentPayId: number;
     accountId: number;
 }
+
+export interface PayOrderBodyField {
+    walletId: number;
+    addedAmount: number;
+    orderId: number;
+    payHookId: number;
+}

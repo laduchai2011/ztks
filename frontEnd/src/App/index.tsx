@@ -21,7 +21,7 @@ const App = () => {
         if (!account) return;
 
         const socket = getSocket();
-        const room = account.id.toString();
+        const room = `accountId_${account.id}`;
 
         const onConnect = () => {
             socket.emit('joinRoom', room);

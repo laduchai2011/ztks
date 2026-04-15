@@ -11,8 +11,12 @@ import { LuNotebookPen } from 'react-icons/lu';
 import { MdOutlineOndemandVideo, MdAttachFile } from 'react-icons/md';
 import { PiSmileyStickerLight } from 'react-icons/pi';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { useCreateMessageV1Mutation, useGetLastMessageQuery } from '@src/redux/query/messageV1RTK';
-import { CreateMessageV1BodyField } from '@src/dataStruct/message_v1/body';
+import {
+    useCreateMessageV1Mutation,
+    useGetLastMessageQuery,
+    useVideoMessageMutation,
+} from '@src/redux/query/messageV1RTK';
+import { CreateMessageV1BodyField, VideoMessageBodyField } from '@src/dataStruct/message_v1/body';
 import { MessageV1Field } from '@src/dataStruct/message_v1';
 import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
 import { MessageImageBodyField } from '@src/dataStruct/zalo/hookData/body';
@@ -21,7 +25,7 @@ import { set_repliedMessage, setData_toastMessage, set_isLoading } from '@src/re
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { uploadAImageToZalo, uploadVideo } from '../../handle';
 import { AccountField } from '@src/dataStruct/account';
-import { BASE_URL_API } from '@src/const/api/baseUrl';
+// import { BASE_URL_API } from '@src/const/api/baseUrl';
 
 const InputMsg = () => {
     const navigate = useNavigate();
@@ -40,7 +44,9 @@ const InputMsg = () => {
     const id_videoInput = useId();
     const [text, setText] = useState<string>('');
     const [lastMessage, setLastMessage] = useState<MessageV1Field<ZaloMessageType> | undefined>(undefined);
+
     const [createMessageV1] = useCreateMessageV1Mutation();
+    const [videoMessage] = useVideoMessageMutation();
 
     const {
         data: data_lastMessage,
@@ -150,6 +156,7 @@ const InputMsg = () => {
 
         if (!zaloApp) return;
         if (!zaloOa) return;
+        if (!id) return;
         if (!lastMessage) return;
         try {
             const res_upload = await uploadAImageToZalo(file, zaloApp, zaloOa);
@@ -227,7 +234,6 @@ const InputMsg = () => {
         try {
             dispatch(set_isLoading(true));
             const resData_video = await uploadVideo(file, account.id.toString());
-            console.log(111111, resData_video);
             if (!resData_video) {
                 dispatch(
                     setData_toastMessage({
@@ -244,8 +250,35 @@ const InputMsg = () => {
                 })
             );
             const fileName = resData_video.fileName;
-            const videoUrl = `${BASE_URL_API}/service_video_v1/query/video/${fileName}`;
-            console.log('videoUrl', videoUrl);
+            // const videoUrl = `${BASE_URL_API}/service_video_v1/query/video/${fileName}`;
+            // console.log('videoUrl', videoUrl);
+
+            const videoMessageBody: VideoMessageBodyField = {
+                zaloAppId: zaloApp.id,
+                zaloOaId: zaloOa.id,
+                chatRoomId: Number(id),
+                accountId: account.id,
+                videoName: fileName,
+            };
+
+            dispatch(set_isLoading(true));
+            videoMessage(videoMessageBody)
+                .then((res) => {
+                    const resData = res.data;
+                    console.log('videoMessage', resData);
+                })
+                .catch((err) => {
+                    console.error(err);
+                    dispatch(
+                        setData_toastMessage({
+                            type: messageType_enum.ERROR,
+                            message: 'Đã có lỗi xảy ra !',
+                        })
+                    );
+                })
+                .finally(() => {
+                    dispatch(set_isLoading(false));
+                });
         } catch (error) {
             console.error(error);
         } finally {

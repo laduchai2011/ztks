@@ -15,3 +15,9 @@ export interface GetVouchersBodyField {
 export interface GetVoucherWithOrderIdBodyField {
     orderId: number;
 }
+
+export interface CustomerUseVoucherBodyField {
+    orderId: number;
+    voucherId: number;
+    customerId: number;
+}

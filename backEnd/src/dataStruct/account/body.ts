@@ -79,3 +79,7 @@ export interface AddYourRecommendBodyField {
     yourCode: string;
     accountId: number;
 }
+
+export interface GetMyAccountInformationBodyField {
+    accountId: number;
+}

@@ -1,14 +1,16 @@
 import dotenv from 'dotenv';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import { consumeMessage, consumeMessageTD, consumeStringMessage } from '@src/messageQueue/Consumer';
-import { sendMessage, sendMessageTD } from '@src/messageQueue/Producer';
+import { consumeMessage, consumeStringMessage, consumeVideoMessage } from '@src/messageQueue/Consumer';
+import { sendMessage } from '@src/messageQueue/Producer';
 import { MessageZaloField } from './messageQueue/type';
 import process from 'process';
 import { customerSend_sendToMember, memberSend_sendToCustomer } from '@src/const/keyRabbitMQ';
 import { SocketMessageField } from './dataStruct/message_v1';
 import { AgentPayField } from './dataStruct/agent';
 import { OrderField } from './dataStruct/order';
+import { verifySocketToken } from './token';
+import { VideoMessageBodyField } from './dataStruct/message_v1/body';
 
 dotenv.config();
 
@@ -29,61 +31,50 @@ const io = new Server(httpServer, {
 consumeStringMessage(`store_msg_success_${dev_prefix}`, (msg) => {
     const socketMsg = JSON.parse(msg) as SocketMessageField;
     const allChatRoomRole = socketMsg.allChatRoomRoles;
-    io.to(socketMsg.chatRoomId.toString()).emit('socketMessage', socketMsg);
+    io.to(`chatRoomId_${socketMsg.chatRoomId}`).emit('socketMessage', socketMsg);
     for (let i: number = 0; i < allChatRoomRole.length; i++) {
-        io.to(allChatRoomRole[i].authorizedAccountId.toString()).emit('socketMessageAllRoom', socketMsg);
+        io.to(`accountId_${allChatRoomRole[i].authorizedAccountId}`).emit('socketMessageAllRoom', socketMsg);
     }
 });
 
-consumeStringMessage('agentPay_dev', (data) => {
+consumeVideoMessage(`sendVideoMessage_${dev_prefix}`, (videoMessageBody) => {
+    console.log(111111, 'videoMessageBody', videoMessageBody);
+});
+
+consumeStringMessage(`agentPay_${dev_prefix}`, (data) => {
     const agentPay = JSON.parse(data) as AgentPayField;
-    io.to(agentPay.accountId.toString()).emit('agentPay', agentPay);
+    io.to(`accountId_${agentPay.accountId}`).emit('agentPay', agentPay);
 });
 
-consumeStringMessage('orderPay_dev', (data) => {
+consumeStringMessage(`orderPay_${dev_prefix}`, (data) => {
     const order = JSON.parse(data) as OrderField;
-    io.to(order.accountId.toString()).emit('orderPay', order);
+    io.to(`accountId_${order.accountId}`).emit('orderPay', order);
 });
 
-// chuan bi bo
-// consumeMessage(customerSend_sendToMember, (data) => {
-//     const room = data.accountId.toString() + data.data.sender.id;
-//     const myRoom = data.accountId.toString();
-//     io.to(myRoom).emit('roomMessage', JSON.stringify(data));
-//     io.to(room).emit('roomMessage', JSON.stringify(data));
-// });
+io.use((socket, next) => {
+    const token = socket.handshake.auth.token;
 
-// consumeMessageTD(`open_chatRoom_tadao_success_${dev_prefix}`, async ({ oaid, uid, accountId }) => {
-//     const myRoom = accountId + uid;
-//     io.to(myRoom).emit('open_chatRoom_tadao_success', {});
-// });
+    try {
+        const verify_socketToken = verifySocketToken(token);
 
-// consumeMessageTD(`open_chatRoom_tadao_failure_${dev_prefix}`, async ({ oaid, uid, accountId }) => {
-//     const myRoom = accountId + uid;
-//     io.to(myRoom).emit('open_chatRoom_tadao_failure', {});
-// });
-
-// consumeMessageTD(`send_videoTD_success_${dev_prefix}`, async ({ oaid, uid, accountId, name }) => {
-//     const myRoom = accountId + uid;
-//     io.to(myRoom).emit('send_videoTD_success', {});
-// });
-
-// consumeMessageTD(`send_videoTD_failure_${dev_prefix}`, async ({ oaid, uid, accountId, name }) => {
-//     const myRoom = accountId + uid;
-//     io.to(myRoom).emit('send_videoTD_failure', {});
-// });
-
-// consumeMessageTD(`getUrl_videoTd_${dev_prefix}`, async ({ oaid, uid, accountId, name }) => {
-//     const myRoom = accountId + uid;
-//     io.to(myRoom).emit('getUrl_videoTd', { oaid, uid, accountId, name });
-// });
-
-// consumeMessage('test', (data) => {
-// });
+        if (verify_socketToken === 'invalid') {
+            return next(new Error('Token invalid'));
+        }
+        if (verify_socketToken === 'expired') {
+            return next(new Error('Token expired'));
+        }
+        socket.data.verify_socketToken = verify_socketToken;
+        next();
+    } catch (err) {
+        console.error(err);
+        next(new Error('Unauthorized'));
+    }
+});
 
 // Lắng nghe connection
 io.on('connection', (socket) => {
     // console.log('User connected:', socket.id);
+    // console.log(1111, socket.data.verify_socketToken);
 
     // Tham gia phòng
     socket.on('joinRoom', (roomName: string) => {
@@ -93,39 +84,6 @@ io.on('connection', (socket) => {
         // Thông báo cho tất cả trong phòng
         // io.to(roomName).emit('systemMessage', `User ${socket.id} joined the room`);
     });
-
-    // socket.on('open_chatRoom_tadao', ({ oaid, uid, accountId }) => {
-    //     const status: string = 'open';
-    //     sendMessageTD(`chatRoom_tadao_${dev_prefix}`, { status, oaid, uid, accountId });
-    // });
-
-    // socket.on('close_chatRoom_tadao', ({ oaid, uid, accountId }) => {
-    //     const status: string = 'close';
-    //     sendMessageTD(`chatRoom_tadao_${dev_prefix}`, { status, oaid, uid, accountId });
-    // });
-
-    // // Gửi tin nhắn trong phòng
-    // socket.on('roomMessage', ({ roomName, message }) => {
-    //     // socket.emit('roomMessage', { roomName: 'room1', message: 'server hello' });
-    //     const messageZalo: MessageZaloField = {
-    //         data: message,
-    //         isNewCustom: false,
-    //         accountId: -1,
-    //     };
-    //     console.log(message);
-    //     // sendMessage('test', messageZalo);
-    //     sendMessage(memberSend_sendToCustomer, messageZalo);
-    //     // io.to(roomName).emit('roomMessage', `server hello: ${message}`);
-    // });
-
-    // socket.on('send_videoTD', ({ receiveId, oaid, name, accountId }) => {
-    //     sendMessageTD('send_videoTD', {
-    //         receiveId: receiveId,
-    //         oaid: oaid,
-    //         name: name,
-    //         accountId: accountId,
-    //     });
-    // });
 
     // Rời phòng
     socket.on('leaveRoom', (roomName: string) => {
