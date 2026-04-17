@@ -46,10 +46,10 @@ const ReplyContainer: FC<{ data: MessageV1Field<ZaloMessageType> }> = ({ data })
                 const data_t = data as MessageV1Field<MessageImageField | MessageMultiImageField>;
                 return <ReplyImage data={data_t} />;
             }
-            // case Zalo_Event_Name_Enum.oa_send_video: {
-            //     const data_t = data as MessageV1Field<MessageVideoField>;
-            //     return <ReplyVideo data={data_t} />;
-            // }
+            case Zalo_Event_Name_Enum.oa_send_video: {
+                const data_t = data as MessageV1Field<MessageVideoField>;
+                return <ReplyVideo data={data_t} />;
+            }
             case Zalo_Event_Name_Enum.user_send_video: {
                 const data_t = data as MessageV1Field<MessageVideoField>;
                 return <ReplyVideo data={data_t} />;

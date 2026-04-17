@@ -22,7 +22,6 @@ const MsgText: FC<{ data: MessageV1Field<MessageTextField> }> = ({ data }) => {
                 const resData = res.data;
                 // console.log('getMessageWithMsgId', resData);
                 if (resData?.isSuccess && resData.data) {
-                    console.log(resData.data);
                     setRepliedMsg(resData.data);
                 }
             })

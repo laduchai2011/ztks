@@ -38,10 +38,7 @@ consumeStringMessage(`store_msg_success_${dev_prefix}`, (msg) => {
 });
 
 consumeVideoMessage(`sendVideoMessage_${dev_prefix}`, (videoMessageBody) => {
-    io.to(`sendVideo_with_zalo_app_id_${videoMessageBody.zaloAppId}`).emit(
-        'sendVideo_with_zalo_app_id',
-        videoMessageBody
-    );
+    io.to(`playwright_${videoMessageBody.zaloAppId}`).emit('sendVideo_with_zalo_app_id', videoMessageBody);
 });
 
 consumeStringMessage(`agentPay_${dev_prefix}`, (data) => {
@@ -86,6 +83,22 @@ io.on('connection', (socket) => {
 
         // Thông báo cho tất cả trong phòng
         // io.to(roomName).emit('systemMessage', `User ${socket.id} joined the room`);
+    });
+
+    socket.on('playwrightOnline-onApp', ({ zaloAppId, accountId }) => {
+        // console.log('Playwright is online on app, zaloAppId:', zaloAppId, 'accountId:', accountId);
+        io.to(`playwright_${zaloAppId}`).emit('playwrightOnline-playwightOn', {
+            zaloAppId: zaloAppId,
+            accountId: accountId,
+        });
+    });
+
+    socket.on('playwrightOnline-onPlaywright', ({ zaloAppId, accountId }) => {
+        // console.log('Playwright is online on playwright, zaloAppId:', zaloAppId, 'accountId:', accountId);
+        io.to(`accountId_${accountId}`).emit('playwrightOnline-appOn', {
+            zaloAppId: zaloAppId,
+            accountId: accountId,
+        });
     });
 
     // Rời phòng

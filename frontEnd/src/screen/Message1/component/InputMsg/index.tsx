@@ -26,6 +26,7 @@ import { messageType_enum } from '@src/component/ToastMessage/type';
 import { uploadAImageToZalo, uploadVideo } from '../../handle';
 import { AccountField } from '@src/dataStruct/account';
 // import { BASE_URL_API } from '@src/const/api/baseUrl';
+import { getSocket } from '@src/socketIo';
 
 const InputMsg = () => {
     const navigate = useNavigate();
@@ -44,6 +45,7 @@ const InputMsg = () => {
     const id_videoInput = useId();
     const [text, setText] = useState<string>('');
     const [lastMessage, setLastMessage] = useState<MessageV1Field<ZaloMessageType> | undefined>(undefined);
+    const [isPlaywrightOnline, setIsPlaywrightOnline] = useState<boolean>(false);
 
     const [createMessageV1] = useCreateMessageV1Mutation();
     const [videoMessage] = useVideoMessageMutation();
@@ -69,6 +71,39 @@ const InputMsg = () => {
             setLastMessage(resData.data);
         }
     }, [data_lastMessage]);
+
+    useEffect(() => {
+        if (!zaloApp || !account) return;
+
+        let timeoutId: NodeJS.Timeout;
+
+        const socket = getSocket();
+
+        interface PlaywrightOnlinePayload {
+            zaloAppId: number;
+            accountId: number;
+        }
+        const playwrightOnline = (playwrightOnlinePayload: PlaywrightOnlinePayload) => {
+            // console.log('Received playwrightOnline event:', playwrightOnlinePayload);
+            if (!playwrightOnlinePayload) return;
+            clearTimeout(timeoutId);
+            setIsPlaywrightOnline(true);
+            timeoutId = setTimeout(() => {
+                setIsPlaywrightOnline(false);
+            }, 5000);
+        };
+
+        socket.on('playwrightOnline-appOn', playwrightOnline);
+
+        setInterval(() => {
+            socket.emit('playwrightOnline-onApp', { zaloAppId: zaloApp.id, accountId: account.id });
+        }, 3000);
+
+        return () => {
+            socket.off('playwrightOnline-appOn', playwrightOnline);
+            clearTimeout(timeoutId);
+        };
+    }, [zaloApp, account]);
 
     const handleInput = () => {
         const el = textarea_element.current;
@@ -144,6 +179,7 @@ const InputMsg = () => {
     };
 
     const handleVideoIconClick = () => {
+        if (!isPlaywrightOnline) return;
         videoInput_element.current?.click();
     };
 
@@ -238,7 +274,7 @@ const InputMsg = () => {
                 dispatch(
                     setData_toastMessage({
                         type: messageType_enum.ERROR,
-                        message: 'Đăng tải hình ảnh thất bại !',
+                        message: 'Đăng tải thước phim thất bại !',
                     })
                 );
                 return;
@@ -246,7 +282,7 @@ const InputMsg = () => {
             dispatch(
                 setData_toastMessage({
                     type: messageType_enum.SUCCESS,
-                    message: 'Đăng tải hình ảnh thành công !',
+                    message: 'Đăng tải thước phim thành công !',
                 })
             );
             dispatch(set_isLoading(false));
@@ -321,7 +357,7 @@ const InputMsg = () => {
         <div className={style.parent}>
             <div className={style.icons}>
                 <div className={style.icons1}>
-                    <CiImageOn id={id_imageInput} onClick={handleImageIconClick} size={20} />
+                    <CiImageOn id={id_imageInput} onClick={handleImageIconClick} size={20} color="green" />
                     <input
                         ref={imageInput_element}
                         onChange={handleImageChange}
@@ -329,7 +365,12 @@ const InputMsg = () => {
                         id={id_imageInput}
                         accept="image/*"
                     />
-                    <MdOutlineOndemandVideo id={id_videoInput} onClick={handleVideoIconClick} size={20} />
+                    <MdOutlineOndemandVideo
+                        id={id_videoInput}
+                        onClick={handleVideoIconClick}
+                        size={20}
+                        color={isPlaywrightOnline ? 'red' : 'gray'}
+                    />
                     <input
                         ref={videoInput_element}
                         onChange={handleVideoChange}
@@ -341,7 +382,7 @@ const InputMsg = () => {
                     <PiSmileyStickerLight size={20} />
                 </div>
                 <div className={style.icons2}>
-                    <FaShoppingCart onClick={() => handleGoToOrder()} size={20} />
+                    <FaShoppingCart onClick={() => handleGoToOrder()} size={20} color="red" />
                     <LuNotebookPen onClick={() => handleGoToNote()} size={20} />
                 </div>
             </div>

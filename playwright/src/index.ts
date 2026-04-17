@@ -44,7 +44,7 @@ const basePath = isProduct ? videoPath : 'D:/zalo5k/backEnd/data/video/input';
         const socket = connectSocket(playwightGetZaloApp.token);
 
         const onConnect = () => {
-            socket.emit('joinRoom', `sendVideo_with_zalo_app_id_${playwightGetZaloApp.zaloApp.id}`);
+            socket.emit('joinRoom', `playwright_${playwightGetZaloApp.zaloApp.id}`);
         };
         socket.on('connect', onConnect);
 
@@ -80,6 +80,14 @@ const basePath = isProduct ? videoPath : 'D:/zalo5k/backEnd/data/video/input';
         await pagetop.waitForTimeout(5000);
         await context.storageState({ path: SESSION_PATH });
         console.log('✅ Session saved to', SESSION_PATH);
+
+        socket.on('playwrightOnline-playwightOn', ({ zaloAppId, accountId }) => {
+            // console.log('Playwright is online on app, zaloAppId:', zaloAppId, 'accountId:', accountId);
+            socket.emit('playwrightOnline-onPlaywright', {
+                zaloAppId: zaloAppId,
+                accountId: accountId,
+            });
+        });
 
         socket.on('sendVideo_with_zalo_app_id', async (videoMessageBody: VideoMessageBodyField) => {
             console.log('Received sendVideo event:', videoMessageBody);

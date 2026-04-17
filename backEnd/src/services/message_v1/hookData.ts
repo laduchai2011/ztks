@@ -209,7 +209,23 @@ export function hookData() {
                             try {
                                 const dbMonggo = getDbMonggo();
                                 const dataParse = parsedMessage.data;
-                                await dbMonggo.collection<MessageSchemaType>('message').insertOne(dataParse);
+                                const kq_message = await dbMonggo
+                                    .collection<MessageSchemaType>('message')
+                                    .insertOne(dataParse);
+
+                                const { _id, ...doc } = dataParse as any;
+
+                                // phuc vu realtime
+                                const allChatRoomRoles = await GetAllChatRoomRolesWithChatRoomId(chatRoom.id);
+                                if (allChatRoomRoles) {
+                                    const socketMsg: SocketMessageField = {
+                                        chatRoomId: doc.chat_room_id,
+                                        _id: kq_message.insertedId.toString(),
+                                        allChatRoomRoles: allChatRoomRoles,
+                                    };
+
+                                    sendStringMessage(`store_msg_success${prefix}`, JSON.stringify(socketMsg));
+                                }
                             } catch (error) {
                                 console.error('Error inserting message to MongoDB:', error);
                             }
@@ -671,14 +687,26 @@ async function updateMessageAmountInDay(account_id: number, amount: number) {
 }
 
 async function getWaitVideoMessage(reply_account_id: number): Promise<MessageV1Field<MessageVideoField> | undefined> {
+    // const db = getDbMonggo();
+    // const col = db.collection<MessageV1Field<MessageVideoField>>('waitVideoMessage');
+
+    // const data = await col
+    //     .find<MessageV1Field<MessageVideoField>>({ reply_account_id }, { projection: { _id: 0 } })
+    //     .sort({ timestamp: -1 })
+    //     .limit(1)
+    //     .toArray();
+
+    // return data.length > 0 ? data[0] : undefined;
     const db = getDbMonggo();
     const col = db.collection<MessageV1Field<MessageVideoField>>('waitVideoMessage');
 
-    const data = await col
-        .find<MessageV1Field<MessageVideoField>>({ reply_account_id }, { projection: { _id: 0 } })
-        .sort({ timestamp: -1 })
-        .limit(1)
-        .toArray();
+    const result = await col.findOneAndDelete(
+        { reply_account_id },
+        {
+            sort: { timestamp: -1 }, // lấy mới nhất
+            projection: { _id: 0 },
+        }
+    );
 
-    return data.length > 0 ? data[0] : undefined;
+    return result ?? undefined;
 }
