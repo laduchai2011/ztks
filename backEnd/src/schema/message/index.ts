@@ -239,31 +239,31 @@ export const NewMessageZodSchema = z.discriminatedUnion('event_name', [
 
 export type NewMessageSchemaType = z.infer<typeof NewMessageZodSchema>;
 
+// helper
+function normalizeToUTCStartOfDay(d: Date) {
+    d.setUTCHours(0, 0, 0, 0);
+    return d;
+}
+export function getDateKeyVN(date: Date) {
+    const vn = new Date(date.getTime() + 7 * 60 * 60 * 1000);
+    return vn.toISOString().slice(0, 10);
+}
 export const MessageAmountInDaySchema = z.object({
     amount: z.number().int(),
     account_id: z.number().int(),
+
+    // ✅ thêm field này (QUAN TRỌNG)
+    dateKey: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+
+    // ✅ normalize timestamp
     timestamp: z.preprocess((val) => {
-        if (val instanceof Date) return val;
+        let d: Date;
 
-        if (typeof val === 'string') {
-            const s = val.trim();
+        if (val instanceof Date) d = val;
+        else if (typeof val === 'string' || typeof val === 'number') d = new Date(val);
+        else return val;
 
-            // unix seconds
-            if (/^\d{10}$/.test(s)) return new Date(Number(s) * 1000);
-
-            // unix milliseconds
-            if (/^\d{13}$/.test(s)) return new Date(Number(s));
-
-            // ISO or normal string
-            return new Date(s);
-        }
-
-        if (typeof val === 'number') {
-            // unix ms
-            return new Date(val);
-        }
-
-        return val;
+        return normalizeToUTCStartOfDay(d);
     }, z.date()),
 });
 

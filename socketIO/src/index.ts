@@ -38,7 +38,10 @@ consumeStringMessage(`store_msg_success_${dev_prefix}`, (msg) => {
 });
 
 consumeVideoMessage(`sendVideoMessage_${dev_prefix}`, (videoMessageBody) => {
-    console.log(111111, 'videoMessageBody', videoMessageBody);
+    io.to(`sendVideo_with_zalo_app_id_${videoMessageBody.zaloAppId}`).emit(
+        'sendVideo_with_zalo_app_id',
+        videoMessageBody
+    );
 });
 
 consumeStringMessage(`agentPay_${dev_prefix}`, (data) => {

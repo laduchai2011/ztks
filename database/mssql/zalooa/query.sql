@@ -109,3 +109,17 @@ BEGIN
 	WHERE zaloOaId = @zaloOaId
 END
 GO
+
+CREATE PROCEDURE PlaywightGetZaloApp
+    @userName NVARCHAR(100),
+	@password NVARCHAR(100)
+AS
+BEGIN
+	DECLARE @accountId INT;
+	SELECT @accountId = id FROM dbo.account WHERE userName = @userName AND password=@password AND status = 'normal'
+	IF @accountId IS NULL THROW 50001, N'Không tìm tài khoản', 1;
+
+	SELECT * FROM dbo.zaloApp WHERE accountId = @accountId AND status = 'normal'
+	SELECT @accountId AS accountId;
+END
+GO

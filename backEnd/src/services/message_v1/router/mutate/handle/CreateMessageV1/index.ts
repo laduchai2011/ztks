@@ -266,7 +266,7 @@ class Handle_CreateMessageV1 {
 
         const myResponse: MyResponse<MessageAmountInDayField> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_GetZaloAppWithAccountId-checkLimitMessage) !',
+            message: 'Bắt đầu (Handle_CreateMessageV1-checkLimitMessage) !',
         };
 
         if (type !== 'basic') {
@@ -277,7 +277,8 @@ class Handle_CreateMessageV1 {
         const data: MessageAmountInDayField | undefined = await getMessageAmountInDay(myId);
         if (!data) {
             myResponse.message = 'Lấy thông tin số lượng tin nhắn không thành công !';
-            res.status(200).json(myResponse);
+            // res.status(200).json(myResponse);
+            next();
             return;
         }
 

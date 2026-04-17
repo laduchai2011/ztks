@@ -7,10 +7,11 @@ import {
     NewMessageZodSchema,
     MessageAmountInDaySchema,
     MessageAmountInDayType,
+    getDateKeyVN,
 } from '@src/schema/message';
 import { NewMessageV1Field, MessageAmountInDayField } from '@src/dataStruct/message_v1';
 import { ChatRoomRoleZodSchema } from '@src/schema/chatRoom';
-import { SocketMessageField } from '@src/dataStruct/message_v1';
+import { SocketMessageField, MessageV1Field } from '@src/dataStruct/message_v1';
 import { getDbMonggo } from '@src/connect/mongo';
 import { my_log } from '@src/log';
 import { mssql_server } from '@src/connect';
@@ -35,13 +36,20 @@ import {
 } from '@src/const/redisKey';
 import { prefix_cache_chatRoomRole } from '@src/const/redisKey/chatRoom';
 import { IsPassField, WaitSessionField } from './type';
-import { HookDataField, HookDataSchema, ZaloMessageType } from '@src/dataStruct/zalo/hookData';
+import {
+    HookDataField,
+    HookDataSchema,
+    ZaloMessageType,
+    MessageVideoField,
+    MessageTextField,
+} from '@src/dataStruct/zalo/hookData';
 import { feedbackToTakeChatSession } from './handleHookData/feedbackToTakeChatSession';
 import { ChatSessionField } from '@src/dataStruct/chatSession';
 import { sendMessageToUser } from './sendMessageToUser';
 import { ensureIndexes } from './handleHookData/ensureIndexes';
 import { getEnv } from '@src/mode';
 import { myEnv } from '@src/mode/type';
+import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 
 const prefix = getEnv() === myEnv.Dev ? '_dev' : '';
 
@@ -56,8 +64,8 @@ const timeExpireat = 60 * 3; // 3p
 
 export function hookData() {
     consumeHookData(`zalo_hook_data_queue${prefix}`, async (data) => {
-        console.log('Hook Data Received:');
-        console.dir(data, { depth: null });
+        // console.log('Hook Data Received:');
+        // console.dir(data, { depth: null });
         const app_id = data.app_id;
         const oa_id = determineOaId(data);
         const sender_id_of_user = determineSenderIdOfUser(data);
@@ -175,7 +183,39 @@ export function hookData() {
             reply_account_id = await serviceRedis.getData<number>(keyRedis);
 
             if (!reply_account_id) {
-                reply_account_id = -1;
+                reply_account_id = -1; // phai dung truoc khi xu ly tin nhan, de tranh tinh trang bi thieu reply_account_id khi gui tin nhan video
+                // dùng khi gửi tin nhắn video
+                if (data.event_name === Zalo_Event_Name_Enum.oa_send_text) {
+                    const data1 = data as HookDataField<MessageTextField>;
+                    const messageText = data1.message.text;
+                    const [maPart, urlPart] = messageText.split(',duongdan:');
+                    const fileName = maPart.replace('ma:', '');
+                    const parts = fileName.split('-');
+                    const accountId = parts[1];
+                    const url = urlPart;
+
+                    reply_account_id = Number(accountId);
+
+                    const hookDataSchema_sendVideo = await getWaitVideoMessage(reply_account_id);
+                    if (hookDataSchema_sendVideo && data1.message.quote_msg_id) {
+                        hookDataSchema_sendVideo.message_id = data1.message.quote_msg_id;
+                        hookDataSchema_sendVideo.message.msg_id = data1.message.quote_msg_id;
+                        hookDataSchema_sendVideo.message.attachments[0].payload.url = url;
+
+                        const parsedMessage = MessageZodSchema.safeParse(hookDataSchema_sendVideo);
+                        if (!parsedMessage.success) {
+                            console.error('Invalid message format:', parsedMessage.error);
+                        } else {
+                            try {
+                                const dbMonggo = getDbMonggo();
+                                const dataParse = parsedMessage.data;
+                                await dbMonggo.collection<MessageSchemaType>('message').insertOne(dataParse);
+                            } catch (error) {
+                                console.error('Error inserting message to MongoDB:', error);
+                            }
+                        }
+                    }
+                }
             }
 
             const hookDataSchema: HookDataSchema = {
@@ -208,45 +248,44 @@ export function hookData() {
                     .collection<MessageSchemaType>('lastMessage')
                     .updateOne({ chat_room_id: doc.chat_room_id }, { $set: doc }, { upsert: true });
 
+                // phuc vu realtime
                 const allChatRoomRoles = await GetAllChatRoomRolesWithChatRoomId(chatRoom.id);
-                if (!allChatRoomRoles) {
-                    return;
-                }
-                const socketMsg: SocketMessageField = {
-                    chatRoomId: doc.chat_room_id,
-                    _id: kq_message.insertedId.toString(),
-                    allChatRoomRoles: allChatRoomRoles,
-                };
+                if (allChatRoomRoles) {
+                    const socketMsg: SocketMessageField = {
+                        chatRoomId: doc.chat_room_id,
+                        _id: kq_message.insertedId.toString(),
+                        allChatRoomRoles: allChatRoomRoles,
+                    };
 
-                sendStringMessage(`store_msg_success${prefix}`, JSON.stringify(socketMsg));
+                    sendStringMessage(`store_msg_success${prefix}`, JSON.stringify(socketMsg));
+                }
             }
 
             // thiết lập newMessage để xem tin nhắn mới chưa xem
             const allChatRoomRoles = await GetAllChatRoomRolesWithChatRoomId(chatRoom.id);
-            if (!allChatRoomRoles) {
-                return;
-            }
-            for (let i: number = 0; i < allChatRoomRoles.length; i++) {
-                const newMessage: NewMessageV1Field<ZaloMessageType> = {
-                    ...hookDataSchema,
-                    account_id: allChatRoomRoles[i].authorizedAccountId,
-                    created_at: new Date(),
-                };
+            if (allChatRoomRoles) {
+                for (let i: number = 0; i < allChatRoomRoles.length; i++) {
+                    const newMessage: NewMessageV1Field<ZaloMessageType> = {
+                        ...hookDataSchema,
+                        account_id: allChatRoomRoles[i].authorizedAccountId,
+                        created_at: new Date(),
+                    };
 
-                const parsedNewMessage = NewMessageZodSchema.safeParse(newMessage);
+                    const parsedNewMessage = NewMessageZodSchema.safeParse(newMessage);
 
-                if (!parsedNewMessage.success) {
-                    console.error('Invalid message format:', parsedNewMessage.error);
-                } else {
-                    const dbMonggo = getDbMonggo();
-                    const dataNewMessageParse = parsedNewMessage.data;
-                    await dbMonggo.collection<NewMessageSchemaType>('newMessage').insertOne(dataNewMessageParse);
+                    if (!parsedNewMessage.success) {
+                        console.error('Invalid message format:', parsedNewMessage.error);
+                    } else {
+                        const dbMonggo = getDbMonggo();
+                        const dataNewMessageParse = parsedNewMessage.data;
+                        await dbMonggo.collection<NewMessageSchemaType>('newMessage').insertOne(dataNewMessageParse);
+                    }
                 }
             }
 
             //cập nhật số lượng tin nhắn trong ngày
             const isOaSend = data.event_name.startsWith('oa_send');
-            if (isOaSend) {
+            if (isOaSend && reply_account_id && reply_account_id !== -1) {
                 updateMessageAmountInDay(reply_account_id, 1);
             }
         }
@@ -581,21 +620,25 @@ function parseTimestamp(ts: string) {
 }
 
 async function updateMessageAmountInDay(account_id: number, amount: number) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const now = new Date();
+    const dateKey = getDateKeyVN(now);
 
     const db = getDbMonggo();
     const col = db.collection<MessageAmountInDayType>('messageAmountInDay');
 
-    const existing = await col.findOne<MessageAmountInDayField>({ account_id: account_id, timestamp: today });
+    const existing = await col.findOne<MessageAmountInDayField>({
+        account_id: account_id,
+        dateKey: dateKey,
+    });
 
     if (existing) {
         const oldAmount = existing.amount;
-        await col.updateOne({ account_id: account_id, timestamp: today }, { $set: { amount: oldAmount + 1 } });
+        await col.updateOne({ account_id: account_id, dateKey: dateKey }, { $set: { amount: oldAmount + 1 } });
     } else {
         const newMessageAmountInDay: MessageAmountInDayField = {
             account_id: account_id,
-            timestamp: today,
+            dateKey: dateKey,
+            timestamp: now,
             amount: amount,
         };
         const parsed = MessageAmountInDaySchema.safeParse(newMessageAmountInDay);
@@ -606,4 +649,36 @@ async function updateMessageAmountInDay(account_id: number, amount: number) {
             await col.insertOne(parsed.data);
         }
     }
+
+    // const now = new Date();
+    // const dateKey = getDateKeyVN(now);
+
+    // const db = getDbMonggo();
+    // const col = db.collection<MessageAmountInDayType>('messageAmountInDay');
+
+    // await col.updateOne(
+    //     { account_id, dateKey },
+    //     {
+    //         $inc: { amount: amount }, // tăng trực tiếp
+    //         $setOnInsert: {
+    //             timestamp: now,
+    //             account_id,
+    //             dateKey,
+    //         },
+    //     },
+    //     { upsert: true }
+    // );
+}
+
+async function getWaitVideoMessage(reply_account_id: number): Promise<MessageV1Field<MessageVideoField> | undefined> {
+    const db = getDbMonggo();
+    const col = db.collection<MessageV1Field<MessageVideoField>>('waitVideoMessage');
+
+    const data = await col
+        .find<MessageV1Field<MessageVideoField>>({ reply_account_id }, { projection: { _id: 0 } })
+        .sort({ timestamp: -1 })
+        .limit(1)
+        .toArray();
+
+    return data.length > 0 ? data[0] : undefined;
 }

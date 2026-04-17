@@ -1,5 +1,4 @@
 import { Client } from 'minio';
-import { minio_config } from '@src/config';
 
 class MinioSingleton {
     private static instance: Client;
@@ -9,11 +8,11 @@ class MinioSingleton {
     static getInstance(): Client {
         if (!MinioSingleton.instance) {
             MinioSingleton.instance = new Client({
-                endPoint: minio_config?.endPoint || '',
-                port: minio_config?.port || 9000,
-                useSSL: minio_config?.useSSL || false,
-                accessKey: minio_config?.accessKey || '',
-                secretKey: minio_config?.secretKey || '',
+                endPoint: '103.249.200.80',
+                port: 9000,
+                useSSL: false,
+                accessKey: 'minioadmin',
+                secretKey: 'minioadmin',
             });
             console.log('✅ MinIO client initialized');
         }

@@ -17,11 +17,12 @@ const MsgText: FC<{ data: MessageV1Field<MessageTextField> }> = ({ data }) => {
     useEffect(() => {
         const quote_msg_id = data.message.quote_msg_id;
         if (!quote_msg_id) return;
-        getMessageWithMsgId({ chat_room_id: 40, msg_id: quote_msg_id })
+        getMessageWithMsgId({ chat_room_id: data.chat_room_id, msg_id: quote_msg_id })
             .then((res) => {
                 const resData = res.data;
                 // console.log('getMessageWithMsgId', resData);
                 if (resData?.isSuccess && resData.data) {
+                    console.log(resData.data);
                     setRepliedMsg(resData.data);
                 }
             })

@@ -1,16 +1,14 @@
 import { minioClient } from './index';
 import { Readable } from 'stream';
+import fs from 'fs';
+import { pipeline } from 'stream/promises';
 
-const BUCKET = 'images';
+const BUCKET = 'videos';
 
 export class MinioService {
     static async ensureBucket() {
         const exists = await minioClient.bucketExists(BUCKET);
         if (!exists) await minioClient.makeBucket(BUCKET);
-    }
-
-    static async stat(objectName: string) {
-        return minioClient.statObject(BUCKET, objectName);
     }
 
     static uploadStream(objectName: string, stream: Readable, size?: number, mimeType?: string) {
@@ -32,49 +30,21 @@ export class MinioService {
     }
 }
 
-export class MinioServiceV1 {
-    private _bucketName: string = '';
+export async function downloadVideo(objectName: string, destPath: string) {
+    try {
+        const dataStream = await minioClient.getObject(BUCKET, objectName);
+        const file = fs.createWriteStream(destPath);
 
-    constructor(bucketName: string) {
-        this._bucketName = bucketName;
+        // Dùng pipeline để quản lý stream tốt hơn
+        await pipeline(dataStream, file);
 
-        // this.ensureBucket().catch((err) => {
-        //     console.error('Error ensuring bucket exists:', err);
-        // });
+        console.log('Video đã được tải xong!');
+    } catch (err) {
+        console.error('Lỗi khi tải video:', err);
+        throw err;
     }
+}
 
-    async ensureBucket() {
-        const exists = await minioClient.bucketExists(this._bucketName);
-        if (!exists) await minioClient.makeBucket(this._bucketName);
-    }
-
-    async stat(objectName: string) {
-        return minioClient.statObject(this._bucketName, objectName);
-    }
-
-    async uploadStream(objectName: string, stream: Readable, size?: number, mimeType?: string) {
-        return minioClient.putObject(
-            this._bucketName,
-            objectName,
-            stream,
-            size,
-            mimeType ? { 'Content-Type': mimeType } : undefined
-        );
-    }
-
-    getStream(objectName: string) {
-        return minioClient.getObject(this._bucketName, objectName);
-    }
-
-    getStreamVideo(objectName: string, offset: number, length?: number) {
-        return minioClient.getPartialObject(this._bucketName, objectName, offset, length);
-    }
-
-    getBucketName() {
-        return this._bucketName;
-    }
-
-    remove(objectName: string) {
-        return minioClient.removeObject(this._bucketName, objectName);
-    }
+export async function deleteVideo(bucket: string, objectName: string): Promise<void> {
+    await minioClient.removeObject(bucket, objectName);
 }

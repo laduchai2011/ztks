@@ -30,4 +30,7 @@ export interface VideoMessageBodyField {
     chatRoomId: number;
     accountId: number;
     videoName: string;
+    oaId: string;
+    userId: string;
+    userIdByApp: string;
 }

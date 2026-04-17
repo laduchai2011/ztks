@@ -25,6 +25,10 @@ import { prefix_cache_accountInformation } from '@src/const/redisKey/account';
 import { prefix_cache_agent } from '@src/const/redisKey/agent';
 import { prefix_cache_chatRoomRole } from '@src/const/redisKey/chatRoom';
 import { sendVideoMessage } from '@src/messageQueue/Producer';
+import { HookDataSchema, MessageVideoField } from '@src/dataStruct/zalo/hookData';
+import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
+import { MessageSchemaType, MessageZodSchema } from '@src/schema/message';
+import { getDbMonggo } from '@src/connect/mongo';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -386,13 +390,14 @@ class Handle_VideoMessage {
     };
 
     checkLimitMessage = async (_: Request, res: Response, next: NextFunction) => {
-        const myId = res.locals.myId as number;
+        const videoMessageBody = res.locals.videoMessageBody as VideoMessageBodyField;
+        const myId = videoMessageBody.accountId;
         const agent = res.locals.agent as AgentField;
         const type = agent.type;
 
         const myResponse: MyResponse<MessageAmountInDayField> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_GetZaloAppWithAccountId-checkLimitMessage) !',
+            message: 'Bắt đầu (Handle_VideoMessage-checkLimitMessage) !',
         };
 
         if (type !== 'basic') {
@@ -403,7 +408,8 @@ class Handle_VideoMessage {
         const data: MessageAmountInDayField | undefined = await getMessageAmountInDay(myId);
         if (!data) {
             myResponse.message = 'Lấy thông tin số lượng tin nhắn không thành công !';
-            res.status(200).json(myResponse);
+            // res.status(200).json(myResponse);
+            next();
             return;
         }
 
@@ -497,13 +503,67 @@ class Handle_VideoMessage {
         }
     };
 
-    main = async (req: Request<any, any, VideoMessageBodyField>, res: Response) => {
-        sendVideoMessage(`sendVideoMessage_${dev_prefix}`, req.body);
+    main = async (_: Request, res: Response) => {
+        const videoMessageBody = res.locals.videoMessageBody as VideoMessageBodyField;
+        const zaloApp = res.locals.zaloApp as ZaloAppField;
+        const zaloOa = res.locals.zaloOa as ZaloOaField;
 
         const myResponse: MyResponse<any> = {
             isSuccess: true,
             message: 'Bắt đầu (Handle_VideoMessage-isPassRoom)',
         };
+
+        const messageVideo: MessageVideoField = {
+            msg_id: videoMessageBody.videoName,
+            attachments: [
+                {
+                    payload: {
+                        thumbnail: '',
+                        description: '',
+                        url: '',
+                    },
+                    type: 'video',
+                },
+            ],
+        };
+
+        const hookDataSchema: HookDataSchema<MessageVideoField> = {
+            event_name: Zalo_Event_Name_Enum.oa_send_video,
+            app_id: zaloApp.appId,
+            oa_id: zaloOa.oaId,
+            chat_room_id: videoMessageBody.chatRoomId,
+            user_id_by_app: videoMessageBody.userIdByApp,
+            sender_id: videoMessageBody.oaId,
+            recipient_id: videoMessageBody.userId,
+            reply_account_id: videoMessageBody.accountId,
+            message_id: videoMessageBody.videoName,
+            message: messageVideo,
+            is_seen: false,
+            timestamp: new Date(),
+        };
+
+        const parsedMessage = MessageZodSchema.safeParse(hookDataSchema);
+        if (!parsedMessage.success) {
+            console.error('Invalid message format:', parsedMessage.error);
+            myResponse.message = parsedMessage.error.toString();
+
+            res.status(200).json(myResponse);
+            return;
+        } else {
+            try {
+                const dbMonggo = getDbMonggo();
+                const dataParse = parsedMessage.data;
+                await dbMonggo.collection<MessageSchemaType>('waitVideoMessage').insertOne(dataParse);
+            } catch (error) {
+                console.error('Error inserting message to MongoDB:', error);
+                myResponse.message = 'Thực hiện gửi thước phim không thành công !';
+                myResponse.err = error;
+                res.status(200).json(myResponse);
+                return;
+            }
+        }
+
+        sendVideoMessage(`sendVideoMessage_${dev_prefix}`, videoMessageBody);
 
         myResponse.message = 'Bạn vừa gửi video !';
         res.status(200).json(myResponse);

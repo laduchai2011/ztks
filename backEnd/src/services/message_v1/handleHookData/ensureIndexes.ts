@@ -23,5 +23,9 @@ export async function ensureIndexes() {
     await col_newMessage.createIndex({ created_at: 1 }, { expireAfterSeconds: 3600 * 24 * 15 });
 
     const col_messageAmountInDay = db.collection('messageAmountInDay');
-    await col_messageAmountInDay.createIndex({ account_id: 1, timestamp: 1 }, { unique: true });
+    await col_messageAmountInDay.createIndex({ account_id: 1, dateKey: 1 }, { unique: true });
+
+    const col_waitVideoMessage = db.collection('waitVideoMessage');
+    await col_waitVideoMessage.createIndex({ reply_account_id: 1 }, { unique: true });
+    await col_waitVideoMessage.createIndex({ timestamp: 1 }, { expireAfterSeconds: 60 });
 }

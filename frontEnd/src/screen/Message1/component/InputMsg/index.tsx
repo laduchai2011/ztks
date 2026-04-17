@@ -249,9 +249,26 @@ const InputMsg = () => {
                     message: 'Đăng tải hình ảnh thành công !',
                 })
             );
+            dispatch(set_isLoading(false));
+
             const fileName = resData_video.fileName;
             // const videoUrl = `${BASE_URL_API}/service_video_v1/query/video/${fileName}`;
             // console.log('videoUrl', videoUrl);
+
+            let oaId: string = '';
+            let userId: string = '';
+            const isUserSend = lastMessage.event_name.startsWith('user_send');
+            const isOaSend = lastMessage.event_name.startsWith('oa_send');
+
+            if (isUserSend) {
+                oaId = lastMessage.recipient_id;
+                userId = lastMessage.sender_id;
+            }
+
+            if (isOaSend) {
+                oaId = lastMessage.sender_id;
+                userId = lastMessage.recipient_id;
+            }
 
             const videoMessageBody: VideoMessageBodyField = {
                 zaloAppId: zaloApp.id,
@@ -259,6 +276,9 @@ const InputMsg = () => {
                 chatRoomId: Number(id),
                 accountId: account.id,
                 videoName: fileName,
+                oaId: oaId,
+                userId: userId,
+                userIdByApp: lastMessage.user_id_by_app,
             };
 
             dispatch(set_isLoading(true));
@@ -281,7 +301,6 @@ const InputMsg = () => {
                 });
         } catch (error) {
             console.error(error);
-        } finally {
             dispatch(set_isLoading(false));
         }
     };

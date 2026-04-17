@@ -165,6 +165,7 @@ const MyMsg: FC<{
     }, [chatRoomRole]);
 
     const handleToReply = () => {
+        setIsMore(!isMore);
         dispatch(set_repliedMessage(data));
     };
 
