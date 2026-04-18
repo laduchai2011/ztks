@@ -1,28 +1,20 @@
-import { execSync } from 'child_process';
-import { chromium, Page } from 'playwright';
-import { my_log } from './log';
+import { chromium } from 'playwright';
+// import { my_log } from './log';
 import { io } from 'socket.io-client';
 import path from 'path';
-import fs from 'fs';
 import { BASE_URL } from './const/api/baseUrl';
 import { PlaywightGetZaloAppField } from './dataStruct/zalo';
-import { createWriteStream } from 'fs';
+import fs, { createWriteStream } from 'fs';
 import { pipeline } from 'stream/promises';
 import { Readable } from 'stream';
 import { VideoMessageBodyField } from './dataStruct/message_v1/body';
 
-const rootDir = process.cwd();
+const rootDir = path.resolve(__dirname, '..');
 const loginFilePath = path.join(rootDir, 'login.txt');
 const videosDir = path.join(rootDir, 'data', 'videos');
-
-const SESSION_PATH = 'sessions/zalo-oa.json';
-
+const SESSION_PATH = path.join(rootDir, 'sessions', 'zalo-oa.json');
 const isProduct = process.env.NODE_ENV === 'production';
-const dev_prefix = isProduct ? '' : 'dev';
 const apiString = isProduct ? '' : '/api';
-
-const videoPath = path.join(process.cwd(), 'data', 'video', 'input');
-const basePath = isProduct ? videoPath : 'D:/zalo5k/backEnd/data/video/input';
 
 (async () => {
     try {
