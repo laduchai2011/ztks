@@ -14,11 +14,18 @@ const Home = () => {
         }
     }, [navigate, myId]);
 
+    const bank = 'TCB';
+    const account = '19033101290022';
+
+    const qrUrl = `https://img.vietqr.io/image/${bank}-${account}-compact2.png?amount=10000&addInfo=takeMoney&accountName=NGUYEN%20VAN%20A`;
+
     return (
         <div className={style.parent}>
             <Header selected={select_enum.HOME} />
             <div className={style.main}>dasdas</div>
-            <div></div>
+            <div>
+                <img src={qrUrl} alt="QR Code" />
+            </div>
         </div>
     );
 };

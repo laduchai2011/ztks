@@ -124,6 +124,11 @@ app.use(`${apiString}/hello`, (req, res) => {
         const service_customer = (await import('@src/services/customer')).default;
         app.use(`${prefix}/service_customer`, service_customer);
     }
+
+    if (services.includes('bank')) {
+        const service_bank = (await import('@src/services/bank')).default;
+        app.use(`${prefix}/service_bank`, service_bank);
+    }
 })();
 
 app.listen(port, () => {

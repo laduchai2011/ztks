@@ -85,12 +85,12 @@ class Handle_CreateAgent {
                 res.status(200).json(myResponse);
                 return;
             } else {
-                myResponse.message = 'Tạo agent KHÔNG thành công 1 !';
+                myResponse.message = 'Tạo agent KHÔNG thành công !';
                 res.status(200).json(myResponse);
                 return;
             }
         } catch (error) {
-            myResponse.message = 'Tạo agent KHÔNG thành công 2 !';
+            myResponse.message = 'Tạo agent KHÔNG thành công !!';
             myResponse.err = error;
             res.status(500).json(myResponse);
             return;

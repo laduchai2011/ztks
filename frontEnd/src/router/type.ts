@@ -15,6 +15,7 @@ import {
     MANAGE_AGENT,
     MEMBER,
     WALLET,
+    BANK,
 } from '@src/const/text';
 
 const _HOME = HOME;
@@ -34,6 +35,7 @@ const _ACCOUNT_RECEIVE_MESSAGE = ACCOUNT_RECEIVE_MESSAGE;
 const _MANAGE_AGENT = MANAGE_AGENT;
 const _MEMBER = MEMBER;
 const _WALLET = WALLET;
+const _BANK = BANK;
 
 export enum select_enum {
     HOME = _HOME,
@@ -54,6 +56,7 @@ export enum select_enum {
     MEMBER = _MEMBER,
     WALLET = _WALLET,
     ZNS = 'ZNS',
+    BANK = _BANK,
 }
 export type selected_type =
     | select_enum.HOME
@@ -73,7 +76,8 @@ export type selected_type =
     | select_enum.MANAGE_AGENT
     | select_enum.MEMBER
     | select_enum.WALLET
-    | select_enum.ZNS;
+    | select_enum.ZNS
+    | select_enum.BANK;
 
 export enum route_enum {
     HOME = '/',
@@ -96,6 +100,7 @@ export enum route_enum {
     MEMBER = '/member',
     WALLET = '/wallet',
     ZNS = '/zns',
+    BANK = '/bank',
 }
 export type routed_type =
     | route_enum.HOME
@@ -117,4 +122,5 @@ export type routed_type =
     | route_enum.MANAGE_AGENT
     | route_enum.MEMBER
     | route_enum.WALLET
-    | route_enum.ZNS;
+    | route_enum.ZNS
+    | route_enum.BANK;

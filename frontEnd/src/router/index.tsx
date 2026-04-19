@@ -21,6 +21,7 @@ import ManageAgent from '@src/screen/ManageAgent';
 import Member from '@src/screen/Member';
 import Wallet from '@src/screen/Wallet';
 import Zns from '@src/screen/Zns';
+import Bank from '@src/screen/Bank';
 import { route_enum } from './type';
 
 const router = createBrowserRouter(
@@ -44,6 +45,7 @@ const router = createBrowserRouter(
         { path: route_enum.MEMBER, element: <Member /> },
         { path: route_enum.WALLET, element: <Wallet /> },
         { path: route_enum.ZNS, element: <Zns /> },
+        { path: route_enum.BANK, element: <Bank /> },
         { path: '*', element: <NotFoundPage /> }, // Trang 404
     ],
     {

@@ -13,6 +13,7 @@ import {
     MANAGE_AGENT,
     MEMBER,
     WALLET,
+    BANK,
 } from '@src/const/text';
 import MyLoading from './component/MyLoading';
 import MyToastMessage from './component/MyToastMessage';
@@ -58,6 +59,10 @@ const Profile = () => {
         navigate(route_enum.WALLET);
     };
 
+    const goToBank = () => {
+        navigate(route_enum.BANK);
+    };
+
     const goToSignout = () => {
         navigate(route_enum.SIGNOUT);
     };
@@ -94,6 +99,9 @@ const Profile = () => {
                     )}
                     <div className={style.option} onClick={() => goToWallet()}>
                         {WALLET}
+                    </div>
+                    <div className={style.option} onClick={() => goToBank()}>
+                        {BANK}
                     </div>
                     <div className={style.option} onClick={() => goToSignout()}>
                         {SIGNOUT}
