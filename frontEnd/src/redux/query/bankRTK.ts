@@ -3,6 +3,7 @@ import { BankField } from '@src/dataStruct/bank';
 import {
     AddBankBodyField,
     EditBankBodyField,
+    DeleteBankBodyField,
     GetBankWithIdBodyField,
     GetAllBanksBodyField,
 } from '@src/dataStruct/bank/body';
@@ -46,7 +47,21 @@ export const bankRTK = createApi({
             }),
             invalidatesTags: (result) => [{ type: 'Bank', id: result?.data?.id }],
         }),
+        deleteBank: builder.mutation<MyResponse<BankField>, DeleteBankBodyField>({
+            query: (body) => ({
+                url: BANK_API.DELETE_BANK,
+                method: 'DELETE',
+                body,
+            }),
+            invalidatesTags: [{ type: 'AllBank' }],
+        }),
     }),
 });
 
-export const { useLazyGetAllBanksQuery, useGetBankWithIdQuery, useAddBankMutation, useEditBankMutation } = bankRTK;
+export const {
+    useLazyGetAllBanksQuery,
+    useGetBankWithIdQuery,
+    useAddBankMutation,
+    useEditBankMutation,
+    useDeleteBankMutation,
+} = bankRTK;

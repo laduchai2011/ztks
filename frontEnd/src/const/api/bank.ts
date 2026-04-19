@@ -8,4 +8,5 @@ export const BANK_API = {
     GET_BANK_WITH_ID: `${BASE_URL}${apiString}/service_bank/query/getBankWithId`,
     ADD_BANK: `${BASE_URL}${apiString}/service_bank/mutate/addBank`,
     EDIT_BANK: `${BASE_URL}${apiString}/service_bank/mutate/editBank`,
+    DELETE_BANK: `${BASE_URL}${apiString}/service_bank/mutate/deleteBank`,
 };

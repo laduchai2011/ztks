@@ -16,6 +16,11 @@ const initialState: state_props = {
         bank: undefined,
         newBank: undefined,
     },
+    deleteBankDialog: {
+        isShow: false,
+        bank: undefined,
+        deletedBank: undefined,
+    },
 };
 
 const BankSlice = createSlice({
@@ -40,6 +45,15 @@ const BankSlice = createSlice({
         setNewBank_editBankDialog: (state, action: PayloadAction<BankField | undefined>) => {
             state.editBankDialog.newBank = action.payload;
         },
+        setIsShow_deleteBankDialog: (state, action: PayloadAction<boolean>) => {
+            state.deleteBankDialog.isShow = action.payload;
+        },
+        setBank_deleteBankDialog: (state, action: PayloadAction<BankField | undefined>) => {
+            state.deleteBankDialog.bank = action.payload;
+        },
+        setDeletedBank_deleteBankDialog: (state, action: PayloadAction<BankField | undefined>) => {
+            state.deleteBankDialog.deletedBank = action.payload;
+        },
     },
 });
 
@@ -50,5 +64,8 @@ export const {
     setIsShow_editBankDialog,
     setBank_editBankDialog,
     setNewBank_editBankDialog,
+    setIsShow_deleteBankDialog,
+    setBank_deleteBankDialog,
+    setDeletedBank_deleteBankDialog,
 } = BankSlice.actions;
 export default BankSlice.reducer;

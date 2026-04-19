@@ -4,7 +4,8 @@ import MyLoading from './component/MyLoading';
 import MyToastMessage from './component/MyToastMessage';
 import AddBank from './component/AddBank';
 import BankList from './component/BankList';
-import EditBank from './component/EditBank';
+import EditBankDialog from './component/EditBankDialog';
+import DeleteBankDialog from './component/DeleteBankDialog';
 
 const Bank = () => {
     return (
@@ -17,7 +18,8 @@ const Bank = () => {
             <div>
                 <MyToastMessage />
                 <MyLoading />
-                <EditBank />
+                <EditBankDialog />
+                <DeleteBankDialog />
             </div>
         </div>
     );

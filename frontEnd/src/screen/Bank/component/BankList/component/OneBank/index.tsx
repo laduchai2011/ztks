@@ -6,7 +6,12 @@ import { FaRegEdit } from 'react-icons/fa';
 import { MdOutlineDelete } from 'react-icons/md';
 import { BANK_CODE, ACCOUNT_NUMBER, ACCOUNT_NAME, EDIT, DELETE } from '@src/const/text';
 import { BankField } from '@src/dataStruct/bank';
-import { setIsShow_editBankDialog, setBank_editBankDialog } from '@src/redux/slice/Bank';
+import {
+    setIsShow_editBankDialog,
+    setBank_editBankDialog,
+    setIsShow_deleteBankDialog,
+    setBank_deleteBankDialog,
+} from '@src/redux/slice/Bank';
 
 const OneBank = ({ item, index }: { item: BankField; index: number }) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -27,13 +32,18 @@ const OneBank = ({ item, index }: { item: BankField; index: number }) => {
         dispatch(setIsShow_editBankDialog(true));
     };
 
+    const handleOpenDelete = () => {
+        dispatch(setBank_deleteBankDialog(item));
+        dispatch(setIsShow_deleteBankDialog(true));
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.header}>
                 <div>{index + 1}</div>
                 <div>
                     <FaRegEdit onClick={() => handleOpenEdit()} title={EDIT} color="green" />
-                    <MdOutlineDelete size={20} title={DELETE} color="red" />
+                    <MdOutlineDelete onClick={() => handleOpenDelete()} size={20} title={DELETE} color="red" />
                 </div>
             </div>
             <div className={style.content}>

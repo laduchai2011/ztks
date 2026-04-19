@@ -14,4 +14,9 @@ export interface state_props {
         bank?: BankField;
         newBank?: BankField;
     };
+    deleteBankDialog: {
+        isShow: boolean;
+        bank?: BankField;
+        deletedBank?: BankField;
+    };
 }
