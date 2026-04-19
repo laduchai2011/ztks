@@ -1,0 +1,45 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    width: 100%;
+    flex: 1;
+    overflow-y: auto;
+    @include small-scroll-yy(1px);
+
+    // > .aBank {
+    //     width: 100%;
+    //     box-sizing: border-box;
+    //     padding: 10px;
+    //     border-radius: 10px;
+    //     background-color: rgb(241, 241, 241);
+    //     margin: 5px 0;
+
+    //     > .header {
+    //         @include center-of-row;
+    //         justify-content: space-between;
+
+    //         > div:nth-child(2) {
+    //             @include center-of-row;
+
+    //             > svg {
+    //                 margin: 0 5px;
+    //             }
+    //         }
+    //     }
+
+    //     > .content {
+    //         @include center-of-row;
+    //         box-sizing: border-box;
+    //         padding: 5px;
+
+    //         > div:nth-child(1) {
+    //             width: 40%;
+    //         }
+
+    //         > div:nth-child(2) {
+    //             width: 60%;
+    //             color: gray;
+    //         }
+    //     }
+    // }
+}
