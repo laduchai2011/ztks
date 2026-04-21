@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '@src/redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@src/redux';
 import { WALLET } from '@src/const/text';
 import BalanceFluctuations from './component/BalanceFluctuations';
 import { route_enum } from '@src/router/type';
@@ -15,9 +15,11 @@ import TakeMoneyDialog from './component/TakeMoneyDialog';
 import { useLazyGetMyWalletWithTypeQuery } from '@src/redux/query/walletRTK';
 import { AccountField } from '@src/dataStruct/account';
 import { WalletField, WalletType, WalletEnum } from '@src/dataStruct/wallet';
+import { setData_toastMessage } from '@src/redux/slice/Wallet';
 
 const Wallet = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
     const myId = sessionStorage.getItem('myId');
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
 
@@ -30,7 +32,16 @@ const Wallet = () => {
         if (myId === null) {
             navigate(route_enum.SIGNIN);
         }
-    }, [navigate, myId]);
+
+        return () => {
+            dispatch(
+                setData_toastMessage({
+                    message: '',
+                    type: undefined,
+                })
+            );
+        };
+    }, [navigate, myId, dispatch]);
 
     const handleSlectedClass = (type: WalletType) => {
         if (type === selectedType) {

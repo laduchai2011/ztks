@@ -66,3 +66,20 @@ BEGIN
     ORDER BY createTime DESC;
 END
 GO
+
+CREATE PROCEDURE MemberZtksGetRequiresTakeMoney
+	@memberZtksId INT
+AS
+BEGIN
+    SELECT *
+	FROM requireTakeMoney
+	WHERE 
+		isDelete = 0
+		AND isDo = 0
+		AND (
+			memberZtksId IS NULL
+			OR memberZtksId = @memberZtksId
+		)
+    ORDER BY createTime ASC;
+END
+GO

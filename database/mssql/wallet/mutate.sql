@@ -291,7 +291,7 @@ BEGIN
 
 		DECLARE @memberZtksId INT;
 		SELECT @memberZtksId = memberZtksId FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId;
-		IF @memberZtksId IS NULL THROW 50002, N'Yêu cầu rút tiền này đã được xác nhận nên không thể chỉnh sửa .', 2;
+		IF @memberZtksId IS NOT NULL THROW 50002, N'Yêu cầu rút tiền này đã được xác nhận nên không thể chỉnh sửa .', 2;
 
 		IF NOT EXISTS ( SELECT 1 FROM dbo.bank WHERE id = @bankId AND accountId = @accountId )
 		BEGIN
@@ -342,7 +342,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE DeleteRequireTakeMoney
+ALTER PROCEDURE DeleteRequireTakeMoney
 	@requireTakeMoneyId INT,
 	@accountId INT
 AS
@@ -356,14 +356,19 @@ BEGIN
 		THROW 50001, N'Yêu cầu rút tiền này không phải của bạn .', 1;
 	END
 
+	DECLARE @memberZtksId INT;
+	SELECT @memberZtksId = memberZtksId FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId;
+	IF @memberZtksId IS NOT NULL THROW 50002, N'Không thể xóa yêu cầu tút tiền khi đã được xác nhận .', 2;
+
 	UPDATE dbo.requireTakeMoney
 	SET isDelete = 1
 	WHERE id = @requireTakeMoneyId
 	IF @@ROWCOUNT = 0
     BEGIN
-       THROW 50002, 'Huỷ yêu cầu rút tiền không thành công .', 2;
+       THROW 50003, 'Huỷ yêu cầu rút tiền không thành công .', 3;
     END
 
+	SELECT * FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId
 	COMMIT TRANSACTION;
 	END TRY
 	BEGIN CATCH
@@ -374,7 +379,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE MemberTksConfirmTakeMoney
+CREATE PROCEDURE MemberZtksConfirmTakeMoney
 	@requireTakeMoneyId INT,
 	@memberZtksId INT
 AS
@@ -393,7 +398,7 @@ BEGIN
 		WHERE id = @requireTakeMoneyId AND isDelete = 0;
 		IF @@ROWCOUNT = 0
         BEGIN
-            THROW 50002, 'MemberTks các nhận yêu cầu KHÔNG thành công .', 2;
+            THROW 50002, 'MemberZtks các nhận yêu cầu KHÔNG thành công .', 2;
         END
 
 		SELECT * FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId
@@ -492,3 +497,6 @@ BEGIN
 	END CATCH
 END
 GO
+
+
+DELETE FROM dbo.requireTakeMoney;

@@ -56,6 +56,11 @@ export interface EditRequireTakeMoneyBodyField {
     accountId: number;
 }
 
+export interface DeleteRequireTakeMoneyBodyField {
+    requireTakeMoneyId: number;
+    accountId: number;
+}
+
 export interface MemberTksConfirmTakeMoneyBodyField {
     requireTakeMoneyId: number;
     memberZtksId: number;

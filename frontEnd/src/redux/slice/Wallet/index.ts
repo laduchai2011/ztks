@@ -12,7 +12,7 @@ const initialState: state_props = {
         isShow: false,
         wallet: undefined,
         requiredTakeMoney: undefined,
-        newRequiredTakeMoney: undefined,
+        newRequireTakeMoney: undefined,
     },
 };
 
@@ -35,8 +35,8 @@ const WalletSlice = createSlice({
         setRequiredTakeMoney_takeMoneyDialog: (state, action: PayloadAction<RequireTakeMoneyField | undefined>) => {
             state.takeMoneyDialog.requiredTakeMoney = action.payload;
         },
-        setNewRequiredTakeMoney_takeMoneyDialog: (state, action: PayloadAction<RequireTakeMoneyField | undefined>) => {
-            state.takeMoneyDialog.newRequiredTakeMoney = action.payload;
+        setNewRequireTakeMoney_takeMoneyDialog: (state, action: PayloadAction<RequireTakeMoneyField | undefined>) => {
+            state.takeMoneyDialog.newRequireTakeMoney = action.payload;
         },
     },
 });
@@ -47,6 +47,6 @@ export const {
     setIsShow_takeMoneyDialog,
     setWallet_takeMoneyDialog,
     setRequiredTakeMoney_takeMoneyDialog,
-    setNewRequiredTakeMoney_takeMoneyDialog,
+    setNewRequireTakeMoney_takeMoneyDialog,
 } = WalletSlice.actions;
 export default WalletSlice.reducer;

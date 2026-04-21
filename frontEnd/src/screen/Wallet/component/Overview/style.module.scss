@@ -13,33 +13,63 @@
     }
 
     > .transfer {
-        @include center-of-row;
-        justify-content: space-between;
-
-        > .txt {
-            width: 50%;
-            font-size: 0.8rem;
-            color: hotpink;
-        }
-
-        > .btn {
-            width: 50%;
-            @include center-of-rectangle;
-            text-align: center;
-            box-sizing: border-box;
-            padding: 5px;
-            cursor: pointer;
-            user-select: none;
-            background-color: rgb(255, 0, 0, 0.8);
-            color: white;
-            border-top-left-radius: 20px;
-
-            &:hover {
-                background-color: rgb(255, 134, 134);
+        > .title {
+            > span {
+                margin: 0 10px;
             }
 
-            &:active {
-                background-color: rgb(255, 181, 181);
+            > .text {
+                color: red;
+                box-sizing: border-box;
+                padding: 5px 10px;
+                font-size: 0.9rem;
+            }
+
+            > .btn {
+                border-radius: 10px;
+                font-size: 0.9rem;
+                box-sizing: border-box;
+                padding: 5px 10px;
+                background-color: rgb(243, 243, 243);
+                cursor: default;
+                user-select: none;
+
+                &:active {
+                    background-color: rgb(233, 233, 233);
+                }
+            }
+        }
+
+        > .content {
+            @include center-of-row;
+            justify-content: space-between;
+
+            > .txt {
+                width: 70%;
+                font-size: 0.8rem;
+                color: hotpink;
+                padding: 0 10px;
+            }
+
+            > .btn {
+                width: 30%;
+                @include center-of-rectangle;
+                text-align: center;
+                box-sizing: border-box;
+                padding: 5px;
+                cursor: pointer;
+                user-select: none;
+                background-color: rgb(255, 0, 0, 0.8);
+                color: white;
+                border-top-left-radius: 20px;
+
+                &:hover {
+                    background-color: rgb(255, 134, 134);
+                }
+
+                &:active {
+                    background-color: rgb(255, 181, 181);
+                }
             }
         }
     }

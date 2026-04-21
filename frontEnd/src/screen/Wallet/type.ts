@@ -10,6 +10,6 @@ export interface state_props {
         isShow: boolean;
         wallet?: WalletField;
         requiredTakeMoney?: RequireTakeMoneyField;
-        newRequiredTakeMoney?: RequireTakeMoneyField;
+        newRequireTakeMoney?: RequireTakeMoneyField;
     };
 }

@@ -11,4 +11,5 @@ export const WALLET_API = {
     MEMBER_GET_REQUIRE_TAKE_MONEY_OF_WALLET: `${BASE_URL}${apiString}/service_wallet/query/memberGetRequireTakeMoneyOfWallet`,
     CREATE_REQUIRE_TAKE_MONEY: `${BASE_URL}${apiString}/service_wallet/mutate/createRequireTakeMoney`,
     EDIT_REQUIRE_TAKE_MONEY: `${BASE_URL}${apiString}/service_wallet/mutate/editRequireTakeMoney`,
+    DELETE_REQUIRE_TAKE_MONEY: `${BASE_URL}${apiString}/service_wallet/mutate/deleteRequireTakeMoney`,
 };

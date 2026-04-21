@@ -9,6 +9,7 @@ import {
     MemberGetRequireTakeMoneyOfWalletBodyField,
     CreateRequireTakeMoneyBodyField,
     EditRequireTakeMoneyBodyField,
+    DeleteRequireTakeMoneyBodyField,
 } from '@src/dataStruct/wallet/body';
 import { WALLET_API } from '@src/const/api/wallet';
 
@@ -76,7 +77,15 @@ export const walletRTK = createApi({
         editRequireTakeMoney: builder.mutation<MyResponse<RequireTakeMoneyField>, EditRequireTakeMoneyBodyField>({
             query: (body) => ({
                 url: WALLET_API.EDIT_REQUIRE_TAKE_MONEY,
-                method: 'POST',
+                method: 'PUT',
+                body,
+            }),
+            invalidatesTags: [{ type: 'RequireTakeMoney' }],
+        }),
+        deleteRequireTakeMoney: builder.mutation<MyResponse<RequireTakeMoneyField>, DeleteRequireTakeMoneyBodyField>({
+            query: (body) => ({
+                url: WALLET_API.DELETE_REQUIRE_TAKE_MONEY,
+                method: 'PUT',
                 body,
             }),
             invalidatesTags: [{ type: 'RequireTakeMoney' }],
@@ -92,4 +101,5 @@ export const {
     useLazyMemberGetRequireTakeMoneyOfWalletQuery,
     useCreateRequireTakeMoneyMutation,
     useEditRequireTakeMoneyMutation,
+    useDeleteRequireTakeMoneyMutation,
 } = walletRTK;

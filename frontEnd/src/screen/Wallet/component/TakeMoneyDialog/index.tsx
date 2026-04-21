@@ -4,10 +4,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE, AGREE, EXIT, CHOOSE } from '@src/const/text';
-import { setData_toastMessage, set_isLoading, setIsShow_takeMoneyDialog } from '@src/redux/slice/Wallet';
+import {
+    setData_toastMessage,
+    set_isLoading,
+    setIsShow_takeMoneyDialog,
+    setNewRequireTakeMoney_takeMoneyDialog,
+    setRequiredTakeMoney_takeMoneyDialog,
+} from '@src/redux/slice/Wallet';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { useLazyGetAllBanksQuery, useLazyGetBankWithIdQuery } from '@src/redux/query/bankRTK';
-import { useCreateRequireTakeMoneyMutation } from '@src/redux/query/walletRTK';
+import { useCreateRequireTakeMoneyMutation, useEditRequireTakeMoneyMutation } from '@src/redux/query/walletRTK';
 import { BankField } from '@src/dataStruct/bank';
 import { RequireTakeMoneyField, WalletField, WalletEnum } from '@src/dataStruct/wallet';
 import { isPositiveInteger, formatMoney } from '@src/utility/string';
@@ -30,6 +36,8 @@ const TakeMoneyDialog = () => {
 
     const [getAllBanks] = useLazyGetAllBanksQuery();
     const [getBankWithId] = useLazyGetBankWithIdQuery();
+    const [createRequireTakeMoney] = useCreateRequireTakeMoneyMutation();
+    const [editRequireTakeMoney] = useEditRequireTakeMoneyMutation();
 
     useEffect(() => {
         if (!parent_element.current) return;
@@ -55,8 +63,10 @@ const TakeMoneyDialog = () => {
         if (!wallet) return;
         if (requireTakeMoney) {
             setTitle(`Chỉnh sửa yêu cầu rút tiền trên ví ${wallet.type}`);
+            setAmount(requireTakeMoney.amount.toString());
         } else {
             setTitle(`Tạo yêu cầu rút tiền mới trên ví ${wallet.type}`);
+            setAmount('');
         }
     }, [requireTakeMoney, wallet]);
 
@@ -147,6 +157,91 @@ const TakeMoneyDialog = () => {
                 })
             );
             return;
+        }
+
+        let txt: string = '';
+        if (requireTakeMoney) {
+            txt = 'Chỉnh sửa';
+            dispatch(set_isLoading(true));
+            editRequireTakeMoney({
+                requireTakeMoneyId: requireTakeMoney.id,
+                amount: Number(amount.trim()),
+                bankId: selectedBank.id,
+                walletId: wallet.id,
+                accountId: -1,
+            })
+                .then((res) => {
+                    const resData = res.data;
+                    if (resData?.isSuccess && resData.data) {
+                        dispatch(setNewRequireTakeMoney_takeMoneyDialog(resData.data));
+                        dispatch(
+                            setData_toastMessage({
+                                message: `${txt} thành công`,
+                                type: messageType_enum.SUCCESS,
+                            })
+                        );
+                    } else {
+                        dispatch(
+                            setData_toastMessage({
+                                message: `${txt} không thành công`,
+                                type: messageType_enum.ERROR,
+                            })
+                        );
+                    }
+                })
+                .catch((err) => {
+                    dispatch(
+                        setData_toastMessage({
+                            message: 'Đã có lỗi xảy ra',
+                            type: messageType_enum.ERROR,
+                        })
+                    );
+                    console.error(err);
+                })
+                .finally(() => {
+                    dispatch(set_isLoading(false));
+                });
+        } else {
+            txt = 'Tạo';
+            dispatch(set_isLoading(true));
+            createRequireTakeMoney({
+                amount: Number(amount.trim()),
+                bankId: selectedBank.id,
+                walletId: wallet.id,
+                accountId: -1,
+            })
+                .then((res) => {
+                    const resData = res.data;
+                    if (resData?.isSuccess && resData.data) {
+                        dispatch(setNewRequireTakeMoney_takeMoneyDialog(resData.data));
+                        dispatch(setRequiredTakeMoney_takeMoneyDialog(resData.data));
+                        dispatch(
+                            setData_toastMessage({
+                                message: `${txt} thành công`,
+                                type: messageType_enum.SUCCESS,
+                            })
+                        );
+                    } else {
+                        dispatch(
+                            setData_toastMessage({
+                                message: `${txt} không thành công`,
+                                type: messageType_enum.ERROR,
+                            })
+                        );
+                    }
+                })
+                .catch((err) => {
+                    dispatch(
+                        setData_toastMessage({
+                            message: 'Đã có lỗi xảy ra',
+                            type: messageType_enum.ERROR,
+                        })
+                    );
+                    console.error(err);
+                })
+                .finally(() => {
+                    dispatch(set_isLoading(false));
+                });
         }
     };
 
