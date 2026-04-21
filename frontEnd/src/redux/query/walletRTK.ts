@@ -6,6 +6,7 @@ import {
     GetBalanceFluctuationsByDateBodyField,
     GetBalanceFluctuationLatestDayBodyField,
     PayAgentFromWalletBodyField,
+    MemberGetRequireTakeMoneyOfWalletBodyField,
     CreateRequireTakeMoneyBodyField,
     EditRequireTakeMoneyBodyField,
 } from '@src/dataStruct/wallet/body';
@@ -53,6 +54,17 @@ export const walletRTK = createApi({
             }),
             invalidatesTags: (result, error, arg) => [{ type: 'Wallet', id: arg.walletId }],
         }),
+        memberGetRequireTakeMoneyOfWallet: builder.query<
+            MyResponse<RequireTakeMoneyField>,
+            MemberGetRequireTakeMoneyOfWalletBodyField
+        >({
+            query: (body) => ({
+                url: WALLET_API.MEMBER_GET_REQUIRE_TAKE_MONEY_OF_WALLET,
+                method: 'POST',
+                body,
+            }),
+            providesTags: [{ type: 'RequireTakeMoney' }],
+        }),
         createRequireTakeMoney: builder.mutation<MyResponse<RequireTakeMoneyField>, CreateRequireTakeMoneyBodyField>({
             query: (body) => ({
                 url: WALLET_API.CREATE_REQUIRE_TAKE_MONEY,
@@ -77,6 +89,7 @@ export const {
     useLazyGetBalanceFluctuationsByDateQuery,
     useLazyGetBalanceFluctuationLatestDayQuery,
     usePayAgentFromWalletMutation,
+    useLazyMemberGetRequireTakeMoneyOfWalletQuery,
     useCreateRequireTakeMoneyMutation,
     useEditRequireTakeMoneyMutation,
 } = walletRTK;

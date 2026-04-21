@@ -20,10 +20,6 @@ const AddRecommend: FC<{ wallet: WalletField }> = ({ wallet }) => {
     const [getMyRecommend] = useLazyGetMyRecommendQuery();
 
     useEffect(() => {
-        console.log('recommend', recommend);
-    }, [recommend]);
-
-    useEffect(() => {
         if (!account) return;
         getMyRecommend({ accountId: account.id })
             .then((res) => {

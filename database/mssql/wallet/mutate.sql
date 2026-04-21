@@ -245,12 +245,19 @@ BEGIN
 			THROW 50005, N'Tiền không đủ .', 5;
 		END
 
+		DECLARE @costTakeMoney5 INT;
+		SET @costTakeMoney5 = 5000;
+		IF @amount < @costTakeMoney5
+		BEGIN
+			THROW 50006, N'Tiền yêu cầu quá nhỏ .', 6;
+		END
+
 		DECLARE @newRequireTakeMoneyId INT;
 		INSERT INTO dbo.requireTakeMoney (amount, bankId, walletId, accountId, updateTime, createTime)
 		VALUES (@amount, @bankId, @walletId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
 		BEGIN
-			THROW 50006, N'Yêu cầu rút tiền không thành công .', 6;
+			THROW 50007, N'Yêu cầu rút tiền không thành công .', 7;
 		END
 		SET @newRequireTakeMoneyId = SCOPE_IDENTITY();
 
@@ -309,12 +316,19 @@ BEGIN
 			THROW 50006, N'Tiền không đủ .', 6;
 		END
 
+		DECLARE @costTakeMoney5 INT;
+		SET @costTakeMoney5 = 5000;
+		IF @amount < @costTakeMoney5
+		BEGIN
+			THROW 50007, N'Tiền yêu cầu quá nhỏ .', 7;
+		END
+
 		UPDATE dbo.requireTakeMoney
 		SET amount = @amount, bankId = @bankId
 		WHERE id = @requireTakeMoneyId
 		IF @@ROWCOUNT = 0
         BEGIN
-            THROW 50007, 'Cập nhật yêu cầu rút tiền thất bại.', 7;
+            THROW 50008, 'Cập nhật yêu cầu rút tiền thất bại.', 8;
         END
 
 		SELECT * FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId

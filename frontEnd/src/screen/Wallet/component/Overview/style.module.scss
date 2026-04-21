@@ -16,15 +16,16 @@
         @include center-of-row;
         justify-content: space-between;
 
-        > div:nth-child(1) {
+        > .txt {
             width: 50%;
             font-size: 0.8rem;
             color: hotpink;
         }
 
-        > div:nth-child(2) {
+        > .btn {
             width: 50%;
             @include center-of-rectangle;
+            text-align: center;
             box-sizing: border-box;
             padding: 5px;
             cursor: pointer;

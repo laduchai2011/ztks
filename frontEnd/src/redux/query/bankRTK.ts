@@ -60,7 +60,7 @@ export const bankRTK = createApi({
 
 export const {
     useLazyGetAllBanksQuery,
-    useGetBankWithIdQuery,
+    useLazyGetBankWithIdQuery,
     useAddBankMutation,
     useEditBankMutation,
     useDeleteBankMutation,

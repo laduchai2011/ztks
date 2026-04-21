@@ -11,6 +11,7 @@ import MyToastMessage from './component/MyToastMessage';
 import Overview from './component/Overview';
 import CurrentAgent from './component/CurrentAgent';
 import AddRecommend from './component/AddRecommend';
+import TakeMoneyDialog from './component/TakeMoneyDialog';
 import { useLazyGetMyWalletWithTypeQuery } from '@src/redux/query/walletRTK';
 import { AccountField } from '@src/dataStruct/account';
 import { WalletField, WalletType, WalletEnum } from '@src/dataStruct/wallet';
@@ -84,6 +85,7 @@ const Wallet = () => {
             <div>
                 <MyLoading />
                 <MyToastMessage />
+                <TakeMoneyDialog />
             </div>
         </div>
     );

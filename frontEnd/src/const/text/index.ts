@@ -74,3 +74,4 @@ export const ADD_BANK = 'Thêm ngân hàng';
 export const BANK_CODE = 'Mã ngân hàng';
 export const ACCOUNT_NUMBER = 'Số tài khoản';
 export const ACCOUNT_NAME = 'Tên tài khoản';
+export const CHOOSE = 'Chọn';
