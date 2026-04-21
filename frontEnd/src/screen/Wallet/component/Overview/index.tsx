@@ -8,6 +8,7 @@ const Overview: FC<{ wallet: WalletField }> = ({ wallet }) => {
         <div className={style.parent}>
             <div className={style.money}>{formatMoney(wallet.amount)}</div>
             <div className={style.transfer}>
+                <div>Tiền muốn rút: {formatMoney(10000000)}</div>
                 <div>Rút tiền</div>
             </div>
         </div>

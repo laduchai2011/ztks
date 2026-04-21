@@ -40,3 +40,37 @@ export interface PayOrderBodyField {
     orderId: number;
     payHookId: number;
 }
+
+export interface CreateRequireTakeMoneyBodyField {
+    amount: number;
+    bankId: number;
+    walletId: number;
+    accountId: number;
+}
+
+export interface EditRequireTakeMoneyBodyField {
+    requireTakeMoneyId: number;
+    amount: number;
+    bankId: number;
+    walletId: number;
+    accountId: number;
+}
+
+export interface MemberTksConfirmTakeMoneyBodyField {
+    requireTakeMoneyId: number;
+    memberZtksId: number;
+}
+
+export interface PayOutBodyField {
+    amount: number;
+    bankId: number;
+    payHookId: number;
+    requireTakeMoneyId: number;
+    walletId: number;
+    accountId: number;
+}
+
+export interface MemberGetRequireTakeMoneyOfWalletBodyField {
+    walletId: number;
+    accountId: number;
+}

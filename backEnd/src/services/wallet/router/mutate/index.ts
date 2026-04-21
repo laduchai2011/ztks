@@ -1,19 +1,17 @@
 import express, { Router } from 'express';
 import dotenv from 'dotenv';
 import authentication from '@src/auth';
-// import Handle_CreateWallet from './handle/CreateWallet';
 import Handle_PayAgentFromWallet from './handle/PayAgentFromWallet';
-// import Handle_CreateOrderStatus from './handle/CreateOrderStatus';
+import Handle_CreateRequireTakeMoney from './handle/CreateRequireTakeMoney';
+import Handle_EditRequireTakeMoney from './handle/EditRequireTakeMoney';
 
 dotenv.config();
 
 const router_mutate_wallet: Router = express.Router();
 
-// const handle_createWallet = new Handle_CreateWallet();
 const handle_payAgentFromWallet = new Handle_PayAgentFromWallet();
-// const handle_createOrderStatus = new Handle_CreateOrderStatus();
-
-// router_mutate_wallet.post('/createWallet', authentication, handle_createWallet.setup, handle_createWallet.main);
+const handle_createRequireTakeMoney = new Handle_CreateRequireTakeMoney();
+const handle_editRequireTakeMoney = new Handle_EditRequireTakeMoney();
 
 router_mutate_wallet.post(
     '/payAgentFromWallet',
@@ -22,11 +20,18 @@ router_mutate_wallet.post(
     handle_payAgentFromWallet.main
 );
 
-// router_mutate_order.post(
-//     '/createOrderStatus',
-//     authentication,
-//     handle_createOrderStatus.setup,
-//     handle_createOrderStatus.main
-// );
+router_mutate_wallet.post(
+    '/createRequireTakeMoney',
+    authentication,
+    handle_createRequireTakeMoney.setup,
+    handle_createRequireTakeMoney.main
+);
+
+router_mutate_wallet.put(
+    '/editRequireTakeMoney',
+    authentication,
+    handle_editRequireTakeMoney.setup,
+    handle_editRequireTakeMoney.main
+);
 
 export default router_mutate_wallet;

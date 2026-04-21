@@ -8,4 +8,6 @@ export const WALLET_API = {
     GET_BALANCE_FLUCTUATIONS_BY_DATE: `${BASE_URL}${apiString}/service_wallet/query/getBalanceFluctuationsByDate`,
     GET_BALANCE_FLUCTUATION_LATES_DAY: `${BASE_URL}${apiString}/service_wallet/query/getBalanceFluctuationLatestDay`,
     PAY_AGENT_FROM_WALLET: `${BASE_URL}${apiString}/service_wallet/mutate/payAgentFromWallet`,
+    CREATE_REQUIRE_TAKE_MONEY: `${BASE_URL}${apiString}/service_wallet/mutate/createRequireTakeMoney`,
+    EDIT_REQUIRE_TAKE_MONEY: `${BASE_URL}${apiString}/service_wallet/mutate/editRequireTakeMoney`,
 };

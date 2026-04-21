@@ -144,40 +144,6 @@ BEGIN
 END
 GO
 
--- NOT USE
-ALTER PROCEDURE MoneyOut
-	@walletId INT,
-	@subAmount BIGINT,
-	@payHookId INT
-AS
-BEGIN
-	SET NOCOUNT ON;
-
-	BEGIN TRY
-        BEGIN TRANSACTION;
-
-        UPDATE dbo.wallet
-		SET amount = amount + @subAmount, updateTime = SYSDATETIMEOFFSET()
-		WHERE id = @walletId
-
-		INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, walletId, createTime)
-        VALUES (@subAmount, 'takeMoney', @payHookId, @walletId, SYSDATETIMEOFFSET());
-
-		IF @@ROWCOUNT > 0
-		BEGIN
-			SELECT * FROM dbo.wallet WHERE id = @walletId
-		END
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
-END;
-GO
-
 CREATE PROCEDURE PayAgentFromWallet
 	@walletId INT,
 	@agentPayId INT,
@@ -227,6 +193,279 @@ BEGIN
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50006, 'Cập nhật Agent thất bại.', 6;
+        END
+
+		SELECT * FROM dbo.wallet WHERE id = @walletId
+	COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END
+GO
+
+ALTER PROCEDURE CreateRequireTakeMoney
+	@amount DECIMAL(20,2),
+	@bankId INT,
+	@walletId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+	BEGIN TRANSACTION;
+		IF NOT EXISTS ( SELECT 1 FROM dbo.bank WHERE id = @bankId AND accountId = @accountId )
+		BEGIN
+			THROW 50001, N'Ngân hàng này không phải của bạn .', 1;
+		END
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.wallet WHERE id = @walletId AND accountId = @accountId )
+		BEGIN
+			THROW 50002, N'Ví này không phải của bạn .', 2;
+		END
+
+		IF EXISTS ( SELECT 1 FROM dbo.wallet WHERE id = @walletId AND type = '1' )
+		BEGIN
+			THROW 50003, N'Không thể rút tiền từ ví 1 .', 3;
+		END
+
+		IF EXISTS ( SELECT 1 FROM dbo.requireTakeMoney WHERE walletId = @walletId AND accountId = @accountId AND isDo = 0 AND isDelete = 0 )
+		BEGIN
+			THROW 50004, N'Đã tồn tại 1 yêu cầu rút tiền, không thể tạo thêm yêu cầu mới .', 4;
+		END
+
+		DECLARE @moneyAmount DECIMAL(20,2);
+		SELECT @moneyAmount = amount FROM dbo.wallet WHERE id = @walletId;
+		IF @moneyAmount IS NULL THROW 50003, N'Ví không tồn tại .', 3;
+		IF @amount > @moneyAmount
+		BEGIN
+			THROW 50005, N'Tiền không đủ .', 5;
+		END
+
+		DECLARE @newRequireTakeMoneyId INT;
+		INSERT INTO dbo.requireTakeMoney (amount, bankId, walletId, accountId, updateTime, createTime)
+		VALUES (@amount, @bankId, @walletId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+		BEGIN
+			THROW 50006, N'Yêu cầu rút tiền không thành công .', 6;
+		END
+		SET @newRequireTakeMoneyId = SCOPE_IDENTITY();
+
+		SELECT * FROM dbo.requireTakeMoney WHERE id = @newRequireTakeMoneyId
+	COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END
+GO
+
+ALTER PROCEDURE EditRequireTakeMoney
+	@requireTakeMoneyId INT,
+	@amount DECIMAL(20,2),
+	@bankId INT,
+	@walletId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+	BEGIN TRANSACTION;
+		IF NOT EXISTS ( SELECT 1 FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId AND accountId = @accountId AND isDelete = 0 )
+		BEGIN
+			THROW 50001, N'Yêu cầu rút tiền này không phải của bạn .', 1;
+		END
+
+		DECLARE @memberZtksId INT;
+		SELECT @memberZtksId = memberZtksId FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId;
+		IF @memberZtksId IS NULL THROW 50002, N'Yêu cầu rút tiền này đã được xác nhận nên không thể chỉnh sửa .', 2;
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.bank WHERE id = @bankId AND accountId = @accountId )
+		BEGIN
+			THROW 50003, N'Ngân hàng này không phải của bạn .', 3;
+		END
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.wallet WHERE id = @walletId AND accountId = @accountId )
+		BEGIN
+			THROW 50004, N'Ví này không phải của bạn .', 4;
+		END
+
+		IF EXISTS ( SELECT 1 FROM dbo.wallet WHERE id = @walletId AND type = '1' )
+		BEGIN
+			THROW 50005, N'Không thể rút tiền từ ví 1 .', 5;
+		END
+
+		DECLARE @moneyAmount DECIMAL(20,2);
+		SELECT @moneyAmount = amount FROM dbo.wallet WHERE id = @walletId;
+		IF @moneyAmount IS NULL THROW 50003, N'Ví không tồn tại .', 3;
+		IF @amount > @moneyAmount
+		BEGIN
+			THROW 50006, N'Tiền không đủ .', 6;
+		END
+
+		UPDATE dbo.requireTakeMoney
+		SET amount = @amount, bankId = @bankId
+		WHERE id = @requireTakeMoneyId
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50007, 'Cập nhật yêu cầu rút tiền thất bại.', 7;
+        END
+
+		SELECT * FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId
+	COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END
+GO
+
+CREATE PROCEDURE DeleteRequireTakeMoney
+	@requireTakeMoneyId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+	BEGIN TRANSACTION;
+	IF NOT EXISTS ( SELECT 1 FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId AND accountId = @accountId AND isDelete = 0 )
+	BEGIN
+		THROW 50001, N'Yêu cầu rút tiền này không phải của bạn .', 1;
+	END
+
+	UPDATE dbo.requireTakeMoney
+	SET isDelete = 1
+	WHERE id = @requireTakeMoneyId
+	IF @@ROWCOUNT = 0
+    BEGIN
+       THROW 50002, 'Huỷ yêu cầu rút tiền không thành công .', 2;
+    END
+
+	COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END
+GO
+
+ALTER PROCEDURE MemberTksConfirmTakeMoney
+	@requireTakeMoneyId INT,
+	@memberZtksId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+	BEGIN TRANSACTION;
+		IF NOT EXISTS ( SELECT 1 FROM dbo.accountInformation WHERE accountId = @memberZtksId AND accountType = 'memberZtks' )
+		BEGIN
+			THROW 50001, N'Không tồn tại memberZtks này .', 1;
+		END
+
+		UPDATE dbo.requireTakeMoney
+		SET memberZtksId = @memberZtksId
+		WHERE id = @requireTakeMoneyId AND isDelete = 0;
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50002, 'MemberTks các nhận yêu cầu KHÔNG thành công .', 2;
+        END
+
+		SELECT * FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId
+	COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END
+GO
+
+ALTER PROCEDURE PayOut
+	@amount DECIMAL(20,2),
+	@bankId INT,
+	@payHookId INT,
+	@requireTakeMoneyId INT,
+	@walletId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+	BEGIN TRANSACTION;
+		IF NOT EXISTS ( SELECT 1 FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId AND accountId = @accountId )
+		BEGIN
+			THROW 50001, N'Yêu cầu rút tiền này không phải của bạn .', 1;
+		END
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.bank WHERE id = @bankId AND accountId = @accountId )
+		BEGIN
+			THROW 50002, N'Ngân hàng này không phải của bạn .', 2;
+		END
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.wallet WHERE id = @walletId AND accountId = @accountId )
+		BEGIN
+			THROW 50003, N'Ví này không phải của bạn .', 3;
+		END
+
+		IF EXISTS ( SELECT 1 FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId AND accountId = @accountId AND isDelete = 1 )
+		BEGIN
+			THROW 50004, N'Yêu cầu rút tiền này đã bị xóa .', 4;
+		END
+
+		DECLARE @costTakeMoney5 INT;
+		SET @costTakeMoney5 = 5000;
+
+		-- cập nhật tiền chuyển ra khỏi ví
+        UPDATE dbo.wallet
+		SET amount = amount - @amount + @costTakeMoney5, updateTime = SYSDATETIMEOFFSET()
+		WHERE id = @walletId
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50005, 'Cập nhật tiền ra khỏi ví không thành công.', 5;
+        END
+		INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, requireTakeMoneyId, walletId, createTime)
+        VALUES (- @amount, 'takeMoney', @payHookId, @requireTakeMoneyId, @walletId, SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50006, 'Cập nhật biến động số dư tiền ra khỏi ví không thành công.', 6;
+        END
+
+		-- khấu trừ phí rút tiền 5000
+        UPDATE dbo.wallet
+		SET amount = amount - @costTakeMoney5, updateTime = SYSDATETIMEOFFSET()
+		WHERE id = @walletId
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50007, 'Cập nhật khấu trừ phí rút tiền không thành công.', 7;
+        END
+		INSERT INTO dbo.balanceFluctuation (amount, type, walletId, createTime)
+        VALUES (- @amount, 'takeMoney', @walletId, SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50008, 'Cập nhật biến động số dư khấu trừ phí rút tiền không thành công.', 8;
+        END
+
+		-- cập nhật yêu cầu rút tiền hoàn 
+		UPDATE dbo.requireTakeMoney
+		SET isDo = 1
+		WHERE id = @requireTakeMoneyId
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50009, 'Cập nhật yêu cầu rút tiền thất bại.', 9;
         END
 
 		SELECT * FROM dbo.wallet WHERE id = @walletId

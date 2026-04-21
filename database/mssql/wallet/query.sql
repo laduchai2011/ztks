@@ -55,3 +55,14 @@ BEGIN
     ORDER BY createTime DESC;
 END
 GO
+
+ALTER PROCEDURE MemberGetRequireTakeMoneyOfWallet
+    @walletId INT,
+	@accountId INT
+AS
+BEGIN
+    SELECT * FROM dbo.requireTakeMoney
+    WHERE walletId = @walletId AND accountId = @accountId AND isDelete = 0 AND isDo = 0
+    ORDER BY createTime DESC;
+END
+GO

@@ -1,18 +1,20 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { MyResponse } from '@src/dataStruct/response';
-import { WalletField, BalanceFluctuationField } from '@src/dataStruct/wallet';
+import { WalletField, BalanceFluctuationField, RequireTakeMoneyField } from '@src/dataStruct/wallet';
 import {
     GetMyWalletWithTypeBodyField,
     GetBalanceFluctuationsByDateBodyField,
     GetBalanceFluctuationLatestDayBodyField,
     PayAgentFromWalletBodyField,
+    CreateRequireTakeMoneyBodyField,
+    EditRequireTakeMoneyBodyField,
 } from '@src/dataStruct/wallet/body';
 import { WALLET_API } from '@src/const/api/wallet';
 
 export const walletRTK = createApi({
     reducerPath: 'walletRTK',
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
-    tagTypes: ['Wallet'],
+    tagTypes: ['Wallet', 'RequireTakeMoney'],
     endpoints: (builder) => ({
         getMyWalletWithType: builder.query<MyResponse<WalletField>, GetMyWalletWithTypeBodyField>({
             query: (body) => ({
@@ -51,6 +53,22 @@ export const walletRTK = createApi({
             }),
             invalidatesTags: (result, error, arg) => [{ type: 'Wallet', id: arg.walletId }],
         }),
+        createRequireTakeMoney: builder.mutation<MyResponse<RequireTakeMoneyField>, CreateRequireTakeMoneyBodyField>({
+            query: (body) => ({
+                url: WALLET_API.CREATE_REQUIRE_TAKE_MONEY,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: [{ type: 'RequireTakeMoney' }],
+        }),
+        editRequireTakeMoney: builder.mutation<MyResponse<RequireTakeMoneyField>, EditRequireTakeMoneyBodyField>({
+            query: (body) => ({
+                url: WALLET_API.EDIT_REQUIRE_TAKE_MONEY,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: [{ type: 'RequireTakeMoney' }],
+        }),
     }),
 });
 
@@ -59,4 +77,6 @@ export const {
     useLazyGetBalanceFluctuationsByDateQuery,
     useLazyGetBalanceFluctuationLatestDayQuery,
     usePayAgentFromWalletMutation,
+    useCreateRequireTakeMoneyMutation,
+    useEditRequireTakeMoneyMutation,
 } = walletRTK;

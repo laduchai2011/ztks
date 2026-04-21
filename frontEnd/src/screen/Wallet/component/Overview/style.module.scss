@@ -14,20 +14,27 @@
 
     > .transfer {
         @include center-of-row;
-        justify-content: flex-end;
+        justify-content: space-between;
 
-        > div {
+        > div:nth-child(1) {
+            width: 50%;
+            font-size: 0.8rem;
+            color: hotpink;
+        }
+
+        > div:nth-child(2) {
             width: 50%;
             @include center-of-rectangle;
             box-sizing: border-box;
             padding: 5px;
             cursor: pointer;
             user-select: none;
-            background-color: rgb(255, 219, 219);
+            background-color: rgb(255, 0, 0, 0.8);
+            color: white;
             border-top-left-radius: 20px;
 
             &:hover {
-                background-color: rgb(255, 241, 241);
+                background-color: rgb(255, 134, 134);
             }
 
             &:active {
