@@ -11,3 +11,13 @@ export interface GetVouchersBodyField {
     isUsed: boolean | null;
     phone: string;
 }
+
+export interface GetVoucherWithOrderIdBodyField {
+    orderId: number;
+}
+
+export interface CustomerUseVoucherBodyField {
+    orderId: number;
+    voucherId: number;
+    customerId: number;
+}

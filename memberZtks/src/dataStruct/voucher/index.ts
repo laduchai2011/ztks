@@ -9,3 +9,8 @@ export interface VoucherField {
     updateTime: string;
     createTime: string;
 }
+
+export interface PagedVoucherField {
+    items: VoucherField[];
+    totalCount: number;
+}

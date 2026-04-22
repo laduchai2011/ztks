@@ -8,7 +8,9 @@ import QueryDB_MemberGetRequireTakeMoneyOfWallet from '../../queryDB/MemberGetRe
 class Handle_MemberGetRequireTakeMoneyOfWallet {
     private _mssql_server = mssql_server;
 
-    constructor() {}
+    constructor() {
+        this._mssql_server.init();
+    }
 
     main = async (req: Request<any, any, MemberGetRequireTakeMoneyOfWalletBodyField>, res: Response) => {
         const memberGetRequireTakeMoneyOfWalletBody = req.body;
@@ -17,8 +19,6 @@ class Handle_MemberGetRequireTakeMoneyOfWallet {
             isSuccess: false,
             message: 'Bắt đầu Handle_MemberGetRequireTakeMoneyOfWallet-main',
         };
-
-        await this._mssql_server.init();
 
         const queryDB = new QueryDB_MemberGetRequireTakeMoneyOfWallet();
         queryDB.setMemberGetRequireTakeMoneyOfWalletBody(memberGetRequireTakeMoneyOfWalletBody);

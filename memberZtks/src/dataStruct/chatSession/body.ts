@@ -25,3 +25,8 @@ export interface UpdateIsReadyOfChatSessionBodyField {
     isReady: boolean;
     accountId: number;
 }
+
+export interface UserTakeSessionToChatBodyField {
+    code: string;
+    zaloOaId: number;
+}

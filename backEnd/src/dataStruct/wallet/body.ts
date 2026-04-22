@@ -61,7 +61,7 @@ export interface DeleteRequireTakeMoneyBodyField {
     accountId: number;
 }
 
-export interface MemberTksConfirmTakeMoneyBodyField {
+export interface MemberZtksConfirmTakeMoneyBodyField {
     requireTakeMoneyId: number;
     memberZtksId: number;
 }
@@ -78,4 +78,15 @@ export interface PayOutBodyField {
 export interface MemberGetRequireTakeMoneyOfWalletBodyField {
     walletId: number;
     accountId: number;
+}
+
+export interface MemberZtksGetRequiresTakeMoneyBodyField {
+    page: number;
+    size: number;
+    memberZtksId: number;
+    isDo?: boolean;
+    doFromDate?: string;
+    doToDate?: string;
+    fromDate?: string;
+    toDate?: string;
 }

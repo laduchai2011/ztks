@@ -51,7 +51,8 @@ export interface GetAllOrderStatusBodyField {
     orderId: number;
 }
 
-export interface UpdateOrderPaidBodyField {
-    id: number;
-    money: number;
+export interface GetOrdersWithPhoneBodyField {
+    page: number;
+    size: number;
+    phone: string;
 }

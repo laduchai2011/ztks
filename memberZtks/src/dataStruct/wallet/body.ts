@@ -6,20 +6,10 @@ export interface CreateWalletBodyField {
     accountId: number;
 }
 
-export interface MoneyInBodyField {
-    walletId: number;
-    addedAmount: number;
-    payHookId: number | null;
-}
-
 export interface MoneyOutBodyField {
     walletId: number;
     subAmount: number;
 }
-
-// export interface GetAllWalletsBodyField {
-//     accountId: number;
-// }
 
 export interface GetMyWalletWithTypeBodyField {
     type: WalletType;
@@ -42,4 +32,61 @@ export interface PayAgentFromWalletBodyField {
     walletId: number;
     agentPayId: number;
     accountId: number;
+}
+
+export interface PayOrderBodyField {
+    walletId: number;
+    addedAmount: number;
+    orderId: number;
+    payHookId: number;
+}
+
+export interface CreateRequireTakeMoneyBodyField {
+    amount: number;
+    bankId: number;
+    walletId: number;
+    accountId: number;
+}
+
+export interface EditRequireTakeMoneyBodyField {
+    requireTakeMoneyId: number;
+    amount: number;
+    bankId: number;
+    walletId: number;
+    accountId: number;
+}
+
+export interface DeleteRequireTakeMoneyBodyField {
+    requireTakeMoneyId: number;
+    accountId: number;
+}
+
+export interface MemberZtksConfirmTakeMoneyBodyField {
+    requireTakeMoneyId: number;
+    memberZtksId: number;
+}
+
+export interface PayOutBodyField {
+    amount: number;
+    bankId: number;
+    payHookId: number;
+    requireTakeMoneyId: number;
+    walletId: number;
+    accountId: number;
+}
+
+export interface MemberGetRequireTakeMoneyOfWalletBodyField {
+    walletId: number;
+    accountId: number;
+}
+
+export interface MemberZtksGetRequiresTakeMoneyBodyField {
+    page: number;
+    size: number;
+    memberZtksId: number;
+    isDo?: boolean;
+    doFromDate?: string;
+    doToDate?: string;
+    fromDate?: string;
+    toDate?: string;
 }

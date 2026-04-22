@@ -80,6 +80,7 @@ EXEC(@sql);
 CREATE TABLE requireTakeMoney (
 	id INT PRIMARY KEY IDENTITY(1,1),
 	isDo BIT NOT NULL DEFAULT 0,
+	doTime DATETIMEOFFSET(7),
 	amount DECIMAL(20,2) NOT NULL, 
 	bankId INT NOT NULL,
 	walletId INT NOT NULL,
@@ -95,6 +96,10 @@ CREATE TABLE requireTakeMoney (
 	CONSTRAINT FK_requireTakeMoney_MemberZtks FOREIGN KEY (memberZtksId) REFERENCES account(id)
 )
 GO
+CREATE NONCLUSTERED INDEX idx_wallet_isDo ON requireTakeMoney(isDo);
+GO
+CREATE NONCLUSTERED INDEX idx_wallet_doTime ON requireTakeMoney(doTime);
+GO
 CREATE NONCLUSTERED INDEX idx_bank_id ON requireTakeMoney(bankId);
 GO
 CREATE NONCLUSTERED INDEX idx_wallet_id ON requireTakeMoney(walletId);
@@ -107,7 +112,7 @@ CREATE NONCLUSTERED INDEX idx_wallet_createTime ON requireTakeMoney(createTime);
 GO
 
 -- ALTER TABLE requireTakeMoney
--- ADD memberZtksId INT;
+-- ADD doTime DATETIMEOFFSET(7);
 -- GO
 -- ALTER TABLE requireTakeMoney ADD CONSTRAINT FK_requireTakeMoney_MemberZtks FOREIGN KEY (memberZtksId) REFERENCES account(id);
 -- GO

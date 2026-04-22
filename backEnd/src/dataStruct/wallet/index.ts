@@ -57,3 +57,8 @@ export interface RequireTakeMoneyField {
     updateTime: string;
     createTime: string;
 }
+
+export interface PagedRequireTakeMoneyField {
+    items: RequireTakeMoneyField[];
+    totalCount: number;
+}

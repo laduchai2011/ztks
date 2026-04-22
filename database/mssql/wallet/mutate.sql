@@ -480,7 +480,7 @@ BEGIN
 
 		-- cập nhật yêu cầu rút tiền hoàn 
 		UPDATE dbo.requireTakeMoney
-		SET isDo = 1
+		SET isDo = 1, doTime = SYSDATETIMEOFFSET()
 		WHERE id = @requireTakeMoneyId
 		IF @@ROWCOUNT = 0
         BEGIN

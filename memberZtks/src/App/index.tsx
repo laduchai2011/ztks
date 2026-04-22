@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import AppRouter from '@src/router';
+import 'react-day-picker/dist/style.css';
 import axiosInstance from '@src/api/axiosInstance';
 import { MyResponse } from '@src/dataStruct/response';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,9 +11,9 @@ import { getSocket } from '@src/socketIo';
 
 const App = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const accountInformation: AccountInformationField | undefined = useSelector(
-        (state: RootState) => state.AppSlice.accountInformation
-    );
+    // const accountInformation: AccountInformationField | undefined = useSelector(
+    //     (state: RootState) => state.AppSlice.accountInformation
+    // );
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
 
     useEffect(() => {

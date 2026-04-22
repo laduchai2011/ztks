@@ -67,19 +67,51 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE MemberZtksGetRequiresTakeMoney
-	@memberZtksId INT
+ALTER PROCEDURE MemberZtksGetRequiresTakeMoney
+	@page INT,
+	@size INT,
+	@memberZtksId INT,
+	@isDo BIT = NULL,
+	@doFromDate DATETIME2 = NULL,
+    @doToDate DATETIME2 = NULL,
+	@fromDate DATETIME2 = NULL,
+    @toDate DATETIME2 = NULL
 AS
 BEGIN
+	-- Tập kết quả 1: dữ liệu phân trang
+    WITH requireTakeMoneys AS (
+        SELECT rtm.*,
+			ROW_NUMBER() OVER (ORDER BY rtm.id ASC) AS rn
+        FROM dbo.requireTakeMoney AS rtm
+		WHERE 
+			isDelete = 0
+			AND (@isDo IS NULL OR isDo = @isDo)
+			AND (@doFromDate IS NULL OR doTime >= @doFromDate)
+			AND (@doToDate IS NULL OR doTime < @doToDate)
+			AND (@fromDate IS NULL OR createTime >= @fromDate)
+			AND (@toDate IS NULL OR createTime < @toDate)
+			AND (
+				memberZtksId IS NULL
+				OR memberZtksId = @memberZtksId
+			)
+    )
     SELECT *
-	FROM requireTakeMoney
+    FROM requireTakeMoneys
+    WHERE rn BETWEEN ((@page - 1) * @size + 1) AND (@page * @size);
+
+    -- Tập kết quả 2: tổng số dòng
+    SELECT COUNT(*) AS totalCount
+	FROM dbo.requireTakeMoney AS rtm
 	WHERE 
 		isDelete = 0
-		AND isDo = 0
+		AND (@isDo IS NULL OR isDo = @isDo)
+		AND (@doFromDate IS NULL OR doTime >= @doFromDate)
+		AND (@doToDate IS NULL OR doTime < @doToDate)
+		AND (@fromDate IS NULL OR createTime >= @fromDate)
+		AND (@toDate IS NULL OR createTime < @toDate)
 		AND (
 			memberZtksId IS NULL
 			OR memberZtksId = @memberZtksId
 		)
-    ORDER BY createTime ASC;
 END
 GO
