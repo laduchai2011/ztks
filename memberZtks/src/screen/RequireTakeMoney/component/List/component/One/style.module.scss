@@ -81,6 +81,7 @@
 
             > div {
                 width: max-content;
+                @include center-of-row;
             }
         }
 
@@ -93,6 +94,12 @@
 
             &.show {
                 max-height: 600px;
+            }
+
+            > div {
+                font-size: 1.3rem;
+                color: blue;
+                font-weight: 800;
             }
         }
     }

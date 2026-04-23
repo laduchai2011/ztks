@@ -3,6 +3,7 @@ import { PagedRequireTakeMoneyField, RequireTakeMoneyField } from '@src/dataStru
 import {
     MemberZtksGetRequiresTakeMoneyBodyField,
     MemberZtksConfirmTakeMoneyBodyField,
+    GetRequireWithIdBodyField,
 } from '@src/dataStruct/wallet/body';
 import { WALLET_API } from '@src/const/api/wallet';
 import { MyResponse } from '@src/dataStruct/response';
@@ -12,6 +13,14 @@ export const walletRTK = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
     tagTypes: ['RequiresTakeMoney'],
     endpoints: (builder) => ({
+        getRequireWithId: builder.query<MyResponse<RequireTakeMoneyField>, GetRequireWithIdBodyField>({
+            query: (body) => ({
+                url: WALLET_API.GET_REQUIRE_WITH_ID,
+                method: 'POST',
+                body,
+            }),
+            keepUnusedDataFor: 0,
+        }),
         memberZtksGetRequiresTakeMoney: builder.query<
             MyResponse<PagedRequireTakeMoneyField>,
             MemberZtksGetRequiresTakeMoneyBodyField
@@ -36,4 +45,8 @@ export const walletRTK = createApi({
     }),
 });
 
-export const { useLazyMemberZtksGetRequiresTakeMoneyQuery, useMemberZtksConfirmTakeMoneyMutation } = walletRTK;
+export const {
+    useLazyGetRequireWithIdQuery,
+    useLazyMemberZtksGetRequiresTakeMoneyQuery,
+    useMemberZtksConfirmTakeMoneyMutation,
+} = walletRTK;

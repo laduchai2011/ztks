@@ -4,12 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { RECEIVE, RECEIVED } from '@src/const/text';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { IoReloadCircleSharp } from 'react-icons/io5';
 import { AccountField } from '@src/dataStruct/account';
 import { RequireTakeMoneyField } from '@src/dataStruct/wallet';
 import { detailTime } from '@src/utility/time';
 import { formatMoney } from '@src/utility/string';
 import { useLazyGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
-import { useMemberZtksConfirmTakeMoneyMutation } from '@src/redux/query/walletRTK';
+import { useLazyGetRequireWithIdQuery, useMemberZtksConfirmTakeMoneyMutation } from '@src/redux/query/walletRTK';
 import { useLazyGetBankWithIdQuery } from '@src/redux/query/bankRTK';
 import { set_isLoading, setData_toastMessage } from '@src/redux/slice/RequireTakeMoney';
 import { messageType_enum } from '@src/component/ToastMessage/type';
@@ -28,6 +29,7 @@ const One: FC<{ index: number; data: RequireTakeMoneyField }> = ({ index, data }
     const [getAccountWithId] = useLazyGetAccountWithIdQuery();
     const [memberZtksConfirmTakeMoney] = useMemberZtksConfirmTakeMoneyMutation();
     const [getBankWithId] = useLazyGetBankWithIdQuery();
+    const [getRequireWithId] = useLazyGetRequireWithIdQuery();
 
     useEffect(() => {
         getAccountWithId({ id: requireTakeMoney.accountId })
@@ -53,10 +55,6 @@ const One: FC<{ index: number; data: RequireTakeMoneyField }> = ({ index, data }
     const handleReceive = () => {
         if (!account) return;
 
-        console.log({
-            requireTakeMoneyId: requireTakeMoney.id,
-            memberZtksId: account.id,
-        });
         dispatch(set_isLoading(true));
         memberZtksConfirmTakeMoney({ requireTakeMoneyId: requireTakeMoney.id, memberZtksId: account.id })
             .then((res) => {
@@ -108,13 +106,15 @@ const One: FC<{ index: number; data: RequireTakeMoneyField }> = ({ index, data }
 
     useEffect(() => {
         if (!requireTakeMoney.memberZtksId) return;
+        const content = `ztksPayjtakeMoneyj${requireTakeMoney.id}j${requireTakeMoney.walletId}j${requireTakeMoney.accountId}j${requireTakeMoney.bankId}`;
+
         getBankWithId({ id: requireTakeMoney.bankId })
             .then((res) => {
                 const resData = res.data;
                 console.log('getBankWithId', resData);
                 if (resData?.isSuccess && resData.data) {
                     const bank = resData.data;
-                    const qrUrl = `https://img.vietqr.io/image/${bank.bankCode}-${bank.accountNumber}-compact2.png?amount=${requireTakeMoney.amount}&addInfo=takeMoney&accountName=${bank.accountName}`;
+                    const qrUrl = `https://img.vietqr.io/image/${bank.bankCode}-${bank.accountNumber}-compact2.png?amount=${requireTakeMoney.amount}&addInfo=${content}&accountName=${bank.accountName}`;
                     setQrCode(qrUrl);
                 }
             })
@@ -122,6 +122,42 @@ const One: FC<{ index: number; data: RequireTakeMoneyField }> = ({ index, data }
                 console.error(err);
             });
     }, [getBankWithId, requireTakeMoney]);
+
+    const handleReload = () => {
+        dispatch(set_isLoading(true));
+        getRequireWithId({ id: requireTakeMoney.id })
+            .then((res) => {
+                const resData = res.data;
+                if (resData?.isSuccess && resData.data) {
+                    setRequireTakeMoney(resData.data);
+                    dispatch(
+                        setData_toastMessage({
+                            type: messageType_enum.SUCCESS,
+                            message: 'Tải lại thành không !',
+                        })
+                    );
+                } else {
+                    dispatch(
+                        setData_toastMessage({
+                            type: messageType_enum.ERROR,
+                            message: 'Tải lại không thành không !',
+                        })
+                    );
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                dispatch(
+                    setData_toastMessage({
+                        type: messageType_enum.ERROR,
+                        message: 'Đã có lỗi xảy ra !',
+                    })
+                );
+            })
+            .finally(() => {
+                dispatch(set_isLoading(false));
+            });
+    };
 
     return (
         <div className={style.parent}>
@@ -148,12 +184,14 @@ const One: FC<{ index: number; data: RequireTakeMoneyField }> = ({ index, data }
                 <div className={style.detail}>
                     <div className={style.header}>
                         <div>
-                            {!isShowPay && <FiChevronDown onClick={() => handleIsShowPay(true)} />}
-                            {isShowPay && <FiChevronUp onClick={() => handleIsShowPay(false)} />}
+                            <IoReloadCircleSharp onClick={() => handleReload()} size={25} />
+                            {!isShowPay && <FiChevronDown onClick={() => handleIsShowPay(true)} size={25} />}
+                            {isShowPay && <FiChevronUp onClick={() => handleIsShowPay(false)} size={25} />}
                         </div>
                     </div>
                     <div className={style.content} ref={payContent_element}>
-                        <img src={qrCode} alt="QR Code" />
+                        {!requireTakeMoney.isDo && <img src={qrCode} alt="QR Code" />}
+                        {requireTakeMoney.isDo && <div>Đã chuyển thành công</div>}
                     </div>
                 </div>
             )}

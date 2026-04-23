@@ -6,6 +6,7 @@ import Handle_GetBalanceFluctuationsByDate from './handle/GetBalanceFluctuations
 import Handle_GetBalanceFluctuationLatestDay from './handle/GetBalanceFluctuationLatestDay';
 import Handle_MemberGetRequireTakeMoneyOfWallet from './handle/MemberGetRequireTakeMoneyOfWallet';
 import Handle_MemberZtksGetRequiresTakeMoney from './handle/MemberZtksGetRequiresTakeMoney';
+import Handle_GetRequireWithId from './handle/GetRequireWithId';
 
 dotenv.config();
 const router_query_wallet: Router = express.Router();
@@ -15,6 +16,7 @@ const handle_getBalanceFluctuationsByDate = new Handle_GetBalanceFluctuationsByD
 const handle_getBalanceFluctuationLatestDay = new Handle_GetBalanceFluctuationLatestDay();
 const handle_memberGetRequireTakeMoneyOfWallet = new Handle_MemberGetRequireTakeMoneyOfWallet();
 const handle_memberZtksGetRequiresTakeMoney = new Handle_MemberZtksGetRequiresTakeMoney();
+const handle_getRequireWithId = new Handle_GetRequireWithId();
 
 router_query_wallet.post(
     '/getMyWalletWithType',
@@ -34,5 +36,7 @@ router_query_wallet.post(
 );
 
 router_query_wallet.post('/memberZtksGetRequiresTakeMoney', authentication, handle_memberZtksGetRequiresTakeMoney.main);
+
+router_query_wallet.post('/getRequireWithId', authentication, handle_getRequireWithId.main);
 
 export default router_query_wallet;

@@ -66,7 +66,7 @@ export interface MemberZtksConfirmTakeMoneyBodyField {
     memberZtksId: number;
 }
 
-export interface PayOutBodyField {
+export interface TakeMoneyBodyField {
     amount: number;
     bankId: number;
     payHookId: number;
@@ -78,6 +78,10 @@ export interface PayOutBodyField {
 export interface MemberGetRequireTakeMoneyOfWalletBodyField {
     walletId: number;
     accountId: number;
+}
+
+export interface GetRequireWithIdBodyField {
+    id: number;
 }
 
 export interface MemberZtksGetRequiresTakeMoneyBodyField {

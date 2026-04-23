@@ -122,6 +122,14 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE GetRequireWithId
+	@id INT
+AS
+BEGIN
+	SELECT * FROM dbo.requireTakeMoney WHERE id = @id;
+END
+GO
+
 EXEC MemberZtksGetRequiresTakeMoney
     @page = 1,
     @size = 10

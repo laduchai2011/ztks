@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE CreatePayHook
+﻿ALTER PROCEDURE CreatePayHook
 	@id INT,
     @gateway varchar(255),
     @transactionDate DATETIME,
@@ -13,6 +13,7 @@
     @accumulated decimal(20,2),
 	@agentPayId INT,
 	@orderId INT,
+	@requireTakeMoneyId INT,
 	@walletId INT
 AS
 BEGIN
@@ -20,8 +21,8 @@ BEGIN
 	BEGIN TRY
         BEGIN TRANSACTION;
 
-        INSERT INTO dbo.payHook (id, gateway, transactionDate, accountNumber, subAccount, code, content, transferType, description, transferAmount, referenceCode, accumulated, agentPayId, orderId, walletId)
-        VALUES (@id, @gateway, @transactionDate, @accountNumber, @subAccount, @code, @content, @transferType, @description, @transferAmount, @referenceCode, @accumulated, @agentPayId, @orderId, @walletId)
+        INSERT INTO dbo.payHook (id, gateway, transactionDate, accountNumber, subAccount, code, content, transferType, description, transferAmount, referenceCode, accumulated, agentPayId, orderId, requireTakeMoneyId, walletId)
+        VALUES (@id, @gateway, @transactionDate, @accountNumber, @subAccount, @code, @content, @transferType, @description, @transferAmount, @referenceCode, @accumulated, @agentPayId, @orderId, @requireTakeMoneyId, @walletId)
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50001, 'Tạo payHook không thành công .', 1;

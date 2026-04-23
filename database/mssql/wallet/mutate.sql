@@ -412,7 +412,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE PayOut
+CREATE PROCEDURE TakeMoney
 	@amount DECIMAL(20,2),
 	@bankId INT,
 	@payHookId INT,
