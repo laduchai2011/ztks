@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Signin from '@src/screen/Signin';
 import Home from '@src/screen/Home';
 import Voucher from '@src/screen/Voucher';
+import RequireTakeMoney from '@src/screen/RequireTakeMoney';
 import NotFoundPage from '@src/screen/NotFoundPage';
 import { route_enum } from './type';
 
@@ -10,6 +11,7 @@ const router = createBrowserRouter(
         { path: route_enum.SIGNIN, element: <Signin /> },
         { path: route_enum.HOME, element: <Home /> },
         { path: route_enum.VOUCHER, element: <Voucher /> },
+        { path: route_enum.REQUIRE_TAKE_MONEY, element: <RequireTakeMoney /> },
         { path: '*', element: <NotFoundPage /> }, // Trang 404
     ],
     {

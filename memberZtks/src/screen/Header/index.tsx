@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef } from 'react';
 import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { HOME, VOUCHER } from '@src/const/text';
+import { HOME, VOUCHER, REQUIRE_TAKE_MONEY } from '@src/const/text';
 import { route_enum, select_enum, selected_type } from '@src/router/type';
 
 const Header: FC<{ selected: selected_type }> = ({ selected }) => {
@@ -22,6 +22,10 @@ const Header: FC<{ selected: selected_type }> = ({ selected }) => {
                 childs[1].classList.add(style.selected);
                 break;
             }
+            case select_enum.REQUIRE_TAKE_MONEY: {
+                childs[2].classList.add(style.selected);
+                break;
+            }
             default: {
                 //statements;
                 break;
@@ -39,6 +43,10 @@ const Header: FC<{ selected: selected_type }> = ({ selected }) => {
                 navigate(route_enum.VOUCHER);
                 break;
             }
+            case select_enum.REQUIRE_TAKE_MONEY: {
+                navigate(route_enum.REQUIRE_TAKE_MONEY);
+                break;
+            }
             default: {
                 //statements;
                 break;
@@ -51,7 +59,8 @@ const Header: FC<{ selected: selected_type }> = ({ selected }) => {
             <div className={style.left}></div>
             <div className={style.center} ref={center_element}>
                 <div onClick={() => handleSelect(select_enum.HOME)}>{HOME}</div>
-                <div onClick={() => handleSelect(select_enum.VOUCHER)}>Voucher</div>
+                <div onClick={() => handleSelect(select_enum.VOUCHER)}>{VOUCHER}</div>
+                <div onClick={() => handleSelect(select_enum.REQUIRE_TAKE_MONEY)}>{REQUIRE_TAKE_MONEY}</div>
             </div>
             <div className={style.right}></div>
         </div>

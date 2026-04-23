@@ -1,0 +1,61 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+
+    > .overview {
+        width: 100%;
+        @include center-of-row;
+
+        > div {
+            box-sizing: border-box;
+            padding: 5px;
+        }
+
+        > .index {
+            width: 50px;
+            @include center-of-rectangle;
+        }
+
+        > .money {
+            flex: 1;
+        }
+
+        > .account {
+            width: 300px;
+        }
+
+        > .isDo {
+            width: 100px;
+            @include center-of-rectangle;
+        }
+
+        > .doTime {
+            width: 150px;
+            @include center-of-rectangle;
+        }
+
+        > .btn {
+            width: 100px;
+            @include center-of-rectangle;
+
+            > .button {
+                background-color: rgb(255, 158, 68);
+                box-sizing: border-box;
+                border: 1px solid rgb(255, 158, 68);
+                padding: 5px 10px;
+                border-radius: 10px;
+                user-select: none;
+
+                &:active {
+                    background-color: white;
+                }
+            }
+
+            > .txt {
+                color: rgb(255, 158, 68);
+            }
+        }
+    }
+}

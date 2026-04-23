@@ -1,0 +1,83 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+    @include center-of-row;
+
+    > .checkContainer {
+        @include center-of-row;
+
+        > .oneCheck {
+            @include center-of-row;
+            box-sizing: border-box;
+            padding: 10px;
+
+            > input {
+                margin-right: 5px;
+            }
+        }
+    }
+
+    > .money {
+        box-sizing: border-box;
+        padding: 5px;
+        @include center-of-row;
+        width: 350px;
+
+        > div:nth-child(1) {
+            margin-right: 5px;
+        }
+
+        > .txt {
+            color: gray;
+            font-size: 0.9rem;
+            font-style: italic;
+            margin: 0 5px;
+        }
+
+        > input {
+            width: 35%;
+            outline: none;
+        }
+    }
+
+    > .timeContainer {
+        position: relative;
+        box-sizing: border-box;
+        padding: 10px;
+
+        > .show {
+            @include center-of-row;
+        }
+
+        > .box {
+            position: absolute;
+            background-color: white;
+            box-sizing: border-box;
+            padding: 10px;
+            border: 1px solid gray;
+            border-radius: 10px;
+        }
+    }
+
+    > .searchBtn {
+        @include center-of-rectangle;
+
+        > div {
+            background-color: blue;
+            color: white;
+            box-sizing: border-box;
+            padding: 5px 10px;
+            border: 1px solid blue;
+            border-radius: 10px;
+            user-select: none;
+            cursor: pointer;
+
+            &:active {
+                background-color: white;
+                color: blue;
+            }
+        }
+    }
+}

@@ -83,8 +83,10 @@ export interface MemberGetRequireTakeMoneyOfWalletBodyField {
 export interface MemberZtksGetRequiresTakeMoneyBodyField {
     page: number;
     size: number;
-    memberZtksId: number;
+    memberZtksId?: number;
     isDo?: boolean;
+    moneyFrom?: number;
+    moneyTo?: number;
     doFromDate?: string;
     doToDate?: string;
     fromDate?: string;

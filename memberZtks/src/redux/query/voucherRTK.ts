@@ -7,7 +7,7 @@ import { MyResponse } from '@src/dataStruct/response';
 export const voucherRTK = createApi({
     reducerPath: 'voucherRTK',
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
-    tagTypes: ['Voucer'],
+    tagTypes: ['Voucher'],
     endpoints: (builder) => ({
         createVoucher: builder.mutation<MyResponse<VoucherField>, CreateVoucherBodyField>({
             query: (body) => ({

@@ -13,6 +13,7 @@ CREATE TABLE payHook (
     accumulated decimal(20,2) NOT NULL DEFAULT 0.00,
 	agentPayId INT,
 	orderId INT,
+	requireTakeMoneyId INT,
 	walletId INT NOT NULL,
 
 	CONSTRAINT FK_payHook_AgentPay FOREIGN KEY (agentPayId) REFERENCES agentPay(id),
@@ -26,7 +27,10 @@ CREATE NONCLUSTERED INDEX idx_agentPay_id ON payHook(agentPayId);
 GO
 CREATE NONCLUSTERED INDEX idx_order_id ON payHook(orderId);
 GO
+CREATE NONCLUSTERED INDEX idx_requireTakeMoney_id ON payHook(requireTakeMoneyId);
+GO
 CREATE NONCLUSTERED INDEX idx_wallet_id ON payHook(walletId);
 GO
 
-
+-- ALTER TABLE payHook
+-- ADD requireTakeMoneyId INT;

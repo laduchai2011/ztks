@@ -70,8 +70,10 @@ GO
 ALTER PROCEDURE MemberZtksGetRequiresTakeMoney
 	@page INT,
 	@size INT,
-	@memberZtksId INT,
+	@memberZtksId INT = NULL,
 	@isDo BIT = NULL,
+	@moneyFrom DECIMAL(20,2) = NULL,
+    @moneyTo DECIMAL(20,2) = NULL,
 	@doFromDate DATETIME2 = NULL,
     @doToDate DATETIME2 = NULL,
 	@fromDate DATETIME2 = NULL,
@@ -85,15 +87,14 @@ BEGIN
         FROM dbo.requireTakeMoney AS rtm
 		WHERE 
 			isDelete = 0
+			AND memberZtksId = @memberZtksId
 			AND (@isDo IS NULL OR isDo = @isDo)
+			AND (@moneyFrom IS NULL OR amount >= @moneyFrom)
+			AND (@moneyTo   IS NULL OR amount <= @moneyTo)
 			AND (@doFromDate IS NULL OR doTime >= @doFromDate)
 			AND (@doToDate IS NULL OR doTime < @doToDate)
 			AND (@fromDate IS NULL OR createTime >= @fromDate)
 			AND (@toDate IS NULL OR createTime < @toDate)
-			AND (
-				memberZtksId IS NULL
-				OR memberZtksId = @memberZtksId
-			)
     )
     SELECT *
     FROM requireTakeMoneys
@@ -104,14 +105,13 @@ BEGIN
 	FROM dbo.requireTakeMoney AS rtm
 	WHERE 
 		isDelete = 0
+		AND memberZtksId = @memberZtksId
 		AND (@isDo IS NULL OR isDo = @isDo)
+		AND (@moneyFrom IS NULL OR amount >= @moneyFrom)
+		AND (@moneyTo   IS NULL OR amount <= @moneyTo)
 		AND (@doFromDate IS NULL OR doTime >= @doFromDate)
 		AND (@doToDate IS NULL OR doTime < @doToDate)
 		AND (@fromDate IS NULL OR createTime >= @fromDate)
 		AND (@toDate IS NULL OR createTime < @toDate)
-		AND (
-			memberZtksId IS NULL
-			OR memberZtksId = @memberZtksId
-		)
 END
 GO

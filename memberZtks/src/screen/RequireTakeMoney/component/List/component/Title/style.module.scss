@@ -1,0 +1,46 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+
+    > .overview {
+        width: 100%;
+        @include center-of-row;
+
+        > div {
+            box-sizing: border-box;
+            padding: 5px;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        > .index {
+            width: 50px;
+            @include center-of-rectangle;
+        }
+
+        > .money {
+            flex: 1;
+        }
+
+        > .account {
+            width: 300px;
+        }
+
+        > .isDo {
+            width: 100px;
+            @include center-of-rectangle;
+        }
+
+        > .doTime {
+            width: 150px;
+            @include center-of-rectangle;
+        }
+
+        > .btn {
+            width: 100px;
+            @include center-of-rectangle;
+        }
+    }
+}

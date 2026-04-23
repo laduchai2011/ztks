@@ -3,41 +3,41 @@ import AppRouter from '@src/router';
 import 'react-day-picker/dist/style.css';
 import axiosInstance from '@src/api/axiosInstance';
 import { MyResponse } from '@src/dataStruct/response';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '@src/redux';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@src/redux';
 import { set_account, set_accountInformation } from '@src/redux/slice/App';
 import { AccountField, AccountInformationField } from '@src/dataStruct/account';
-import { getSocket } from '@src/socketIo';
+// import { getSocket } from '@src/socketIo';
 
 const App = () => {
     const dispatch = useDispatch<AppDispatch>();
     // const accountInformation: AccountInformationField | undefined = useSelector(
     //     (state: RootState) => state.AppSlice.accountInformation
     // );
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
+    // const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
 
-    useEffect(() => {
-        if (!account) return;
+    // useEffect(() => {
+    //     if (!account) return;
 
-        const socket = getSocket();
-        const room = account.id.toString();
+    //     const socket = getSocket();
+    //     const room = account.id.toString();
 
-        const onConnect = () => {
-            socket.emit('joinRoom', room);
-        };
+    //     const onConnect = () => {
+    //         socket.emit('joinRoom', room);
+    //     };
 
-        socket.on('connect', onConnect);
+    //     socket.on('connect', onConnect);
 
-        // nếu socket đã connect sẵn từ trước thì join luôn
-        if (socket.connected) {
-            onConnect();
-        }
+    //     // nếu socket đã connect sẵn từ trước thì join luôn
+    //     if (socket.connected) {
+    //         onConnect();
+    //     }
 
-        return () => {
-            socket.emit('leaveRoom', room);
-            socket.off('connect', onConnect);
-        };
-    }, [account]);
+    //     return () => {
+    //         socket.emit('leaveRoom', room);
+    //         socket.off('connect', onConnect);
+    //     };
+    // }, [account]);
 
     useEffect(() => {
         const myId = sessionStorage.getItem('myId');

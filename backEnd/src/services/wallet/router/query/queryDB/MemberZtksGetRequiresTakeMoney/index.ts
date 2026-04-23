@@ -36,8 +36,10 @@ class QueryDB_MemberZtksGetRequiresTakeMoney {
                     .request()
                     .input('page', sql.Int, this._memberZtksGetRequiresTakeMoneyBody.page)
                     .input('size', sql.Int, this._memberZtksGetRequiresTakeMoneyBody.size)
-                    .input('memberZtksId', sql.Int, this._memberZtksGetRequiresTakeMoneyBody.memberZtksId)
+                    .input('memberZtksId', sql.Int, this._memberZtksGetRequiresTakeMoneyBody.memberZtksId ?? null)
                     .input('isDo', sql.Bit, this._memberZtksGetRequiresTakeMoneyBody.isDo ?? null)
+                    .input('moneyFrom', sql.Decimal(20, 2), this._memberZtksGetRequiresTakeMoneyBody.moneyFrom ?? null)
+                    .input('moneyTo', sql.Decimal(20, 2), this._memberZtksGetRequiresTakeMoneyBody.moneyTo ?? null)
                     .input(
                         'doFromDate',
                         sql.DateTime2,

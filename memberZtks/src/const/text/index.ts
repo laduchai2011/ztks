@@ -69,3 +69,6 @@ export const RETURN = 'Hoàn hàng';
 export const WALLET = 'Ví tiền';
 export const VOUCHER = 'Voucher';
 export const CREATE = 'Tạo';
+export const REQUIRE_TAKE_MONEY = 'Yêu cầu rút tiền';
+export const RECEIVE = 'Nhận';
+export const RECEIVED = 'Đã nhận';
