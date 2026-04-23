@@ -20,6 +20,7 @@
 
         > .money {
             flex: 1;
+            color: blue;
         }
 
         > .account {
@@ -27,13 +28,24 @@
         }
 
         > .isDo {
-            width: 100px;
+            width: 150px;
             @include center-of-rectangle;
+
+            &.do {
+                color: rgb(0, 255, 34);
+            }
+
+            &.notDo {
+                color: red;
+            }
         }
 
         > .doTime {
             width: 150px;
             @include center-of-rectangle;
+            color: gray;
+            font-size: 0.9rem;
+            font-style: italic;
         }
 
         > .btn {
@@ -55,6 +67,32 @@
 
             > .txt {
                 color: rgb(255, 158, 68);
+            }
+        }
+    }
+
+    > .detail {
+        width: 100%;
+
+        > .header {
+            width: 100%;
+            @include center-of-row;
+            justify-content: flex-end;
+
+            > div {
+                width: max-content;
+            }
+        }
+
+        > .content {
+            width: 100%;
+            max-height: 0;
+            overflow-y: auto;
+            @include center-of-rectangle;
+            transition: max-height 0.3s linear;
+
+            &.show {
+                max-height: 600px;
             }
         }
     }

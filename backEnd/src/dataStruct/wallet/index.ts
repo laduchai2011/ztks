@@ -48,6 +48,7 @@ export type BalanceFluctuationType =
 export interface RequireTakeMoneyField {
     id: number;
     isDo: boolean;
+    doTime: string | null;
     amount: number;
     bankId: number;
     walletId: number;

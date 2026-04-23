@@ -33,11 +33,6 @@ router_query_wallet.post(
     handle_memberGetRequireTakeMoneyOfWallet.main
 );
 
-router_query_wallet.post(
-    '/memberZtksGetRequiresTakeMoney',
-    authentication,
-    handle_memberZtksGetRequiresTakeMoney.setup,
-    handle_memberZtksGetRequiresTakeMoney.main
-);
+router_query_wallet.post('/memberZtksGetRequiresTakeMoney', authentication, handle_memberZtksGetRequiresTakeMoney.main);
 
 export default router_query_wallet;

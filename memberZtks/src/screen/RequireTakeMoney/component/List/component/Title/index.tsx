@@ -8,7 +8,7 @@ const Title = () => {
                 <div className={style.index}>Stt</div>
                 <div className={style.money}>Tiền</div>
                 <div className={style.account}>Tài khoản</div>
-                <div className={style.isDo}>Đã chuyển</div>
+                <div className={style.isDo}>Chuyển tiền</div>
                 <div className={style.doTime}>Thời gian chuyển</div>
                 <div className={style.btn}>Nhận</div>
             </div>

@@ -13,45 +13,44 @@ class Handle_MemberZtksGetRequiresTakeMoney {
         this._mssql_server.init();
     }
 
-    setup = (req: Request<any, any, MemberZtksGetRequiresTakeMoneyBodyField>, res: Response, next: NextFunction) => {
-        const myResponse: MyResponse<PagedRequireTakeMoneyField> = {
-            isSuccess: false,
-            message: 'Bắt đầu Handle_MemberZtksGetRequiresTakeMoney-setup',
-        };
+    // setup = (req: Request<any, any, MemberZtksGetRequiresTakeMoneyBodyField>, res: Response, next: NextFunction) => {
+    //     const myResponse: MyResponse<PagedRequireTakeMoneyField> = {
+    //         isSuccess: false,
+    //         message: 'Bắt đầu Handle_MemberZtksGetRequiresTakeMoney-setup',
+    //     };
 
+    //     const memberZtksGetRequiresTakeMoneyBody = req.body;
+    //     const { refreshToken } = req.cookies;
+
+    //     if (typeof refreshToken === 'string') {
+    //         const verify_refreshToken = verifyRefreshToken(refreshToken);
+
+    //         if (verify_refreshToken === 'invalid') {
+    //             myResponse.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';
+    //             res.status(500).json(myResponse);
+    //             return;
+    //         }
+
+    //         if (verify_refreshToken === 'expired') {
+    //             myResponse.message = 'Refresh-Token hết hạn, hãy đăng nhập lại !';
+    //             res.status(500).json(myResponse);
+    //             return;
+    //         }
+
+    //         const { id } = verify_refreshToken;
+    //         memberZtksGetRequiresTakeMoneyBody.memberZtksId = id;
+    //         res.locals.memberZtksGetRequiresTakeMoneyBody = memberZtksGetRequiresTakeMoneyBody;
+
+    //         next();
+    //     } else {
+    //         myResponse.message = 'Vui lòng đăng nhập lại !';
+    //         res.status(500).json(myResponse);
+    //         return;
+    //     }
+    // };
+
+    main = async (req: Request<any, any, MemberZtksGetRequiresTakeMoneyBodyField>, res: Response) => {
         const memberZtksGetRequiresTakeMoneyBody = req.body;
-        const { refreshToken } = req.cookies;
-
-        if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verifyRefreshToken(refreshToken);
-
-            if (verify_refreshToken === 'invalid') {
-                myResponse.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';
-                res.status(500).json(myResponse);
-                return;
-            }
-
-            if (verify_refreshToken === 'expired') {
-                myResponse.message = 'Refresh-Token hết hạn, hãy đăng nhập lại !';
-                res.status(500).json(myResponse);
-                return;
-            }
-
-            const { id } = verify_refreshToken;
-            memberZtksGetRequiresTakeMoneyBody.memberZtksId = id;
-            res.locals.memberZtksGetRequiresTakeMoneyBody = memberZtksGetRequiresTakeMoneyBody;
-
-            next();
-        } else {
-            myResponse.message = 'Vui lòng đăng nhập lại !';
-            res.status(500).json(myResponse);
-            return;
-        }
-    };
-
-    main = async (_: Request, res: Response) => {
-        const memberZtksGetRequiresTakeMoneyBody = res.locals
-            .memberZtksGetRequiresTakeMoneyBody as MemberZtksGetRequiresTakeMoneyBodyField;
 
         const myResponse: MyResponse<PagedRequireTakeMoneyField> = {
             isSuccess: false,

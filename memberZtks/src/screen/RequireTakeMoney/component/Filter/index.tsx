@@ -2,7 +2,7 @@ import { memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
-import { DayPicker, DateRange } from 'react-day-picker';
+import { DayPicker } from 'react-day-picker';
 import { vi } from 'date-fns/locale';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { MONEY, FROM, TO, RECEIVED, SEARCH } from '@src/const/text';
@@ -10,8 +10,12 @@ import { formatMoney } from '@src/utility/string';
 import { AccountField } from '@src/dataStruct/account';
 import { MemberZtksGetRequiresTakeMoneyBodyField } from '@src/dataStruct/wallet/body';
 import { DateTime } from 'luxon';
+import { formatDay } from './handle';
+import { setData_filterBody } from '@src/redux/slice/RequireTakeMoney';
 
 const Filter = () => {
+    const dispatch = useDispatch<AppDispatch>();
+
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
     const [fromDay, setFromDay] = useState<Date | undefined>(undefined);
     const [toDay, setToDay] = useState<Date | undefined>(undefined);
@@ -24,14 +28,6 @@ const Filter = () => {
     const [isFormattingMoneyFrom, setIsFormattingMoneyFrom] = useState(false);
     const [moneyTo, setMoneyTo] = useState<string>('');
     const [isFormattingMoneyTo, setIsFormattingMoneyTo] = useState(false);
-    const filterBody: MemberZtksGetRequiresTakeMoneyBodyField = {
-        page: 1,
-        size: 5,
-    };
-
-    useEffect(() => {
-        console.log(fromDay, isReceive);
-    }, [fromDay, isReceive]);
 
     const handleIsReceive = (e: React.ChangeEvent<HTMLInputElement>) => {
         setIsReceive(e.target.checked);
@@ -68,37 +64,40 @@ const Filter = () => {
     const handleSearch = () => {
         if (!account) return;
 
-        const newFilterBody = { ...filterBody };
+        const filterBody: MemberZtksGetRequiresTakeMoneyBodyField = {
+            page: 1,
+            size: 5,
+        };
 
         if (isReceive) {
-            newFilterBody.memberZtksId = account.id;
+            filterBody.memberZtksId = account.id;
         }
 
         if (isDo) {
-            newFilterBody.isDo = true;
+            filterBody.isDo = true;
         }
 
         if (isNotDo) {
-            newFilterBody.isDo = false;
+            filterBody.isDo = false;
         }
 
         if (moneyFrom.length > 0) {
-            newFilterBody.moneyFrom = Number(moneyFrom);
+            filterBody.moneyFrom = Number(moneyFrom);
         }
 
         if (moneyTo.length > 0) {
-            newFilterBody.moneyTo = Number(moneyTo);
+            filterBody.moneyTo = Number(moneyTo);
         }
 
         if (fromDay) {
-            newFilterBody.doFromDate = DateTime.fromJSDate(fromDay).toFormat('yyyy-MM-dd HH:mm:ss');
+            filterBody.doFromDate = DateTime.fromJSDate(fromDay).toFormat('yyyy-MM-dd HH:mm:ss');
         }
 
-        // if (range?.to) {
-        //     newFilterBody.doToDate = DateTime.fromJSDate(range.to).toFormat('yyyy-MM-dd HH:mm:ss');
-        // }
+        if (toDay) {
+            filterBody.doToDate = DateTime.fromJSDate(toDay).toFormat('yyyy-MM-dd HH:mm:ss');
+        }
 
-        console.log('newFilterBody', newFilterBody);
+        dispatch(setData_filterBody(filterBody));
     };
 
     return (
@@ -138,7 +137,7 @@ const Filter = () => {
             </div>
             <div className={style.timeContainer}>
                 <div className={style.show}>
-                    <div>{`Từ ngày: ${fromDay}`}</div>
+                    <div>{`Từ ngày: ${formatDay(DateTime.fromJSDate(fromDay!).toFormat('yyyy-MM-dd HH:mm:ss'))}`}</div>
                     <div>
                         {!isShowFromDay && <FiChevronDown onClick={() => handleIsShowFromDay(true)} size={20} />}
                         {isShowFromDay && <FiChevronUp onClick={() => handleIsShowFromDay(false)} size={20} />}
@@ -157,7 +156,7 @@ const Filter = () => {
             </div>
             <div className={style.timeContainer}>
                 <div className={style.show}>
-                    <div>{`Đến ngày: ${toDay}`}</div>
+                    <div>{`Đến ngày: ${formatDay(DateTime.fromJSDate(toDay!).toFormat('yyyy-MM-dd HH:mm:ss'))}`}</div>
                     <div>
                         {!isShowToDay && <FiChevronDown onClick={() => handleIsShowToDay(true)} size={20} />}
                         {isShowToDay && <FiChevronUp onClick={() => handleIsShowToDay(false)} size={20} />}

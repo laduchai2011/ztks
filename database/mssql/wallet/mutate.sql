@@ -379,7 +379,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE MemberZtksConfirmTakeMoney
+ALTER PROCEDURE MemberZtksConfirmTakeMoney
 	@requireTakeMoneyId INT,
 	@memberZtksId INT
 AS
@@ -395,7 +395,7 @@ BEGIN
 
 		UPDATE dbo.requireTakeMoney
 		SET memberZtksId = @memberZtksId
-		WHERE id = @requireTakeMoneyId AND isDelete = 0;
+		WHERE id = @requireTakeMoneyId AND isDelete = 0 AND memberZtksId IS NULL;
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50002, 'MemberZtks các nhận yêu cầu KHÔNG thành công .', 2;

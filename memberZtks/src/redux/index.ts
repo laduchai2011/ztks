@@ -5,6 +5,7 @@ import RequireTakeMoneyReducer from '@src/redux/slice/RequireTakeMoney';
 import { accountRTK } from './query/accountRTK';
 import { voucherRTK } from './query/voucherRTK';
 import { walletRTK } from './query/walletRTK';
+import { bankRTK } from './query/bankRTK';
 
 export const store = configureStore({
     reducer: {
@@ -15,9 +16,15 @@ export const store = configureStore({
         [accountRTK.reducerPath]: accountRTK.reducer,
         [voucherRTK.reducerPath]: voucherRTK.reducer,
         [walletRTK.reducerPath]: walletRTK.reducer,
+        [bankRTK.reducerPath]: bankRTK.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(accountRTK.middleware, voucherRTK.middleware, walletRTK.middleware),
+        getDefaultMiddleware().concat(
+            accountRTK.middleware,
+            voucherRTK.middleware,
+            walletRTK.middleware,
+            bankRTK.middleware
+        ),
 });
 
 // Type hỗ trợ

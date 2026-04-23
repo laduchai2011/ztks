@@ -87,7 +87,10 @@ BEGIN
         FROM dbo.requireTakeMoney AS rtm
 		WHERE 
 			isDelete = 0
-			AND memberZtksId = @memberZtksId
+			AND (
+				(@memberZtksId IS NULL AND memberZtksId IS NULL)
+				OR memberZtksId = @memberZtksId
+			)
 			AND (@isDo IS NULL OR isDo = @isDo)
 			AND (@moneyFrom IS NULL OR amount >= @moneyFrom)
 			AND (@moneyTo   IS NULL OR amount <= @moneyTo)
@@ -105,7 +108,10 @@ BEGIN
 	FROM dbo.requireTakeMoney AS rtm
 	WHERE 
 		isDelete = 0
-		AND memberZtksId = @memberZtksId
+		AND (
+			(@memberZtksId IS NULL AND memberZtksId IS NULL)
+			OR memberZtksId = @memberZtksId
+		)
 		AND (@isDo IS NULL OR isDo = @isDo)
 		AND (@moneyFrom IS NULL OR amount >= @moneyFrom)
 		AND (@moneyTo   IS NULL OR amount <= @moneyTo)
@@ -115,3 +121,7 @@ BEGIN
 		AND (@toDate IS NULL OR createTime < @toDate)
 END
 GO
+
+EXEC MemberZtksGetRequiresTakeMoney
+    @page = 1,
+    @size = 10

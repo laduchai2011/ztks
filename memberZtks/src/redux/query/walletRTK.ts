@@ -1,13 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { PagedRequireTakeMoneyField } from '@src/dataStruct/wallet';
-import { MemberZtksGetRequiresTakeMoneyBodyField } from '@src/dataStruct/wallet/body';
+import { PagedRequireTakeMoneyField, RequireTakeMoneyField } from '@src/dataStruct/wallet';
+import {
+    MemberZtksGetRequiresTakeMoneyBodyField,
+    MemberZtksConfirmTakeMoneyBodyField,
+} from '@src/dataStruct/wallet/body';
 import { WALLET_API } from '@src/const/api/wallet';
 import { MyResponse } from '@src/dataStruct/response';
 
 export const walletRTK = createApi({
     reducerPath: 'walletRTK',
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
-    tagTypes: [],
+    tagTypes: ['RequiresTakeMoney'],
     endpoints: (builder) => ({
         memberZtksGetRequiresTakeMoney: builder.query<
             MyResponse<PagedRequireTakeMoneyField>,
@@ -19,7 +22,18 @@ export const walletRTK = createApi({
                 body,
             }),
         }),
+        memberZtksConfirmTakeMoney: builder.mutation<
+            MyResponse<RequireTakeMoneyField>,
+            MemberZtksConfirmTakeMoneyBodyField
+        >({
+            query: (body) => ({
+                url: WALLET_API.MEMBER_ZTKS_CONFIRM_TAKE_MONEY,
+                method: 'PUT',
+                body,
+            }),
+            invalidatesTags: ['RequiresTakeMoney'],
+        }),
     }),
 });
 
-export const { useLazyMemberZtksGetRequiresTakeMoneyQuery } = walletRTK;
+export const { useLazyMemberZtksGetRequiresTakeMoneyQuery, useMemberZtksConfirmTakeMoneyMutation } = walletRTK;
