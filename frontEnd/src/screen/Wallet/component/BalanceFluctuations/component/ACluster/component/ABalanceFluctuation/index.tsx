@@ -25,6 +25,12 @@ const ABalanceFluctuation: FC<{ balanceFluctuation: BalanceFluctuationField }> =
         if (type === BalanceFluctuationEnum.COST1) {
             setTypeText('Khấu trừ 1%');
         }
+        if (type === BalanceFluctuationEnum.TAKE_MONEY) {
+            setTypeText('Rút tiền');
+        }
+        if (type === BalanceFluctuationEnum.COST_TAKE_MONEY5) {
+            setTypeText('Phí rút tiền');
+        }
     }, [balanceFluctuation]);
 
     const handleAmountColor = () => {

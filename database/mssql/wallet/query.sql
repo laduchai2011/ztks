@@ -133,3 +133,5 @@ GO
 EXEC MemberZtksGetRequiresTakeMoney
     @page = 1,
     @size = 10
+
+SELECT * FROM dbo.balanceFluctuation WHERE walletId = 2;

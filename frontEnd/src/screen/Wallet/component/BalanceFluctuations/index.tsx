@@ -22,6 +22,8 @@ const BalanceFluctuations: FC<{ wallet: WalletField }> = ({ wallet }) => {
     const [getBalanceFluctuationLatestDay] = useLazyGetBalanceFluctuationLatestDayQuery();
     const [getBalanceFluctuationsByDate] = useLazyGetBalanceFluctuationsByDateQuery();
 
+    const zone = 'Asia/Ho_Chi_Minh';
+
     useEffect(() => {
         setInit(false);
         setCurrentDate(null);
@@ -35,8 +37,6 @@ const BalanceFluctuations: FC<{ wallet: WalletField }> = ({ wallet }) => {
             if (!init) return;
 
             const getDateRangeVN = (date: string) => {
-                const zone = 'Asia/Ho_Chi_Minh';
-
                 const fromDate = DateTime.fromISO(date, { zone }).startOf('day').toUTC().toISO();
 
                 const toDate = DateTime.fromISO(date, { zone }).plus({ days: 1 }).startOf('day').toUTC().toISO();
@@ -55,7 +55,6 @@ const BalanceFluctuations: FC<{ wallet: WalletField }> = ({ wallet }) => {
             })
                 .then((res) => {
                     const resData = res.data;
-                    // console.log(resData);
                     if (resData?.isSuccess && resData.data) {
                         setClusters((prev) => [...prev, resData.data ?? []]);
                         setCurrentDates((prev) => [...prev, currentDate]);
@@ -96,10 +95,10 @@ const BalanceFluctuations: FC<{ wallet: WalletField }> = ({ wallet }) => {
     // load ngày trước đó
     const loadPreviousDay = () => {
         if (!currentDate) return;
-        const d = new Date(currentDate);
-        d.setDate(d.getDate() - 1);
-
-        const prevDate = d.toISOString().slice(0, 10);
+        // const d = new Date(currentDate);
+        // d.setDate(d.getDate() - 1);
+        // const prevDate = d.toISOString().slice(0, 10);
+        const prevDate = DateTime.fromISO(currentDate, { zone: zone }).minus({ days: 1 }).toISODate();
         setCurrentDate(prevDate);
         setInit(true);
     };

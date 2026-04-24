@@ -114,7 +114,7 @@ const One: FC<{ index: number; data: RequireTakeMoneyField }> = ({ index, data }
                 console.log('getBankWithId', resData);
                 if (resData?.isSuccess && resData.data) {
                     const bank = resData.data;
-                    const qrUrl = `https://img.vietqr.io/image/${bank.bankCode}-${bank.accountNumber}-compact2.png?amount=${requireTakeMoney.amount}&addInfo=${content}&accountName=${bank.accountName}`;
+                    const qrUrl = `https://img.vietqr.io/image/${bank.bankCode}-${bank.accountNumber}-compact2.png?amount=${requireTakeMoney.amount - 5000}&addInfo=${content}&accountName=${bank.accountName}`;
                     setQrCode(qrUrl);
                 }
             })

@@ -36,6 +36,10 @@ class ServiceRedis {
         return this._initPromise;
     }
 
+    getClientRedis() {
+        return this._clientRedis;
+    }
+
     async setData<T>(key: string, jsonValue: T, timeExpireat: number) {
         if (key) {
             // timeExpireat: { EX: 60*60*24 }

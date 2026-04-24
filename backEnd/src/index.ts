@@ -129,6 +129,11 @@ app.use(`${apiString}/hello`, (req, res) => {
         const service_bank = (await import('@src/services/bank')).default;
         app.use(`${prefix}/service_bank`, service_bank);
     }
+
+    if (services.includes('post')) {
+        const service_post = (await import('@src/services/post')).default;
+        app.use(`${prefix}/service_post`, service_post);
+    }
 })();
 
 app.listen(port, () => {

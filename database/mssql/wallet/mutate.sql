@@ -412,7 +412,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE TakeMoney
+ALTER PROCEDURE TakeMoney
 	@amount DECIMAL(20,2),
 	@bankId INT,
 	@payHookId INT,
@@ -450,7 +450,7 @@ BEGIN
 
 		-- cập nhật tiền chuyển ra khỏi ví
         UPDATE dbo.wallet
-		SET amount = amount - @amount + @costTakeMoney5, updateTime = SYSDATETIMEOFFSET()
+		SET amount = amount - @amount, updateTime = SYSDATETIMEOFFSET()
 		WHERE id = @walletId
 		IF @@ROWCOUNT = 0
         BEGIN
@@ -472,7 +472,7 @@ BEGIN
             THROW 50007, 'Cập nhật khấu trừ phí rút tiền không thành công.', 7;
         END
 		INSERT INTO dbo.balanceFluctuation (amount, type, walletId, createTime)
-        VALUES (- @amount, 'takeMoney', @walletId, SYSDATETIMEOFFSET());
+        VALUES (- @costTakeMoney5, 'costTakeMoney5', @walletId, SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50008, 'Cập nhật biến động số dư khấu trừ phí rút tiền không thành công.', 8;

@@ -47,6 +47,8 @@ CREATE UNIQUE NONCLUSTERED INDEX idx_balanceFluctuation_requireTakeMoneyId_uniqu
 GO
 CREATE NONCLUSTERED INDEX idx_wallet_createTime ON balanceFluctuation(createTime);
 GO
+CREATE NONCLUSTERED INDEX idx_wallet_walletId_createTime ON balanceFluctuation(walletId, createTime DESC);
+GO
 
 -- ALTER TABLE balanceFluctuation
 -- ADD requireTakeMoneyId INT;
