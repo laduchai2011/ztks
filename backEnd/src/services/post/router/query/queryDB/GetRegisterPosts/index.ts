@@ -36,7 +36,7 @@ class QueryDB_GetRegisterPosts {
                     .input('size', sql.Int, this._getRegisterPostsBody.size)
                     .input('isDelete', sql.Bit, this._getRegisterPostsBody.isDelete ?? null)
                     .input('accountId', sql.Int, this._getRegisterPostsBody.accountId)
-                    .execute('GetPosts');
+                    .execute('GetRegisterPosts');
 
                 return result as any as RegisterPostsQueryResult;
             } catch (error) {

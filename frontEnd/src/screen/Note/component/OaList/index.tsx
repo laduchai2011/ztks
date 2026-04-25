@@ -25,6 +25,7 @@ const OaList = () => {
     const size: number = 5;
     const [zaloOaList, setZaloOaList] = useState<ZaloOaField[]>([]);
     const [total, setTotal] = useState<number>(0);
+
     const [getZaloOaListWith2Fk] = useLazyGetZaloOaListWith2FkQuery();
 
     useEffect(() => {

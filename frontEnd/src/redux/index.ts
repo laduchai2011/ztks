@@ -18,6 +18,8 @@ import ForgetPasswordReducer from '@src/redux/slice/ForgetPassword';
 import WalletReducer from '@src/redux/slice/Wallet';
 import ZnsReducer from '@src/redux/slice/Zns';
 import BankReducer from '@src/redux/slice/Bank';
+import PostReducer from '@src/redux/slice/Post';
+import RegisterPostReducer from '@src/redux/slice/RegisterPost';
 import { accountRTK } from './query/accountRTK';
 import { myCustomerRTK } from './query/myCustomerRTK';
 import { messageV1RTK } from './query/messageV1RTK';
@@ -30,6 +32,7 @@ import { noteRTK } from './query/noteRTK';
 import { walletRTK } from './query/walletRTK';
 import { voucherRTK } from './query/voucherRTK';
 import { bankRTK } from './query/bankRTK';
+import { postRTK } from './query/postRTK';
 
 export const store = configureStore({
     reducer: {
@@ -53,6 +56,8 @@ export const store = configureStore({
         WalletSlice: WalletReducer,
         ZnsSlice: ZnsReducer,
         BankSlice: BankReducer,
+        PostSlice: PostReducer,
+        RegisterPostSlice: RegisterPostReducer,
         [accountRTK.reducerPath]: accountRTK.reducer,
         [myCustomerRTK.reducerPath]: myCustomerRTK.reducer,
         [messageV1RTK.reducerPath]: messageV1RTK.reducer,
@@ -65,6 +70,7 @@ export const store = configureStore({
         [walletRTK.reducerPath]: walletRTK.reducer,
         [voucherRTK.reducerPath]: voucherRTK.reducer,
         [bankRTK.reducerPath]: bankRTK.reducer,
+        [postRTK.reducerPath]: postRTK.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
@@ -79,7 +85,8 @@ export const store = configureStore({
             noteRTK.middleware,
             walletRTK.middleware,
             voucherRTK.middleware,
-            bankRTK.middleware
+            bankRTK.middleware,
+            postRTK.middleware
         ),
 });
 

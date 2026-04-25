@@ -3,15 +3,16 @@ import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
-import { POST } from '@src/const/text';
+import { REGISTER_POST } from '@src/const/text';
 import MyLoading from './component/MyLoading';
 import MyToastMessage from './component/MyToastMessage';
 import { setData_toastMessage } from '@src/redux/slice/Post';
 import { route_enum } from '@src/router/type';
+import CreateRegisterPost from './component/CreateRegisterPost';
+import Filter from './component/Filter';
 import RegisterPostList from './component/RegisterPostList';
-import PostList from './component/PostList';
 
-const Post = () => {
+const RegisterPost = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 
@@ -32,9 +33,10 @@ const Post = () => {
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>{POST}</div>
+                <div className={style.header}>{REGISTER_POST}</div>
+                <CreateRegisterPost />
+                <Filter />
                 <RegisterPostList />
-                <PostList />
             </div>
             <div>
                 <MyToastMessage />
@@ -44,4 +46,4 @@ const Post = () => {
     );
 };
 
-export default Post;
+export default RegisterPost;

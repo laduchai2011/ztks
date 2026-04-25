@@ -18,6 +18,7 @@ class Handle_GetRegisterPosts {
     main = async (req: Request<any, any, GetRegisterPostsBodyField>, res: Response) => {
         const getRegisterPostsBody = req.body;
         this._cacheGetRegisterPosts.setBody(getRegisterPostsBody);
+        this._cacheGetRegisterPosts.setFK(getRegisterPostsBody.accountId);
 
         const myResponse: MyResponse<PagedRegisterPostField> = {
             isSuccess: false,

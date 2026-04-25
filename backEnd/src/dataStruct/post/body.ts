@@ -1,3 +1,5 @@
+import { RegisterPostTypeType, PostTypeType } from '.';
+
 export interface GetRegisterPostsBodyField {
     page: number;
     size: number;
@@ -18,7 +20,7 @@ export interface GetPostWithIdBodyField {
 
 export interface CreateRegisterPostBodyField {
     name: string;
-    type: string;
+    type: RegisterPostTypeType;
     zaloOaId: number;
     accountId: number;
 }
@@ -38,7 +40,7 @@ export interface DeleteRegisterPostBodyField {
 export interface CreatePostBodyField {
     index: number;
     name: string;
-    type: string;
+    type: PostTypeType;
     title: string;
     describe: string;
     images: string;

@@ -18,6 +18,7 @@ class Handle_GetPosts {
     main = async (req: Request<any, any, GetPostsBodyField>, res: Response) => {
         const getPostsBody = req.body;
         this._cacheGetPosts.setBody(getPostsBody);
+        this._cacheGetPosts.setFK(getPostsBody.registerPostId);
 
         const myResponse: MyResponse<PagedPostField> = {
             isSuccess: false,

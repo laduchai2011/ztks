@@ -19,6 +19,7 @@ import Wallet from '@src/screen/Wallet';
 import Zns from '@src/screen/Zns';
 import Bank from '@src/screen/Bank';
 import Post from '@src/screen/Post';
+import RegisterPost from '@src/screen/RegisterPost';
 import { route_enum } from './type';
 
 const router = createBrowserRouter(
@@ -42,6 +43,7 @@ const router = createBrowserRouter(
         { path: route_enum.ZNS, element: <Zns /> },
         { path: route_enum.BANK, element: <Bank /> },
         { path: route_enum.POST, element: <Post /> },
+        { path: route_enum.REGISTER_POST, element: <RegisterPost /> },
         { path: '*', element: <NotFoundPage /> }, // Trang 404
     ],
     {
