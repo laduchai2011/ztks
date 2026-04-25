@@ -19,6 +19,7 @@ GO
 
 CREATE TABLE post (
 	id INT PRIMARY KEY IDENTITY(1,1),
+	[index] INT NOT NULL, 
 	name NVARCHAR(255) NOT NULL,
 	type VARCHAR(255) NOT NULL,
 	title NVARCHAR(255) NOT NULL,
@@ -29,6 +30,7 @@ CREATE TABLE post (
     createTime DATETIMEOFFSET(7) NOT NULL,
 
 	CONSTRAINT FK_post_RegisterPostId FOREIGN KEY (registerPostId) REFERENCES registerPost(id),
+	CONSTRAINT UQ_post_registerPostId_index UNIQUE(registerPostId, [index]),
 
 	CONSTRAINT type_post CHECK (type IN ('free', 'upgrade'))
 );

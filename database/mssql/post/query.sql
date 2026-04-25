@@ -27,7 +27,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE GetPosts
+ALTER PROCEDURE GetPosts
 	@page INT,
     @size INT,
 	@isActive BIT = NULL,
@@ -37,7 +37,7 @@ BEGIN
 	-- Tập kết quả 1: dữ liệu phân trang
     WITH posts AS (
         SELECT p.*,
-			ROW_NUMBER() OVER (ORDER BY p.id DESC) AS rn
+			ROW_NUMBER() OVER (ORDER BY p.[index] DESC) AS rn
         FROM dbo.post AS p
 		WHERE 
 			(@isActive IS NULL OR isActive = @isActive)

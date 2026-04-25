@@ -26,7 +26,6 @@ const prefix_cache_getRegisterPosts = {
 const prefix_cache_getPostWithId = {
     key: {
         main: isProduct ? 'cache_get_postWithId' : 'cache_get_postWithId_dev',
-        cache_keys: 'cache_get_postWithId_cache_keys',
     },
     time: 60 * 5, // 5p
 };
@@ -34,6 +33,7 @@ const prefix_cache_getPostWithId = {
 export class CacheGetPosts {
     private _body: GetPostsBodyField | undefined;
     private _serviceRedis = ServiceRedis.getInstance();
+    private _fk: number | undefined;
 
     constructor() {}
 
@@ -43,6 +43,10 @@ export class CacheGetPosts {
 
     setBody(body: GetPostsBodyField) {
         this._body = body;
+    }
+
+    setFK(fk: number) {
+        this._fk = fk;
     }
 
     getKeyMain() {
@@ -57,7 +61,11 @@ export class CacheGetPosts {
     }
 
     getKeyCacheKeys() {
-        const key_cache_keys = `${prefix_cache_getPosts.key.cache_keys}`;
+        if (!this._fk) {
+            console.error('Chưa thiết lập fk');
+            return;
+        }
+        const key_cache_keys = `${prefix_cache_getPosts.key.cache_keys}fk${this._fk}`;
         return key_cache_keys;
     }
 
@@ -73,6 +81,11 @@ export class CacheGetPosts {
 
         if (!key_main) {
             console.error('Lấy key_main không thành công');
+            return;
+        }
+
+        if (!key_cache_keys) {
+            console.error('Lấy key_cache_keys không thành công');
             return;
         }
 
@@ -104,6 +117,11 @@ export class CacheGetPosts {
     async clearCache() {
         const key_cache_keys = this.getKeyCacheKeys();
 
+        if (!key_cache_keys) {
+            console.error('Lấy key_cache_keys không thành công');
+            return;
+        }
+
         const clientRedis = this._serviceRedis.getClientRedis();
         const keys_main = await clientRedis.sMembers(key_cache_keys);
         keys_main.map((key) => {
@@ -116,6 +134,7 @@ export class CacheGetPosts {
 export class CacheGetRegisterPosts {
     private _body: GetRegisterPostsBodyField | undefined;
     private _serviceRedis = ServiceRedis.getInstance();
+    private _fk: number | undefined;
 
     constructor() {}
 
@@ -125,6 +144,10 @@ export class CacheGetRegisterPosts {
 
     setBody(body: GetRegisterPostsBodyField) {
         this._body = body;
+    }
+
+    setFK(fk: number) {
+        this._fk = fk;
     }
 
     getKeyMain() {
@@ -139,7 +162,12 @@ export class CacheGetRegisterPosts {
     }
 
     getKeyCacheKeys() {
-        const key_cache_keys = `${prefix_cache_getRegisterPosts.key.cache_keys}`;
+        if (!this._fk) {
+            console.error('Chưa thiết lập fk');
+            return;
+        }
+
+        const key_cache_keys = `${prefix_cache_getRegisterPosts.key.cache_keys}fk${this._fk}`;
         return key_cache_keys;
     }
 
@@ -155,6 +183,11 @@ export class CacheGetRegisterPosts {
 
         if (!key_main) {
             console.error('Lấy key_main không thành công');
+            return;
+        }
+
+        if (!key_cache_keys) {
+            console.error('Lấy key_cache_keys không thành công');
             return;
         }
 
@@ -185,6 +218,11 @@ export class CacheGetRegisterPosts {
 
     async clearCache() {
         const key_cache_keys = this.getKeyCacheKeys();
+
+        if (!key_cache_keys) {
+            console.error('Lấy key_cache_keys không thành công');
+            return;
+        }
 
         const clientRedis = this._serviceRedis.getClientRedis();
         const keys_main = await clientRedis.sMembers(key_cache_keys);
@@ -220,11 +258,6 @@ export class CacheGetPostWithId {
         return key_main;
     }
 
-    getKeyCacheKeys() {
-        const key_cache_keys = `${prefix_cache_getPostWithId.key.cache_keys}`;
-        return key_cache_keys;
-    }
-
     getTimeExpireat() {
         const timeExpireat = prefix_cache_getPostWithId.time;
         return timeExpireat;
@@ -233,7 +266,6 @@ export class CacheGetPostWithId {
     async setData(data: PostField) {
         const key_main = this.getKeyMain();
         const timeExpireat = this.getTimeExpireat();
-        const key_cache_keys = this.getKeyCacheKeys();
 
         if (!key_main) {
             console.error('Lấy key_main không thành công');
@@ -244,10 +276,6 @@ export class CacheGetPostWithId {
         if (!isSet) {
             console.error('Failed to set in Redis', key_main);
         }
-
-        const clientRedis = this._serviceRedis.getClientRedis();
-        await clientRedis.sAdd(key_cache_keys, key_main);
-        await clientRedis.expire(key_cache_keys, timeExpireat);
 
         return isSet;
     }
@@ -266,13 +294,13 @@ export class CacheGetPostWithId {
     }
 
     async clearCache() {
-        const key_cache_keys = this.getKeyCacheKeys();
+        const key_main = this.getKeyMain();
 
-        const clientRedis = this._serviceRedis.getClientRedis();
-        const keys_main = await clientRedis.sMembers(key_cache_keys);
-        keys_main.map((key) => {
-            this._serviceRedis.deleteData(key);
-        });
-        await clientRedis.del(key_cache_keys);
+        if (!key_main) {
+            console.error('Lấy key_main không thành công');
+            return;
+        }
+
+        await this._serviceRedis.deleteData(key_main);
     }
 }

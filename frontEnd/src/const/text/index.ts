@@ -75,3 +75,5 @@ export const BANK_CODE = 'Mã ngân hàng';
 export const ACCOUNT_NUMBER = 'Số tài khoản';
 export const ACCOUNT_NAME = 'Tên tài khoản';
 export const CHOOSE = 'Chọn';
+export const POST = 'Bài đăng';
+export const REGISTER_POST = 'Những đăng ký bài đăng';

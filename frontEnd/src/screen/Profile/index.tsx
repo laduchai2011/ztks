@@ -14,6 +14,7 @@ import {
     MEMBER,
     WALLET,
     BANK,
+    POST,
 } from '@src/const/text';
 import MyLoading from './component/MyLoading';
 import MyToastMessage from './component/MyToastMessage';
@@ -63,6 +64,10 @@ const Profile = () => {
         navigate(route_enum.BANK);
     };
 
+    const goToPost = () => {
+        navigate(route_enum.POST);
+    };
+
     const goToSignout = () => {
         navigate(route_enum.SIGNOUT);
     };
@@ -73,12 +78,6 @@ const Profile = () => {
                 <div className={style.header}>{PROFILE}</div>
                 <div className={style.list}>
                     <Infor />
-                    {/* <div className={style.option} onClick={() => goToMemberReceiveMessage()}>
-                        {MEMBER_RECEIVE_MESSAGE}
-                    </div>
-                    <div className={style.option} onClick={() => goToManageMembers()}>
-                        {MANAGE_MEMBERS}
-                    </div> */}
                     <div className={style.option} onClick={() => goToOa()}>
                         {OA}
                     </div>
@@ -103,6 +102,11 @@ const Profile = () => {
                     <div className={style.option} onClick={() => goToBank()}>
                         {BANK}
                     </div>
+                    {isAdmin && (
+                        <div className={style.option} onClick={() => goToPost()}>
+                            {POST}
+                        </div>
+                    )}
                     <div className={style.option} onClick={() => goToSignout()}>
                         {SIGNOUT}
                     </div>

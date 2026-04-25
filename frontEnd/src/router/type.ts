@@ -16,6 +16,8 @@ import {
     MEMBER,
     WALLET,
     BANK,
+    POST,
+    REGISTER_POST,
 } from '@src/const/text';
 
 const _HOME = HOME;
@@ -36,6 +38,8 @@ const _MANAGE_AGENT = MANAGE_AGENT;
 const _MEMBER = MEMBER;
 const _WALLET = WALLET;
 const _BANK = BANK;
+const _POST = POST;
+const _REGISTER_POST = REGISTER_POST;
 
 export enum select_enum {
     HOME = _HOME,
@@ -57,6 +61,8 @@ export enum select_enum {
     WALLET = _WALLET,
     ZNS = 'ZNS',
     BANK = _BANK,
+    POST = _POST,
+    REGISTER_POST = _REGISTER_POST,
 }
 export type selected_type =
     | select_enum.HOME
@@ -77,7 +83,9 @@ export type selected_type =
     | select_enum.MEMBER
     | select_enum.WALLET
     | select_enum.ZNS
-    | select_enum.BANK;
+    | select_enum.BANK
+    | select_enum.POST
+    | select_enum.REGISTER_POST;
 
 export enum route_enum {
     HOME = '/',
@@ -90,8 +98,6 @@ export enum route_enum {
     SUPPORT_ROOM = '/support_room',
     NOTE = '/note',
     PROFILE = '/profile',
-    // MEMBER_RECEIVE_MESSAGE = '/member_receive_message',
-    // MANAGE_MEMBERS = '/manage_members',
     OA = '/oa',
     OA_SETTING = '/oa_setting',
     ORDER = '/order',
@@ -101,6 +107,8 @@ export enum route_enum {
     WALLET = '/wallet',
     ZNS = '/zns',
     BANK = '/bank',
+    POST = '/post',
+    REGISTER_POST = '/register_post',
 }
 export type routed_type =
     | route_enum.HOME
@@ -112,8 +120,6 @@ export type routed_type =
     | route_enum.MESSAGE1
     | route_enum.SUPPORT_ROOM
     | route_enum.NOTE
-    // | route_enum.MEMBER_RECEIVE_MESSAGE
-    // | route_enum.MANAGE_MEMBERS
     | route_enum.PROFILE
     | route_enum.OA
     | route_enum.OA_SETTING
@@ -123,4 +129,6 @@ export type routed_type =
     | route_enum.MEMBER
     | route_enum.WALLET
     | route_enum.ZNS
-    | route_enum.BANK;
+    | route_enum.BANK
+    | route_enum.POST
+    | route_enum.REGISTER_POST;

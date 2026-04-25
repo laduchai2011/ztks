@@ -111,6 +111,7 @@ END;
 GO
 
 ALTER PROCEDURE CreatePost
+	@index INT,
 	@name NVARCHAR(255), 
 	@type VARCHAR(255),
 	@title NVARCHAR(255), 
@@ -163,8 +164,8 @@ BEGIN
 		
 		DECLARE @newPostId INT;
 
-        INSERT INTO dbo.post (name, type, title, describe, images, isActive, registerPostId, createTime)
-        VALUES (@name, @type, @title, @describe, @images, @isActive, @registerPostId, SYSDATETIMEOFFSET());
+        INSERT INTO dbo.post ([index], name, type, title, describe, images, isActive, registerPostId, createTime)
+        VALUES (@index, @name, @type, @title, @describe, @images, @isActive, @registerPostId, SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50006, 'Tạo bài đăng không thành công.', 6;
@@ -186,6 +187,7 @@ GO
 
 ALTER PROCEDURE EditPost
 	@id INT,
+	@index INT,
 	@name NVARCHAR(255),
 	@title NVARCHAR(255),
 	@describe NVARCHAR(MAX),
@@ -221,7 +223,7 @@ BEGIN
 		END
 
 		UPDATE dbo.post
-		SET name = @name, title = @title, describe = @describe, images = @images, isActive = @isActive
+		SET [index] = @index, name = @name, title = @title, describe = @describe, images = @images, isActive = @isActive
 		WHERE id = @id
 		IF @@ROWCOUNT = 0
         BEGIN
