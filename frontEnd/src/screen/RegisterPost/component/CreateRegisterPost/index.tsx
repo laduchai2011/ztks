@@ -8,7 +8,7 @@ import { useLazyGetZaloOaListWith2FkQuery } from '@src/redux/query/zaloRTK';
 import { useCreateRegisterPostMutation } from '@src/redux/query/postRTK';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { set_isLoading, setData_toastMessage } from '@src/redux/slice/RegisterPost';
+import { set_isLoading, setData_toastMessage, set_newRegisterPostOfCreate } from '@src/redux/slice/RegisterPost';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { RegisterPostTypeEnum } from '@src/dataStruct/post';
 
@@ -91,7 +91,7 @@ const CreateRegisterPost = () => {
 
     const handleSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const id = Number(e.target.value);
-        console.log(id);
+
         const selected = zaloOaList.find((item) => item.id === id);
         setSelectedZaloOa(selected);
     };
@@ -136,6 +136,22 @@ const CreateRegisterPost = () => {
             .then((res) => {
                 const resData = res.data;
                 console.log('createRegisterPost', resData);
+                if (resData?.isSuccess && resData.data) {
+                    dispatch(set_newRegisterPostOfCreate(resData.data));
+                    dispatch(
+                        setData_toastMessage({
+                            type: messageType_enum.SUCCESS,
+                            message: 'Tạo thành công !',
+                        })
+                    );
+                } else {
+                    dispatch(
+                        setData_toastMessage({
+                            type: messageType_enum.ERROR,
+                            message: 'Tạo không thành công !',
+                        })
+                    );
+                }
             })
             .catch((err) => {
                 console.error(err);

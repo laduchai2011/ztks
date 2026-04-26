@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { state_props } from '@src/screen/RegisterPost/type';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
+import { RegisterPostField } from '@src/dataStruct/post';
 import { GetRegisterPostsBodyField } from '@src/dataStruct/post/body';
 
 const initialState: state_props = {
@@ -9,6 +10,12 @@ const initialState: state_props = {
         data: { type: undefined, message: '' },
     },
     getRegisterPostsBody: undefined,
+    newRegisterPostOfCreate: undefined,
+    editRegisterPostDialog: {
+        isShow: false,
+        registerPost: undefined,
+        newRegisterPost: undefined,
+    },
 };
 
 const RegisterPostSlice = createSlice({
@@ -24,8 +31,28 @@ const RegisterPostSlice = createSlice({
         set_getRegisterPostsBody: (state, action: PayloadAction<GetRegisterPostsBodyField>) => {
             state.getRegisterPostsBody = action.payload;
         },
+        set_newRegisterPostOfCreate: (state, action: PayloadAction<RegisterPostField | undefined>) => {
+            state.newRegisterPostOfCreate = action.payload;
+        },
+        setIsShow_editRegisterPostDialog: (state, action: PayloadAction<boolean>) => {
+            state.editRegisterPostDialog.isShow = action.payload;
+        },
+        setRegisterPost_editRegisterPostDialog: (state, action: PayloadAction<RegisterPostField | undefined>) => {
+            state.editRegisterPostDialog.registerPost = action.payload;
+        },
+        setNewRegisterPost_editRegisterPostDialog: (state, action: PayloadAction<RegisterPostField | undefined>) => {
+            state.editRegisterPostDialog.newRegisterPost = action.payload;
+        },
     },
 });
 
-export const { set_isLoading, setData_toastMessage, set_getRegisterPostsBody } = RegisterPostSlice.actions;
+export const {
+    set_isLoading,
+    setData_toastMessage,
+    set_getRegisterPostsBody,
+    set_newRegisterPostOfCreate,
+    setIsShow_editRegisterPostDialog,
+    setRegisterPost_editRegisterPostDialog,
+    setNewRegisterPost_editRegisterPostDialog,
+} = RegisterPostSlice.actions;
 export default RegisterPostSlice.reducer;

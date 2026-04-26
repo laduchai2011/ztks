@@ -11,6 +11,7 @@ import { route_enum } from '@src/router/type';
 import CreateRegisterPost from './component/CreateRegisterPost';
 import Filter from './component/Filter';
 import RegisterPostList from './component/RegisterPostList';
+import EditRegisterPostDialog from './component/EditRegisterPostDialog';
 
 const RegisterPost = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -41,6 +42,7 @@ const RegisterPost = () => {
             <div>
                 <MyToastMessage />
                 <MyLoading />
+                <EditRegisterPostDialog />
             </div>
         </div>
     );
