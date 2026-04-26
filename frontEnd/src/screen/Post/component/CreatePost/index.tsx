@@ -9,9 +9,12 @@ import { CREATE_POST } from '@src/const/text';
 import TextEditor from '@src/component/TextEditor';
 import { useCreatePostMutation } from '@src/redux/query/postRTK';
 import { AccountField } from '@src/dataStruct/account';
-import { set_isLoading, setData_toastMessage } from '@src/redux/slice/Post';
+import { set_isLoading, setData_toastMessage, add_postList } from '@src/redux/slice/Post';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { RegisterPostField, PostTypeEnum, PostTypeType } from '@src/dataStruct/post';
+import { RegisterPostField, PostTypeEnum, PostTypeType, RegisterPostTypeEnum } from '@src/dataStruct/post';
+import { CreatePostBodyField } from '@src/dataStruct/post/body';
+import { isPositiveInteger } from '@src/utility/string';
+import { uploadImage } from '../../handle';
 
 const CreatePost = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -31,9 +34,12 @@ const CreatePost = () => {
     const [name, setName] = useState<string>('');
     const [title, setTitle] = useState<string>('');
     const [type, setType] = useState<PostTypeType>(PostTypeEnum.FREE);
+    const [index, setIndex] = useState<string>('1');
     const [describe, setDescribe] = useState<string>('');
     const [images, setImages] = useState<File[]>([]);
     const id_imageInput = useId();
+
+    const [createPost] = useCreatePostMutation();
 
     const handleHBtn = () => {
         setIsShowParent(true);
@@ -59,35 +65,6 @@ const CreatePost = () => {
         }, 10);
     };
 
-    // useEffect(() => {
-    //     if (!accountInformation || !zaloApp) return;
-    //     dispatch(set_isLoading(true));
-    //     getZaloOaListWith2Fk({
-    //         page: 1,
-    //         size: 50,
-    //         zaloAppId: zaloApp.id,
-    //         accountId: accountInformation.addedById || -1,
-    //     })
-    //         .then((res) => {
-    //             const resData = res.data;
-    //             if (resData?.isSuccess && resData.data) {
-    //                 setZaloOaList(resData.data.items);
-    //             }
-    //         })
-    //         .catch((err) => {
-    //             console.error(err);
-    //             dispatch(
-    //                 setData_toastMessage({
-    //                     type: messageType_enum.ERROR,
-    //                     message: 'Đã có lỗi xảy ra !',
-    //                 })
-    //             );
-    //         })
-    //         .finally(() => {
-    //             dispatch(set_isLoading(false));
-    //         });
-    // }, [dispatch, accountInformation, getZaloOaListWith2Fk, zaloApp]);
-
     const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
         setName(e.target.value);
     };
@@ -101,11 +78,37 @@ const CreatePost = () => {
         setType(value);
     };
 
+    const handleIndex = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (!isPositiveInteger(value)) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Thứ tự phải là 1 số nguyên dương !',
+                })
+            );
+        }
+
+        setIndex(value);
+    };
+
     const handleDescribe = (value: string) => {
         setDescribe(value);
     };
 
-    const handleCreate = () => {
+    const handleCreate = async () => {
+        if (!account) return;
+
+        if (!selectedRegisterPost) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Vui lòng chọn 1 đăng ký !',
+                })
+            );
+            return;
+        }
+
         const name_t = name.trim();
         if (name_t.length === 0) {
             dispatch(
@@ -126,6 +129,115 @@ const CreatePost = () => {
                 })
             );
             return;
+        }
+
+        if (selectedRegisterPost.type === RegisterPostTypeEnum.FREE && type === PostTypeEnum.UPGRADE) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Bạn đang dùng gói miễn phí không thể tùy chọn nâng cấp !',
+                })
+            );
+            return;
+        }
+
+        const index_t = index.trim();
+        if (!isPositiveInteger(index_t)) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Thứ tự phải là 1 số nguyên dương !',
+                })
+            );
+            return;
+        }
+
+        const r_images = await handleUploadImages(images, account);
+
+        const createPostBody: CreatePostBodyField = {
+            index: Number(index_t),
+            name: name_t,
+            type: type,
+            title: title_t,
+            describe: describe,
+            images: JSON.stringify(r_images),
+            isActive: true,
+            registerPostId: selectedRegisterPost.id,
+            accountId: account.id,
+        };
+
+        try {
+            dispatch(set_isLoading(true));
+            const r_create = await createPost(createPostBody);
+            const resData = r_create.data;
+            console.log('createPost', resData);
+            if (resData?.isSuccess && resData.data) {
+                dispatch(add_postList(resData.data));
+                dispatch(
+                    setData_toastMessage({
+                        type: messageType_enum.SUCCESS,
+                        message: 'Tạo bài đăng thành công !',
+                    })
+                );
+            } else {
+                dispatch(
+                    setData_toastMessage({
+                        type: messageType_enum.ERROR,
+                        message: 'Tạo bài đăng không thành công !',
+                    })
+                );
+            }
+        } catch (error) {
+            console.error(error);
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Đã có lỗi xảy ra !',
+                })
+            );
+        } finally {
+            dispatch(set_isLoading(false));
+        }
+    };
+
+    const handleUploadImages = async (images: File[], account: AccountField) => {
+        try {
+            dispatch(set_isLoading(true));
+            const fileNames: string[] = [];
+
+            for (let i: number = 0; i < images.length; i++) {
+                const resData_image = await uploadImage(images[i], account.id.toString());
+                if (!resData_image) {
+                    dispatch(
+                        setData_toastMessage({
+                            type: messageType_enum.ERROR,
+                            message: 'Đăng tải hình ảnh thất bại !',
+                        })
+                    );
+                    break;
+                }
+                dispatch(
+                    setData_toastMessage({
+                        type: messageType_enum.SUCCESS,
+                        message: 'Đăng tải hình ảnh thành công !',
+                    })
+                );
+
+                const fileName = resData_image.fileName;
+                fileNames.push(fileName);
+            }
+
+            return fileNames;
+        } catch (error) {
+            console.error(error);
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Đã có lỗi xảy ra !',
+                })
+            );
+        } finally {
+            dispatch(set_isLoading(false));
         }
     };
 
@@ -204,7 +316,7 @@ const CreatePost = () => {
                 <div className={style.index}>
                     <div>
                         <div>Chọn thứ tự hiển thị bài viết</div>
-                        <input />
+                        <input value={index} onChange={(e) => handleIndex(e)} />
                     </div>
                 </div>
                 <div>

@@ -1,0 +1,64 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid rgb(224, 224, 224);
+    border-radius: 15px;
+
+    > .header {
+        @include center-of-row;
+        justify-content: space-between;
+        box-sizing: border-box;
+        padding: 5px;
+        border-bottom: 1px solid rgb(230, 230, 230);
+    }
+
+    > .title {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 5px;
+    }
+
+    > .describe {
+        box-sizing: border-box;
+        padding: 5px;
+    }
+
+    > .images {
+        height: 300px;
+        position: relative;
+
+        > img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background-color: rgb(206, 206, 206);
+            border-radius: 15px;
+        }
+
+        > div {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            @include center-of-row;
+
+            > svg {
+                margin: 0 10px;
+            }
+
+            > div {
+                font-size: 0.9rem;
+            }
+        }
+    }
+
+    > .icons {
+        @include center-of-row;
+        justify-content: flex-end;
+        box-sizing: border-box;
+        padding: 5px;
+    }
+}

@@ -4,8 +4,7 @@
     width: 100%;
     flex: 1;
     overflow-y: scroll;
-    @include small-scroll-yy(3px);
-    background-color: antiquewhite;
+    @include small-scroll-yy(1px);
 
     > .seeMore {
         @include center-of-rectangle;

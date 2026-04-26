@@ -10,6 +10,7 @@ import { setData_toastMessage } from '@src/redux/slice/Post';
 import { route_enum } from '@src/router/type';
 import RegisterPostList from './component/RegisterPostList';
 import CreatePost from './component/CreatePost';
+import EditPostDialog from './component/EditPostDialog';
 import PostList from './component/PostList';
 
 const Post = () => {
@@ -41,6 +42,7 @@ const Post = () => {
             <div>
                 <MyToastMessage />
                 <MyLoading />
+                <EditPostDialog />
             </div>
         </div>
     );
