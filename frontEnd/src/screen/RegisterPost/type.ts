@@ -14,4 +14,9 @@ export interface state_props {
         registerPost?: RegisterPostField;
         newRegisterPost?: RegisterPostField;
     };
+    deleteRegisterPostDialog: {
+        isShow: boolean;
+        registerPost?: RegisterPostField;
+        newRegisterPost?: RegisterPostField;
+    };
 }

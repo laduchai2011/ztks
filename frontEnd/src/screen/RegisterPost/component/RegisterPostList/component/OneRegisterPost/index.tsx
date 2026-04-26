@@ -1,24 +1,66 @@
-import { memo, FC } from 'react';
+import { memo, FC, useEffect, useState } from 'react';
 import style from './style.module.scss';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@src/redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@src/redux';
 import { MdDeleteOutline, MdOutlineUpgrade } from 'react-icons/md';
 import { CiEdit } from 'react-icons/ci';
 import { RegisterPostField, RegisterPostTypeEnum } from '@src/dataStruct/post';
 import { detailTime } from '@src/utility/time';
 import {
+    setData_toastMessage,
     setIsShow_editRegisterPostDialog,
     setRegisterPost_editRegisterPostDialog,
+    setNewRegisterPost_editRegisterPostDialog,
+    setIsShow_deleteRegisterPostDialog,
+    setRegisterPost_deleteRegisterPostDialog,
+    setNewRegisterPost_deleteRegisterPostDialog,
 } from '@src/redux/slice/RegisterPost';
+import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const OneRegisterPost: FC<{ data: RegisterPostField }> = ({ data }) => {
     const dispatch = useDispatch<AppDispatch>();
+    const newRegisterPostE: RegisterPostField | undefined = useSelector(
+        (state: RootState) => state.RegisterPostSlice.editRegisterPostDialog.newRegisterPost
+    );
+    const newRegisterPostD: RegisterPostField | undefined = useSelector(
+        (state: RootState) => state.RegisterPostSlice.deleteRegisterPostDialog.newRegisterPost
+    );
 
-    const registerPost: RegisterPostField = data;
+    const [registerPost, setRegisterPost] = useState<RegisterPostField>(data);
+
+    useEffect(() => {
+        if (!newRegisterPostE) return;
+        if (newRegisterPostE.id === registerPost.id) {
+            setRegisterPost(newRegisterPostE);
+        }
+        dispatch(setNewRegisterPost_editRegisterPostDialog(undefined));
+    }, [dispatch, newRegisterPostE, registerPost]);
+
+    useEffect(() => {
+        if (!newRegisterPostD) return;
+        if (newRegisterPostD.id === registerPost.id) {
+            setRegisterPost(newRegisterPostD);
+        }
+        dispatch(setNewRegisterPost_deleteRegisterPostDialog(undefined));
+    }, [dispatch, newRegisterPostD, registerPost]);
+
+    const handleUpgrade = () => {
+        dispatch(
+            setData_toastMessage({
+                type: messageType_enum.NORMAL,
+                message: 'Tính năng sắp ra mắt !',
+            })
+        );
+    };
 
     const handleOpenEdit = () => {
         dispatch(setIsShow_editRegisterPostDialog(true));
         dispatch(setRegisterPost_editRegisterPostDialog(registerPost));
+    };
+
+    const handleOpenDelete = () => {
+        dispatch(setIsShow_deleteRegisterPostDialog(true));
+        dispatch(setRegisterPost_deleteRegisterPostDialog(registerPost));
     };
 
     return (
@@ -43,9 +85,9 @@ const OneRegisterPost: FC<{ data: RegisterPostField }> = ({ data }) => {
                 {!registerPost.isDelete && <div className={style.not}>Hoạt động</div>}
             </div>
             <div className={style.icons}>
-                <MdOutlineUpgrade size={18} />
+                <MdOutlineUpgrade onClick={() => handleUpgrade()} size={18} />
                 <CiEdit onClick={() => handleOpenEdit()} size={18} color="green" />
-                <MdDeleteOutline size={18} color="red" />
+                <MdDeleteOutline onClick={() => handleOpenDelete()} size={18} color="red" />
             </div>
         </div>
     );

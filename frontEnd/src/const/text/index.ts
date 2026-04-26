@@ -76,6 +76,7 @@ export const ACCOUNT_NUMBER = 'Số tài khoản';
 export const ACCOUNT_NAME = 'Tên tài khoản';
 export const CHOOSE = 'Chọn';
 export const POST = 'Bài đăng';
+export const CREATE_POST = 'Tạo bài đăng';
 export const REGISTER_POST = 'Đăng ký bài đăng';
 export const POST_SERVICES = 'Dịch vụ đăng bài';
 export const CREATE_REGISTER_POST = 'Tạo đăng ký bài đăng';

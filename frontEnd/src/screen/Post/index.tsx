@@ -9,6 +9,7 @@ import MyToastMessage from './component/MyToastMessage';
 import { setData_toastMessage } from '@src/redux/slice/Post';
 import { route_enum } from '@src/router/type';
 import RegisterPostList from './component/RegisterPostList';
+import CreatePost from './component/CreatePost';
 import PostList from './component/PostList';
 
 const Post = () => {
@@ -34,6 +35,7 @@ const Post = () => {
             <div className={style.main}>
                 <div className={style.header}>{POST}</div>
                 <RegisterPostList />
+                <CreatePost />
                 <PostList />
             </div>
             <div>

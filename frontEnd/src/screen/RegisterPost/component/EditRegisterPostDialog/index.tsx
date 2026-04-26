@@ -4,7 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE, AGREE, EXIT, EDIT_REGISTER_POST } from '@src/const/text';
-import { setData_toastMessage, set_isLoading, setIsShow_editRegisterPostDialog } from '@src/redux/slice/RegisterPost';
+import {
+    setData_toastMessage,
+    set_isLoading,
+    setIsShow_editRegisterPostDialog,
+    setNewRegisterPost_editRegisterPostDialog,
+} from '@src/redux/slice/RegisterPost';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
@@ -12,7 +17,7 @@ import { RegisterPostField } from '@src/dataStruct/post';
 import { useEditRegisterPostMutation } from '@src/redux/query/postRTK';
 import { useLazyGetZaloOaListWith2FkQuery } from '@src/redux/query/zaloRTK';
 
-const EditNote = () => {
+const EditRegisterPostDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
@@ -74,7 +79,70 @@ const EditNote = () => {
         dispatch(setIsShow_editRegisterPostDialog(false));
     };
 
-    const handleAgree = () => {};
+    const handleAgree = () => {
+        if (!registerPost) return;
+
+        const name_t = name.trim();
+        if (name_t.length === 0) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Tên không được để trống !',
+                })
+            );
+            return;
+        }
+
+        if (!selectedZaloOa) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Vui lòng chọn oa !',
+                })
+            );
+            return;
+        }
+
+        dispatch(set_isLoading(true));
+        editRegisterPost({
+            id: registerPost.id,
+            name: name_t,
+            zaloOaId: selectedZaloOa.id,
+            accountId: -1,
+        })
+            .then((res) => {
+                const resData = res.data;
+                console.log('createRegisterPost', resData);
+                if (resData?.isSuccess && resData.data) {
+                    dispatch(setNewRegisterPost_editRegisterPostDialog(resData.data));
+                    dispatch(
+                        setData_toastMessage({
+                            type: messageType_enum.SUCCESS,
+                            message: 'Chỉnh sửa thành công !',
+                        })
+                    );
+                } else {
+                    dispatch(
+                        setData_toastMessage({
+                            type: messageType_enum.ERROR,
+                            message: 'Chỉnh sửa không thành công !',
+                        })
+                    );
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                dispatch(
+                    setData_toastMessage({
+                        type: messageType_enum.ERROR,
+                        message: 'Đã có lỗi xảy ra !',
+                    })
+                );
+            })
+            .finally(() => {
+                dispatch(set_isLoading(false));
+            });
+    };
 
     const handleSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const id = Number(e.target.value);
@@ -152,4 +220,4 @@ const EditNote = () => {
     );
 };
 
-export default memo(EditNote);
+export default memo(EditRegisterPostDialog);

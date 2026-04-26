@@ -12,6 +12,7 @@ import CreateRegisterPost from './component/CreateRegisterPost';
 import Filter from './component/Filter';
 import RegisterPostList from './component/RegisterPostList';
 import EditRegisterPostDialog from './component/EditRegisterPostDialog';
+import DeleteRegisterPostDialog from './component/DeleteRegisterPostDialog';
 
 const RegisterPost = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -43,6 +44,7 @@ const RegisterPost = () => {
                 <MyToastMessage />
                 <MyLoading />
                 <EditRegisterPostDialog />
+                <DeleteRegisterPostDialog />
             </div>
         </div>
     );

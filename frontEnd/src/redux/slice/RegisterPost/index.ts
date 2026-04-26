@@ -16,6 +16,11 @@ const initialState: state_props = {
         registerPost: undefined,
         newRegisterPost: undefined,
     },
+    deleteRegisterPostDialog: {
+        isShow: false,
+        registerPost: undefined,
+        newRegisterPost: undefined,
+    },
 };
 
 const RegisterPostSlice = createSlice({
@@ -43,6 +48,15 @@ const RegisterPostSlice = createSlice({
         setNewRegisterPost_editRegisterPostDialog: (state, action: PayloadAction<RegisterPostField | undefined>) => {
             state.editRegisterPostDialog.newRegisterPost = action.payload;
         },
+        setIsShow_deleteRegisterPostDialog: (state, action: PayloadAction<boolean>) => {
+            state.deleteRegisterPostDialog.isShow = action.payload;
+        },
+        setRegisterPost_deleteRegisterPostDialog: (state, action: PayloadAction<RegisterPostField | undefined>) => {
+            state.deleteRegisterPostDialog.registerPost = action.payload;
+        },
+        setNewRegisterPost_deleteRegisterPostDialog: (state, action: PayloadAction<RegisterPostField | undefined>) => {
+            state.deleteRegisterPostDialog.newRegisterPost = action.payload;
+        },
     },
 });
 
@@ -54,5 +68,8 @@ export const {
     setIsShow_editRegisterPostDialog,
     setRegisterPost_editRegisterPostDialog,
     setNewRegisterPost_editRegisterPostDialog,
+    setIsShow_deleteRegisterPostDialog,
+    setRegisterPost_deleteRegisterPostDialog,
+    setNewRegisterPost_deleteRegisterPostDialog,
 } = RegisterPostSlice.actions;
 export default RegisterPostSlice.reducer;

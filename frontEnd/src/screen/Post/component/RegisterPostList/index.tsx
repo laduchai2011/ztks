@@ -9,7 +9,7 @@ import { SEE_MORE } from '@src/const/text';
 import { useLazyGetRegisterPostsQuery } from '@src/redux/query/postRTK';
 import { AccountField } from '@src/dataStruct/account';
 import { RegisterPostField } from '@src/dataStruct/post';
-import { set_isLoading, setData_toastMessage } from '@src/redux/slice/Post';
+import { set_isLoading, setData_toastMessage, set_selectedRegisterPost } from '@src/redux/slice/Post';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { route_enum } from '@src/router/type';
 
@@ -20,10 +20,11 @@ const RegisterPostList = () => {
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
 
     const [isShow, setIsShow] = useState<boolean>(false);
-    const size = 5;
+    const size = 3;
     const [selectedRegisterPost, setSelectedRegisterPost] = useState<RegisterPostField | undefined>(undefined);
     const [registerPosts, setRegisterPosts] = useState<RegisterPostField[]>([]);
     const [hasMore, setHasMore] = useState<boolean>(false);
+    const [page, setPage] = useState<number>(1);
 
     const [getRegisterPosts] = useLazyGetRegisterPostsQuery();
 
@@ -44,37 +45,53 @@ const RegisterPostList = () => {
     useEffect(() => {
         if (!account) return;
         dispatch(set_isLoading(true));
-        getRegisterPosts({ page: 1, size: size, isDelete: false, accountId: account.id })
+        getRegisterPosts({ page: page, size: size, isDelete: false, accountId: account.id })
             .then((res) => {
                 const resData = res.data;
-                console.log('getRegisterPosts', resData);
                 if (resData?.isSuccess && resData.data) {
-                    setRegisterPosts(resData.data.items);
+                    if (page === 1) {
+                        setRegisterPosts(resData.data.items);
+                    } else {
+                        setRegisterPosts((prev) => [...prev, ...(resData.data?.items || [])]);
+                    }
+
                     setHasMore(resData.data.items.length === size);
                 }
             })
             .catch((err) => {
                 console.error(err);
+                dispatch(
+                    setData_toastMessage({
+                        type: messageType_enum.ERROR,
+                        message: 'Đã có lỗi xảy ra !',
+                    })
+                );
             })
             .finally(() => {
                 dispatch(set_isLoading(false));
             });
-    }, [account, getRegisterPosts, dispatch]);
+    }, [account, getRegisterPosts, dispatch, page]);
 
     const handleGoToRegisterPost = () => {
         navigate(route_enum.REGISTER_POST);
     };
 
-    const handleSeeMore = () => {};
+    const handleSeeMore = () => {
+        setPage((prev) => prev + 1);
+    };
 
     const handleSelect = (item: RegisterPostField) => {
         setSelectedRegisterPost(item);
     };
 
+    useEffect(() => {
+        dispatch(set_selectedRegisterPost(selectedRegisterPost));
+    }, [selectedRegisterPost, dispatch]);
+
     const list = registerPosts.map((item, index) => {
         return (
             <div className={style.oneRow} onClick={() => handleSelect(item)} key={index}>
-                a row
+                {item.name}
             </div>
         );
     });

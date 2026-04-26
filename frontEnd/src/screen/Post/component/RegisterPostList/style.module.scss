@@ -4,6 +4,7 @@
     width: 100%;
     height: 25px;
     position: relative;
+    z-index: 10000;
 
     > .selected {
         @include center-of-row;
@@ -43,6 +44,12 @@
                 @include center-of-rectangle;
                 box-sizing: border-box;
                 padding: 5px;
+                cursor: default;
+                user-select: none;
+
+                &:hover {
+                    background-color: rgb(241, 241, 241);
+                }
             }
         }
 

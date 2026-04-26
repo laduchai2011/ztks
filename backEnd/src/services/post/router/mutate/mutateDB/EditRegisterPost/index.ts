@@ -26,7 +26,7 @@ class MutateDB_EditRegisterPost {
                     .input('name', sql.NVarChar(255), this._editRegisterPostBody.name)
                     .input('zaloOaId', sql.Int, this._editRegisterPostBody.zaloOaId)
                     .input('accountId', sql.Int, this._editRegisterPostBody.accountId)
-                    .execute('CreateRegisterPost');
+                    .execute('EditRegisterPost');
 
                 return result;
             } catch (error) {
