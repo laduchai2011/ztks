@@ -62,7 +62,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE GetZaloOaWithId
+ALTER PROCEDURE GetZaloOaWithId
 	@id INT,
 	@accountId INT
 AS

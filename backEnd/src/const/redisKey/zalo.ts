@@ -29,7 +29,6 @@ export const prefix_cache_zaloOa = {
         with_id: isProduct ? 'prefix_cache_zaloOa_with_id' : 'prefix_cache_zaloOa_with_id_dev',
         with_accountId: isProduct ? 'prefix_cache_zaloOa_with_accountId' : 'prefix_cache_zaloOa_with_accountId_dev',
     },
-    roles: [accountType_enum.ADMIN, accountType_enum.MEMBER],
     time: 60 * 5, // 5p
 };
 

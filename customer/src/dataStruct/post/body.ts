@@ -1,5 +1,9 @@
 import { RegisterPostTypeType, PostTypeType } from '.';
 
+export interface GetRegisterPostWithIdBodyField {
+    id: number;
+}
+
 export interface GetRegisterPostsBodyField {
     page: number;
     size: number;

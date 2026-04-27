@@ -1,7 +1,12 @@
 import dotenv from 'dotenv';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { PagedPostField, PagedRegisterPostField, PostField } from '@src/dataStruct/post';
-import { GetPostsBodyField, GetRegisterPostsBodyField, GetPostWithIdBodyField } from '@src/dataStruct/post/body';
+import { PagedPostField, PagedRegisterPostField, PostField, RegisterPostField } from '@src/dataStruct/post';
+import {
+    GetPostsBodyField,
+    GetRegisterPostsBodyField,
+    GetPostWithIdBodyField,
+    GetRegisterPostWithIdBodyField,
+} from '@src/dataStruct/post/body';
 
 dotenv.config();
 
@@ -26,6 +31,13 @@ const prefix_cache_getRegisterPosts = {
 const prefix_cache_getPostWithId = {
     key: {
         main: isProduct ? 'cache_get_postWithId' : 'cache_get_postWithId_dev',
+    },
+    time: 60 * 5, // 5p
+};
+
+const prefix_cache_getRegisterPostWithId = {
+    key: {
+        main: isProduct ? 'cache_get_registerPostWithId' : 'cache_get_registerPostWithId_dev',
     },
     time: 60 * 5, // 5p
 };
@@ -289,6 +301,78 @@ export class CacheGetPostWithId {
         }
 
         const data = await this._serviceRedis.getData<PostField>(key_main);
+
+        return data;
+    }
+
+    async clearCache() {
+        const key_main = this.getKeyMain();
+
+        if (!key_main) {
+            console.error('Lấy key_main không thành công');
+            return;
+        }
+
+        await this._serviceRedis.deleteData(key_main);
+    }
+}
+
+export class CacheGetRegisterPostWithId {
+    private _body: GetRegisterPostWithIdBodyField | undefined;
+    private _serviceRedis = ServiceRedis.getInstance();
+
+    constructor() {}
+
+    init() {
+        this._serviceRedis.init();
+    }
+
+    setBody(body: GetRegisterPostWithIdBodyField) {
+        this._body = body;
+    }
+
+    getKeyMain() {
+        if (!this._body) {
+            console.error('Chưa thiết lập body');
+            return;
+        }
+
+        const key_main = `${prefix_cache_getRegisterPostWithId.key.main}${this._body.id}`;
+
+        return key_main;
+    }
+
+    getTimeExpireat() {
+        const timeExpireat = prefix_cache_getRegisterPostWithId.time;
+        return timeExpireat;
+    }
+
+    async setData(data: RegisterPostField) {
+        const key_main = this.getKeyMain();
+        const timeExpireat = this.getTimeExpireat();
+
+        if (!key_main) {
+            console.error('Lấy key_main không thành công');
+            return;
+        }
+
+        const isSet = await this._serviceRedis.setData<RegisterPostField>(key_main, data, timeExpireat);
+        if (!isSet) {
+            console.error('Failed to set in Redis', key_main);
+        }
+
+        return isSet;
+    }
+
+    async getData() {
+        const key_main = this.getKeyMain();
+
+        if (!key_main) {
+            console.error('Lấy key_main không thành công');
+            return;
+        }
+
+        const data = await this._serviceRedis.getData<RegisterPostField>(key_main);
 
         return data;
     }

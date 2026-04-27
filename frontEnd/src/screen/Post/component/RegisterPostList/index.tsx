@@ -101,6 +101,7 @@ const RegisterPostList = () => {
             <div className={style.selected}>
                 <div>
                     <CiSettings onClick={() => handleGoToRegisterPost()} />
+                    <span>{selectedRegisterPost?.id}</span>
                 </div>
                 <div>{selectedRegisterPost?.name ?? 'Rỗng'}</div>
                 <div>

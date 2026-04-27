@@ -1,4 +1,13 @@
-﻿CREATE PROCEDURE GetRegisterPosts
+﻿CREATE PROCEDURE GetRegisterPostWithId
+	@id INT
+AS
+BEGIN
+	
+    SELECT * FROM dbo.registerPost WHERE id = @id
+END
+GO
+
+CREATE PROCEDURE GetRegisterPosts
 	@page INT,
     @size INT,
 	@isDelete BIT = NULL,

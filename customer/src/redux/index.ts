@@ -9,6 +9,7 @@ import { voucherRTK } from './query/voucherRTK';
 import { orderRTK } from './query/orderRTK';
 import { customerRTK } from './query/customerRTK';
 import { postRTK } from './query/postRTK';
+import { zaloRTK } from './query/zaloRTK';
 
 export const store = configureStore({
     reducer: {
@@ -23,13 +24,15 @@ export const store = configureStore({
         [orderRTK.reducerPath]: orderRTK.reducer,
         [customerRTK.reducerPath]: customerRTK.reducer,
         [postRTK.reducerPath]: postRTK.reducer,
+        [zaloRTK.reducerPath]: zaloRTK.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
             voucherRTK.middleware,
             orderRTK.middleware,
             customerRTK.middleware,
-            postRTK.middleware
+            postRTK.middleware,
+            zaloRTK.middleware
         ),
 });
 

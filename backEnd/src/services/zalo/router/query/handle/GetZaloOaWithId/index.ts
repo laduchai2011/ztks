@@ -98,7 +98,7 @@ class Handle_GetZaloOaWithId {
             if (result?.recordset.length && result?.recordset.length > 0) {
                 const zaloOa: ZaloOaField = { ...result?.recordset[0] };
                 if (role === accountType_enum.MEMBER) {
-                    zaloOa.oaId = 'Bạn không phải admin';
+                    // zaloOa.oaId = 'Bạn không phải admin';
                     zaloOa.oaSecret = 'Bạn không phải admin';
                 }
 

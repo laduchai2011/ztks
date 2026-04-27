@@ -1,11 +1,16 @@
 import { memo, FC, useState, useEffect } from 'react';
 import style from './style.module.scss';
+import { useSelector } from 'react-redux';
+import { RootState } from '@src/redux';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { PostField } from '@src/dataStruct/post';
+import { ZaloOaField } from '@src/dataStruct/zalo';
 import { BASE_URL_API } from '@src/const/api/baseUrl';
 import { DETAIL } from '@src/const/text';
 
 const OnePost: FC<{ data: PostField }> = ({ data }) => {
+    const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.HomeSlice.zaloOa);
+
     const [imageIndex, setImageIndex] = useState<number>(0);
     const [images, setImages] = useState<string[]>([]);
 
@@ -57,7 +62,9 @@ const OnePost: FC<{ data: PostField }> = ({ data }) => {
                 </div>
             )}
             <div className={style.detail}>
-                <div>Nhắn tin zalo</div>
+                <div>
+                    <a href={`https://zalo.me/${zaloOa?.oaId}`}>Chat với OA</a>
+                </div>
                 <div onClick={() => handleDetail()}>{DETAIL}</div>
             </div>
         </div>
