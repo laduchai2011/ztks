@@ -1,0 +1,24 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+    @include center-of-rectangle;
+
+    > div {
+        @include center-of-row;
+
+        > input {
+            box-sizing: border-box;
+            padding: 5px;
+            background-color: rgb(230, 230, 230);
+            border: none;
+            outline: none;
+            border-radius: 10px;
+        }
+
+        > svg {
+            margin: 0 5px;
+        }
+    }
+}

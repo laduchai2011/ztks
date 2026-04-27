@@ -6,6 +6,7 @@ import ForgetPassword from '@src/screen/ForgetPassword';
 import Home from '@src/screen/Home';
 import Voucher from '@src/screen/Voucher';
 import Order from '@src/screen/Order';
+import PostDetail from '@src/screen/PostDetail';
 import NotFoundPage from '@src/screen/NotFoundPage';
 
 import { route_enum } from './type';
@@ -19,7 +20,7 @@ const router = createBrowserRouter(
         { path: route_enum.HOME, element: <Home /> },
         { path: route_enum.VOUCHER, element: <Voucher /> },
         { path: route_enum.ORDER, element: <Order /> },
-
+        { path: route_enum.POST_DETAIL + '/:id', element: <PostDetail /> },
         { path: '*', element: <NotFoundPage /> }, // Trang 404
     ],
     {

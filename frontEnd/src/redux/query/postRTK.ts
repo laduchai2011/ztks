@@ -32,13 +32,13 @@ export const postRTK = createApi({
                 body,
             }),
         }),
-        getPostWithId: builder.query<MyResponse<PostField>, GetPostWithIdBodyField>({
-            query: (body) => ({
-                url: POST_API.GET_POST_WITH_ID,
-                method: 'POST',
-                body,
-            }),
-        }),
+        // getPostWithId: builder.query<MyResponse<PostField>, GetPostWithIdBodyField>({
+        //     query: (body) => ({
+        //         url: POST_API.GET_POST_WITH_ID,
+        //         method: 'POST',
+        //         body,
+        //     }),
+        // }),
         createRegisterPost: builder.mutation<MyResponse<RegisterPostField>, CreateRegisterPostBodyField>({
             query: (body) => ({
                 url: POST_API.CREATE_REGISTER_POST,
@@ -80,7 +80,7 @@ export const postRTK = createApi({
 export const {
     useLazyGetRegisterPostsQuery,
     useLazyGetPostsQuery,
-    useLazyGetPostWithIdQuery,
+    // useLazyGetPostWithIdQuery,
     useCreateRegisterPostMutation,
     useEditRegisterPostMutation,
     useDeleteRegisterPostMutation,

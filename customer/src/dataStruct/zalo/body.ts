@@ -41,3 +41,8 @@ export interface CheckZaloAppWithAppIdBodyField {
 export interface CheckZaloOaListWithZaloAppIdBodyField {
     zaloAppId: number;
 }
+
+export interface PlaywightGetZaloAppBodyField {
+    userName: string;
+    password: string;
+}

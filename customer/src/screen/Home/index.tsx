@@ -1,16 +1,16 @@
-import { useEffect } from 'react';
 import style from './style.module.scss';
-import { useNavigate } from 'react-router-dom';
 import Header from '../Header';
-import { route_enum, select_enum } from '@src/router/type';
+import { select_enum } from '@src/router/type';
+import Filter from './component/Filter';
+import PostList from './component/PostList';
 
 const Home = () => {
-    const navigate = useNavigate();
-
     return (
         <div className={style.parent}>
             <div className={style.main}>
                 <Header selected={select_enum.HOME} />
+                <Filter />
+                <PostList />
             </div>
         </div>
     );

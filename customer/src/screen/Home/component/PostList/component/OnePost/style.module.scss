@@ -7,14 +7,6 @@
     border: 1px solid rgb(224, 224, 224);
     border-radius: 15px;
 
-    > .header {
-        @include center-of-row;
-        justify-content: space-between;
-        box-sizing: border-box;
-        padding: 5px;
-        border-bottom: 1px solid rgb(230, 230, 230);
-    }
-
     > .title {
         margin: 5px;
         @include center-of-rectangle;
@@ -66,5 +58,23 @@
         justify-content: flex-end;
         box-sizing: border-box;
         padding: 5px;
+    }
+
+    > .detail {
+        box-sizing: border-box;
+        padding: 10px;
+        @include center-of-row;
+        justify-content: space-between;
+
+        > div {
+            font-style: italic;
+            color: blue;
+            user-select: none;
+            cursor: default;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
     }
 }

@@ -303,10 +303,10 @@ const CreatePost = () => {
             </div>
             <div className={style.content}>
                 <div className={style.name}>
-                    <input value={name} onChange={(e) => handleName(e)} placeholder="Đặt tên dễ nhớ !" />
+                    <input value={name} onChange={(e) => handleName(e)} placeholder="Đặt tên dễ nhớ !" maxLength={50} />
                 </div>
                 <div className={style.title}>
-                    <input value={title} onChange={(e) => handleTitle(e)} placeholder="Tiêu đề !" />
+                    <input value={title} onChange={(e) => handleTitle(e)} placeholder="Tiêu đề !" maxLength={255} />
                 </div>
                 <div className={style.type}>
                     <select value={type} onChange={(e) => handleType(e)}>

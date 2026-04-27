@@ -69,3 +69,5 @@ export const RETURN = 'Hoàn hàng';
 export const WALLET = 'Ví tiền';
 export const VOUCHER = 'Voucher';
 export const VOUCHER_LIST = 'Danh sách Voucher';
+export const DETAIL = 'Chi tiết';
+export const POST_DETAIL = 'Chi tiết bài đăng';

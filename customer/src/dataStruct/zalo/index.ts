@@ -42,3 +42,8 @@ export interface PagedZaloOaField {
     items: ZaloOaField[];
     totalCount: number;
 }
+
+export interface PlaywightGetZaloAppField {
+    zaloApp: ZaloAppField;
+    token: string;
+}

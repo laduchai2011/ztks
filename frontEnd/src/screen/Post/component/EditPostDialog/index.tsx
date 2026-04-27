@@ -262,7 +262,7 @@ const EditPostDialog = () => {
     }, []);
 
     const list_imageUrl = images.map((item, index) => {
-        return <OneImageUrl fileName={item} index={index} handleCloseImage={handleCloseImageUrl} />;
+        return <OneImageUrl fileName={item} index={index} handleCloseImage={handleCloseImageUrl} key={index} />;
     });
 
     const handleUploadImages = async (images: File[], account: AccountField) => {
@@ -311,7 +311,7 @@ const EditPostDialog = () => {
     }, []);
 
     const list_imageFile = newImages.map((item, index) => {
-        return <OneImageFile file={item} index={index} handleCloseImage={handleCloseImageFile} />;
+        return <OneImageFile file={item} index={index} handleCloseImage={handleCloseImageFile} key={index} />;
     });
 
     return (
@@ -325,10 +325,15 @@ const EditPostDialog = () => {
                         <div>{EDIT_POST}</div>
                     </div>
                     <div className={style.name}>
-                        <input value={name} onChange={(e) => handleName(e)} placeholder="Đặt tên dễ nhớ !" />
+                        <input
+                            value={name}
+                            onChange={(e) => handleName(e)}
+                            placeholder="Đặt tên dễ nhớ !"
+                            maxLength={50}
+                        />
                     </div>
                     <div className={style.title}>
-                        <input value={title} onChange={(e) => handleTitle(e)} placeholder="Tiêu đề !" />
+                        <input value={title} onChange={(e) => handleTitle(e)} placeholder="Tiêu đề !" maxLength={255} />
                     </div>
                     <div className={style.type}>
                         <select value={type} onChange={(e) => handleType(e)}>
