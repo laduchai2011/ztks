@@ -43,6 +43,9 @@
         > .contentContainer {
             box-sizing: border-box;
             padding: 10px;
+            max-height: 500px;
+            overflow-y: scroll;
+            @include small-scroll-yy(1px);
 
             > .header {
                 box-sizing: border-box;

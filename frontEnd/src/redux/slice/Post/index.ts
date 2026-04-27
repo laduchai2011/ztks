@@ -11,7 +11,7 @@ const initialState: state_props = {
     selectedRegisterPost: undefined,
     postList: [],
     editPostDialog: {
-        isShow: true,
+        isShow: false,
         post: undefined,
         newPost: undefined,
     },

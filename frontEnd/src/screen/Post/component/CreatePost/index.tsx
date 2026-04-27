@@ -152,25 +152,25 @@ const CreatePost = () => {
             return;
         }
 
-        const r_images = await handleUploadImages(images, account);
-
-        const createPostBody: CreatePostBodyField = {
-            index: Number(index_t),
-            name: name_t,
-            type: type,
-            title: title_t,
-            describe: describe,
-            images: JSON.stringify(r_images),
-            isActive: true,
-            registerPostId: selectedRegisterPost.id,
-            accountId: account.id,
-        };
-
         try {
             dispatch(set_isLoading(true));
+
+            const r_images = await handleUploadImages(images, account);
+
+            const createPostBody: CreatePostBodyField = {
+                index: Number(index_t),
+                name: name_t,
+                type: type,
+                title: title_t,
+                describe: describe,
+                images: JSON.stringify(r_images ?? []),
+                isActive: true,
+                registerPostId: selectedRegisterPost.id,
+                accountId: account.id,
+            };
+
             const r_create = await createPost(createPostBody);
             const resData = r_create.data;
-            console.log('createPost', resData);
             if (resData?.isSuccess && resData.data) {
                 dispatch(add_postList(resData.data));
                 dispatch(
