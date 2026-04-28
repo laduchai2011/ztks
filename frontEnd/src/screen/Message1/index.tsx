@@ -9,6 +9,7 @@ import MsgList from './component/MsgList';
 import ReplyMember from './component/ReplyMember';
 import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
+import ChangeChatRoomMasterDialog from './component/ChangeChatRoomMasterDialog';
 import { useGetChatRoomsWithIdQuery } from '@src/redux/query/chatRoomRTK';
 import { useGetZaloOaWithIdQuery } from '@src/redux/query/zaloRTK';
 import { setData_chatRoom, setData_toastMessage, set_isLoading, set_zaloOa } from '@src/redux/slice/MessageV1';
@@ -131,6 +132,7 @@ const Message1 = () => {
             <div>
                 <MyToastMessage />
                 <MyLoading />
+                <ChangeChatRoomMasterDialog />
             </div>
         </div>
     );

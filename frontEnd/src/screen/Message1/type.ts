@@ -12,4 +12,7 @@ export interface state_props {
     chatRoom?: ChatRoomField;
     zaloOa?: ZaloOaField;
     repliedMessage?: MessageV1Field<ZaloMessageType>;
+    changeChatRoomMasterDialog: {
+        isShow: boolean;
+    };
 }

@@ -8,10 +8,14 @@ import OneMember from './component/OneMember';
 import { useLazyGetMembersQuery } from '@src/redux/query/accountRTK';
 import { set_isLoading, setData_toastMessage } from '@src/redux/slice/Member';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { AccountField } from '@src/dataStruct/account';
+import { AccountField, AccountInformationField } from '@src/dataStruct/account';
 
 const MemberList = () => {
     const dispatch = useDispatch<AppDispatch>();
+    const accountInformation: AccountInformationField | undefined = useSelector(
+        (state: RootState) => state.AppSlice.accountInformation
+    );
+
     const searchedAccountId: string = useSelector((state: RootState) => state.MemberSlice.searchedAccountId);
     const newMember: AccountField | undefined = useSelector((state: RootState) => state.MemberSlice.newMember);
     const [members, setMembers] = useState<AccountField[]>([]);
@@ -27,12 +31,14 @@ const MemberList = () => {
     }, [newMember]);
 
     useEffect(() => {
+        if (!accountInformation?.addedById) return;
+
         const searchedAccountId_cp = searchedAccountId.trim();
         dispatch(set_isLoading(true));
         getMembers({
             page: 1,
             size: size,
-            accountId: -1,
+            accountId: accountInformation.addedById,
             searchedAccountId:
                 searchedAccountId_cp.length > 0 && !isNaN(Number(searchedAccountId_cp))
                     ? Number(searchedAccountId_cp)
@@ -56,7 +62,7 @@ const MemberList = () => {
                 );
             })
             .finally(() => dispatch(set_isLoading(false)));
-    }, [dispatch, getMembers, searchedAccountId]);
+    }, [dispatch, getMembers, searchedAccountId, accountInformation]);
 
     const handleSeeMore = () => {
         if (!hasMore) return;

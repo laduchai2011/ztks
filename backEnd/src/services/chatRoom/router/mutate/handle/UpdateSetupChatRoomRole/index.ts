@@ -93,8 +93,10 @@ class Handle_UpdateSetupChatRoomRole {
 
                 const crid = rData.chatRoomId;
                 const aaid = rData.authorizedAccountId;
-                this._cacheGetChatRoomRoleWithCridAaid.setBody({ chatRoomId: crid, authorizedAccountId: aaid });
-                this._cacheGetChatRoomRoleWithCridAaid.clearCache();
+                this._cacheGetChatRoomRoleWithCridAaid.setBody({ chatRoomId: crid, authorizedAccountId: aaid }); // sap bo
+                this._cacheGetChatRoomRoleWithCridAaid.clearCache(); // sap bo
+                this._cacheGetChatRoomRoleWithCridAaid.setFkCrid(crid);
+                this._cacheGetChatRoomRoleWithCridAaid.clearCacheWithFkCrid();
 
                 this._cacheGetAllChatRoomRoleWithCrid.setBody({ chatRoomId: crid });
                 this._cacheGetAllChatRoomRoleWithCrid.clearCache();

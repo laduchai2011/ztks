@@ -15,12 +15,15 @@ import { messageType_enum } from '@src/component/ToastMessage/type';
 import { avatarnull } from '@src/utility/string';
 import { useLazyGetMembersQuery } from '@src/redux/query/accountRTK';
 import { useAgentAddAccountMutation } from '@src/redux/query/agentRTK';
-import { AccountField } from '@src/dataStruct/account';
+import { AccountField, AccountInformationField } from '@src/dataStruct/account';
 import { AgentField } from '@src/dataStruct/agent';
 
 const MemberListDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
+    const accountInformation: AccountInformationField | undefined = useSelector(
+        (state: RootState) => state.AppSlice.accountInformation
+    );
     const isShow: boolean = useSelector((state: RootState) => state.ManageAgentSlice.memberListDialog.isShow);
     const agent: AgentField | undefined = useSelector(
         (state: RootState) => state.ManageAgentSlice.memberListDialog.agent
@@ -57,12 +60,14 @@ const MemberListDialog = () => {
 
     useEffect(() => {
         if (!isSearch) return;
+        if (!accountInformation?.addedById) return;
+
         const searchInput_t = searchInput.trim();
         dispatch(set_isLoading(true));
         getMembers({
             page: 1,
             size: size,
-            accountId: -1,
+            accountId: accountInformation.addedById,
             searchedAccountId:
                 searchInput_t.length > 0 && !isNaN(Number(searchInput_t)) ? Number(searchInput_t) : undefined,
         })
@@ -87,7 +92,7 @@ const MemberListDialog = () => {
                 dispatch(set_isLoading(false));
                 setIsSearch(false);
             });
-    }, [dispatch, getMembers, searchInput, isSearch]);
+    }, [dispatch, getMembers, searchInput, isSearch, accountInformation]);
 
     const handleClose = () => {
         dispatch(setIsShow_memberListDialog(false));

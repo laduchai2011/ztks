@@ -78,7 +78,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE ChangeChatRoomMaster
+ALTER PROCEDURE ChangeChatRoomMaster
 	@chatRoomId INT,
 	@newAccountId INT,
 	@accountId INT
@@ -94,26 +94,35 @@ BEGIN
 			THROW 50001, N'Không phải chatRoom của bạn .', 1;
 		END
 
+		DECLARE @addedById INT;
+		SELECT @addedById = addedById FROM dbo.accountInformation WHERE accountId = @accountId;
+		IF @addedById IS NULL THROW 50002, N'Không tìm thấy admin cho tài khoản cũ .', 2;
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.accountInformation WHERE accountId = @newAccountId AND addedById = @addedById )
+		BEGIN
+			THROW 50003, N'Admin của tài khoản cũ không phải là của tài khoản mới .', 3;
+		END
+
 		UPDATE dbo.chatRoom
 		SET accountId = @newAccountId
 		WHERE id = @chatRoomId;
 		IF @@ROWCOUNT = 0
         BEGIN
-            THROW 50002, 'Cập nhật chatRoom không thành công.', 2;
+            THROW 50004, 'Cập nhật chatRoom không thành công.', 4;
         END
 
 		DELETE FROM dbo.chatRoomRole
 		WHERE chatRoomId = @chatRoomId;
 		IF @@ROWCOUNT = 0
         BEGIN
-            THROW 50003, 'Xóa chatRoomRole không thành công.', 3;
+            THROW 50005, 'Xóa chatRoomRole không thành công.', 5;
         END
 
 		INSERT INTO dbo.chatRoomRole (authorizedAccountId, isRead, isSend, status, chatRoomId, accountId, updateTime, createTime)
         VALUES (@newAccountId, 1, 1, 'normal', @chatRoomId, @newAccountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
         BEGIN
-            THROW 50004, 'Tạo chatRoomRole không thành công.', 4;
+            THROW 50006, 'Tạo chatRoomRole không thành công.', 6;
         END
 
 		SELECT * FROM dbo.chatRoom WHERE id = @chatRoomId;

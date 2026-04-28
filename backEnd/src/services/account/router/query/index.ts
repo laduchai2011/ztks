@@ -53,7 +53,7 @@ router_query_account.post('/getNotReplyAccounts', authentication, handle_getNotR
 
 router_query_account.post('/getAccountReceiveMessage', authentication, handle_getAccountReceiveMessage.main);
 
-router_query_account.post('/getMembers', authentication, handle_getMembers.setup, handle_getMembers.main);
+router_query_account.post('/getMembers', authentication, handle_getMembers.main);
 
 router_query_account.post('/checkForgetPassword', handle_checkForgetPassword.main);
 

@@ -41,11 +41,26 @@ const prefix_cache_getChatRoomWithZaloOaIdUserIdByApp = {
     time: 60 * 5, // 5p
 };
 
+interface OptionsField {
+    logPrameter?: string;
+}
+
 export class CacheGetChatRoomWithId {
     private _body: GetChatRoomWithIdBodyField | undefined;
     private _serviceRedis = ServiceRedis.getInstance();
+    private _options?: OptionsField;
 
-    constructor() {}
+    constructor(options?: OptionsField) {
+        this._options = options;
+    }
+
+    logError(...args: unknown[]) {
+        if (this._options?.logPrameter) {
+            console.error('CacheGetChatRoomWithId', this._options.logPrameter, ...args);
+        } else {
+            console.error('CacheGetChatRoomWithId', ...args);
+        }
+    }
 
     init() {
         this._serviceRedis.init();
@@ -57,7 +72,7 @@ export class CacheGetChatRoomWithId {
 
     getKeyMain() {
         if (!this._body) {
-            console.error('Chưa thiết lập body');
+            this.logError('Chưa thiết lập body');
             return;
         }
 
@@ -76,13 +91,13 @@ export class CacheGetChatRoomWithId {
         const timeExpireat = this.getTimeExpireat();
 
         if (!key_main) {
-            console.error('Lấy key_main không thành công');
+            this.logError('Lấy key_main không thành công');
             return;
         }
 
         const isSet = await this._serviceRedis.setData<ChatRoomField>(key_main, data, timeExpireat);
         if (!isSet) {
-            console.error('Failed to set in Redis', key_main);
+            this.logError('Failed to set in Redis', key_main);
         }
 
         return isSet;
@@ -92,7 +107,7 @@ export class CacheGetChatRoomWithId {
         const key_main = this.getKeyMain();
 
         if (!key_main) {
-            console.error('Lấy key_main không thành công');
+            this.logError('Lấy key_main không thành công');
             return;
         }
 
@@ -105,7 +120,7 @@ export class CacheGetChatRoomWithId {
         const key_main = this.getKeyMain();
 
         if (!key_main) {
-            console.error('Lấy key_main không thành công');
+            this.logError('Lấy key_main không thành công');
             return;
         }
 
@@ -145,7 +160,7 @@ export class CacheGetChatRoomRoleWithCridAaid {
 
     getKeyCacheKeysWithCrid() {
         if (!this._fkCrid) {
-            console.error('Chưa thiết lập fk');
+            console.error('Chưa thiết lập fkCrid');
             return;
         }
         const key_cache_keys_with_crid = `${prefix_cache_getChatRoomRoleWithCridAaid.key.cache_keys_with_crid}_fkCrid${this._fkCrid}`;

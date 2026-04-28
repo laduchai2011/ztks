@@ -3,7 +3,6 @@ import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { MyResponse } from '@src/dataStruct/response';
-import { ChatRoomField } from '@src/dataStruct/chatRoom';
 import { GetChatRoomWithIdBodyField } from '@src/dataStruct/chatRoom/body';
 import { OrderField } from '@src/dataStruct/order';
 import { CreateOrderBodyField } from '@src/dataStruct/order/body';
@@ -15,7 +14,7 @@ import { CacheGetChatRoomWithId } from '@src/const/redisKey/chatRoom';
 class Handle_CreateOrder {
     private _mssql_server = mssql_server;
     private _serviceRedis = ServiceRedis.getInstance();
-    private _cacheGetChatRoomWithId = new CacheGetChatRoomWithId();
+    private _cacheGetChatRoomWithId = new CacheGetChatRoomWithId({ logPrameter: 'Handle_CreateOrder' });
 
     constructor() {
         this._mssql_server.init();

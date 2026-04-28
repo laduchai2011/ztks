@@ -13,46 +13,46 @@ class Handle_GetMembers {
         this._mssql_server.init();
     }
 
-    setup = (req: Request<any, any, GetMembersBodyField>, res: Response, next: NextFunction) => {
-        const myResponse: MyResponse<PagedAccountField> = {
-            isSuccess: false,
-            message: 'Bắt đầu (Handle_GetMembers-setup)',
-        };
+    // setup = (req: Request<any, any, GetMembersBodyField>, res: Response, next: NextFunction) => {
+    //     const myResponse: MyResponse<PagedAccountField> = {
+    //         isSuccess: false,
+    //         message: 'Bắt đầu (Handle_GetMembers-setup)',
+    //     };
 
+    //     const getMembersBody = req.body;
+    //     const { refreshToken } = req.cookies;
+
+    //     if (typeof refreshToken === 'string') {
+    //         const verify_refreshToken = verifyRefreshToken(refreshToken);
+
+    //         if (verify_refreshToken === 'invalid') {
+    //             myResponse.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';
+    //             res.status(500).json(myResponse);
+    //             return;
+    //         }
+
+    //         if (verify_refreshToken === 'expired') {
+    //             myResponse.message = 'Refresh-Token hết hạn, hãy đăng nhập lại !';
+    //             res.status(500).json(myResponse);
+    //             return;
+    //         }
+
+    //         const { id } = verify_refreshToken;
+    //         const getMembersBody_cp = { ...getMembersBody };
+    //         getMembersBody_cp.accountId = id;
+    //         res.locals.getMembersBody = getMembersBody_cp;
+
+    //         next();
+    //         return;
+    //     } else {
+    //         myResponse.message = 'Vui lòng đăng nhập lại !';
+    //         res.status(500).json(myResponse);
+    //         return;
+    //     }
+    // };
+
+    main = async (req: Request<any, any, GetMembersBodyField>, res: Response) => {
         const getMembersBody = req.body;
-        const { refreshToken } = req.cookies;
-
-        if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verifyRefreshToken(refreshToken);
-
-            if (verify_refreshToken === 'invalid') {
-                myResponse.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';
-                res.status(500).json(myResponse);
-                return;
-            }
-
-            if (verify_refreshToken === 'expired') {
-                myResponse.message = 'Refresh-Token hết hạn, hãy đăng nhập lại !';
-                res.status(500).json(myResponse);
-                return;
-            }
-
-            const { id } = verify_refreshToken;
-            const getMembersBody_cp = { ...getMembersBody };
-            getMembersBody_cp.accountId = id;
-            res.locals.getMembersBody = getMembersBody_cp;
-
-            next();
-            return;
-        } else {
-            myResponse.message = 'Vui lòng đăng nhập lại !';
-            res.status(500).json(myResponse);
-            return;
-        }
-    };
-
-    main = async (_: Request, res: Response) => {
-        const getMembersBody = res.locals.getMembersBody as GetMembersBodyField;
 
         const myResponse: MyResponse<PagedAccountField> = {
             isSuccess: false,

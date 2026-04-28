@@ -15,7 +15,7 @@ import {
 
 class Handle_ChangeChatRoomMaster {
     private _mssql_server = mssql_server;
-    private _cacheGetChatRoomWithId = new CacheGetChatRoomWithId();
+    private _cacheGetChatRoomWithId = new CacheGetChatRoomWithId({ logPrameter: 'Handle_ChangeChatRoomMaster' });
     private _cacheGetChatRoomRoleWithCridAaid = new CacheGetChatRoomRoleWithCridAaid();
     private _cacheGetAllChatRoomRoleWithCrid = new CacheGetAllChatRoomRoleWithCrid();
     private _cacheGetChatRoomWithZaloOaIdUserIdByApp = new CacheGetChatRoomWithZaloOaIdUserIdByApp();

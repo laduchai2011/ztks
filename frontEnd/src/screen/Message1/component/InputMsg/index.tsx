@@ -10,6 +10,7 @@ import { FaShoppingCart } from 'react-icons/fa';
 import { LuNotebookPen } from 'react-icons/lu';
 import { MdOutlineOndemandVideo, MdAttachFile } from 'react-icons/md';
 import { PiSmileyStickerLight } from 'react-icons/pi';
+import { TbTransfer } from 'react-icons/tb';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import {
     useCreateMessageV1Mutation,
@@ -384,6 +385,7 @@ const InputMsg = () => {
                 <div className={style.icons2}>
                     <FaShoppingCart onClick={() => handleGoToOrder()} size={20} color="red" />
                     <LuNotebookPen onClick={() => handleGoToNote()} size={20} />
+                    <TbTransfer size={20} />
                 </div>
             </div>
             {repliedMessage && <ReplyContainer data={repliedMessage} />}

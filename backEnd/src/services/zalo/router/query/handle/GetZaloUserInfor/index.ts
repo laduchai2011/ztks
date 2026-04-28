@@ -88,6 +88,7 @@ class Handle_GetZaloUserInfor {
     main = async (req: Request<any, any, ZaloUserBodyField>, res: Response) => {
         const zaloUserBody: ZaloUserBodyField = req.body;
         const zaloApp = res.locals.zaloApp as ZaloAppField;
+        zaloUserBody.zaloApp = zaloApp;
         const userIdByApp = zaloUserBody.userIdByApp;
 
         const myResponse: MyResponse<ZaloUserField> = {

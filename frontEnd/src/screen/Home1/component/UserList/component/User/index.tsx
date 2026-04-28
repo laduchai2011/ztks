@@ -227,4 +227,3 @@ const User: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSche
 };
 
 export default memo(User);
-// export default memo(User, (prev, next) => prev.chatRoomRoleSchema === next.chatRoomRoleSchema);

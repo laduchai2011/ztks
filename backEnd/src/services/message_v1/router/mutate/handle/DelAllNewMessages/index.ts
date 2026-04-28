@@ -102,6 +102,7 @@ class Handle_DelAllNewMessages {
             if (result?.recordset.length && result?.recordset.length > 0) {
                 const rData = result.recordset[0];
 
+                this._cacheGetChatRoomRoleWithCridAaid.setFkCrid(rData.chatRoomId);
                 this._cacheGetChatRoomRoleWithCridAaid.setData(rData);
 
                 res.locals.chatRoomRole = rData;

@@ -24,7 +24,7 @@ import { CacheGetChatRoomWithId } from '@src/const/redisKey/chatRoom';
 class Handle_CreateReplyAccount {
     private _mssql_server = mssql_server;
     private _serviceRedis = ServiceRedis.getInstance();
-    private _cacheGetChatRoomWithId = new CacheGetChatRoomWithId();
+    private _cacheGetChatRoomWithId = new CacheGetChatRoomWithId({ logPrameter: 'Handle_CreateReplyAccount' });
 
     constructor() {
         this._mssql_server.init();
@@ -90,10 +90,6 @@ class Handle_CreateReplyAccount {
             message: 'Bắt đầu (Handle_CreateReplyAccount-getZaloOaId)',
         };
 
-        // get in redis
-        // const id = getChatRoomWithIdBody.id;
-        // const keyRedis = `${prefix_cache_chatRoom_with_id}_${id}`;
-        // const chatRoom = await this._serviceRedis.getData<ChatRoomField>(keyRedis);
         const chatRoom_cache = await this._cacheGetChatRoomWithId.getData();
         if (chatRoom_cache) {
             res.locals.zaloOaId = chatRoom_cache.zaloOaId;

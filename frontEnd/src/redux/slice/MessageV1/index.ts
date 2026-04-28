@@ -14,6 +14,9 @@ const initialState: state_props = {
     chatRoom: undefined,
     zaloOa: undefined,
     repliedMessage: undefined,
+    changeChatRoomMasterDialog: {
+        isShow: true,
+    },
 };
 
 const MessageV1Slice = createSlice({
@@ -35,9 +38,18 @@ const MessageV1Slice = createSlice({
         set_repliedMessage: (state, action: PayloadAction<MessageV1Field<ZaloMessageType> | undefined>) => {
             state.repliedMessage = action.payload;
         },
+        setIsShow_changeChatRoomMasterDialog: (state, action: PayloadAction<boolean>) => {
+            state.changeChatRoomMasterDialog.isShow = action.payload;
+        },
     },
 });
 
-export const { set_isLoading, setData_toastMessage, setData_chatRoom, set_zaloOa, set_repliedMessage } =
-    MessageV1Slice.actions;
+export const {
+    set_isLoading,
+    setData_toastMessage,
+    setData_chatRoom,
+    set_zaloOa,
+    set_repliedMessage,
+    setIsShow_changeChatRoomMasterDialog,
+} = MessageV1Slice.actions;
 export default MessageV1Slice.reducer;

@@ -6,7 +6,7 @@ import FormData from 'form-data';
 import fs from 'fs';
 import { getAccessToken, refreshAccessToken } from '@src/services/zalo_webhook/handle/TokenZaloOA';
 import { ZaloOaAImageField } from '@src/dataStruct/photo';
-import { my_log } from '@src/log';
+// import { my_log } from '@src/log';
 // import { MyResponse } from '@src/dataStruct/response';
 
 const API_UPLOAD = 'https://openapi.zalo.me/v2.0/oa/upload/image';

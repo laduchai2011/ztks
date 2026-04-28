@@ -13,7 +13,7 @@ import { CacheGetChatRoomWithId } from '@src/const/redisKey/chatRoom';
 class Handle_CreateNote {
     private _mssql_server = mssql_server;
     private _serviceRedis = ServiceRedis.getInstance();
-    private _cacheGetChatRoomWithId = new CacheGetChatRoomWithId();
+    private _cacheGetChatRoomWithId = new CacheGetChatRoomWithId({ logPrameter: 'Handle_CreateNote' });
 
     constructor() {
         this._mssql_server.init();

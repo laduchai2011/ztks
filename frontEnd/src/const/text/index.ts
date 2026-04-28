@@ -82,3 +82,4 @@ export const REGISTER_POST = 'Đăng ký bài đăng';
 export const POST_SERVICES = 'Dịch vụ đăng bài';
 export const CREATE_REGISTER_POST = 'Tạo đăng ký bài đăng';
 export const EDIT_REGISTER_POST = 'Chỉnh sửa đăng ký bài đăng';
+export const CHANGE_CHAT_ROOM_MASTER = 'Thay đổi chủ phòng hội thoại';

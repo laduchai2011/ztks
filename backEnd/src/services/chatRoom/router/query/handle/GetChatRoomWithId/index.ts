@@ -10,7 +10,7 @@ import { CacheGetChatRoomWithId } from '@src/const/redisKey/chatRoom';
 class Handle_GetChatRoomWithId {
     private _mssql_server = mssql_server;
     private _serviceRedis = ServiceRedis.getInstance();
-    private _cacheGetChatRoomWithId = new CacheGetChatRoomWithId();
+    private _cacheGetChatRoomWithId = new CacheGetChatRoomWithId({ logPrameter: 'Handle_GetChatRoomWithId' });
 
     constructor() {
         this._mssql_server.init();
@@ -20,6 +20,8 @@ class Handle_GetChatRoomWithId {
 
     main = async (req: Request<Record<string, never>, unknown, GetChatRoomWithIdBodyField>, res: Response) => {
         const getChatRoomWithIdBody = req.body;
+
+        this._cacheGetChatRoomWithId.setBody({ id: getChatRoomWithIdBody.id });
 
         const myResponse: MyResponse<ChatRoomField> = {
             isSuccess: false,
