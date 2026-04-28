@@ -5,10 +5,9 @@ AS
 BEGIN
 	
     SELECT * FROM dbo.chatRoom AS cr
-		WHERE 
-			status = 'normal' 
-			AND (@userIdByApp IS NULL OR cr.userIdByApp = @userIdByApp)
-			AND (@zaloOaId IS NULL OR cr.zaloOaId = @zaloOaId) 
+	WHERE status = 'normal' 
+		AND (@userIdByApp IS NULL OR cr.userIdByApp = @userIdByApp)
+		AND (@zaloOaId IS NULL OR cr.zaloOaId = @zaloOaId) 
 END
 GO
 
@@ -17,9 +16,8 @@ CREATE PROCEDURE GetChatRoomWithId
 AS
 BEGIN
     SELECT * FROM dbo.chatRoom AS cr
-		WHERE 
-			status = 'normal' 
-			AND (@id IS NULL OR cr.id = @id)
+	WHERE status = 'normal' 
+		AND (@id IS NULL OR cr.id = @id)
 END
 GO
 
@@ -29,10 +27,9 @@ CREATE PROCEDURE GetChatRoomRoleWithCridAaid
 AS
 BEGIN
     SELECT * FROM dbo.chatRoomRole AS crr
-		WHERE 
-			status = 'normal' 
-			AND (@authorizedAccountId IS NULL OR crr.authorizedAccountId = @authorizedAccountId)
-			AND (@chatRoomId IS NULL OR crr.chatRoomId = @chatRoomId)
+	WHERE status = 'normal' 
+		AND (@authorizedAccountId IS NULL OR crr.authorizedAccountId = @authorizedAccountId)
+		AND (@chatRoomId IS NULL OR crr.chatRoomId = @chatRoomId)
 END
 GO
 

@@ -67,7 +67,7 @@ export class CacheGetPosts {
             return;
         }
 
-        const key_main = `${prefix_cache_getPosts.key.main}${this._body.page}${this._body.size}${this._body.isActive}${this._body.registerPostId}`;
+        const key_main = `${prefix_cache_getPosts.key.main}_page${this._body.page}_size${this._body.size}_isActive${this._body.isActive}_registerPostId${this._body.registerPostId}`;
 
         return key_main;
     }
@@ -77,7 +77,7 @@ export class CacheGetPosts {
             console.error('Chưa thiết lập fk');
             return;
         }
-        const key_cache_keys = `${prefix_cache_getPosts.key.cache_keys}fk${this._fk}`;
+        const key_cache_keys = `${prefix_cache_getPosts.key.cache_keys}_fk${this._fk}`;
         return key_cache_keys;
     }
 
@@ -168,7 +168,7 @@ export class CacheGetRegisterPosts {
             return;
         }
 
-        const key_main = `${prefix_cache_getRegisterPosts.key.main}${this._body.page}${this._body.size}${this._body.isDelete}${this._body.accountId}`;
+        const key_main = `${prefix_cache_getRegisterPosts.key.main}_page${this._body.page}_size${this._body.size}_isDelete${this._body.isDelete}_accountId${this._body.accountId}`;
 
         return key_main;
     }
@@ -179,7 +179,7 @@ export class CacheGetRegisterPosts {
             return;
         }
 
-        const key_cache_keys = `${prefix_cache_getRegisterPosts.key.cache_keys}fk${this._fk}`;
+        const key_cache_keys = `${prefix_cache_getRegisterPosts.key.cache_keys}_fk${this._fk}`;
         return key_cache_keys;
     }
 
@@ -265,7 +265,7 @@ export class CacheGetPostWithId {
             return;
         }
 
-        const key_main = `${prefix_cache_getPostWithId.key.main}${this._body.id}`;
+        const key_main = `${prefix_cache_getPostWithId.key.main}_id${this._body.id}`;
 
         return key_main;
     }
@@ -337,7 +337,7 @@ export class CacheGetRegisterPostWithId {
             return;
         }
 
-        const key_main = `${prefix_cache_getRegisterPostWithId.key.main}${this._body.id}`;
+        const key_main = `${prefix_cache_getRegisterPostWithId.key.main}_id${this._body.id}`;
 
         return key_main;
     }

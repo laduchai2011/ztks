@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE CreateChatRoom
+﻿ALTER PROCEDURE CreateChatRoom
 	@userIdByApp NVARCHAR(255),
 	@zaloOaId INT,
 	@accountId INT
@@ -14,7 +14,7 @@ BEGIN
         VALUES (@userIdByApp, 'normal', @zaloOaId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
         BEGIN
-            THROW 50001, 'Cập nhật chatRoom không thành công.', 1;
+            THROW 50001, 'Tạo chatRoom không thành công.', 1;
         END
 
 		SET @newChatRoomId = SCOPE_IDENTITY();
@@ -23,7 +23,7 @@ BEGIN
         VALUES (@accountId, 1, 1, 'normal', @newChatRoomId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
         BEGIN
-            THROW 50002, 'Cập nhật chatRoomRole không thành công.', 2;
+            THROW 50002, 'Tạo chatRoomRole không thành công.', 2;
         END
 
 		SELECT * FROM dbo.chatRoom WHERE id = @newChatRoomId;
@@ -36,7 +36,6 @@ BEGIN
 	END CATCH
 END;
 GO
-
 
 DELETE FROM dbo.chatRoomRole 
 GO
@@ -79,60 +78,51 @@ BEGIN
 END;
 GO
 
--- ALTER PROCEDURE CreateChatRoomRole
--- 	@authorizedAccountId NVARCHAR(255),
--- 	@chatRoomId INT,
--- 	@accountId INT
--- AS
--- BEGIN
--- 	SET NOCOUNT ON;
+CREATE PROCEDURE ChangeChatRoomMaster
+	@chatRoomId INT,
+	@newAccountId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
 
--- 	BEGIN TRY
--- 		BEGIN TRANSACTION;
+	BEGIN TRY
+        BEGIN TRANSACTION;
 
--- 		-- 1) Check chatRoom có tồn tại không
--- 		IF NOT EXISTS (
--- 			SELECT 1
--- 			FROM dbo.chatRoom
--- 			WHERE 
--- 				id = @chatRoomId
--- 				AND accountId = @accountId
--- 		)
--- 		BEGIN
--- 			THROW 50001, N'ChatRoom không tồn tại hoặc đã bị khóa.', 1;
--- 		END
+		IF NOT EXISTS ( SELECT 1 FROM dbo.chatRoom WHERE accountId = @accountId AND id = @chatRoomId )
+		BEGIN
+			THROW 50001, N'Không phải chatRoom của bạn .', 1;
+		END
 
--- 		-- 2) Check đã tồn tại role chưa (tránh insert trùng)
--- 		IF EXISTS (
--- 			SELECT 1
--- 			FROM dbo.chatRoomRole
--- 			WHERE 
--- 				chatRoomId = @chatRoomId
--- 				AND authorizedAccountId = @authorizedAccountId
--- 		)
--- 		BEGIN
--- 			THROW 50002, N'Role này đã tồn tại trong chatRoom.', 1;
--- 		END
+		UPDATE dbo.chatRoom
+		SET accountId = @newAccountId
+		WHERE id = @chatRoomId;
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50002, 'Cập nhật chatRoom không thành công.', 2;
+        END
 
--- 		-- 3) Nếu pass hết check thì mới INSERT
--- 		INSERT INTO dbo.chatRoomRole
--- 			(authorizedAccountId, isRead, isSend, status, chatRoomId, accountId, updateTime, createTime)
--- 		VALUES
--- 			(@authorizedAccountId, 1, 1, 'normal', @chatRoomId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+		DELETE FROM dbo.chatRoomRole
+		WHERE chatRoomId = @chatRoomId;
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50003, 'Xóa chatRoomRole không thành công.', 3;
+        END
 
--- 		-- 4) Trả kết quả mới insert
--- 		SELECT *
--- 		FROM dbo.chatRoomRole
--- 		WHERE 
--- 			chatRoomId = @chatRoomId
--- 			AND authorizedAccountId = @authorizedAccountId
+		INSERT INTO dbo.chatRoomRole (authorizedAccountId, isRead, isSend, status, chatRoomId, accountId, updateTime, createTime)
+        VALUES (@newAccountId, 1, 1, 'normal', @chatRoomId, @newAccountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50004, 'Tạo chatRoomRole không thành công.', 4;
+        END
 
--- 		COMMIT TRANSACTION;
--- 	END TRY
--- 	BEGIN CATCH
--- 		IF @@TRANCOUNT > 0
--- 			ROLLBACK TRANSACTION;
--- 		THROW;
--- 	END CATCH
--- END;
--- GO
+		SELECT * FROM dbo.chatRoom WHERE id = @chatRoomId;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO

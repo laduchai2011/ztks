@@ -29,12 +29,8 @@ import QueryDB_UserTakeRoomToChat from './handleHookData/queryDB/UserTakeRoomToC
 import QueryDB_GetAccountReceiveMessage from './handleHookData/queryDB/GetAccountReceiveMessage';
 import QueryDB_GetAllChatRoomRolesWithChatRoomId from './handleHookData/queryDB/GetAllChatRoomRolesWithChatRoomId';
 import MutateDB_CreateChatRoom from './handleHookData/mutateDB/CreateChatRoom';
-import {
-    prefix_cache_zaloApp_with_appId,
-    prefix_cache_zaloOa_list_with_zaloAppId,
-    prefix_cache_chatRoom_with_zaloOaId_userIdByApp,
-} from '@src/const/redisKey';
-import { CacheGetAllChatRoomRoleWithCrid } from '@src/const/redisKey/chatRoom';
+import { prefix_cache_zaloApp_with_appId, prefix_cache_zaloOa_list_with_zaloAppId } from '@src/const/redisKey';
+import { CacheGetAllChatRoomRoleWithCrid, CacheGetChatRoomWithZaloOaIdUserIdByApp } from '@src/const/redisKey/chatRoom';
 import { IsPassField, WaitSessionField } from './type';
 import {
     HookDataField,
@@ -78,9 +74,6 @@ export function hookData() {
         if (!isPass) return;
         if (!zaloApp) return;
         if (!zaloOa) return;
-
-        // const keyRedis = `${prefix_cache_chatRoom_with_zaloOaId_userIdByApp}_${zaloOa.id}_${data.user_id_by_app}`;
-        // serviceRedis.deleteData(keyRedis);
 
         // get chat room
         chatRoom = await getChatRoom(data, zaloOa);
@@ -463,12 +456,15 @@ async function getChatRoom(hookData: HookDataField, zaloOa: ZaloOaField): Promis
         userIdByApp: userIdByApp,
         zaloOaId: zaloOaId,
     };
-    const keyRedis = `${prefix_cache_chatRoom_with_zaloOaId_userIdByApp}_${zaloOaId}_${userIdByApp}`;
 
-    const chatRoom = await serviceRedis.getData<ChatRoomField>(keyRedis);
+    const cacheGetChatRoomWithZaloOaIdUserIdByApp = new CacheGetChatRoomWithZaloOaIdUserIdByApp();
+    await cacheGetChatRoomWithZaloOaIdUserIdByApp.init();
+    cacheGetChatRoomWithZaloOaIdUserIdByApp.setBody({ zaloOaId: zaloOaId, userIdByApp: userIdByApp });
 
-    if (chatRoom) {
-        return chatRoom;
+    const chatRoom_cache = await cacheGetChatRoomWithZaloOaIdUserIdByApp.getData();
+
+    if (chatRoom_cache) {
+        return chatRoom_cache;
     }
 
     const queryDB = new QueryDB_UserTakeRoomToChat();
@@ -487,11 +483,7 @@ async function getChatRoom(hookData: HookDataField, zaloOa: ZaloOaField): Promis
         if (result?.recordset.length && result?.recordset.length > 0) {
             const chatRoom1: ChatRoomField = result?.recordset[0];
 
-            const isSet = await serviceRedis.setData<ChatRoomField>(keyRedis, chatRoom1, timeExpireat);
-            if (!isSet) {
-                console.error('Failed to set zaloApp in cookie in Redis');
-                return;
-            }
+            cacheGetChatRoomWithZaloOaIdUserIdByApp.setData(chatRoom1);
 
             return chatRoom1;
         } else {
@@ -666,25 +658,6 @@ async function updateMessageAmountInDay(account_id: number, amount: number) {
             await col.insertOne(parsed.data);
         }
     }
-
-    // const now = new Date();
-    // const dateKey = getDateKeyVN(now);
-
-    // const db = getDbMonggo();
-    // const col = db.collection<MessageAmountInDayType>('messageAmountInDay');
-
-    // await col.updateOne(
-    //     { account_id, dateKey },
-    //     {
-    //         $inc: { amount: amount }, // tăng trực tiếp
-    //         $setOnInsert: {
-    //             timestamp: now,
-    //             account_id,
-    //             dateKey,
-    //         },
-    //     },
-    //     { upsert: true }
-    // );
 }
 
 async function getWaitVideoMessage(reply_account_id: number): Promise<MessageV1Field<MessageVideoField> | undefined> {

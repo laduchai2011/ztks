@@ -16,10 +16,6 @@ export const prefix_cache_zaloOa_list_with_zaloAppId = isProduct
     ? 'prefix_cache_zaloOa_list_with_zaloAppId'
     : 'prefix_cache_zaloOa_list_with_zaloAppId_dev';
 
-export const prefix_cache_chatRoom_with_zaloOaId_userIdByApp = isProduct
-    ? 'prefix_cache_chatRoom_with_zaloOaId_userIdByApp'
-    : 'prefix_cache_chatRoom_with_zaloOaId_userIdByApp_dev';
-
 export const prefix_cache_zalo_accessToken_with_zaloOaId = isProduct
     ? 'prefix_cache_zalo_accessToken_with_zaloOaId'
     : 'prefix_cache_zalo_accessToken_with_zaloOaId_dev';
