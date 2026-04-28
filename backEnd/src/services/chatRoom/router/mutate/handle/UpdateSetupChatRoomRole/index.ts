@@ -6,7 +6,7 @@ import { ChatRoomRoleField, ChatRoomRoleSchema } from '@src/dataStruct/chatRoom'
 import { UpdateSetupChatRoomRoleBodyField } from '@src/dataStruct/chatRoom/body';
 import MutateDB_UpdateSetupChatRoomRole from '../../mutateDB/UpdateSetupChatRoomRole';
 import { verifyRefreshToken } from '@src/token';
-import { prefix_cache_chatRoomRole } from '@src/const/redisKey/chatRoom';
+import { CacheGetChatRoomRoleWithCridAaid, CacheGetAllChatRoomRoleWithCrid } from '@src/const/redisKey/chatRoom';
 import { ChatRoomRoleZodSchema } from '@src/schema/chatRoom';
 // import { ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
 import { getDbMonggo } from '@src/connect/mongo';
@@ -14,10 +14,14 @@ import { getDbMonggo } from '@src/connect/mongo';
 class Handle_UpdateSetupChatRoomRole {
     private _mssql_server = mssql_server;
     private _serviceRedis = ServiceRedis.getInstance();
+    private _cacheGetChatRoomRoleWithCridAaid = new CacheGetChatRoomRoleWithCridAaid();
+    private _cacheGetAllChatRoomRoleWithCrid = new CacheGetAllChatRoomRoleWithCrid();
 
     constructor() {
         this._mssql_server.init();
         this._serviceRedis.init();
+        this._cacheGetChatRoomRoleWithCridAaid.init();
+        this._cacheGetAllChatRoomRoleWithCrid.init();
     }
 
     setup = async (
@@ -90,17 +94,11 @@ class Handle_UpdateSetupChatRoomRole {
 
                 const crid = rData.chatRoomId;
                 const aaid = rData.authorizedAccountId;
-                const chatRoomId = rData.chatRoomId;
-                const key1Redis = `${prefix_cache_chatRoomRole.key.with_crid_Aaid}_${crid}_${aaid}`;
-                const key2Redis = `${prefix_cache_chatRoomRole.key.get_all_with_chatRoom_id}_${chatRoomId}`;
-                const isDel1 = this._serviceRedis.deleteData(key1Redis);
-                if (!isDel1) {
-                    console.error('Failed to delete key in Redis', key1Redis);
-                }
-                const isDel2 = this._serviceRedis.deleteData(key2Redis);
-                if (!isDel2) {
-                    console.error('Failed to delete key in Redis', key2Redis);
-                }
+                this._cacheGetChatRoomRoleWithCridAaid.setBody({ chatRoomId: crid, authorizedAccountId: aaid });
+                this._cacheGetChatRoomRoleWithCridAaid.clearCache();
+
+                this._cacheGetAllChatRoomRoleWithCrid.setBody({ chatRoomId: crid });
+                this._cacheGetAllChatRoomRoleWithCrid.clearCache();
 
                 const data = rData;
                 myResponse.message = 'Cập nhật thành công !';
@@ -123,19 +121,6 @@ class Handle_UpdateSetupChatRoomRole {
     };
 }
 
-// export async function getChatRoomRoleWithCridAaid(crid: number, aaid: number): Promise<ChatRoomRoleSchema | undefined> {
-//     const db = getDbMonggo();
-//     const col = db.collection<ChatRoomRoleSchema>('chatRoomRole');
-
-//     const data = await col
-//         .find<ChatRoomRoleSchema>({ authorized_account_id: aaid, chat_room_id: crid }, { projection: { _id: 0 } })
-//         .sort({ timestamp: -1 })
-//         .limit(1)
-//         .toArray();
-
-//     return data.length > 0 ? data[0] : undefined;
-// }
-
 async function updateChatRoomRoleMongo(chatRoomRole: ChatRoomRoleField) {
     const chatRommRoleSchema: ChatRoomRoleSchema = {
         authorized_account_id: chatRoomRole.authorizedAccountId,
@@ -156,7 +141,7 @@ async function updateChatRoomRoleMongo(chatRoomRole: ChatRoomRoleField) {
 
         const { zalo_oa_id, ...doc } = dataParse as any;
 
-        const data = await col.updateOne(
+        await col.updateOne(
             {
                 chat_room_id: chatRommRoleSchema.chat_room_id,
                 authorized_account_id: chatRommRoleSchema.authorized_account_id,

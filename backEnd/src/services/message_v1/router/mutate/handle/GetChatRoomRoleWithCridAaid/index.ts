@@ -7,15 +7,17 @@ import { ChatRoomRoleWithCridAaidBodyField } from '@src/dataStruct/chatRoom/body
 import { CreateMessageV1BodyField } from '@src/dataStruct/message_v1/body';
 import QueryDB_GetChatRoomRoleWithCridAaid from '../../queryDB/GetChatRoomRoleWithCridAaid';
 import { verifyRefreshToken } from '@src/token';
-import { prefix_cache_chatRoomRole } from '@src/const/redisKey/chatRoom';
+import { CacheGetChatRoomRoleWithCridAaid } from '@src/const/redisKey/chatRoom';
 
 class Handle_GetChatRoomRoleWithCridAaid {
     private _mssql_server = mssql_server;
     private _serviceRedis = ServiceRedis.getInstance();
+    private _cacheGetChatRoomRoleWithCridAaid = new CacheGetChatRoomRoleWithCridAaid();
 
     constructor() {
         this._mssql_server.init();
         this._serviceRedis.init();
+        this._cacheGetChatRoomRoleWithCridAaid.init();
     }
 
     setup = (
@@ -69,17 +71,16 @@ class Handle_GetChatRoomRoleWithCridAaid {
         const crid = chatRoomRoleWithCridAaidBody.chatRoomId;
         const aaid = chatRoomRoleWithCridAaidBody.authorizedAccountId;
 
+        this._cacheGetChatRoomRoleWithCridAaid.setBody({ chatRoomId: crid, authorizedAccountId: aaid });
+
         const myResponse: MyResponse<ChatRoomRoleField> = {
             isSuccess: false,
             message: 'Bắt đầu (Handle_GetChatRoomRoleWithCridAaid-main)',
         };
 
-        const keyRedis = `${prefix_cache_chatRoomRole.key.with_crid_Aaid}_${crid}_${aaid}`;
-        const timeExpireat = prefix_cache_chatRoomRole.time;
-
-        const chatRoomRole_redis = await this._serviceRedis.getData<ChatRoomRoleField>(keyRedis);
-        if (chatRoomRole_redis) {
-            res.locals.chatRoomRole = chatRoomRole_redis;
+        const chatRoomRole_cache = await this._cacheGetChatRoomRoleWithCridAaid.getData();
+        if (chatRoomRole_cache) {
+            res.locals.chatRoomRole = chatRoomRole_cache;
             next();
             return;
         }
@@ -100,10 +101,9 @@ class Handle_GetChatRoomRoleWithCridAaid {
             const result = await queryDB.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
                 const rData = result.recordset[0];
-                const isSet = await this._serviceRedis.setData<ChatRoomRoleField>(keyRedis, rData, timeExpireat);
-                if (!isSet) {
-                    console.error('Failed to set thông tin quyền truy cập phòng hội thoại in Redis', keyRedis);
-                }
+
+                this._cacheGetChatRoomRoleWithCridAaid.setData(rData);
+
                 res.locals.chatRoomRole = rData;
                 next();
                 return;

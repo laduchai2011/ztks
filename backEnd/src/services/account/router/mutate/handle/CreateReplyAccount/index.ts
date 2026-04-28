@@ -17,17 +17,19 @@ import MutateDB_CreateReplyAccount from '../../mutateDB/CreateReplyAccount';
 import QueryDB_GetChatRoomWithId from '@src/services/chatRoom/router/query/queryDB/GetChatRoomWithId';
 import { verifyRefreshToken } from '@src/token';
 import { prefix_cache_notReplyAccounts, prefix_cache_replyAccounts } from '@src/const/redisKey/account';
-import { prefix_cache_chatRoom_with_id } from '@src/const/redisKey/chatRoom';
+import { CacheGetChatRoomWithId } from '@src/const/redisKey/chatRoom';
 
-const timeExpireat = 60 * 5; // 5p
+// const timeExpireat = 60 * 5; // 5p
 
 class Handle_CreateReplyAccount {
     private _mssql_server = mssql_server;
     private _serviceRedis = ServiceRedis.getInstance();
+    private _cacheGetChatRoomWithId = new CacheGetChatRoomWithId();
 
     constructor() {
         this._mssql_server.init();
         this._serviceRedis.init();
+        this._cacheGetChatRoomWithId.init();
     }
 
     setup = async (
@@ -81,18 +83,20 @@ class Handle_CreateReplyAccount {
         const chatRoomId = req.body.chatRoomId;
 
         const getChatRoomWithIdBody: GetChatRoomWithIdBodyField = { id: chatRoomId };
+        this._cacheGetChatRoomWithId.setBody(getChatRoomWithIdBody);
 
         const myResponse: MyResponse<ChatRoomField> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_CreateReplyAccount-main)',
+            message: 'Bắt đầu (Handle_CreateReplyAccount-getZaloOaId)',
         };
 
         // get in redis
-        const id = getChatRoomWithIdBody.id;
-        const keyRedis = `${prefix_cache_chatRoom_with_id}_${id}`;
-        const chatRoom = await this._serviceRedis.getData<ChatRoomField>(keyRedis);
-        if (chatRoom) {
-            res.locals.zaloOaId = chatRoom.zaloOaId;
+        // const id = getChatRoomWithIdBody.id;
+        // const keyRedis = `${prefix_cache_chatRoom_with_id}_${id}`;
+        // const chatRoom = await this._serviceRedis.getData<ChatRoomField>(keyRedis);
+        const chatRoom_cache = await this._cacheGetChatRoomWithId.getData();
+        if (chatRoom_cache) {
+            res.locals.zaloOaId = chatRoom_cache.zaloOaId;
             next();
             return;
         }
@@ -114,22 +118,24 @@ class Handle_CreateReplyAccount {
             if (result?.recordset.length && result?.recordset.length > 0) {
                 const r_chatRoom = result.recordset[0];
 
-                // cache into redis
-                const isSet = this._serviceRedis.setData<ChatRoomField>(keyRedis, r_chatRoom, timeExpireat);
-                if (!isSet) {
-                    console.error('Failed to lưu thông tin phòng hội thoại in Redis', keyRedis);
-                }
+                // // cache into redis
+                // const isSet = this._serviceRedis.setData<ChatRoomField>(keyRedis, r_chatRoom, timeExpireat);
+                // if (!isSet) {
+                //     console.error('Failed to lưu thông tin phòng hội thoại in Redis', keyRedis);
+                // }
+
+                this._cacheGetChatRoomWithId.setData(r_chatRoom);
 
                 res.locals.zaloOaId = r_chatRoom.zaloOaId;
                 next();
                 return;
             } else {
-                myResponse.message = 'Lấy phòng chat KHÔNG thành công 1 !';
+                myResponse.message = 'Lấy phòng chat KHÔNG thành công !';
                 res.status(204).json(myResponse);
                 return;
             }
         } catch (error) {
-            myResponse.message = 'Lấy phòng chat KHÔNG thành công 2 !';
+            myResponse.message = 'Lấy phòng chat KHÔNG thành công !!';
             myResponse.err = error;
             res.status(500).json(myResponse);
             return;

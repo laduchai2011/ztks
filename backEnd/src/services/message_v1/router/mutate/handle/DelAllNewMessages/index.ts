@@ -9,16 +9,18 @@ import { ChatRoomRoleWithCridAaidBodyField } from '@src/dataStruct/chatRoom/body
 import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
 import { delAllNewMessages } from '../../mutateMongo/DelAllNewMessages';
 import { verifyRefreshToken } from '@src/token';
-import { prefix_cache_chatRoomRole } from '@src/const/redisKey/chatRoom';
+import { CacheGetChatRoomRoleWithCridAaid } from '@src/const/redisKey/chatRoom';
 import QueryDB_GetChatRoomRoleWithCridAaid from '../../queryDB/GetChatRoomRoleWithCridAaid';
 
 class Handle_DelAllNewMessages {
     private _mssql_server = mssql_server;
     private _serviceRedis = ServiceRedis.getInstance();
+    private _cacheGetChatRoomRoleWithCridAaid = new CacheGetChatRoomRoleWithCridAaid();
 
     constructor() {
         this._mssql_server.init();
         this._serviceRedis.init();
+        this._cacheGetChatRoomRoleWithCridAaid.init();
     }
 
     setup = (req: Request<any, any, any, { chatRoomId: string }>, res: Response, next: NextFunction) => {
@@ -69,17 +71,16 @@ class Handle_DelAllNewMessages {
         const crid = chatRoomRoleWithCridAaidBody.chatRoomId;
         const aaid = chatRoomRoleWithCridAaidBody.authorizedAccountId;
 
+        this._cacheGetChatRoomRoleWithCridAaid.setBody({ chatRoomId: crid, authorizedAccountId: aaid });
+
         const myResponse: MyResponse<NewMessageV1Field<ZaloMessageType>> = {
             isSuccess: false,
             message: 'Bắt đầu (Handle_GetAllNewMessages-getRole)',
         };
 
-        const keyRedis = `${prefix_cache_chatRoomRole.key.with_crid_Aaid}_${crid}_${aaid}`;
-        const timeExpireat = prefix_cache_chatRoomRole.time;
-
-        const chatRoomRole_redis = await this._serviceRedis.getData<ChatRoomRoleField>(keyRedis);
-        if (chatRoomRole_redis) {
-            res.locals.chatRoomRole = chatRoomRole_redis;
+        const chatRoomRole_cache = await this._cacheGetChatRoomRoleWithCridAaid.getData();
+        if (chatRoomRole_cache) {
+            res.locals.chatRoomRole = chatRoomRole_cache;
             next();
             return;
         }
@@ -100,10 +101,9 @@ class Handle_DelAllNewMessages {
             const result = await queryDB.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
                 const rData = result.recordset[0];
-                const isSet = await this._serviceRedis.setData<ChatRoomRoleField>(keyRedis, rData, timeExpireat);
-                if (!isSet) {
-                    console.error('Failed to set thông tin quyền truy cập phòng hội thoại in Redis', keyRedis);
-                }
+
+                this._cacheGetChatRoomRoleWithCridAaid.setData(rData);
+
                 res.locals.chatRoomRole = rData;
                 next();
                 return;

@@ -18,6 +18,10 @@ export interface ChatRoomRoleWithCridAaidBodyField {
     chatRoomId: number;
 }
 
+export interface GetAllChatRoomRoleWithCridBodyField {
+    chatRoomId: number;
+}
+
 export interface UpdateSetupChatRoomRoleBodyField {
     id: number;
     backGroundColor: string;

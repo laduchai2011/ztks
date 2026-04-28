@@ -4,20 +4,23 @@ import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { MyResponse } from '@src/dataStruct/response';
 import { ChatRoomField } from '@src/dataStruct/chatRoom';
+import { GetChatRoomWithIdBodyField } from '@src/dataStruct/chatRoom/body';
 import { OrderField } from '@src/dataStruct/order';
 import { CreateOrderBodyField } from '@src/dataStruct/order/body';
 import { verifyRefreshToken } from '@src/token';
 import QueryDB_GetChatRoomWithId from '../../queryDB/GetChatRoomWithId';
 import MutateDB_CreateOrder from '../../mutateDB/CreateOrder';
-import { prefix_cache_chatRoom } from '@src/const/redisKey/chatRoom';
+import { CacheGetChatRoomWithId } from '@src/const/redisKey/chatRoom';
 
 class Handle_CreateOrder {
     private _mssql_server = mssql_server;
     private _serviceRedis = ServiceRedis.getInstance();
+    private _cacheGetChatRoomWithId = new CacheGetChatRoomWithId();
 
     constructor() {
         this._mssql_server.init();
         this._serviceRedis.init();
+        this._cacheGetChatRoomWithId.init();
     }
 
     setup = async (
@@ -65,19 +68,20 @@ class Handle_CreateOrder {
         const createOrderBody = res.locals.createOrderBody as CreateOrderBodyField;
         const accountId = createOrderBody.accountId;
 
+        const chatRoomId = createOrderBody.chatRoomId;
+        const getChatRoomWithIdBody: GetChatRoomWithIdBodyField = { id: chatRoomId };
+        this._cacheGetChatRoomWithId.setBody(getChatRoomWithIdBody);
+
         const myResponse: MyResponse<OrderField> = {
             isSuccess: false,
             message: 'Bắt đầu (Handle_CreateOrder-isChatRoom)',
         };
 
         // get in redis
-        const chatRoomId = createOrderBody.chatRoomId;
-        const keyRedis = `${prefix_cache_chatRoom.key.with_id}_${chatRoomId}`;
-        const timeExpireat = prefix_cache_chatRoom.time;
 
-        const chatRoom = await this._serviceRedis.getData<ChatRoomField>(keyRedis);
-        if (chatRoom && chatRoom.accountId === accountId) {
-            res.locals.zaloOaId = chatRoom.zaloOaId;
+        const chatRoom_cache = await this._cacheGetChatRoomWithId.getData();
+        if (chatRoom_cache && chatRoom_cache.accountId === accountId) {
+            res.locals.zaloOaId = chatRoom_cache.zaloOaId;
             next();
             return;
         }
@@ -99,11 +103,7 @@ class Handle_CreateOrder {
             if (result?.recordset.length && result?.recordset.length > 0) {
                 const r_chatRoom = result.recordset[0];
 
-                // cache into redis
-                const isSet = this._serviceRedis.setData<ChatRoomField>(keyRedis, r_chatRoom, timeExpireat);
-                if (!isSet) {
-                    console.error('Failed to lưu thông tin phòng hội thoại in Redis', keyRedis);
-                }
+                this._cacheGetChatRoomWithId.setData(r_chatRoom);
 
                 if (r_chatRoom.accountId === accountId) {
                     res.locals.zaloOaId = r_chatRoom.zaloOaId;

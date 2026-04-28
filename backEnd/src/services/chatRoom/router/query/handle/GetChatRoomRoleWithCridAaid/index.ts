@@ -5,33 +5,32 @@ import { MyResponse } from '@src/dataStruct/response';
 import { ChatRoomRoleField } from '@src/dataStruct/chatRoom';
 import { ChatRoomRoleWithCridAaidBodyField } from '@src/dataStruct/chatRoom/body';
 import QueryDB_GetChatRoomRoleWithCridAaid from '../../queryDB/GetChatRoomRoleWithCridAaid';
-import { prefix_cache_chatRoomRole } from '@src/const/redisKey/chatRoom';
+import { CacheGetChatRoomRoleWithCridAaid } from '@src/const/redisKey/chatRoom';
 
 class Handle_GetChatRoomRoleWithCridAaid {
     private _mssql_server = mssql_server;
     private _serviceRedis = ServiceRedis.getInstance();
+    private _cacheGetChatRoomRoleWithCridAaid = new CacheGetChatRoomRoleWithCridAaid();
 
     constructor() {
         this._mssql_server.init();
         this._serviceRedis.init();
+        this._cacheGetChatRoomRoleWithCridAaid.init();
     }
 
     main = async (req: Request<Record<string, never>, unknown, ChatRoomRoleWithCridAaidBodyField>, res: Response) => {
         const chatRoomRoleWithCridAaidBody = req.body;
-        const crid = chatRoomRoleWithCridAaidBody.chatRoomId;
-        const aaid = chatRoomRoleWithCridAaidBody.authorizedAccountId;
+
+        this._cacheGetChatRoomRoleWithCridAaid.setBody(chatRoomRoleWithCridAaidBody);
 
         const myResponse: MyResponse<ChatRoomRoleField> = {
             isSuccess: false,
             message: 'Bắt đầu (Handle_GetChatRoomRoleWithCridAaid-main)',
         };
 
-        const keyRedis = `${prefix_cache_chatRoomRole.key.with_crid_Aaid}_${crid}_${aaid}`;
-        const timeExpireat = prefix_cache_chatRoomRole.time;
-
-        const chatRoomRole_redis = await this._serviceRedis.getData<ChatRoomRoleField>(keyRedis);
-        if (chatRoomRole_redis) {
-            myResponse.data = chatRoomRole_redis;
+        const chatRoomRole_cache = await this._cacheGetChatRoomRoleWithCridAaid.getData();
+        if (chatRoomRole_cache) {
+            myResponse.data = chatRoomRole_cache;
             myResponse.message = 'Lấy thông tin quyền truy cập phòng hội thoại thành công !';
             myResponse.isSuccess = true;
             res.status(200).json(myResponse);
@@ -54,10 +53,8 @@ class Handle_GetChatRoomRoleWithCridAaid {
             const result = await queryDB.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
                 const rData = result.recordset[0];
-                const isSet = await this._serviceRedis.setData<ChatRoomRoleField>(keyRedis, rData, timeExpireat);
-                if (!isSet) {
-                    console.error('Failed to set thông tin quyền truy cập phòng hội thoại in Redis', keyRedis);
-                }
+
+                this._cacheGetChatRoomRoleWithCridAaid.setData(rData);
 
                 myResponse.data = rData;
                 myResponse.message = 'Lấy thông tin quyền truy cập phòng hội thoại thành công !';

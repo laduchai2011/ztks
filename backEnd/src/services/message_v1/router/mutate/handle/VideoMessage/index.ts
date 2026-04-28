@@ -23,7 +23,7 @@ import { accountType_enum } from '@src/dataStruct/account';
 import { prefix_cache_zaloApp, prefix_cache_zaloOa } from '@src/const/redisKey/zalo';
 import { prefix_cache_accountInformation } from '@src/const/redisKey/account';
 import { prefix_cache_agent } from '@src/const/redisKey/agent';
-import { prefix_cache_chatRoomRole } from '@src/const/redisKey/chatRoom';
+import { CacheGetChatRoomRoleWithCridAaid } from '@src/const/redisKey/chatRoom';
 import { sendVideoMessage } from '@src/messageQueue/Producer';
 import { HookDataSchema, MessageVideoField } from '@src/dataStruct/zalo/hookData';
 import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
@@ -39,10 +39,12 @@ const dev_prefix = isProduct ? '' : 'dev';
 class Handle_VideoMessage {
     private _mssql_server = mssql_server;
     private _serviceRedis = ServiceRedis.getInstance();
+    private _cacheGetChatRoomRoleWithCridAaid = new CacheGetChatRoomRoleWithCridAaid();
 
     constructor() {
         this._mssql_server.init();
         this._serviceRedis.init();
+        this._cacheGetChatRoomRoleWithCridAaid.init();
     }
 
     setup = async (req: Request<any, any, VideoMessageBodyField>, res: Response, next: NextFunction) => {
@@ -437,12 +439,9 @@ class Handle_VideoMessage {
             message: 'Bắt đầu (Handle_VideoMessage-getChatRoomRole)',
         };
 
-        const keyRedis = `${prefix_cache_chatRoomRole.key.with_crid_Aaid}_${chatRoomRoleWithCridAaidBody.chatRoomId}_${chatRoomRoleWithCridAaidBody.authorizedAccountId}`;
-        const timeExpireat = prefix_cache_chatRoomRole.time;
-
-        const chatRoomRole_redis = await this._serviceRedis.getData<ChatRoomRoleField>(keyRedis);
-        if (chatRoomRole_redis) {
-            res.locals.chatRoomRole = chatRoomRole_redis;
+        const chatRoomRole_cache = await this._cacheGetChatRoomRoleWithCridAaid.getData();
+        if (chatRoomRole_cache) {
+            res.locals.chatRoomRole = chatRoomRole_cache;
             next();
             return;
         }
@@ -463,10 +462,9 @@ class Handle_VideoMessage {
             const result = await queryDB.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
                 const rData = result.recordset[0];
-                const isSet = await this._serviceRedis.setData<ChatRoomRoleField>(keyRedis, rData, timeExpireat);
-                if (!isSet) {
-                    console.error('Failed to set thông tin quyền truy cập phòng hội thoại in Redis', keyRedis);
-                }
+
+                this._cacheGetChatRoomRoleWithCridAaid.setData(rData);
+
                 res.locals.chatRoomRole = rData;
                 next();
                 return;

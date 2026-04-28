@@ -19,7 +19,7 @@ import ServiceRedis from '@src/cache/cacheRedis';
 import { AccountReceiveMessageField } from '@src/dataStruct/account';
 import { GetAccountReceiveMessageBodyField } from '@src/dataStruct/account/body';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { ChatRoomField, ChatRoomRoleSchema, ChatRoomRoleField } from '@src/dataStruct/chatRoom';
+import { ChatRoomField, ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
 import { ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
 import { UserTakeRoomToChatBodyField, ChatRoomBodyField } from '@src/dataStruct/chatRoom/body';
 import { CheckZaloAppWithAppIdBodyField, CheckZaloOaListWithZaloAppIdBodyField } from '@src/dataStruct/zalo/body';
@@ -34,7 +34,7 @@ import {
     prefix_cache_zaloOa_list_with_zaloAppId,
     prefix_cache_chatRoom_with_zaloOaId_userIdByApp,
 } from '@src/const/redisKey';
-import { prefix_cache_chatRoomRole } from '@src/const/redisKey/chatRoom';
+import { CacheGetAllChatRoomRoleWithCrid } from '@src/const/redisKey/chatRoom';
 import { IsPassField, WaitSessionField } from './type';
 import {
     HookDataField,
@@ -587,12 +587,14 @@ async function GetAccountReceiveMessage(selectedAccountId: number, zaloOaId: num
 }
 
 async function GetAllChatRoomRolesWithChatRoomId(chatRoomId: number) {
-    const keyRedis = `${prefix_cache_chatRoomRole.key.get_all_with_chatRoom_id}_${chatRoomId}`;
-    const timeExpireat = prefix_cache_chatRoomRole.time;
+    const cacheGetAllChatRoomRoleWithCrid = new CacheGetAllChatRoomRoleWithCrid();
+    await cacheGetAllChatRoomRoleWithCrid.init();
 
-    const allChatRoomRoles_redis = await serviceRedis.getData<ChatRoomRoleField[]>(keyRedis);
-    if (allChatRoomRoles_redis) {
-        return allChatRoomRoles_redis;
+    cacheGetAllChatRoomRoleWithCrid.setBody({ chatRoomId: chatRoomId });
+    const allChatRoomRole_cache = await cacheGetAllChatRoomRoleWithCrid.getData();
+
+    if (allChatRoomRole_cache) {
+        return allChatRoomRole_cache;
     }
 
     const queryDB = new QueryDB_GetAllChatRoomRolesWithChatRoomId();
@@ -610,10 +612,9 @@ async function GetAllChatRoomRolesWithChatRoomId(chatRoomId: number) {
         const result = await queryDB.run();
         if (result?.recordset.length && result?.recordset.length > 0) {
             const rAllData = result?.recordset;
-            const isSet = await serviceRedis.setData<ChatRoomRoleField[]>(keyRedis, rAllData, timeExpireat);
-            if (!isSet) {
-                console.error('Failed to set thông tin tất cả chatRoomRole in Redis', keyRedis);
-            }
+
+            cacheGetAllChatRoomRoleWithCrid.setData(rAllData);
+
             return rAllData;
         } else {
             return;
