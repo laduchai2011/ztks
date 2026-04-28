@@ -8,7 +8,6 @@ import MutateDB_UpdateSetupChatRoomRole from '../../mutateDB/UpdateSetupChatRoom
 import { verifyRefreshToken } from '@src/token';
 import { CacheGetChatRoomRoleWithCridAaid, CacheGetAllChatRoomRoleWithCrid } from '@src/const/redisKey/chatRoom';
 import { ChatRoomRoleZodSchema } from '@src/schema/chatRoom';
-// import { ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
 import { getDbMonggo } from '@src/connect/mongo';
 
 class Handle_UpdateSetupChatRoomRole {

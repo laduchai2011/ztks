@@ -22,6 +22,7 @@ const prefix_cache_getChatRoomWithId = {
 const prefix_cache_getChatRoomRoleWithCridAaid = {
     key: {
         main: isProduct ? 'cache_get_chatRoomRoleWithCridAaid' : 'cache_get_chatRoomRoleWithCridAaid_dev',
+        cache_keys_with_crid: 'cache_get_chatRoomRoles_cache_keys_with_crid',
     },
     time: 60 * 5, // 5p
 };
@@ -115,6 +116,7 @@ export class CacheGetChatRoomWithId {
 export class CacheGetChatRoomRoleWithCridAaid {
     private _body: ChatRoomRoleWithCridAaidBodyField | undefined;
     private _serviceRedis = ServiceRedis.getInstance();
+    private _fkCrid: number | undefined;
 
     constructor() {}
 
@@ -124,6 +126,10 @@ export class CacheGetChatRoomRoleWithCridAaid {
 
     setBody(body: ChatRoomRoleWithCridAaidBodyField) {
         this._body = body;
+    }
+
+    setFkCrid(fkCrid: number) {
+        this._fkCrid = fkCrid;
     }
 
     getKeyMain() {
@@ -137,6 +143,15 @@ export class CacheGetChatRoomRoleWithCridAaid {
         return key_main;
     }
 
+    getKeyCacheKeysWithCrid() {
+        if (!this._fkCrid) {
+            console.error('Chưa thiết lập fk');
+            return;
+        }
+        const key_cache_keys_with_crid = `${prefix_cache_getChatRoomRoleWithCridAaid.key.cache_keys_with_crid}_fkCrid${this._fkCrid}`;
+        return key_cache_keys_with_crid;
+    }
+
     getTimeExpireat() {
         const timeExpireat = prefix_cache_getChatRoomRoleWithCridAaid.time;
         return timeExpireat;
@@ -145,9 +160,15 @@ export class CacheGetChatRoomRoleWithCridAaid {
     async setData(data: ChatRoomRoleField) {
         const key_main = this.getKeyMain();
         const timeExpireat = this.getTimeExpireat();
+        const key_cache_keys_with_crid = this.getKeyCacheKeysWithCrid();
 
         if (!key_main) {
             console.error('Lấy key_main không thành công');
+            return;
+        }
+
+        if (!key_cache_keys_with_crid) {
+            console.error('Lấy key_cache_keys_with_crid không thành công');
             return;
         }
 
@@ -155,6 +176,10 @@ export class CacheGetChatRoomRoleWithCridAaid {
         if (!isSet) {
             console.error('Failed to set in Redis', key_main);
         }
+
+        const clientRedis = this._serviceRedis.getClientRedis();
+        await clientRedis.sAdd(key_cache_keys_with_crid, key_main);
+        await clientRedis.expire(key_cache_keys_with_crid, timeExpireat);
 
         return isSet;
     }
@@ -181,6 +206,22 @@ export class CacheGetChatRoomRoleWithCridAaid {
         }
 
         await this._serviceRedis.deleteData(key_main);
+    }
+
+    async clearCacheWithFkCrid() {
+        const key_cache_keys_with_crid = this.getKeyCacheKeysWithCrid();
+
+        if (!key_cache_keys_with_crid) {
+            console.error('Lấy key_cache_keys_with_crid không thành công');
+            return;
+        }
+
+        const clientRedis = this._serviceRedis.getClientRedis();
+        const keys_main = await clientRedis.sMembers(key_cache_keys_with_crid);
+        keys_main.map((key) => {
+            this._serviceRedis.deleteData(key);
+        });
+        await clientRedis.del(key_cache_keys_with_crid);
     }
 }
 
