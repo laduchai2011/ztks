@@ -22,7 +22,12 @@ import { MessageV1Field } from '@src/dataStruct/message_v1';
 import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
 import { MessageImageBodyField } from '@src/dataStruct/zalo/hookData/body';
 import ReplyContainer from './component/ReplyContainer';
-import { set_repliedMessage, setData_toastMessage, set_isLoading } from '@src/redux/slice/MessageV1';
+import {
+    set_repliedMessage,
+    setData_toastMessage,
+    set_isLoading,
+    setIsShow_changeChatRoomMasterDialog,
+} from '@src/redux/slice/MessageV1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { uploadAImageToZalo, uploadVideo } from '../../handle';
 import { AccountField } from '@src/dataStruct/account';
@@ -354,6 +359,10 @@ const InputMsg = () => {
         });
     };
 
+    const handleOpenChangeChatRoomMaster = () => {
+        dispatch(setIsShow_changeChatRoomMasterDialog(true));
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.icons}>
@@ -385,7 +394,7 @@ const InputMsg = () => {
                 <div className={style.icons2}>
                     <FaShoppingCart onClick={() => handleGoToOrder()} size={20} color="red" />
                     <LuNotebookPen onClick={() => handleGoToNote()} size={20} />
-                    <TbTransfer size={20} />
+                    <TbTransfer onClick={() => handleOpenChangeChatRoomMaster()} size={20} />
                 </div>
             </div>
             {repliedMessage && <ReplyContainer data={repliedMessage} />}

@@ -1,7 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { ChatRoomField } from '@src/dataStruct/chatRoom';
+import { ZaloOaField } from '@src/dataStruct/zalo';
+import { ChatRoomField, ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
 import { ChangeChatRoomMasterBodyField } from '@src/dataStruct/chatRoom/body';
 import MutateDB_ChangeChatRoomMaster from '../../mutateDB/ChangeChatRoomMaster';
 import { verifyRefreshToken } from '@src/token';
@@ -12,6 +13,7 @@ import {
     CacheGetAllChatRoomRoleWithCrid,
     CacheGetChatRoomWithZaloOaIdUserIdByApp,
 } from '@src/const/redisKey/chatRoom';
+import { ChatRoomRoleZodSchema, ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
 
 class Handle_ChangeChatRoomMaster {
     private _mssql_server = mssql_server;
@@ -102,7 +104,9 @@ class Handle_ChangeChatRoomMaster {
                 });
                 await this._cacheGetChatRoomWithZaloOaIdUserIdByApp.clearCache();
 
-                await clearMongo(rData.accountId);
+                await clearMongo(changeChatRoomMasterBody.accountId);
+
+                await createChatRoomRoleMongo(rData, rData.zaloOaId);
 
                 const data = rData;
                 myResponse.message = 'Cập nhật thành công !';
@@ -111,13 +115,13 @@ class Handle_ChangeChatRoomMaster {
                 res.status(200).json(myResponse);
                 return;
             } else {
-                myResponse.message = 'Cập nhật KHÔNG thành công 1 !';
+                myResponse.message = 'Cập nhật KHÔNG thành công !';
                 res.status(200).json(myResponse);
                 return;
             }
         } catch (error) {
             console.error(error);
-            myResponse.message = 'Cập nhật KHÔNG thành công 2 !';
+            myResponse.message = 'Cập nhật KHÔNG thành công !!';
             myResponse.err = error;
             res.status(500).json(myResponse);
             return;
@@ -137,6 +141,25 @@ async function clearMongo(accountId: number) {
     await col_newMessage.deleteMany({
         account_id: accountId,
     });
+}
+
+async function createChatRoomRoleMongo(chatRoom: ChatRoomField, zaloOaId: number) {
+    const chatRommRoleSchema: ChatRoomRoleSchema = {
+        authorized_account_id: chatRoom.accountId,
+        is_read: true,
+        is_send: true,
+        chat_room_id: chatRoom.id,
+        zalo_oa_id: zaloOaId,
+        account_id: chatRoom.accountId,
+    };
+    const parsedChatRoomRole = ChatRoomRoleZodSchema.safeParse(chatRommRoleSchema);
+    if (!parsedChatRoomRole.success) {
+        console.error('Invalid chatRoomRole format:', parsedChatRoomRole.error);
+    } else {
+        const dbMonggo = getDbMonggo();
+        const dataParse = parsedChatRoomRole.data;
+        await dbMonggo.collection<ChatRoomRoleSchemaType>('chatRoomRole').insertOne(dataParse);
+    }
 }
 
 export default Handle_ChangeChatRoomMaster;

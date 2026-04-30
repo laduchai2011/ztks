@@ -39,8 +39,8 @@ class QueryDB_GetOrders {
                     .input('moneyTo', sql.Decimal(20, 2), this._ordersFilterBody.moneyTo ?? null)
                     .input('isPay', sql.Bit, this._ordersFilterBody.isPay ?? null)
                     .input('phone', sql.NVarChar(255), this._ordersFilterBody.phone ?? null)
-                    .input('chatRoomId', sql.Int, this._ordersFilterBody.chatRoomId ?? null)
-                    .input('zaloOaId', sql.Int, this._ordersFilterBody.zaloOaId ?? null)
+                    .input('isDelete', sql.Bit, this._ordersFilterBody.isDelete ?? null)
+                    .input('chatRoomId', sql.Int, this._ordersFilterBody.chatRoomId)
                     .input('accountId', sql.Int, this._ordersFilterBody.accountId)
                     .execute('GetOrders');
 

@@ -10,7 +10,7 @@ import {
     getDateKeyVN,
 } from '@src/schema/message';
 import { NewMessageV1Field, MessageAmountInDayField } from '@src/dataStruct/message_v1';
-import { ChatRoomRoleZodSchema } from '@src/schema/chatRoom';
+import { ChatRoomRoleZodSchema, ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
 import { SocketMessageField, MessageV1Field } from '@src/dataStruct/message_v1';
 import { getDbMonggo } from '@src/connect/mongo';
 import { my_log } from '@src/log';
@@ -20,7 +20,6 @@ import { AccountReceiveMessageField } from '@src/dataStruct/account';
 import { GetAccountReceiveMessageBodyField } from '@src/dataStruct/account/body';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { ChatRoomField, ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
-import { ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
 import { UserTakeRoomToChatBodyField, ChatRoomBodyField } from '@src/dataStruct/chatRoom/body';
 import { CheckZaloAppWithAppIdBodyField, CheckZaloOaListWithZaloAppIdBodyField } from '@src/dataStruct/zalo/body';
 import QueryDB_CheckZaloAppWithAppId from './handleHookData/queryDB/CheckZaloAppWithAppId';
@@ -60,6 +59,22 @@ const timeExpireat = 60 * 3; // 3p
 
 export function hookData() {
     consumeHookData(`zalo_hook_data_queue${prefix}`, async (data) => {
+        // const chatRommRoleSchema: ChatRoomRoleSchema = {
+        //     authorized_account_id: 1,
+        //     is_read: true,
+        //     is_send: true,
+        //     chat_room_id: 2,
+        //     zalo_oa_id: 1,
+        //     account_id: 1,
+        // };
+        // const parsedChatRoomRole = ChatRoomRoleZodSchema.safeParse(chatRommRoleSchema);
+        // if (!parsedChatRoomRole.success) {
+        //     console.error('Invalid chatRoomRole format:', parsedChatRoomRole.error);
+        // } else {
+        //     const dbMonggo = getDbMonggo();
+        //     const dataParse = parsedChatRoomRole.data;
+        //     await dbMonggo.collection<ChatRoomRoleSchemaType>('chatRoomRole').insertOne(dataParse);
+        // }
         // console.log('Hook Data Received:');
         // console.dir(data, { depth: null });
         const app_id = data.app_id;

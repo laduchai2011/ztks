@@ -18,6 +18,7 @@ const OrderList = () => {
     const [filterBody, setFilterBody] = useState<OrdersFilterBodyField>({
         page: -1,
         size: 5,
+        chatRoomId: -1,
         accountId: -1,
     });
     const [orders, setOrders] = useState<OrderField[]>([]);

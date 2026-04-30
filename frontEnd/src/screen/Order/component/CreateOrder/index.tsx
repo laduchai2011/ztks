@@ -85,7 +85,6 @@ const CreateOrder = () => {
             money: 0,
             phone: '',
             chatRoomId: chatRoomId_num,
-            zaloOaId: -1,
             accountId: -1,
         };
         dispatch(set_isLoading(true));

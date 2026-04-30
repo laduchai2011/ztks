@@ -5,8 +5,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux';
 import {
     PROFILE,
-    // MEMBER_RECEIVE_MESSAGE,
-    // MANAGE_MEMBERS,
     SIGNOUT,
     OA,
     ACCOUNT_RECEIVE_MESSAGE,

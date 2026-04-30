@@ -17,7 +17,7 @@ router_mutate_order.post(
     '/createOrder',
     authentication,
     handle_createOrder.setup,
-    handle_createOrder.isChatRoom,
+    // handle_createOrder.isChatRoom,
     handle_createOrder.main
 );
 
@@ -25,7 +25,7 @@ router_mutate_order.patch(
     '/updateOrder',
     authentication,
     handle_updateOrder.setup,
-    handle_updateOrder.isMyOrder,
+    // handle_updateOrder.isMyOrder,
     handle_updateOrder.main
 );
 

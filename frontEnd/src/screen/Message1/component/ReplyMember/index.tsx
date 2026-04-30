@@ -1,8 +1,8 @@
 import { memo, useState, useRef, useEffect } from 'react';
 import style from './style.module.scss';
 import { useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '@src/redux';
+import { useSelector } from 'react-redux';
+import { RootState } from '@src/redux';
 import { GoChevronDown, GoChevronUp } from 'react-icons/go';
 import { IoAdd } from 'react-icons/io5';
 import Added from './component/Added';

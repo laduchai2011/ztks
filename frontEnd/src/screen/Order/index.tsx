@@ -5,7 +5,6 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { ORDER } from '@src/const/text';
 import CreateOrder from './component/CreateOrder';
-import OaList from './component/OaList';
 import OrderList from './component/OrderList';
 import EditOrder from './component/EditOrder';
 import Pay from './component/Pay';
@@ -42,7 +41,6 @@ const Order = () => {
         <div className={style.parent}>
             <div className={style.main}>
                 <div className={style.header}>{ORDER}</div>
-                <OaList />
                 <CreateOrder />
                 <OrderList />
                 <div className={style.headerTab}>

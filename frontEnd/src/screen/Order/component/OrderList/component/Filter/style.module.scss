@@ -5,7 +5,7 @@
     padding: 10px;
     border-top: 1px solid blue;
 
-    > .chatRoomId {
+    > .searchInput {
         width: 100%;
         box-sizing: border-box;
         padding: 5px;
@@ -26,6 +26,20 @@
         }
     }
 
+    > .selectedValue {
+        @include center-of-row;
+        margin: 5px 0;
+
+        > div {
+            margin: 0 5px;
+            @include center-of-row;
+
+            > div {
+                font-size: 0.8rem;
+            }
+        }
+    }
+
     > .checks {
         @include center-of-row;
         justify-content: space-between;
@@ -34,32 +48,43 @@
 
         > div:nth-child(1) {
             @include center-of-row;
-            margin: 0 5px;
+            margin: 0 2px;
 
             > div {
                 color: blue;
-                font-size: 0.9rem;
+                font-size: 0.8rem;
             }
         }
 
         > div:nth-child(2) {
             @include center-of-row;
-            margin: 0 5px;
+            margin: 0 2px;
 
             > div {
                 color: red;
-                font-size: 0.9rem;
+                font-size: 0.8rem;
                 text-decoration: line-through;
             }
         }
 
         > div:nth-child(3) {
             @include center-of-row;
-            margin: 0 5px;
+            margin: 0 2px;
 
             > div {
                 color: rgb(0, 206, 221);
-                font-size: 0.9rem;
+                font-size: 0.8rem;
+                text-decoration: line-through;
+            }
+        }
+
+        > div:nth-child(4) {
+            @include center-of-row;
+            margin: 0 2px;
+
+            > div {
+                color: rgb(3, 89, 95);
+                font-size: 0.8rem;
             }
         }
     }

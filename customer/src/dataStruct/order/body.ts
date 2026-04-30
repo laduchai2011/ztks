@@ -31,10 +31,10 @@ export interface UpdateOrderBodyField {
     accountId: number;
 }
 
-export interface GetMyOrderWithIdBodyField {
-    id: number;
-    accountId: number;
-}
+// export interface GetMyOrderWithIdBodyField {
+//     id: number;
+//     accountId: number;
+// }
 
 export interface GetOrderWithIdBodyField {
     id: number;

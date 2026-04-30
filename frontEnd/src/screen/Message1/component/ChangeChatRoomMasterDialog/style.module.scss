@@ -71,6 +71,9 @@
             > .list {
                 box-sizing: border-box;
                 padding: 5px;
+                max-height: 400px;
+                overflow-y: auto;
+                @include small-scroll-yy(1px);
 
                 > .one {
                     @include center-of-row;
@@ -85,6 +88,22 @@
                     > div {
                         flex: 1;
                         margin: 0 5px;
+                    }
+                }
+            }
+
+            > .seeMore {
+                @include center-of-rectangle;
+                box-sizing: border-box;
+                padding: 10px;
+
+                > div {
+                    user-select: none;
+                    color: blue;
+                    cursor: pointer;
+
+                    &:hover {
+                        text-decoration: underline;
                     }
                 }
             }

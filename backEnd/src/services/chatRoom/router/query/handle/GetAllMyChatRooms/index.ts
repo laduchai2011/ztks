@@ -1,25 +1,23 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { AgentField } from '@src/dataStruct/agent';
-import { AgentAddAccountBodyField } from '@src/dataStruct/agent/body';
+import { ChatRoomField } from '@src/dataStruct/chatRoom';
+import { GetAllMyChatRoomsBodyField } from '@src/dataStruct/chatRoom/body';
+import QueryDB_GetAllMyChatRooms from '../../queryDB/GetAllMyChatRooms';
 import { verifyRefreshToken } from '@src/token';
-import MutateDB_AgentAddAccount from '../../mutateDB/AgentAddAccount';
 
-class Handle_AgentAddAccount {
+class Handle_GetAllMyChatRooms {
     private _mssql_server = mssql_server;
 
-    constructor() {
-        this._mssql_server.init();
-    }
+    constructor() {}
 
-    setup = async (req: Request<any, any, AgentAddAccountBodyField>, res: Response, next: NextFunction) => {
-        const myResponse: MyResponse<AgentField> = {
+    setup = (req: Request<any, any, GetAllMyChatRoomsBodyField>, res: Response, next: NextFunction) => {
+        const myResponse: MyResponse<ChatRoomField[]> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_AgentAddAccount-setup)',
+            message: 'Bắt đầu (Handle_GetAllMyChatRooms-setup)',
         };
 
-        const agentAddAccountBody = req.body;
+        const getAllMyChatRoomsBody = req.body;
         const { refreshToken } = req.cookies;
 
         if (typeof refreshToken === 'string') {
@@ -38,12 +36,10 @@ class Handle_AgentAddAccount {
             }
 
             const { id } = verify_refreshToken;
-            const agentAddAccountBody_cp = { ...agentAddAccountBody };
-            agentAddAccountBody_cp.accountId = id;
-            res.locals.agentAddAccountBody = agentAddAccountBody_cp;
+            getAllMyChatRoomsBody.accountId = id;
+            res.locals.getAllMyChatRoomsBody = getAllMyChatRoomsBody;
 
             next();
-            return;
         } else {
             myResponse.message = 'Vui lòng đăng nhập lại !';
             res.status(500).json(myResponse);
@@ -52,19 +48,21 @@ class Handle_AgentAddAccount {
     };
 
     main = async (_: Request, res: Response) => {
-        const agentAddAccountBody = res.locals.agentAddAccountBody as AgentAddAccountBodyField;
+        const getAllMyChatRoomsBody = res.locals.getAllMyChatRoomsBody as GetAllMyChatRoomsBodyField;
 
-        const myResponse: MyResponse<AgentField> = {
+        const myResponse: MyResponse<ChatRoomField[]> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_AgentAddAccount-main)',
+            message: 'Bắt đầu (Handle_GetAllMyChatRooms-main)',
         };
 
-        const mutateDB = new MutateDB_AgentAddAccount();
-        mutateDB.setAgentAddAccountBody(agentAddAccountBody);
+        await this._mssql_server.init();
+
+        const queryDB = new QueryDB_GetAllMyChatRooms();
+        queryDB.setGetAllMyChatRoomsBody(getAllMyChatRoomsBody);
 
         const connection_pool = this._mssql_server.get_connectionPool();
         if (connection_pool) {
-            mutateDB.set_connection_pool(connection_pool);
+            queryDB.set_connection_pool(connection_pool);
         } else {
             myResponse.message = 'Kết nối cơ sở dữ liệu không thành công !';
             res.status(500).json(myResponse);
@@ -72,21 +70,20 @@ class Handle_AgentAddAccount {
         }
 
         try {
-            const result = await mutateDB.run();
+            const result = await queryDB.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
-                const data = result.recordset[0];
-                myResponse.message = 'Chỉ định thành viên cho agent thành công !';
+                myResponse.data = result?.recordset;
+                myResponse.message = 'Lấy tất cả phòng hội thoại của tôi thành công !';
                 myResponse.isSuccess = true;
-                myResponse.data = data;
                 res.status(200).json(myResponse);
                 return;
             } else {
-                myResponse.message = 'Chỉ định thành viên cho agent KHÔNG thành công !';
-                res.status(200).json(myResponse);
+                myResponse.message = 'Lấy tất cả phòng hội thoại của tôi KHÔNG thành công !';
+                res.status(204).json(myResponse);
                 return;
             }
         } catch (error) {
-            myResponse.message = 'Chỉ định thành viên cho agent KHÔNG thành công !!';
+            myResponse.message = 'Lấy tất cả phòng hội thoại của tôi KHÔNG thành công !!';
             myResponse.err = error;
             res.status(500).json(myResponse);
             return;
@@ -94,4 +91,4 @@ class Handle_AgentAddAccount {
     };
 }
 
-export default Handle_AgentAddAccount;
+export default Handle_GetAllMyChatRooms;

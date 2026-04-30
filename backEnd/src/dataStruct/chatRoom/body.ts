@@ -13,6 +13,10 @@ export interface GetChatRoomWithIdBodyField {
     id: number;
 }
 
+export interface GetAllMyChatRoomsBodyField {
+    accountId: number;
+}
+
 export interface ChatRoomRoleWithCridAaidBodyField {
     authorizedAccountId: number;
     chatRoomId: number;

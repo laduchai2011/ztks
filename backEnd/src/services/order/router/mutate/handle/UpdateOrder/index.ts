@@ -3,9 +3,7 @@ import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
 import MutateDB_UpdateOrder from '../../mutateDB/UpdateOrder';
-import QueryDB_GetMyOrderWithId from '../../queryDB/GetMyOrderWithId';
 import { verifyRefreshToken } from '@src/token';
-import { GetMyOrderWithIdBodyField } from '@src/dataStruct/order/body';
 import { OrderField } from '@src/dataStruct/order';
 import { UpdateOrderBodyField } from '@src/dataStruct/order/body';
 
@@ -59,47 +57,47 @@ class Handle_UpdateOrder {
         }
     };
 
-    isMyOrder = async (_: Request, res: Response, next: NextFunction) => {
-        const updateOrderBody = res.locals.updateOrderBody as UpdateOrderBodyField;
+    // isMyOrder = async (_: Request, res: Response, next: NextFunction) => {
+    //     const updateOrderBody = res.locals.updateOrderBody as UpdateOrderBodyField;
 
-        const myResponse: MyResponse<OrderField> = {
-            isSuccess: false,
-            message: 'Băt đầu (Handle_UpdateOrder-isMyOrder) !',
-        };
+    //     const myResponse: MyResponse<OrderField> = {
+    //         isSuccess: false,
+    //         message: 'Băt đầu (Handle_UpdateOrder-isMyOrder) !',
+    //     };
 
-        const getMyOrderWithIdBody: GetMyOrderWithIdBodyField = {
-            id: updateOrderBody.id,
-            accountId: updateOrderBody.accountId,
-        };
+    //     const getMyOrderWithIdBody: GetMyOrderWithIdBodyField = {
+    //         id: updateOrderBody.id,
+    //         accountId: updateOrderBody.accountId,
+    //     };
 
-        const queryDB = new QueryDB_GetMyOrderWithId();
-        queryDB.setGetMyOrderWithIdBody(getMyOrderWithIdBody);
+    //     const queryDB = new QueryDB_GetMyOrderWithId();
+    //     queryDB.setGetMyOrderWithIdBody(getMyOrderWithIdBody);
 
-        const connection_pool = this._mssql_server.get_connectionPool();
-        if (connection_pool) {
-            queryDB.set_connection_pool(connection_pool);
-        } else {
-            console.error('Kết nối cơ sở dữ liệu không thành công !');
-        }
+    //     const connection_pool = this._mssql_server.get_connectionPool();
+    //     if (connection_pool) {
+    //         queryDB.set_connection_pool(connection_pool);
+    //     } else {
+    //         console.error('Kết nối cơ sở dữ liệu không thành công !');
+    //     }
 
-        try {
-            const result = await queryDB.run();
-            if (result?.recordset.length && result?.recordset.length > 0) {
-                next();
-                return;
-            } else {
-                myResponse.message = 'Đơn hàng này bạn không có quyền chỉnh sửa !';
-                res.status(200).json(myResponse);
-                return;
-            }
-        } catch (error) {
-            console.error(error);
-            myResponse.message = 'Đơn hàng này bạn không có quyền chỉnh sửa !!';
-            myResponse.err = error;
-            res.status(500).json(myResponse);
-            return;
-        }
-    };
+    //     try {
+    //         const result = await queryDB.run();
+    //         if (result?.recordset.length && result?.recordset.length > 0) {
+    //             next();
+    //             return;
+    //         } else {
+    //             myResponse.message = 'Đơn hàng này bạn không có quyền chỉnh sửa !';
+    //             res.status(200).json(myResponse);
+    //             return;
+    //         }
+    //     } catch (error) {
+    //         console.error(error);
+    //         myResponse.message = 'Đơn hàng này bạn không có quyền chỉnh sửa !!';
+    //         myResponse.err = error;
+    //         res.status(500).json(myResponse);
+    //         return;
+    //     }
+    // };
 
     main = async (_: Request, res: Response) => {
         const updateOrderBody = res.locals.updateOrderBody as UpdateOrderBodyField;

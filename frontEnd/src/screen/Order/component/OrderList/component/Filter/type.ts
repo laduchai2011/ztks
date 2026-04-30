@@ -1,7 +1,7 @@
 export enum SelectFilterEnum {
     ChatRoomId = 'chatRoomId',
-    OrderId = 'orderId',
+    OrderUuid = 'orderUuid',
     PhoneNumber = 'phoneNumber',
 }
 
-export type SelectFilterType = SelectFilterEnum.ChatRoomId | SelectFilterEnum.OrderId | SelectFilterEnum.PhoneNumber;
+export type SelectFilterType = SelectFilterEnum.ChatRoomId | SelectFilterEnum.OrderUuid | SelectFilterEnum.PhoneNumber;

@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { state_props, orderStatusType_type } from '@src/screen/Order/type';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { ZaloOaField } from '@src/dataStruct/zalo';
 import { OrderField, OrderStatusField } from '@src/dataStruct/order';
 
 const initialState: state_props = {
@@ -9,7 +8,6 @@ const initialState: state_props = {
     toastMessage: {
         data: { type: undefined, message: '' },
     },
-    selectedOa: undefined,
     createOrder: {
         newOrder: undefined,
     },
@@ -44,9 +42,6 @@ const OrderSlice = createSlice({
         },
         setData_toastMessage: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
             state.toastMessage.data = action.payload;
-        },
-        set_selectedOa: (state, action: PayloadAction<ZaloOaField>) => {
-            state.selectedOa = action.payload;
         },
         setNewOrder_createOrder: (state, action: PayloadAction<OrderField | undefined>) => {
             state.createOrder.newOrder = action.payload;
@@ -97,7 +92,6 @@ const OrderSlice = createSlice({
 export const {
     set_isLoading,
     setData_toastMessage,
-    set_selectedOa,
     setNewOrder_createOrder,
     set_editOrderDialog,
     setFinal_editOrderDialog,

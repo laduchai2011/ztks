@@ -11,6 +11,15 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE GetAllMyChatRooms
+	@accountId INT
+AS
+BEGIN
+    SELECT * FROM dbo.chatRoom 
+	WHERE status = 'normal' AND accountId = @accountId
+END
+GO
+
 CREATE PROCEDURE GetChatRoomWithId
 	@id INT
 AS

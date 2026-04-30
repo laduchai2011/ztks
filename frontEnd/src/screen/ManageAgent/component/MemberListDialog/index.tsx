@@ -165,7 +165,7 @@ const MemberListDialog = () => {
         return (
             <div className={style.row} key={item.id} onClick={() => handleSelect(item)}>
                 <div>{index + 1}</div>
-                <img src={avatarnull} alt="" />
+                <img src={item.avatar ?? avatarnull} alt="" />
                 <div>{`${item.firstName} ${item.lastName}`}</div>
             </div>
         );

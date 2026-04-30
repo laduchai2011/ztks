@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE GetOrders
+﻿ALTER PROCEDURE GetOrders
 	@page INT,
     @size INT,
 	@uuid NVARCHAR(255) = NULL,
@@ -6,65 +6,84 @@
     @moneyTo DECIMAL(20,2) = NULL,
 	@isPay BIT = NULL,
 	@phone NVARCHAR(255) = NULL,
-	@chatRoomId INT = NULL,
-	@zaloOaId INT = NULL,
+	@isDelete BIT = NULL,
+	@chatRoomId INT,
     @accountId INT
 AS
 BEGIN
-	-- Tập kết quả 1: dữ liệu phân trang
-    WITH orders AS (
-        SELECT o.*,
-			ROW_NUMBER() OVER (ORDER BY o.id DESC) AS rn
-        FROM dbo.[order] AS o
-		WHERE 
-			status = 'normal' 
-			AND (@uuid IS NULL OR uuid = @uuid)
-			AND (@moneyFrom IS NULL OR money >= @moneyFrom)
-			AND (@moneyTo   IS NULL OR money <= @moneyTo)
-			AND (@isPay IS NULL OR isPay = @isPay)
-			AND (@phone IS NULL OR phone LIKE '%' + @phone + '%')
-			AND (@chatRoomId IS NULL OR chatRoomId = @chatRoomId)
-			AND (@zaloOaId IS NULL OR zaloOaId = @zaloOaId)
-			AND accountId = @accountId
-    )
-    SELECT *
-    FROM orders
-    WHERE rn BETWEEN ((@page - 1) * @size + 1) AND (@page * @size);
+	SET NOCOUNT ON;
 
-    -- Tập kết quả 2: tổng số dòng
-    SELECT COUNT(*) AS totalCount
-	FROM dbo.[order] AS o
-		WHERE 
-			status = 'normal' 
-			AND (@uuid IS NULL OR uuid = @uuid)
-			AND (@moneyFrom IS NULL OR money >= @moneyFrom)
-			AND (@moneyTo   IS NULL OR money <= @moneyTo)
-			AND (@isPay IS NULL OR isPay = @isPay)
-			AND (@phone IS NULL OR phone LIKE '%' + @phone + '%')
-			AND (@chatRoomId IS NULL OR chatRoomId = @chatRoomId)
-			AND (@zaloOaId IS NULL OR zaloOaId = @zaloOaId)
-			AND accountId = @accountId
-END
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.chatRoom WHERE id = @chatRoomId AND accountId = @accountId )
+		BEGIN
+			THROW 50001, N'ChatRoom không tồn tại .', 1;
+		END
+
+		IF EXISTS ( SELECT 1 FROM dbo.chatRoom WHERE id = @chatRoomId AND status = 'delete' )
+		BEGIN
+			THROW 50002, N'ChatRoom đã bị xóa .', 2;
+		END
+
+		-- Tập kết quả 1: dữ liệu phân trang
+		;WITH orders AS (
+			SELECT o.*,
+				ROW_NUMBER() OVER (ORDER BY o.id DESC) AS rn
+			FROM dbo.[order] AS o
+			WHERE 
+				chatRoomId = @chatRoomId
+				AND (@uuid IS NULL OR uuid = @uuid)
+				AND (@moneyFrom IS NULL OR money >= @moneyFrom)
+				AND (@moneyTo   IS NULL OR money <= @moneyTo)
+				AND (@isPay IS NULL OR isPay = @isPay)
+				AND (@phone IS NULL OR phone LIKE '%' + @phone + '%')
+				AND (@isDelete IS NULL OR isDelete = @isDelete)
+		)
+		SELECT *
+		FROM orders
+		WHERE rn BETWEEN ((@page - 1) * @size + 1) AND (@page * @size);
+
+		-- Tập kết quả 2: tổng số dòng
+		SELECT COUNT(*) AS totalCount
+		FROM dbo.[order] AS o
+			WHERE 
+				chatRoomId = @chatRoomId
+				AND (@uuid IS NULL OR uuid = @uuid)
+				AND (@moneyFrom IS NULL OR money >= @moneyFrom)
+				AND (@moneyTo   IS NULL OR money <= @moneyTo)
+				AND (@isPay IS NULL OR isPay = @isPay)
+				AND (@phone IS NULL OR phone LIKE '%' + @phone + '%')
+				AND (@isDelete IS NULL OR isDelete = @isDelete)
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
 GO
 
-CREATE PROCEDURE GetMyOrderWithId
-	@id INT,
-	@accountId INT
-AS
-BEGIN
-	SELECT * FROM dbo.[order] WHERE status = 'normal' AND id = @id AND accountId = @accountId
-END
-GO
+-- BO
+-- CREATE PROCEDURE GetMyOrderWithId
+-- 	@id INT,
+-- 	@accountId INT
+-- AS
+-- BEGIN
+-- 	SELECT * FROM dbo.[order] WHERE status = 'normal' AND id = @id AND accountId = @accountId
+-- END
+-- GO
 
-CREATE PROCEDURE GetOrderWithId
+ALTER PROCEDURE GetOrderWithId
 	@id INT
 AS
 BEGIN
-	SELECT * FROM dbo.[order] WHERE status = 'normal' AND id = @id;
+	SELECT * FROM dbo.[order] WHERE id = @id AND isDelete = 0;
 END
 GO
 
-CREATE PROCEDURE GetOrdersWithPhone
+ALTER PROCEDURE GetOrdersWithPhone
 	@page INT,
     @size INT,
 	@phone INT
@@ -75,7 +94,7 @@ BEGIN
         SELECT o.*,
 			ROW_NUMBER() OVER (ORDER BY o.id DESC) AS rn
         FROM dbo.[order] AS o
-		WHERE status = 'normal' AND phone = @phone
+		WHERE isDelete = 0 AND phone = @phone
     )
     SELECT *
     FROM orders
@@ -84,7 +103,7 @@ BEGIN
     -- Tập kết quả 2: tổng số dòng
     SELECT COUNT(*) AS totalCount
 	FROM dbo.[order] AS o
-	WHERE status = 'normal' AND phone = @phone
+	WHERE isDelete = 0 AND phone = @phone
 END
 GO
 

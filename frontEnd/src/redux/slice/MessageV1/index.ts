@@ -15,7 +15,7 @@ const initialState: state_props = {
     zaloOa: undefined,
     repliedMessage: undefined,
     changeChatRoomMasterDialog: {
-        isShow: true,
+        isShow: false,
     },
 };
 

@@ -12,7 +12,9 @@ import {
 } from '@src/redux/slice/Order';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import TextEditor from '@src/component/TextEditor';
+import { AccountField } from '@src/dataStruct/account';
 import { OrderField } from '@src/dataStruct/order';
+import { UpdateOrderBodyField } from '@src/dataStruct/order/body';
 import { isValidPhoneNumber } from '@src/utility/string';
 import { formatMoney } from '@src/utility/string';
 import { useUpdateOrderMutation } from '@src/redux/query/orderRTK';
@@ -20,6 +22,7 @@ import { useUpdateOrderMutation } from '@src/redux/query/orderRTK';
 const EditOrder = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
+    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
     const isShow: boolean = useSelector((state: RootState) => state.OrderSlice.editOrderDialog.isShow);
     const order: OrderField | undefined = useSelector((state: RootState) => state.OrderSlice.editOrderDialog.order);
     const [newOrder, setNewOrder] = useState<OrderField | undefined>(order);
@@ -59,6 +62,7 @@ const EditOrder = () => {
     };
 
     const handleAgree = () => {
+        if (!account) return;
         if (!newOrder) return;
 
         const label_t = newOrder.label.trim();
@@ -73,11 +77,14 @@ const EditOrder = () => {
             return;
         }
 
-        const orderBody = { ...newOrder };
-        orderBody.label = label_t;
-        orderBody.phone = phone_t;
-        orderBody.content = content;
-        orderBody.money = Number(money);
+        const orderBody: UpdateOrderBodyField = {
+            id: newOrder.id,
+            label: label_t,
+            content: content,
+            money: Number(money),
+            phone: phone_t,
+            accountId: account.id,
+        };
 
         dispatch(set_isLoading(true));
         updateOrder(orderBody)
