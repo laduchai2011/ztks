@@ -35,8 +35,8 @@ class QueryDB_GetNotes {
                     .input('page', sql.Int, this._getNotesBodyField.page)
                     .input('size', sql.Int, this._getNotesBodyField.size)
                     .input('offset', sql.Int, this._getNotesBodyField.offset)
-                    .input('chatRoomId', sql.Int, this._getNotesBodyField.chatRoomId ?? null)
-                    .input('zaloOaId', sql.Int, this._getNotesBodyField.zaloOaId ?? null)
+                    .input('isDelete', sql.Bit, this._getNotesBodyField.isDelete ?? null)
+                    .input('chatRoomId', sql.Int, this._getNotesBodyField.chatRoomId)
                     .input('accountId', sql.Int, this._getNotesBodyField.accountId)
                     .execute('GetMyNotes');
 

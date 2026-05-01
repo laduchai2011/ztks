@@ -1,12 +1,11 @@
 import { memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '@src/redux';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@src/redux';
 import TextEditor from '@src/component/TextEditor';
 import { IoCloseOutline } from 'react-icons/io5';
 import { CREATE_NOTE } from '@src/const/text';
-import { ZaloOaField } from '@src/dataStruct/zalo';
 import { CreateNoteBodyField } from '@src/dataStruct/note/body';
 import { setData_toastMessage, set_isLoading, setData_addNewNote } from '@src/redux/slice/Note';
 import { messageType_enum } from '@src/component/ToastMessage/type';
@@ -16,7 +15,6 @@ import { useCreateNoteMutation } from '@src/redux/query/noteRTK';
 const CreateNote = () => {
     const dispatch = useDispatch<AppDispatch>();
     const location = useLocation();
-    const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.NoteSlice.selectedOa);
     const [content, setContent] = useState<string>('');
     const [idInput, setIdInput] = useState<string>('');
 
@@ -80,15 +78,9 @@ const CreateNote = () => {
             );
         }
 
-        if (!selectedOa) {
-            dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Zalo OA không hợp lệ !' }));
-            return;
-        }
-
         const createNoteBody: CreateNoteBodyField = {
             note: content,
             chatRoomId: Number(idInput_t),
-            zaloOaId: selectedOa.id,
             accountId: -1,
         };
         dispatch(set_isLoading(true));

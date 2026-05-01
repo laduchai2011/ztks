@@ -17,7 +17,7 @@ const Filter: FC<{ handleGetNotes: (getNotesBody: GetNotesBodyField) => void }> 
         page: 1,
         size: 5,
         offset: 0,
-        zaloOaId: isOa ? selectedOa?.id : undefined,
+        chatRoomId: -1,
         accountId: -1,
     };
 

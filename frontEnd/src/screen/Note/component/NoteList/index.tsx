@@ -17,6 +17,7 @@ const NoteList = () => {
         page: -1,
         size: 5,
         offset: 0,
+        chatRoomId: -1,
         accountId: -1,
     });
     const [notes, setNotes] = useState<NoteField[]>([]);

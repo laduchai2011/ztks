@@ -33,7 +33,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE PayOrder
+ALTER PROCEDURE PayOrder
 	@walletId INT,
 	@addedAmount DECIMAL(20,2),
 	@orderId INT,
@@ -126,7 +126,7 @@ BEGIN
 
 		UPDATE dbo.[order]
 		SET isPay = 1
-		WHERE status = 'normal' AND id = @orderId
+		WHERE id = @orderId AND isDelete = 0
 		IF @@ROWCOUNT = 0
 		BEGIN
 			THROW 50011, N'Cập nhật đơn hàng không thành công .', 11;

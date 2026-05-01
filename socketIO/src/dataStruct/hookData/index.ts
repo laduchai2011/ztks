@@ -1,14 +1,15 @@
-// export enum zalo_event_name_enum {
-//     user_send_text = 'user_send_text',
-//     user_send_image = 'user_send_image',
-//     oa_send_text = 'oa_send_text',
-//     oa_send_image = 'oa_send_image',
-//     user_received_message = 'user_received_message',
-//     user_seen_message = 'user_seen_message',
-//     member_sending = 'member_sending',
-// }
-
 export enum zalo_event_name_enum {
+    user_send_text = 'user_send_text',
+    user_send_image = 'user_send_image',
+    user_send_video = 'user_send_video',
+    oa_send_text = 'oa_send_text',
+    oa_send_image = 'oa_send_image',
+    user_received_message = 'user_received_message',
+    user_seen_message = 'user_seen_message',
+    member_sending = 'member_sending',
+}
+
+export enum zalo_event_name_enum_messageQueue {
     // user_send_text = 'user_send_text_dev',
     // user_send_image = 'user_send_image_dev',
     // user_send_video = 'user_send_video_dev',
@@ -30,6 +31,7 @@ export enum zalo_event_name_enum {
 type zalo_event_name_type =
     | zalo_event_name_enum.user_send_text
     | zalo_event_name_enum.user_send_image
+    | zalo_event_name_enum.user_send_video
     | zalo_event_name_enum.oa_send_text
     | zalo_event_name_enum.oa_send_image
     | zalo_event_name_enum.user_received_message
@@ -166,4 +168,19 @@ export interface MessageZaloField {
     data: any;
     isNewCustom: boolean;
     accountId: number;
+}
+
+export interface MessageVideosField {
+    msg_id: string;
+    text: string;
+    attachments: [
+        {
+            payload: {
+                thumbnail: string;
+                description: string;
+                url: string;
+            };
+            type: 'video';
+        }
+    ];
 }

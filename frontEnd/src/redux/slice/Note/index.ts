@@ -9,7 +9,6 @@ const initialState: state_props = {
     toastMessage: {
         data: { type: undefined, message: '' },
     },
-    selectedOa: undefined,
     editNoteDialog: {
         isShow: false,
         note: undefined,
@@ -27,9 +26,6 @@ const NoteSlice = createSlice({
         },
         setData_toastMessage: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
             state.toastMessage.data = action.payload;
-        },
-        set_selectedOa: (state, action: PayloadAction<ZaloOaField>) => {
-            state.selectedOa = action.payload;
         },
         set_editNoteDialog: (state, action: PayloadAction<{ isShow: boolean; note: NoteField | undefined }>) => {
             state.editNoteDialog = action.payload;
@@ -49,7 +45,6 @@ const NoteSlice = createSlice({
 export const {
     set_isLoading,
     setData_toastMessage,
-    set_selectedOa,
     set_editNoteDialog,
     setFinal_editNoteDialog,
     setData_addNewNote,

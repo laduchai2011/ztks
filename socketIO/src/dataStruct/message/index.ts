@@ -20,6 +20,15 @@ export interface MessageBodyField {
     accountId?: number;
 }
 
+export interface MessagesHasFilterBodyField {
+    page: number;
+    size: number;
+    receiveId: string;
+    sender: sender_type;
+    messageStatus: string;
+    accountId?: number;
+}
+
 export interface PagedMessageField {
     items: MessageField[];
     totalCount: number;
@@ -28,6 +37,7 @@ export interface PagedMessageField {
 export interface CreateMessageBodyField {
     eventName: string;
     sender: sender_type;
+    senderId: string;
     receiveId: string;
     message: string;
     type: messageType_type;
@@ -70,4 +80,21 @@ export interface UpdateEventMemberSendBodyField {
     timestamp: string;
     messageStatus: messageStatus_type;
     accountId: number;
+}
+
+export interface UpdateMessageStatusBodyField {
+    eventName: string;
+    receiveId: string;
+    timestamp: string;
+    messageStatus: messageStatus_type;
+    accountId: number;
+}
+
+export interface SendVideoTdFailureBodyField {
+    id: number;
+}
+
+export interface SendVideoTdSuccessBodyField {
+    id: number;
+    message: string;
 }

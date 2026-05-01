@@ -26,7 +26,6 @@ class MutateDB_CreateNote extends MutateDB {
                     .request()
                     .input('note', sql.NVarChar(255), this._createNoteBody.note)
                     .input('chatRoomId', sql.Int, this._createNoteBody.chatRoomId)
-                    .input('zaloOaId', sql.Int, this._createNoteBody.zaloOaId)
                     .input('accountId', sql.Int, this._createNoteBody.accountId)
                     .execute('CreateNote');
 

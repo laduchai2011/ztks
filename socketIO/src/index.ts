@@ -46,9 +46,11 @@ consumeStringMessage(`agentPay_${dev_prefix}`, (data) => {
     io.to(`accountId_${agentPay.accountId}`).emit('agentPay', agentPay);
 });
 
-consumeStringMessage(`orderPay_${dev_prefix}`, (data) => {
-    const order = JSON.parse(data) as OrderField;
-    io.to(`accountId_${order.accountId}`).emit('orderPay', order);
+consumeStringMessage(`orderPay_${dev_prefix}`, (payload) => {
+    const data = JSON.parse(payload);
+    const accountId = data.accountId as number;
+    const order = data.order as OrderField;
+    io.to(`accountId_${accountId}`).emit('orderPay', order);
 });
 
 io.use((socket, next) => {

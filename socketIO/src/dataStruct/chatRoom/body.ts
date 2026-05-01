@@ -13,9 +13,22 @@ export interface GetChatRoomWithIdBodyField {
     id: number;
 }
 
+export interface GetAllMyChatRoomsBodyField {
+    accountId: number;
+}
+
 export interface ChatRoomRoleWithCridAaidBodyField {
     authorizedAccountId: number;
     chatRoomId: number;
+}
+
+export interface GetAllChatRoomRoleWithCridBodyField {
+    chatRoomId: number;
+}
+
+export interface GetChatRoomWithZaloOaIdUserIdByAppBodyField {
+    zaloOaId: number;
+    userIdByApp: string;
 }
 
 export interface UpdateSetupChatRoomRoleBodyField {
@@ -41,4 +54,10 @@ export interface ChatRoomsMongoBodyField {
     isRead?: boolean;
     isSend?: boolean;
     accountId?: number;
+}
+
+export interface ChangeChatRoomMasterBodyField {
+    chatRoomId: number;
+    newAccountId: number;
+    accountId: number;
 }

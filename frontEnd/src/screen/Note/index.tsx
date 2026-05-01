@@ -8,7 +8,6 @@ import MyLoading from './component/MyLoading';
 import MyToastMessage from './component/MyToastMessage';
 import Header from '@src/screen/Header';
 import CreateNote from './component/CreateNote';
-import OaList from './component/OaList';
 import NoteList from './component/NoteList';
 import EditNote from './component/EditNote';
 import { select_enum } from '@src/router/type';
@@ -37,7 +36,6 @@ const Note = () => {
         <div className={style.parent}>
             <div className={style.main}>
                 <div className={style.header}>{NOTE}</div>
-                <OaList />
                 <CreateNote />
                 <NoteList />
                 <div className={style.headerTab}>

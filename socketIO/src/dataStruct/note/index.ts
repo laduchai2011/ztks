@@ -1,8 +1,10 @@
 export interface NoteField {
     id: number;
     note: string;
-    isDelete: boolean;
+    status: string;
     chatRoomId: number;
+    zaloOaId: number;
+    accountId: number;
     updateTime: Date;
     createTime: Date;
 }

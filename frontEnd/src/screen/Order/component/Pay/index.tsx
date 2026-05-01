@@ -91,6 +91,7 @@ const Pay = () => {
         const socket = getSocket();
 
         const onSocketOrderPay = (orderS: OrderField) => {
+            console.log('onSocketOrderPay', orderS);
             setOrder1((prev) => {
                 if (!prev) return prev;
 
@@ -166,10 +167,10 @@ const Pay = () => {
     }, [selectedVoucher, order1]);
 
     useEffect(() => {
-        if (!order1 || !wallet) return;
-        const des = `ztksPayjorderPayj${order1.id}j${wallet.id}`;
+        if (!account || !order1 || !wallet) return;
+        const des = `ztksPayjorderPayj${order1.id}j${wallet.id}j${account.id}`;
         setQrCode(`https://qr.sepay.vn/img?acc=VQRQAHJHB9302&bank=MBBank&amount=${finalMoney}&des=${des}`);
-    }, [order1, wallet, finalMoney]);
+    }, [account, order1, wallet, finalMoney]);
 
     const handleClose = () => {
         dispatch(setIsShow_payDialog(false));
