@@ -21,11 +21,13 @@ const NoteList = () => {
         accountId: -1,
     });
     const [notes, setNotes] = useState<NoteField[]>([]);
-    const [hasMore, setHasMore] = useState<boolean>(false);
+    const [hasMore, setHasMore] = useState<boolean>(true);
     const [getNotes] = useLazyGetNotesQuery();
 
     const handleGetNotes = useCallback(
         (getNotesBody: GetNotesBodyField) => {
+            setNotes([]);
+            setHasMore(true);
             setFilterBody(getNotesBody);
             dispatch(set_isLoading(true));
             getNotes(getNotesBody)

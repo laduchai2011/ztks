@@ -1,15 +1,17 @@
 import { FC, memo, useState, useEffect } from 'react';
 import style from './style.module.scss';
 import { useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '@src/redux';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@src/redux';
 import { CiSearch } from 'react-icons/ci';
 import { GetNotesBodyField } from '@src/dataStruct/note/body';
-import { ZaloOaField } from '@src/dataStruct/zalo';
+import { setData_toastMessage } from '@src/redux/slice/Note';
+import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const Filter: FC<{ handleGetNotes: (getNotesBody: GetNotesBodyField) => void }> = ({ handleGetNotes }) => {
+    const dispatch = useDispatch<AppDispatch>();
     const location = useLocation();
-    const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.OrderSlice.selectedOa);
+
     const [isOa, setIsOa] = useState<boolean>(true);
     const [idInput, setIdInput] = useState<string>('');
 
@@ -38,8 +40,19 @@ const Filter: FC<{ handleGetNotes: (getNotesBody: GetNotesBodyField) => void }> 
 
     const handleSearch = () => {
         const idInput_t = idInput.trim();
+
+        if (idInput_t.length === 0) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Vui lòng thêm Id phòng hội thoại !',
+                })
+            );
+            return;
+        }
+
         const filterBody_cp = { ...filterBody };
-        filterBody_cp.chatRoomId = idInput_t.length > 0 ? Number(idInput_t) : undefined;
+        filterBody_cp.chatRoomId = Number(idInput_t);
         handleGetNotes(filterBody_cp);
     };
 

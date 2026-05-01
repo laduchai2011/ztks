@@ -12,12 +12,15 @@ import {
 } from '@src/redux/slice/Note';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import TextEditor from '@src/component/TextEditor';
+import { AccountField } from '@src/dataStruct/account';
 import { NoteField } from '@src/dataStruct/note';
+import { UpdateNoteBodyField } from '@src/dataStruct/note/body';
 import { useUpdateNoteMutation } from '@src/redux/query/noteRTK';
 
 const EditNote = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
+    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
     const isShow: boolean = useSelector((state: RootState) => state.NoteSlice.editNoteDialog.isShow);
     const note: NoteField | undefined = useSelector((state: RootState) => state.NoteSlice.editNoteDialog.note);
     const [newNote, setNewNote] = useState<NoteField | undefined>(note);
@@ -54,13 +57,17 @@ const EditNote = () => {
     };
 
     const handleAgree = () => {
+        if (!account) return;
         if (!newNote) return;
 
-        const noteBody = { ...newNote };
-        noteBody.note = content;
+        const updateNoteBody: UpdateNoteBodyField = {
+            id: newNote.id,
+            note: content,
+            accountId: account.id,
+        };
 
         dispatch(set_isLoading(true));
-        updateNote(noteBody)
+        updateNote(updateNoteBody)
             .then((res) => {
                 const resData = res.data;
                 if (resData?.isSuccess && resData.data) {
