@@ -30,3 +30,7 @@ export interface UserTakeSessionToChatBodyField {
     code: string;
     zaloOaId: number;
 }
+
+export interface LeaveAllChatSessionBodyField {
+    accountId: number;
+}

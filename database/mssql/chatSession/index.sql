@@ -16,3 +16,5 @@ CREATE TABLE chatSession (
 GO
 CREATE NONCLUSTERED INDEX idx_account_id ON chatSession(accountId);
 GO
+CREATE NONCLUSTERED INDEX idx_selectedAccount_id ON chatSession(selectedAccountId);
+GO

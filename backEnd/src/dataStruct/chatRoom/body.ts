@@ -13,7 +13,9 @@ export interface GetChatRoomWithIdBodyField {
     id: number;
 }
 
-export interface GetAllMyChatRoomsBodyField {
+export interface GetMyChatRoomsBodyField {
+    page: number;
+    size: number;
     accountId: number;
 }
 

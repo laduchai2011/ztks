@@ -1,7 +1,7 @@
 ﻿DELETE FROM dbo.chatSession
 GO
 
-CREATE PROCEDURE CreateChatSession
+ALTER PROCEDURE CreateChatSession
 	@label NVARCHAR(255),
 	@code NVARCHAR(255),
 	@isReady BIT,
@@ -14,13 +14,23 @@ BEGIN
 
 	BEGIN TRY
         BEGIN TRANSACTION;
+
+		IF NOT EXISTS (
+			SELECT 1
+			FROM dbo.accountInformation
+			WHERE addedById = @accountId AND accountId = @selectedAccountId
+		)
+		BEGIN
+			THROW 50001, N'Bạn không phải admin của tài khoản này .', 1;
+		END
+
 		DECLARE @newChatSessionId INT;
 
         INSERT INTO dbo.chatSession (label, code, isReady, status, selectedAccountId, zaloOaId, accountId, updateTime, createTime)
         VALUES (@label, @code, @isReady, 'normal', @selectedAccountId, @zaloOaId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
         BEGIN
-            THROW 50001, 'Cập nhật chatSession không thành công.', 1;
+            THROW 50002, 'Cập nhật chatSession không thành công.', 2;
         END
 
 		SET @newChatSessionId = SCOPE_IDENTITY();
@@ -36,7 +46,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE UpdateSelectedAccountIdOfChatSession
+ALTER PROCEDURE UpdateSelectedAccountIdOfChatSession
 	@id INT,
 	@selectedAccountId INT,
 	@accountId INT
@@ -46,14 +56,22 @@ BEGIN
 
 	BEGIN TRY
         BEGIN TRANSACTION;
-		DECLARE @chatSessionId INT;
+
+		IF NOT EXISTS (
+			SELECT 1
+			FROM dbo.accountInformation
+			WHERE addedById = @accountId AND accountId = @selectedAccountId
+		)
+		BEGIN
+			THROW 50001, N'Bạn không phải admin của tài khoản này .', 1;
+		END
 
 		UPDATE dbo.chatSession
 		SET selectedAccountId = @selectedAccountId
 		WHERE status = 'normal' AND id = @id AND accountId = @accountId;
 		IF @@ROWCOUNT = 0
         BEGIN
-            THROW 50001, 'Cập nhật chatSession không thành công.', 1;
+            THROW 50002, 'Cập nhật chatSession không thành công.', 2;
         END
 
 		SELECT * FROM dbo.chatSession WHERE id = @id;
@@ -77,7 +95,6 @@ BEGIN
 
 	BEGIN TRY
         BEGIN TRANSACTION;
-		DECLARE @chatSessionId INT;
 
 		UPDATE dbo.chatSession
 		SET isReady = @isReady
@@ -88,6 +105,35 @@ BEGIN
         END
 
 		SELECT * FROM dbo.chatSession WHERE id = @id;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
+ALTER PROCEDURE LeaveAllChatSession
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+		UPDATE dbo.chatSession
+		SET selectedAccountId = NULL
+		WHERE status = 'normal' AND selectedAccountId = @accountId;
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.chatSession WHERE selectedAccountId = @accountId )
+		BEGIN
+			SELECT CAST(1 AS BIT) AS success;
+		END
+
+		SELECT CAST(0 AS BIT) AS success;
 
 		COMMIT TRANSACTION;
 	END TRY

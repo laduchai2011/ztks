@@ -1,10 +1,9 @@
 import { mssql_server } from '@src/connect';
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
 import { AccountField, PagedAccountField } from '@src/dataStruct/account';
 import { GetMembersBodyField } from '@src/dataStruct/account/body';
 import QueryDB_GetMembers from '../../queryDB/GetMembers';
-import { verifyRefreshToken } from '@src/token';
 
 class Handle_GetMembers {
     private _mssql_server = mssql_server;

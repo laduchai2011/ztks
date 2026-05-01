@@ -43,6 +43,8 @@ CREATE TABLE accountReceiveMessage (
 	CONSTRAINT FK_accountReceiveMessage_Account FOREIGN KEY (accountId) REFERENCES account(id)
 );
 GO
+CREATE NONCLUSTERED INDEX idx_accountIdReceiveMessage ON accountReceiveMessage(accountIdReceiveMessage);
+GO
 
 CREATE TABLE recommend (
     myCode VARCHAR(255) NOT NULL UNIQUE,

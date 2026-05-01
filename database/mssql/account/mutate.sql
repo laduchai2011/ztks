@@ -62,42 +62,6 @@ GO
 
 EXEC Signup N'laduchai1', N'passladuchai', N'0901234567', N'Hải', N'Lã';
 
--- bo
-CREATE PROCEDURE CreateMember
-	@userName NVARCHAR(100),
-	@password NVARCHAR(100),
-	@phone NVARCHAR(15),
-	@firstName NVARCHAR(20),
-	@lastName NVARCHAR(20),
-	@addedById INT
-AS
-BEGIN
-	SET NOCOUNT ON;
-
-	BEGIN TRY
-        BEGIN TRANSACTION;
-		DECLARE @newMemberId INT;
-
-        INSERT INTO dbo.account (userName, password, phone, firstName, lastName, avatar, status, updateTime, createTime)
-        VALUES (@userName, @password, @phone, @firstName, @lastName, null, 'normal', SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
-
-		SET @newMemberId = SCOPE_IDENTITY();
-
-		INSERT INTO dbo.accountInformation (addedById, accountType, accountId)
-        VALUES (@addedById, 'member', @newMemberId);
-
-		SELECT * FROM dbo.account WHERE id = @newMemberId;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
-END;
-GO
-
 CREATE PROCEDURE EditInforAccount
 	@id INT,
 	@firstName NVARCHAR(20),
@@ -171,7 +135,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE AddMemberV1
+ALTER PROCEDURE AddMemberV1
 	@addedById INT,
 	@accountId INT
 AS
@@ -196,7 +160,7 @@ BEGIN
 			WHERE accountId = @accountId AND accountType = 'admin'
 		)
 		BEGIN
-			THROW 50001, N'Thành viên thêm vào không được là 1 tài khoản admin .', 1;
+			THROW 50002, N'Thành viên thêm vào không được là 1 tài khoản admin .', 2;
 		END
 
 		-- thử UPDATE trước
@@ -230,6 +194,92 @@ BEGIN
 			FROM dbo.accountInformation
 			WHERE accountId = @accountId;
 		END
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END
+GO
+
+ALTER PROCEDURE LeaveAllAccountReceiveMessage
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+		UPDATE dbo.accountReceiveMessage
+		SET accountIdReceiveMessage = NULL
+		WHERE accountIdReceiveMessage = @accountId;
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.accountReceiveMessage WHERE accountIdReceiveMessage = @accountId )
+		BEGIN
+			SELECT CAST(1 AS BIT) AS success;
+		END
+
+		SELECT CAST(0 AS BIT) AS success;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
+ALTER PROCEDURE MemberLeave
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+		BEGIN TRANSACTION;
+
+		IF NOT EXISTS (
+			SELECT 1
+			FROM dbo.accountReceiveMessage
+			WHERE accountIdReceiveMessage = @accountId
+		)
+		BEGIN
+			THROW 50001, N'Bạn không thể rời đi khi vẫn tồn tại trong 1 quyền nhận tin nhắn .', 1;
+		END
+
+		IF EXISTS (
+			SELECT 1
+			FROM dbo.chatSession
+			WHERE selectedAccountId = @accountId
+		)
+		BEGIN
+			THROW 50002, N'Bạn không thể rời đi khi vẫn tồn tại trong 1 quyền nhận tin nhắn, chatSession cũng có quyền nhận tin nên bạn phải ra khỏi đó trước .', 2;
+		END
+
+		IF EXISTS (
+			SELECT 1
+			FROM dbo.chatRoom
+			WHERE accountId = @accountId
+		)
+		BEGIN
+			THROW 50003, N'Bạn không thể rời đi khi vẫn tồn tại phòng hội thoại .', 3;
+		END
+
+		UPDATE dbo.accountInformation
+		SET addedById = NULL
+		WHERE accountId = @accountId
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.accountInformation WHERE accountId = @accountId AND addedById IS NOT NULL)
+		BEGIN
+			SELECT CAST(1 AS BIT) AS success;
+		END
+
+		SELECT CAST(0 AS BIT) AS success;
 
 		COMMIT TRANSACTION;
 	END TRY
@@ -308,6 +358,7 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
+		-- phải là thành viên mới thực hiện được
 		DECLARE @addedById INT
 		SELECT @addedById = addedById FROM dbo.accountInformation WHERE accountId = @accountId;
 		IF @addedById IS NULL
@@ -315,6 +366,7 @@ BEGIN
 			THROW 50001, N'Account này không có quyền thực hiện thao tác.', 1;
 		END
 
+		-- đảm bảo thực hiện đúng oa mà bạn có quyền
 		IF NOT EXISTS (
 			SELECT 1
 			FROM dbo.zaloOa 
@@ -354,6 +406,7 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
+		-- phải là thành viên mới thực hiện được
 		DECLARE @addedById INT
 		SELECT @addedById = addedById FROM dbo.accountInformation WHERE accountId = @accountId;
 		IF @addedById IS NULL
@@ -361,6 +414,7 @@ BEGIN
 			THROW 50001, N'Account này không có quyền thực hiện thao tác.', 1;
 		END
 
+		-- đảm bảo thực hiện đúng oa mà bạn có quyền
 		IF NOT EXISTS (
 			SELECT 1
 			FROM dbo.zaloOa 

@@ -11,13 +11,41 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE GetAllMyChatRooms
+CREATE PROCEDURE GetMyChatRooms
+	@page INT,
+    @size INT,
 	@accountId INT
 AS
 BEGIN
-    SELECT * FROM dbo.chatRoom 
-	WHERE status = 'normal' AND accountId = @accountId
-END
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+		-- Tập kết quả 1: dữ liệu phân trang
+		;WITH chatRooms AS (
+			SELECT cr.*,
+				ROW_NUMBER() OVER (ORDER BY cr.id DESC) AS rn
+			FROM dbo.chatRoom AS cr
+			WHERE accountId = @accountId
+		)
+		SELECT *
+		FROM chatRooms
+		WHERE rn BETWEEN ((@page - 1) * @size + 1) AND (@page * @size);
+
+		-- Tập kết quả 2: tổng số dòng
+		SELECT COUNT(*) AS totalCount
+		FROM dbo.chatRoom AS cr
+		WHERE accountId = @accountId
+		
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
 GO
 
 CREATE PROCEDURE GetChatRoomWithId
