@@ -1,6 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { NoteField, PagedNoteField } from '@src/dataStruct/note';
-import { GetNotesBodyField, CreateNoteBodyField, UpdateNoteBodyField } from '@src/dataStruct/note/body';
+import {
+    GetNotesBodyField,
+    CreateNoteBodyField,
+    UpdateNoteBodyField,
+    DeleteNoteBodyField,
+} from '@src/dataStruct/note/body';
 import { NOTE_API } from '@src/const/api/note';
 import { MyResponse } from '@src/dataStruct/response';
 
@@ -64,7 +69,47 @@ export const noteRTK = createApi({
                 }
             },
         }),
+
+        deleteNote: builder.mutation<MyResponse<NoteField>, DeleteNoteBodyField>({
+            query: (body) => ({
+                url: NOTE_API.DELETE_NOTE,
+                method: 'PATCH',
+                body,
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled, getState }) {
+                // Lấy tất cả query getOrders đang cache
+                const patchResults: any[] = [];
+
+                const state = getState() as any;
+
+                const queries = noteRTK.util.selectInvalidatedBy(state, [{ type: 'Notes' }]);
+
+                for (const query of queries) {
+                    if (query.endpointName !== 'getNotes') continue;
+
+                    const patchResult = dispatch(
+                        noteRTK.util.updateQueryData('getNotes', query.originalArgs, (draft) => {
+                            if (!draft.data?.items) return;
+
+                            const note = draft.data.items.find((n) => n.id === arg.id);
+
+                            if (note) {
+                                Object.assign(note, arg);
+                            }
+                        })
+                    );
+
+                    patchResults.push(patchResult);
+                }
+
+                try {
+                    await queryFulfilled;
+                } catch {
+                    patchResults.forEach((p) => p.undo());
+                }
+            },
+        }),
     }),
 });
 
-export const { useLazyGetNotesQuery, useCreateNoteMutation, useUpdateNoteMutation } = noteRTK;
+export const { useLazyGetNotesQuery, useCreateNoteMutation, useUpdateNoteMutation, useDeleteNoteMutation } = noteRTK;

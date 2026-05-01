@@ -18,3 +18,8 @@ export interface UpdateNoteBodyField {
     note: string;
     accountId: number;
 }
+
+export interface DeleteNoteBodyField {
+    id: number;
+    accountId: number;
+}

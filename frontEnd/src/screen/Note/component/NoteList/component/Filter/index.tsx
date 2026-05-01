@@ -12,7 +12,8 @@ const Filter: FC<{ handleGetNotes: (getNotesBody: GetNotesBodyField) => void }> 
     const dispatch = useDispatch<AppDispatch>();
     const location = useLocation();
 
-    const [isOa, setIsOa] = useState<boolean>(true);
+    const [isDelete, setIsDelete] = useState<boolean>(true);
+    const [isNotDelete, setIsNotDelete] = useState<boolean>(true);
     const [idInput, setIdInput] = useState<string>('');
 
     const filterBody: GetNotesBodyField = {
@@ -29,8 +30,12 @@ const Filter: FC<{ handleGetNotes: (getNotesBody: GetNotesBodyField) => void }> 
         setIdInput(chatRoomId);
     }, [location.state?.chatRoomId]);
 
-    const handleIsOa = () => {
-        setIsOa(!isOa);
+    const handleIsDelete = () => {
+        setIsDelete(!isDelete);
+    };
+
+    const handleIsNotDelete = () => {
+        setIsNotDelete(!isNotDelete);
     };
 
     const handleIdInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,6 +57,15 @@ const Filter: FC<{ handleGetNotes: (getNotesBody: GetNotesBodyField) => void }> 
         }
 
         const filterBody_cp = { ...filterBody };
+
+        if (isDelete && isNotDelete) {
+            filterBody_cp.isDelete = undefined;
+        } else if (isDelete) {
+            filterBody_cp.isDelete = true;
+        } else if (isNotDelete) {
+            filterBody_cp.isDelete = false;
+        }
+
         filterBody_cp.chatRoomId = Number(idInput_t);
         handleGetNotes(filterBody_cp);
     };
@@ -59,11 +73,15 @@ const Filter: FC<{ handleGetNotes: (getNotesBody: GetNotesBodyField) => void }> 
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div>
-                    <input type="checkbox" checked={isOa} onChange={() => handleIsOa()} />
-                    <div>OA</div>
+                <div className={style.checkbox1}>
+                    <input type="checkbox" checked={isDelete} onChange={() => handleIsDelete()} />
+                    <div>Đã xóa</div>
                 </div>
-                <div>
+                <div className={style.checkbox2}>
+                    <input type="checkbox" checked={isNotDelete} onChange={() => handleIsNotDelete()} />
+                    <div>Chưa xóa</div>
+                </div>
+                <div className={style.searchContainer}>
                     <input value={idInput} onChange={(e) => handleIdInput(e)} placeholder="Id phòng hội thoại" />
                     <CiSearch onClick={() => handleSearch()} size={20} />
                 </div>

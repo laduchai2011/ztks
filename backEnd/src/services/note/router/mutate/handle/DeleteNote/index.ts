@@ -1,34 +1,25 @@
 import { mssql_server } from '@src/connect';
-import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { NoteField } from '@src/dataStruct/note';
-import { CreateNoteBodyField } from '@src/dataStruct/note/body';
+import MutateDB_DeleteNote from '../../mutateDB/DeleteNote';
 import { verifyRefreshToken } from '@src/token';
-import MutateDB_CreateNote from '../../mutateDB/CreateNote';
-import { CacheGetChatRoomWithId } from '@src/const/redisKey/chatRoom';
+import { NoteField } from '@src/dataStruct/note';
+import { DeleteNoteBodyField } from '@src/dataStruct/note/body';
 
-class Handle_CreateNote {
+class Handle_DeleteNote {
     private _mssql_server = mssql_server;
-    private _serviceRedis = ServiceRedis.getInstance();
-    private _cacheGetChatRoomWithId = new CacheGetChatRoomWithId({ logPrameter: 'Handle_CreateNote' });
 
     constructor() {
         this._mssql_server.init();
-        this._serviceRedis.init();
-        this._cacheGetChatRoomWithId.init();
     }
 
-    setup = async (
-        req: Request<Record<string, never>, unknown, CreateNoteBodyField>,
-        res: Response,
-        next: NextFunction
-    ) => {
+    setup = async (req: Request<any, any, DeleteNoteBodyField>, res: Response, next: NextFunction) => {
         const myResponse: MyResponse<NoteField> = {
             isSuccess: false,
+            message: 'Băt đầu (Handle_DeleteNote-setup) !',
         };
 
-        const createNoteBody = req.body;
+        const deleteNoteBody = req.body;
         const { refreshToken } = req.cookies;
 
         if (typeof refreshToken === 'string') {
@@ -47,11 +38,10 @@ class Handle_CreateNote {
             }
 
             const { id } = verify_refreshToken;
-            const newCreateNoteBody_cp = { ...createNoteBody };
-            newCreateNoteBody_cp.accountId = id;
-            res.locals.createNoteBody = newCreateNoteBody_cp;
-
+            deleteNoteBody.accountId = id;
+            res.locals.deleteNoteBody = deleteNoteBody;
             next();
+            return;
         } else {
             myResponse.message = 'Vui lòng đăng nhập lại !';
             res.status(500).json(myResponse);
@@ -60,41 +50,40 @@ class Handle_CreateNote {
     };
 
     main = async (_: Request, res: Response) => {
-        const createNoteBody = res.locals.createNoteBody as CreateNoteBodyField;
+        const deleteNoteBody = res.locals.deleteNoteBody as DeleteNoteBodyField;
 
         const myResponse: MyResponse<NoteField> = {
             isSuccess: false,
+            message: 'Băt đầu (Handle_DeleteNote-main) !',
         };
 
-        const mutateDB = new MutateDB_CreateNote();
-        mutateDB.setCreateNoteBody(createNoteBody);
+        const mutateDB = new MutateDB_DeleteNote();
+        mutateDB.setDeleteNoteBody(deleteNoteBody);
 
         const connection_pool = this._mssql_server.get_connectionPool();
         if (connection_pool) {
             mutateDB.set_connection_pool(connection_pool);
         } else {
-            myResponse.message = 'Kết nối cơ sở dữ liệu không thành công !';
-            res.status(500).json(myResponse);
-            return;
+            console.error('Kết nối cơ sở dữ liệu không thành công !');
         }
 
         try {
             const result = await mutateDB.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
-                const data = result.recordset[0];
-
-                myResponse.message = 'Tạo ghi chú thành công !';
+                const rData = result.recordset[0];
+                myResponse.message = 'Xóa ghi chú thành công !';
                 myResponse.isSuccess = true;
-                myResponse.data = data;
+                myResponse.data = rData;
                 res.status(200).json(myResponse);
                 return;
             } else {
-                myResponse.message = 'Tạo ghi chú KHÔNG thành công 1 !';
-                res.status(204).json(myResponse);
+                myResponse.message = 'Xóa ghi chú KHÔNG thành công !';
+                res.status(200).json(myResponse);
                 return;
             }
         } catch (error) {
-            myResponse.message = 'Tạo ghi chú KHÔNG thành công 2 !';
+            console.error(error);
+            myResponse.message = 'Cập nhật ghi chú KHÔNG thành công !!';
             myResponse.err = error;
             res.status(500).json(myResponse);
             return;
@@ -102,4 +91,4 @@ class Handle_CreateNote {
     };
 }
 
-export default Handle_CreateNote;
+export default Handle_DeleteNote;

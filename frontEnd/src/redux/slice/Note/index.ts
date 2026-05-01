@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { state_props } from '@src/screen/Note/type';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { ZaloOaField } from '@src/dataStruct/zalo';
 import { NoteField } from '@src/dataStruct/note';
 
 const initialState: state_props = {
@@ -15,6 +14,11 @@ const initialState: state_props = {
         newNote: undefined,
     },
     newNotes: [],
+    deleteNoteDialog: {
+        isShow: false,
+        note: undefined,
+        deletedNote: undefined,
+    },
 };
 
 const NoteSlice = createSlice({
@@ -39,6 +43,15 @@ const NoteSlice = createSlice({
         clear_newNotes: (state) => {
             state.newNotes = [];
         },
+        setIsShow_deleteNoteDialog: (state, action: PayloadAction<boolean>) => {
+            state.deleteNoteDialog.isShow = action.payload;
+        },
+        setNote_deleteNoteDialog: (state, action: PayloadAction<NoteField | undefined>) => {
+            state.deleteNoteDialog.note = action.payload;
+        },
+        setDeletedNote_deleteNoteDialog: (state, action: PayloadAction<NoteField | undefined>) => {
+            state.deleteNoteDialog.deletedNote = action.payload;
+        },
     },
 });
 
@@ -49,5 +62,8 @@ export const {
     setFinal_editNoteDialog,
     setData_addNewNote,
     clear_newNotes,
+    setIsShow_deleteNoteDialog,
+    setNote_deleteNoteDialog,
+    setDeletedNote_deleteNoteDialog,
 } = NoteSlice.actions;
 export default NoteSlice.reducer;

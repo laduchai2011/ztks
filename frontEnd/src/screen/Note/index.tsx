@@ -10,6 +10,7 @@ import Header from '@src/screen/Header';
 import CreateNote from './component/CreateNote';
 import NoteList from './component/NoteList';
 import EditNote from './component/EditNote';
+import DeleteNoteDialog from './component/DeleteNoteDialog';
 import { select_enum } from '@src/router/type';
 import { setData_toastMessage, clear_newNotes } from '@src/redux/slice/Note';
 import { route_enum } from '@src/router/type';
@@ -46,6 +47,7 @@ const Note = () => {
                 <MyToastMessage />
                 <MyLoading />
                 <EditNote />
+                <DeleteNoteDialog />
             </div>
         </div>
     );

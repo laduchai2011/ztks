@@ -10,11 +10,29 @@
         @include center-of-row;
         justify-content: space-between;
 
-        > div:nth-child(1) {
+        > .checkbox1,
+        .checkbox2 {
             @include center-of-row;
+
+            > div {
+                font-size: 0.8rem;
+            }
         }
 
-        > div:nth-child(2) {
+        > .checkbox1 {
+            > div {
+                color: red;
+                text-decoration: line-through;
+            }
+        }
+
+        > .checkbox2 {
+            > div {
+                color: blue;
+            }
+        }
+
+        > .searchContainer {
             @include center-of-row;
 
             > input {
@@ -23,6 +41,7 @@
                 border: none;
                 outline: none;
                 border-bottom: 1px solid gray;
+                width: 120px;
             }
 
             > svg {

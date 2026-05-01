@@ -12,4 +12,9 @@ export interface state_props {
         newNote?: NoteField;
     };
     newNotes: NoteField[];
+    deleteNoteDialog: {
+        isShow: boolean;
+        note?: NoteField;
+        deletedNote?: NoteField;
+    };
 }
