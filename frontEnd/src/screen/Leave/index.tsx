@@ -9,6 +9,7 @@ import MyLoading from './component/MyLoading';
 import LeaveAllChatSession from './component/LeaveAllChatSession';
 import LeaveAllAccountReceiveMessage from './component/LeaveAllAccountReceiveMessage';
 import LeaveAllChatRoom from './component/LeaveAllChatRoom';
+import LeaveAdmin from './component/LeaveAdmin';
 import { setData_toastMessage } from '@src/redux/slice/Leave';
 import { route_enum } from '@src/router/type';
 
@@ -39,6 +40,7 @@ const Leave = () => {
                 <LeaveAllChatSession />
                 <LeaveAllAccountReceiveMessage />
                 <LeaveAllChatRoom />
+                <LeaveAdmin />
             </div>
             <div>
                 <MyToastMessage />

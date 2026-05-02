@@ -22,6 +22,7 @@ import {
     GetMyRecommendBodyField,
     AddYourRecommendBodyField,
     LeaveAllAccountReceiveMessageBodyField,
+    LeaveAdminBodyField,
 } from '@src/dataStruct/account/body';
 import { ACCOUNT_API } from '@src/const/api/account';
 import { router_res_type } from '@src/interface';
@@ -216,6 +217,13 @@ export const accountRTK = createApi({
                 body,
             }),
         }),
+        leaveAdmin: builder.mutation<MyResponse<boolean>, LeaveAdminBodyField>({
+            query: (body) => ({
+                url: ACCOUNT_API.LEAVE_ADMIN,
+                method: 'PATCH',
+                body,
+            }),
+        }),
     }),
 });
 
@@ -242,4 +250,5 @@ export const {
     useAddMemberV1Mutation,
     useAddYourRecommendMutation,
     useLeaveAllAccountReceiveMessageMutation,
+    useLeaveAdminMutation,
 } = accountRTK;

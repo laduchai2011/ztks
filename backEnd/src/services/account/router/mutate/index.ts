@@ -15,7 +15,7 @@ import Handle_EditInforAccount from './handle/EditInforAccount';
 import Handle_ForgetPassword from './handle/ForgetPassword';
 import Handle_AddYourRecommend from './handle/AddYourRecommend';
 import Handle_LeaveAllAccountReceiveMessage from './handle/LeaveAllAccountReceiveMessage';
-import Handle_MemberLeave from './handle/MemberLeave';
+import Handle_LeaveAdmin from './handle/LeaveAdmin';
 
 dotenv.config();
 
@@ -33,7 +33,7 @@ const handle_editInforAccount = new Handle_EditInforAccount();
 const handle_forgetPassword = new Handle_ForgetPassword();
 const handle_addYourRecommend = new Handle_AddYourRecommend();
 const handle_leaveAllAccountReceiveMessage = new Handle_LeaveAllAccountReceiveMessage();
-const handle_memberLeave = new Handle_MemberLeave();
+const handle_leaveAdmin = new Handle_LeaveAdmin();
 
 router_mutate_account.post('/', (_: Request, res: Response) => {
     res.send('(POST) Express + TypeScript Server: router_mutate_account');
@@ -109,6 +109,6 @@ router_mutate_account.patch(
     handle_leaveAllAccountReceiveMessage.main
 );
 
-router_mutate_account.patch('/memberLeave', authentication, handle_memberLeave.setup, handle_memberLeave.main);
+router_mutate_account.patch('/leaveAdmin', authentication, handle_leaveAdmin.setup, handle_leaveAdmin.main);
 
 export default router_mutate_account;

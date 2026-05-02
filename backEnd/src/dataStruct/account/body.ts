@@ -88,6 +88,6 @@ export interface LeaveAllAccountReceiveMessageBodyField {
     accountId: number;
 }
 
-export interface MemberLeaveBodyField {
+export interface LeaveAdminBodyField {
     accountId: number;
 }

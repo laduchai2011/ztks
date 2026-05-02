@@ -25,4 +25,5 @@ export const ACCOUNT_API = {
     GET_MY_RECOMMEND: `${BASE_URL}${apiString}/service_account/query/getMyRecommend`,
     ADD_YOUR_RECOMMEND: `${BASE_URL}${apiString}/service_account/mutate/addYourRecommend`,
     LEAVE_ALL_ACCOUNT_RECEIVE_MESSAGE: `${BASE_URL}${apiString}/service_account/mutate/leaveAllAccountReceiveMessage`,
+    LEAVE_ADMIN: `${BASE_URL}${apiString}/service_account/mutate/leaveAdmin`,
 };

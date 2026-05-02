@@ -1,9 +1,9 @@
 import sql from 'mssql';
-import { MemberLeaveBodyField } from '@src/dataStruct/account/body';
+import { LeaveAdminBodyField } from '@src/dataStruct/account/body';
 
-class MutateDB_MemberLeave {
+class MutateDB_LeaveAdmin {
     private _connectionPool: sql.ConnectionPool | undefined;
-    private _memberLeaveBody: MemberLeaveBodyField | undefined;
+    private _leaveAdminBody: LeaveAdminBodyField | undefined;
 
     constructor() {}
 
@@ -11,17 +11,17 @@ class MutateDB_MemberLeave {
         this._connectionPool = connectionPool;
     }
 
-    setMemberLeaveBody(memberLeaveBody: MemberLeaveBodyField): void {
-        this._memberLeaveBody = memberLeaveBody;
+    setLeaveAdminBody(leaveAdminBody: LeaveAdminBodyField): void {
+        this._leaveAdminBody = leaveAdminBody;
     }
 
     async run(): Promise<sql.IProcedureResult<boolean> | undefined> {
-        if (this._connectionPool !== undefined && this._memberLeaveBody !== undefined) {
+        if (this._connectionPool !== undefined && this._leaveAdminBody !== undefined) {
             try {
                 const result = await this._connectionPool
                     .request()
-                    .input('accountId', sql.Int, this._memberLeaveBody.accountId)
-                    .execute('MemberLeave');
+                    .input('accountId', sql.Int, this._leaveAdminBody.accountId)
+                    .execute('LeaveAdmin');
 
                 return result;
             } catch (error) {
@@ -31,4 +31,4 @@ class MutateDB_MemberLeave {
     }
 }
 
-export default MutateDB_MemberLeave;
+export default MutateDB_LeaveAdmin;

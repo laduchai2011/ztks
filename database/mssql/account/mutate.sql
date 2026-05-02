@@ -234,7 +234,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE MemberLeave
+CREATE PROCEDURE LeaveAdmin
 	@accountId INT
 AS
 BEGIN

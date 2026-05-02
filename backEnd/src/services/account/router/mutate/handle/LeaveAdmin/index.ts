@@ -1,24 +1,24 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { MemberLeaveBodyField } from '@src/dataStruct/account/body';
-import MutateDB_MemberLeave from '../../mutateDB/MemberLeave';
+import { LeaveAdminBodyField } from '@src/dataStruct/account/body';
+import MutateDB_LeaveAdmin from '../../mutateDB/LeaveAdmin';
 import { verifyRefreshToken } from '@src/token';
 
-class Handle_MemberLeave {
+class Handle_LeaveAdmin {
     private _mssql_server = mssql_server;
 
     constructor() {
         this._mssql_server.init();
     }
 
-    setup = async (req: Request<any, any, MemberLeaveBodyField>, res: Response, next: NextFunction) => {
+    setup = async (req: Request<any, any, LeaveAdminBodyField>, res: Response, next: NextFunction) => {
         const myResponse: MyResponse<boolean> = {
             isSuccess: false,
-            message: 'Băt đầu (Handle_MemberLeave-setup) !',
+            message: 'Băt đầu (Handle_LeaveAdmin-setup) !',
         };
 
-        const memberLeaveBody = req.body;
+        const leaveAdminBody = req.body;
         const { refreshToken } = req.cookies;
 
         if (typeof refreshToken === 'string') {
@@ -37,8 +37,8 @@ class Handle_MemberLeave {
             }
 
             const { id } = verify_refreshToken;
-            memberLeaveBody.accountId = id;
-            res.locals.memberLeaveBody = memberLeaveBody;
+            leaveAdminBody.accountId = id;
+            res.locals.leaveAdminBody = leaveAdminBody;
             next();
             return;
         } else {
@@ -49,15 +49,15 @@ class Handle_MemberLeave {
     };
 
     main = async (_: Request, res: Response) => {
-        const memberLeaveBody = res.locals.memberLeaveBody as MemberLeaveBodyField;
+        const leaveAdminBody = res.locals.leaveAdminBody as LeaveAdminBodyField;
 
         const myResponse: MyResponse<boolean> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_MemberLeave-main)',
+            message: 'Bắt đầu (Handle_LeaveAdmin-main)',
         };
 
-        const mutateDB = new MutateDB_MemberLeave();
-        mutateDB.setMemberLeaveBody(memberLeaveBody);
+        const mutateDB = new MutateDB_LeaveAdmin();
+        mutateDB.setLeaveAdminBody(leaveAdminBody);
 
         const connection_pool = this._mssql_server.get_connectionPool();
         if (connection_pool) {
@@ -73,18 +73,18 @@ class Handle_MemberLeave {
             if (result?.recordset.length && result?.recordset.length > 0) {
                 const data = result.recordset[0];
 
-                myResponse.message = 'Rời thành công !';
+                myResponse.message = 'Rời admin thành công !';
                 myResponse.isSuccess = true;
                 myResponse.data = data;
                 res.status(200).json(myResponse);
                 return;
             } else {
-                myResponse.message = 'Rời KHÔNG thành công !';
+                myResponse.message = 'Rời admin KHÔNG thành công !';
                 res.status(200).json(myResponse);
                 return;
             }
         } catch (error) {
-            myResponse.message = 'Rời KHÔNG thành công !!';
+            myResponse.message = 'Rời admin KHÔNG thành công !!';
             myResponse.err = error;
             res.status(500).json(myResponse);
             return;
@@ -92,4 +92,4 @@ class Handle_MemberLeave {
     };
 }
 
-export default Handle_MemberLeave;
+export default Handle_LeaveAdmin;

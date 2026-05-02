@@ -76,7 +76,7 @@ const LeaveAllChatRoom = () => {
 
         while (true) {
             const pagedChatRoom = await handleGetMyChatRooms(1);
-            console.log('pagedChatRoom', pagedChatRoom);
+
             if (!pagedChatRoom) return false;
 
             const { items, totalCount } = pagedChatRoom;
