@@ -110,9 +110,11 @@ const Profile = () => {
                             {POST}
                         </div>
                     )}
-                    <div className={style.option} onClick={() => goToLeave()}>
-                        {LEAVE}
-                    </div>
+                    {!isAdmin && (
+                        <div className={style.option} onClick={() => goToLeave()}>
+                            {LEAVE}
+                        </div>
+                    )}
                     <div className={style.option} onClick={() => goToSignout()}>
                         {SIGNOUT}
                     </div>

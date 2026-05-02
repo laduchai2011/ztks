@@ -124,8 +124,13 @@ BEGIN
 	BEGIN TRY
         BEGIN TRANSACTION;
 
+		DECLARE @myAdminId INT;
+
+		SELECT @myAdminId = addedById FROM dbo.accountInformation WHERE accountId = @accountId
+		IF @myAdminId IS NULL THROW 50001, N'Không tồn tại 1 admin nào cho bạn .', 1;
+
 		UPDATE dbo.chatSession
-		SET selectedAccountId = NULL
+		SET selectedAccountId = @myAdminId
 		WHERE status = 'normal' AND selectedAccountId = @accountId;
 
 		IF NOT EXISTS ( SELECT 1 FROM dbo.chatSession WHERE selectedAccountId = @accountId )

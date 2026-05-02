@@ -7,17 +7,17 @@ import Handle_GetMyChatRooms from './handle/GetMyChatRooms';
 
 const router_query_chatRoom: Router = express.Router();
 
+const handle_getMyChatRooms = new Handle_GetMyChatRooms();
 const handle_getChatRoomWithId = new Handle_GetChatRoomWithId();
 const handle_getChatRoomRoleWithCridAaid = new Handle_GetChatRoomRoleWithCridAaid();
 const handle_getChatRoomsMongo = new Handle_GetChatRoomsMongo();
-const handle_getMyChatRooms = new Handle_GetMyChatRooms();
+
+router_query_chatRoom.post('/getMyChatRooms', authentication, handle_getMyChatRooms.main);
 
 router_query_chatRoom.post('/getChatRoomWithId', authentication, handle_getChatRoomWithId.main);
 
 router_query_chatRoom.post('/getChatRoomRoleWithCridAaid', authentication, handle_getChatRoomRoleWithCridAaid.main);
 
 router_query_chatRoom.post('/getChatRoomsMongo', authentication, handle_getChatRoomsMongo.main);
-
-router_query_chatRoom.post('/getMyChatRooms', authentication, handle_getMyChatRooms.main);
 
 export default router_query_chatRoom;

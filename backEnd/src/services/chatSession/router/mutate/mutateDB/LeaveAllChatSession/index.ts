@@ -21,7 +21,7 @@ class MutateDB_LeaveAllChatSession {
                 const result = await this._connectionPool
                     .request()
                     .input('accountId', sql.Int, this._leaveAllChatSessionBody.accountId)
-                    .execute('LeaveAllAccountReceiveMessage');
+                    .execute('LeaveAllChatSession');
 
                 return result;
             } catch (error) {

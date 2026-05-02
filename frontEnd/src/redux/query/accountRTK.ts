@@ -21,6 +21,7 @@ import {
     CheckForgetPasswordBodyField,
     GetMyRecommendBodyField,
     AddYourRecommendBodyField,
+    LeaveAllAccountReceiveMessageBodyField,
 } from '@src/dataStruct/account/body';
 import { ACCOUNT_API } from '@src/const/api/account';
 import { router_res_type } from '@src/interface';
@@ -208,6 +209,13 @@ export const accountRTK = createApi({
             }),
             invalidatesTags: ['Recommend'], // dùng nếu muốn refetch danh sách sau khi thêm
         }),
+        leaveAllAccountReceiveMessage: builder.mutation<MyResponse<boolean>, LeaveAllAccountReceiveMessageBodyField>({
+            query: (body) => ({
+                url: ACCOUNT_API.LEAVE_ALL_ACCOUNT_RECEIVE_MESSAGE,
+                method: 'PATCH',
+                body,
+            }),
+        }),
     }),
 });
 
@@ -233,4 +241,5 @@ export const {
     useUpdateAccountReceiveMessageMutation,
     useAddMemberV1Mutation,
     useAddYourRecommendMutation,
+    useLeaveAllAccountReceiveMessageMutation,
 } = accountRTK;

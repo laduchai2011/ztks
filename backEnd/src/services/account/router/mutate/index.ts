@@ -102,13 +102,13 @@ router_mutate_account.post('/forgetPassword', authOtpFirebaseMiddleware, handle_
 
 router_mutate_account.post('/addYourRecommend', handle_addYourRecommend.setup, handle_addYourRecommend.main);
 
-router_mutate_account.post(
+router_mutate_account.patch(
     '/leaveAllAccountReceiveMessage',
     authentication,
     handle_leaveAllAccountReceiveMessage.setup,
     handle_leaveAllAccountReceiveMessage.main
 );
 
-router_mutate_account.post('/memberLeave', authentication, handle_memberLeave.setup, handle_memberLeave.main);
+router_mutate_account.patch('/memberLeave', authentication, handle_memberLeave.setup, handle_memberLeave.main);
 
 export default router_mutate_account;

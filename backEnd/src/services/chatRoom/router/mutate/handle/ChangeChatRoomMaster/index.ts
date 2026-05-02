@@ -104,7 +104,7 @@ class Handle_ChangeChatRoomMaster {
                 });
                 await this._cacheGetChatRoomWithZaloOaIdUserIdByApp.clearCache();
 
-                await clearMongo(changeChatRoomMasterBody.accountId);
+                await clearMongo(changeChatRoomMasterBody.chatRoomId, changeChatRoomMasterBody.accountId);
 
                 await createChatRoomRoleMongo(rData, rData.zaloOaId);
 
@@ -129,12 +129,13 @@ class Handle_ChangeChatRoomMaster {
     };
 }
 
-async function clearMongo(accountId: number) {
+async function clearMongo(chat_room_id: number, accountId: number) {
     const db = getDbMonggo();
     const col_chatRoomRole = db.collection('chatRoomRole');
     const col_newMessage = db.collection('newMessage');
 
     await col_chatRoomRole.deleteMany({
+        chat_room_id: chat_room_id,
         account_id: accountId,
     });
 

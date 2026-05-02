@@ -1,12 +1,17 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ChatRoomField, ChatRoomRoleField, PagedChatRoomMongoField } from '@src/dataStruct/chatRoom';
+import {
+    ChatRoomField,
+    ChatRoomRoleField,
+    PagedChatRoomMongoField,
+    PagedChatRoomField,
+} from '@src/dataStruct/chatRoom';
 import {
     GetChatRoomWithIdBodyField,
     ChatRoomRoleWithCridAaidBodyField,
     UpdateSetupChatRoomRoleBodyField,
     ChatRoomsMongoBodyField,
     ChangeChatRoomMasterBodyField,
-    GetAllMyChatRoomsBodyField,
+    GetMyChatRoomsBodyField,
 } from '@src/dataStruct/chatRoom/body';
 import { CHAT_ROOM_API } from '@src/const/api/chatRoom';
 import { MyResponse } from '@src/dataStruct/response';
@@ -16,9 +21,9 @@ export const chatRoomRTK = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
     tagTypes: ['ChatRoomRole', 'ChatRoom'],
     endpoints: (builder) => ({
-        getAllMyChatRooms: builder.query<MyResponse<ChatRoomField[]>, GetAllMyChatRoomsBodyField>({
+        getMyChatRooms: builder.query<MyResponse<PagedChatRoomField>, GetMyChatRoomsBodyField>({
             query: (body) => ({
-                url: CHAT_ROOM_API.GET_ALL_MY_CHAT_ROOMS,
+                url: CHAT_ROOM_API.GET_MY_CHAT_ROOMS,
                 method: 'POST',
                 body,
             }),
@@ -66,7 +71,7 @@ export const chatRoomRTK = createApi({
 });
 
 export const {
-    useLazyGetAllMyChatRoomsQuery,
+    useLazyGetMyChatRoomsQuery,
     useLazyGetChatRoomsWithIdQuery,
     useGetChatRoomsWithIdQuery,
     useGetChatRoomRoleWithCridAaidQuery,

@@ -78,4 +78,5 @@ export const {
     useLazyGetChatSessionsWithAccountIdQuery,
     useUpdateSelectedAccountIdOfChatSessionMutation,
     useUpdateIsReayOfChatSessionMutation,
+    useLeaveAllChatSessionMutation,
 } = chatSessionRTK;

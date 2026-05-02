@@ -243,13 +243,22 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
+		IF EXISTS (
+			SELECT 1
+			FROM dbo.accountInformation
+			WHERE @accountId = @accountId AND accountType = 'admin'
+		)
+		BEGIN
+			THROW 50001, N'Tài khoản admin không thể thực hiện việc này .', 1;
+		END
+
 		IF NOT EXISTS (
 			SELECT 1
 			FROM dbo.accountReceiveMessage
 			WHERE accountIdReceiveMessage = @accountId
 		)
 		BEGIN
-			THROW 50001, N'Bạn không thể rời đi khi vẫn tồn tại trong 1 quyền nhận tin nhắn .', 1;
+			THROW 50002, N'Bạn không thể rời đi khi vẫn tồn tại trong 1 quyền nhận tin nhắn .', 2;
 		END
 
 		IF EXISTS (
@@ -258,7 +267,7 @@ BEGIN
 			WHERE selectedAccountId = @accountId
 		)
 		BEGIN
-			THROW 50002, N'Bạn không thể rời đi khi vẫn tồn tại trong 1 quyền nhận tin nhắn, chatSession cũng có quyền nhận tin nên bạn phải ra khỏi đó trước .', 2;
+			THROW 50003, N'Bạn không thể rời đi khi vẫn tồn tại trong 1 quyền nhận tin nhắn, chatSession cũng có quyền nhận tin nên bạn phải ra khỏi đó trước .', 3;
 		END
 
 		IF EXISTS (
@@ -267,7 +276,7 @@ BEGIN
 			WHERE accountId = @accountId
 		)
 		BEGIN
-			THROW 50003, N'Bạn không thể rời đi khi vẫn tồn tại phòng hội thoại .', 3;
+			THROW 50004, N'Bạn không thể rời đi khi vẫn tồn tại phòng hội thoại .', 4;
 		END
 
 		UPDATE dbo.accountInformation

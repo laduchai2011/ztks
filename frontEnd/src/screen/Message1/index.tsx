@@ -12,7 +12,13 @@ import MyLoading from './component/MyLoading';
 import ChangeChatRoomMasterDialog from './component/ChangeChatRoomMasterDialog';
 import { useGetChatRoomsWithIdQuery } from '@src/redux/query/chatRoomRTK';
 import { useGetZaloOaWithIdQuery } from '@src/redux/query/zaloRTK';
-import { setData_chatRoom, setData_toastMessage, set_isLoading, set_zaloOa } from '@src/redux/slice/MessageV1';
+import {
+    setData_chatRoom,
+    setData_toastMessage,
+    set_isLoading,
+    set_zaloOa,
+    setIsShow_changeChatRoomMasterDialog,
+} from '@src/redux/slice/MessageV1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { ChatRoomField } from '@src/dataStruct/chatRoom';
@@ -34,6 +40,18 @@ const Message1 = () => {
             navigate(route_enum.SIGNIN);
         }
     }, [navigate, myId]);
+
+    useEffect(() => {
+        return () => {
+            dispatch(
+                setData_toastMessage({
+                    type: undefined,
+                    message: '',
+                })
+            );
+            dispatch(setIsShow_changeChatRoomMasterDialog(false));
+        };
+    }, [dispatch]);
 
     useEffect(() => {
         if (!id) return;
