@@ -91,7 +91,7 @@ BEGIN
 			WHERE id = @voucherId
 			IF @@ROWCOUNT = 0
 			BEGIN
-				THROW 5006, 'Cập nhật trạng thái sử dụng voucher không thành công.', 6;
+				THROW 50006, 'Cập nhật trạng thái sử dụng voucher không thành công.', 6;
 			END
 
 			UPDATE dbo.wallet
@@ -126,10 +126,10 @@ BEGIN
 
 		UPDATE dbo.[order]
 		SET isPay = 1
-		WHERE id = @orderId AND isDelete = 0
+		WHERE id = @orderId AND isDelete = 0 AND isPay = 0
 		IF @@ROWCOUNT = 0
 		BEGIN
-			THROW 50011, N'Cập nhật đơn hàng không thành công .', 11;
+			THROW 50011, N'Đơn hàng đã thanh toán hoặc không tồn tại .', 11;
 		END
 		
 		SELECT * FROM dbo.[order] WHERE id = @orderId;
@@ -325,7 +325,7 @@ BEGIN
 
 		UPDATE dbo.requireTakeMoney
 		SET amount = @amount, bankId = @bankId
-		WHERE id = @requireTakeMoneyId
+		WHERE id = @requireTakeMoneyId AND memberZtksId IS NULL AND isDelete = 0
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50008, 'Cập nhật yêu cầu rút tiền thất bại.', 8;
@@ -351,24 +351,24 @@ BEGIN
 
 	BEGIN TRY
 	BEGIN TRANSACTION;
-	IF NOT EXISTS ( SELECT 1 FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId AND accountId = @accountId AND isDelete = 0 )
-	BEGIN
-		THROW 50001, N'Yêu cầu rút tiền này không phải của bạn .', 1;
-	END
+		IF NOT EXISTS ( SELECT 1 FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId AND accountId = @accountId AND isDelete = 0 )
+		BEGIN
+			THROW 50001, N'Yêu cầu rút tiền này không phải của bạn .', 1;
+		END
 
-	DECLARE @memberZtksId INT;
-	SELECT @memberZtksId = memberZtksId FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId;
-	IF @memberZtksId IS NOT NULL THROW 50002, N'Không thể xóa yêu cầu tút tiền khi đã được xác nhận .', 2;
+		DECLARE @memberZtksId INT;
+		SELECT @memberZtksId = memberZtksId FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId;
+		IF @memberZtksId IS NOT NULL THROW 50002, N'Không thể xóa yêu cầu tút tiền khi đã được xác nhận .', 2;
 
-	UPDATE dbo.requireTakeMoney
-	SET isDelete = 1
-	WHERE id = @requireTakeMoneyId
-	IF @@ROWCOUNT = 0
-    BEGIN
-       THROW 50003, 'Huỷ yêu cầu rút tiền không thành công .', 3;
-    END
+		UPDATE dbo.requireTakeMoney
+		SET isDelete = 1
+		WHERE id = @requireTakeMoneyId AND memberZtksId IS NULL AND isDelete = 0
+		IF @@ROWCOUNT = 0
+		BEGIN
+		   THROW 50003, 'Huỷ yêu cầu rút tiền không thành công .', 3;
+		END
 
-	SELECT * FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId
+		SELECT * FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId
 	COMMIT TRANSACTION;
 	END TRY
 	BEGIN CATCH
@@ -481,7 +481,7 @@ BEGIN
 		-- cập nhật yêu cầu rút tiền hoàn 
 		UPDATE dbo.requireTakeMoney
 		SET isDo = 1, doTime = SYSDATETIMEOFFSET()
-		WHERE id = @requireTakeMoneyId
+		WHERE id = @requireTakeMoneyId and isDelete = 0
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50009, 'Cập nhật yêu cầu rút tiền thất bại.', 9;

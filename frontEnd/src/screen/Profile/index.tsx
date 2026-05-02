@@ -13,6 +13,7 @@ import {
     WALLET,
     BANK,
     POST,
+    LEAVE,
 } from '@src/const/text';
 import MyLoading from './component/MyLoading';
 import MyToastMessage from './component/MyToastMessage';
@@ -66,6 +67,10 @@ const Profile = () => {
         navigate(route_enum.POST);
     };
 
+    const goToLeave = () => {
+        navigate(route_enum.LEAVE);
+    };
+
     const goToSignout = () => {
         navigate(route_enum.SIGNOUT);
     };
@@ -105,6 +110,9 @@ const Profile = () => {
                             {POST}
                         </div>
                     )}
+                    <div className={style.option} onClick={() => goToLeave()}>
+                        {LEAVE}
+                    </div>
                     <div className={style.option} onClick={() => goToSignout()}>
                         {SIGNOUT}
                     </div>

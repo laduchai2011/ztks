@@ -40,7 +40,7 @@ const OaSettingSlice = createSlice({
         },
         set_chatSessions: (
             state,
-            action: PayloadAction<{ chatSessions: ChatSessionField[]; crud_type: Crud_Type }>
+            action: PayloadAction<{ chatSessions: ChatSessionField[]; crud_type: Crud_Type; page?: number }>
         ) => {
             switch (action.payload.crud_type) {
                 case Crud_Enum.CREATE: {
@@ -48,7 +48,13 @@ const OaSettingSlice = createSlice({
                     break;
                 }
                 case Crud_Enum.LOAD_MORE: {
-                    state.chatSessions = [...state.chatSessions, ...action.payload.chatSessions];
+                    if (action.payload.page) {
+                        if (action.payload.page === 1) {
+                            state.chatSessions = action.payload.chatSessions;
+                        } else {
+                            state.chatSessions = [...state.chatSessions, ...action.payload.chatSessions];
+                        }
+                    }
                     break;
                 }
                 default: {

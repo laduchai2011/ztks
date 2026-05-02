@@ -9,7 +9,6 @@
         background-color: white;
         width: 350px;
         height: 100vh;
-        // height: 500px;
         display: flex;
         flex-direction: column;
 
@@ -27,11 +26,6 @@
             top: 0;
             background-color: hwb(240 35% 0%);
             color: white;
-        }
-
-        > .headerTab {
-            position: sticky;
-            bottom: 0;
         }
     }
 }

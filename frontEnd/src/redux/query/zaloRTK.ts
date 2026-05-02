@@ -48,7 +48,6 @@ export const zaloRTK = createApi({
 
 export const {
     useGetZaloAppWithAccountIdQuery,
-    useGetZaloOaListWith2FkQuery,
     useLazyGetZaloOaListWith2FkQuery,
     useGetZaloOaWithIdQuery,
     useLazyGetZaloOaWithIdQuery,

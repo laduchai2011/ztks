@@ -20,6 +20,7 @@ import ZnsReducer from '@src/redux/slice/Zns';
 import BankReducer from '@src/redux/slice/Bank';
 import PostReducer from '@src/redux/slice/Post';
 import RegisterPostReducer from '@src/redux/slice/RegisterPost';
+import LeaveReducer from '@src/redux/slice/Leave';
 import { accountRTK } from './query/accountRTK';
 import { myCustomerRTK } from './query/myCustomerRTK';
 import { messageV1RTK } from './query/messageV1RTK';
@@ -58,6 +59,7 @@ export const store = configureStore({
         BankSlice: BankReducer,
         PostSlice: PostReducer,
         RegisterPostSlice: RegisterPostReducer,
+        LeaveSlice: LeaveReducer,
         [accountRTK.reducerPath]: accountRTK.reducer,
         [myCustomerRTK.reducerPath]: myCustomerRTK.reducer,
         [messageV1RTK.reducerPath]: messageV1RTK.reducer,

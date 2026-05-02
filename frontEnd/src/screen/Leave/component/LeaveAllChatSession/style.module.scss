@@ -1,0 +1,32 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+
+    > .header {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 5px;
+    }
+
+    > .buttonContainer {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 5px;
+
+        > div {
+            background-color: rgb(255, 228, 158);
+            box-sizing: border-box;
+            padding: 5px 10px;
+            border-radius: 15px;
+            border: 1px solid rgb(255, 206, 81);
+            cursor: default;
+            user-select: none;
+
+            &:active {
+                background-color: white;
+            }
+        }
+    }
+}

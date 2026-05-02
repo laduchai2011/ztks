@@ -5,6 +5,7 @@ import {
     ChatSessionBodyField,
     UpdateSelectedAccountIdOfChatSessionBodyField,
     UpdateIsReadyOfChatSessionBodyField,
+    LeaveAllChatSessionBodyField,
 } from '@src/dataStruct/chatSession/body';
 import { CHAT_SESSION_API } from '@src/const/api/chatSession';
 import { MyResponse } from '@src/dataStruct/response';
@@ -62,12 +63,19 @@ export const chatSessionRTK = createApi({
             }),
             // invalidatesTags: (result) => [{ type: 'ChatSession', id: result?.data?.id }],
         }),
+        leaveAllChatSession: builder.mutation<MyResponse<boolean>, LeaveAllChatSessionBodyField>({
+            query: (body) => ({
+                url: CHAT_SESSION_API.LEAVE_ALL_CHAT_SESSION,
+                method: 'PATCH',
+                body,
+            }),
+        }),
     }),
 });
 
 export const {
     useCreateChatSessionMutation,
-    useGetChatSessionsWithAccountIdQuery,
+    useLazyGetChatSessionsWithAccountIdQuery,
     useUpdateSelectedAccountIdOfChatSessionMutation,
     useUpdateIsReayOfChatSessionMutation,
 } = chatSessionRTK;

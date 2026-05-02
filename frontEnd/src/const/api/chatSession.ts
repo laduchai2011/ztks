@@ -8,4 +8,5 @@ export const CHAT_SESSION_API = {
     CREATE_CHAT_SESSION: `${BASE_URL}${apiString}/service_chatSession/mutate/createChatSession`,
     UPDATE_SELECTED_ACCOUNT_ID: `${BASE_URL}${apiString}/service_chatSession/mutate/updateSelectedAccountIdOfChatSession`,
     UPDATE_ISREADY_ID: `${BASE_URL}${apiString}/service_chatSession/mutate/updateIsReadyOfChatSession`,
+    LEAVE_ALL_CHAT_SESSION: `${BASE_URL}${apiString}/service_chatSession/mutate/leaveAllChatSession`,
 };

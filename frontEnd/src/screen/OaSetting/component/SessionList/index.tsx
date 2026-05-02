@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { SESSION_LIST, SEE_MORE } from '@src/const/text';
 import Session from './component/Session';
-import { useGetChatSessionsWithAccountIdQuery } from '@src/redux/query/chatSessionRTK';
+import { useLazyGetChatSessionsWithAccountIdQuery } from '@src/redux/query/chatSessionRTK';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { set_isLoading, setData_toastMessage, set_chatSessions } from '@src/redux/slice/OaSetting';
 import { ZaloOaField } from '@src/dataStruct/zalo';
@@ -21,43 +21,77 @@ const SessionList = () => {
 
     // const [isLoadMore, setIsLoadMore] = useState<boolean>(true);
     const [page, setPage] = useState<number>(1);
-    const size = 5;
+    const size = 10;
     const [totalCount, setTotalCount] = useState<number>(0);
 
-    const {
-        data: data_chatSession,
-        // isFetching,
-        isLoading: isLoading_chatSession,
-        isError: isError_chatSession,
-        error: error_chatSession,
-    } = useGetChatSessionsWithAccountIdQuery(
-        { page: page, size: size, zaloOaId: zaloOa?.id || -1, accountId: account?.id || -1 },
-        { skip: zaloOa === undefined || account === undefined }
-    );
+    const [getChatSessionsWithAccountId] = useLazyGetChatSessionsWithAccountIdQuery();
+
     useEffect(() => {
-        if (isError_chatSession && error_chatSession) {
-            console.error(error_chatSession);
-            dispatch(
-                setData_toastMessage({
-                    type: messageType_enum.ERROR,
-                    message: 'Lấy dữ liệu OA KHÔNG thành công !',
-                })
-            );
-        }
-    }, [dispatch, isError_chatSession, error_chatSession]);
-    useEffect(() => {
-        dispatch(set_isLoading(isLoading_chatSession));
-    }, [dispatch, isLoading_chatSession]);
-    useEffect(() => {
-        const resData = data_chatSession;
-        if (resData?.isSuccess && resData.data) {
-            dispatch(set_chatSessions({ chatSessions: resData.data?.items, crud_type: Crud_Enum.LOAD_MORE }));
-            setTotalCount(resData.data.totalCount);
-        }
-    }, [dispatch, data_chatSession]);
+        if (!account) return;
+        if (!zaloOa) return;
+
+        dispatch(set_isLoading(true));
+        getChatSessionsWithAccountId({ page: page, size: size, zaloOaId: zaloOa.id, accountId: account.id })
+            .then((res) => {
+                const resData = res.data;
+                if (resData?.isSuccess && resData.data) {
+                    dispatch(
+                        set_chatSessions({
+                            chatSessions: resData.data?.items,
+                            crud_type: Crud_Enum.LOAD_MORE,
+                            page: page,
+                        })
+                    );
+                    setTotalCount(resData.data.totalCount);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                dispatch(
+                    setData_toastMessage({
+                        type: messageType_enum.ERROR,
+                        message: 'Đã có lỗi xảy ra !',
+                    })
+                );
+            })
+            .finally(() => {
+                dispatch(set_isLoading(false));
+            });
+    }, [account, zaloOa, dispatch, getChatSessionsWithAccountId, page]);
+
+    // const {
+    //     data: data_chatSession,
+    //     // isFetching,
+    //     isLoading: isLoading_chatSession,
+    //     isError: isError_chatSession,
+    //     error: error_chatSession,
+    // } = useGetChatSessionsWithAccountIdQuery(
+    //     { page: page, size: size, zaloOaId: zaloOa?.id || -1, accountId: account?.id || -1 },
+    //     { skip: zaloOa === undefined || account === undefined }
+    // );
+    // useEffect(() => {
+    //     if (isError_chatSession && error_chatSession) {
+    //         console.error(error_chatSession);
+    //         dispatch(
+    //             setData_toastMessage({
+    //                 type: messageType_enum.ERROR,
+    //                 message: 'Lấy dữ liệu OA KHÔNG thành công !',
+    //             })
+    //         );
+    //     }
+    // }, [dispatch, isError_chatSession, error_chatSession]);
+    // useEffect(() => {
+    //     dispatch(set_isLoading(isLoading_chatSession));
+    // }, [dispatch, isLoading_chatSession]);
+    // useEffect(() => {
+    //     const resData = data_chatSession;
+    //     if (resData?.isSuccess && resData.data) {
+    //         dispatch(set_chatSessions({ chatSessions: resData.data?.items, crud_type: Crud_Enum.LOAD_MORE }));
+    //         setTotalCount(resData.data.totalCount);
+    //     }
+    // }, [dispatch, data_chatSession]);
 
     const handleSeeMore = () => {
-        // setIsLoadMore(true);
         setPage((prev) => prev + 1);
     };
 

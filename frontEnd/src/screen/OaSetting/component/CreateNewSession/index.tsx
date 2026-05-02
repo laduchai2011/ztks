@@ -76,7 +76,7 @@ const CreateNewSession = () => {
                 } else {
                     dispatch(
                         setData_toastMessage({
-                            type: messageType_enum.SUCCESS,
+                            type: messageType_enum.ERROR,
                             message: resData?.message,
                         })
                     );

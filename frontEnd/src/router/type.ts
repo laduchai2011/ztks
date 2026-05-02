@@ -18,6 +18,7 @@ import {
     BANK,
     POST,
     REGISTER_POST,
+    LEAVE,
 } from '@src/const/text';
 
 const _HOME = HOME;
@@ -40,6 +41,7 @@ const _WALLET = WALLET;
 const _BANK = BANK;
 const _POST = POST;
 const _REGISTER_POST = REGISTER_POST;
+const _LEAVE = LEAVE;
 
 export enum select_enum {
     HOME = _HOME,
@@ -63,6 +65,7 @@ export enum select_enum {
     BANK = _BANK,
     POST = _POST,
     REGISTER_POST = _REGISTER_POST,
+    LEAVE = _LEAVE,
 }
 export type selected_type =
     | select_enum.HOME
@@ -85,7 +88,8 @@ export type selected_type =
     | select_enum.ZNS
     | select_enum.BANK
     | select_enum.POST
-    | select_enum.REGISTER_POST;
+    | select_enum.REGISTER_POST
+    | select_enum.LEAVE;
 
 export enum route_enum {
     HOME = '/',
@@ -109,6 +113,7 @@ export enum route_enum {
     BANK = '/bank',
     POST = '/post',
     REGISTER_POST = '/register_post',
+    LEAVE = '/leave',
 }
 export type routed_type =
     | route_enum.HOME
@@ -131,4 +136,5 @@ export type routed_type =
     | route_enum.ZNS
     | route_enum.BANK
     | route_enum.POST
-    | route_enum.REGISTER_POST;
+    | route_enum.REGISTER_POST
+    | route_enum.LEAVE;
