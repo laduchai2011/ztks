@@ -1,9 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ZaloAppField, PagedZaloOaField, ZaloOaField } from '@src/dataStruct/zalo';
+import { ZaloAppField, PagedZaloOaField, ZaloOaField, ZaloOaTokenField } from '@src/dataStruct/zalo';
 import {
     ZaloAppWithAccountIdBodyField,
     ZaloOaListWith2FkBodyField,
     ZaloOaWithIdBodyField,
+    GetZaloOaTokenWithFkBodyField,
+    CreateZaloOaTokenBodyField,
+    UpdateRefreshTokenOfZaloOaBodyField,
 } from '@src/dataStruct/zalo/body';
 import { ZaloUserField } from '@src/dataStruct/zalo/user';
 import { ZaloUserBodyField } from '@src/dataStruct/zalo/user/body';
@@ -13,7 +16,7 @@ import { MyResponse } from '@src/dataStruct/response';
 export const zaloRTK = createApi({
     reducerPath: 'zaloRTK',
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
-    tagTypes: [],
+    tagTypes: ['ZaloOaToken'],
     endpoints: (builder) => ({
         getZaloAppWithAccountId: builder.query<MyResponse<ZaloAppField>, ZaloAppWithAccountIdBodyField>({
             query: (body) => ({
@@ -43,6 +46,32 @@ export const zaloRTK = createApi({
                 body,
             }),
         }),
+        getZaloOaTokenWithFk: builder.query<MyResponse<ZaloOaTokenField>, GetZaloOaTokenWithFkBodyField>({
+            query: (body) => ({
+                url: ZALO_API.GET_ZALO_OA_TOKEN_WITH_FK,
+                method: 'POST',
+                body,
+            }),
+            providesTags: ['ZaloOaToken'],
+        }),
+        createZaloOaToken: builder.mutation<MyResponse<ZaloOaTokenField>, CreateZaloOaTokenBodyField>({
+            query: (body) => ({
+                url: ZALO_API.CREATE_ZALO_OA_TOKEN,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['ZaloOaToken'],
+        }),
+        updateRefreshTokenOfZaloOa: builder.mutation<MyResponse<ZaloOaTokenField>, UpdateRefreshTokenOfZaloOaBodyField>(
+            {
+                query: (body) => ({
+                    url: ZALO_API.UPDATE_REFRESH_TOKEN_OF_ZALO_OA,
+                    method: 'PATCH',
+                    body,
+                }),
+                invalidatesTags: ['ZaloOaToken'],
+            }
+        ),
     }),
 });
 
@@ -52,4 +81,7 @@ export const {
     useGetZaloOaWithIdQuery,
     useLazyGetZaloOaWithIdQuery,
     useGetZaloUserQuery,
+    useLazyGetZaloOaTokenWithFkQuery,
+    useCreateZaloOaTokenMutation,
+    useUpdateRefreshTokenOfZaloOaMutation,
 } = zaloRTK;

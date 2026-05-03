@@ -12,16 +12,19 @@ export interface ZaloOaListWith2FkBodyField {
 
 export interface GetZaloOaTokenWithFkBodyField {
     zaloOaId: number;
+    accountId: number;
 }
 
-export interface ZaloOaTokenBodyField {
+export interface CreateZaloOaTokenBodyField {
     refreshToken: string;
     zaloOaId: number;
+    accountId: number;
 }
 
 export interface UpdateRefreshTokenOfZaloOaBodyField {
     refreshToken: string;
     zaloOaId: number;
+    accountId: number;
 }
 
 export interface IsMyOaBodyField {

@@ -234,7 +234,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE LeaveAdmin
+ALTER PROCEDURE LeaveAdmin
 	@accountId INT
 AS
 BEGIN
@@ -246,13 +246,13 @@ BEGIN
 		IF EXISTS (
 			SELECT 1
 			FROM dbo.accountInformation
-			WHERE @accountId = @accountId AND accountType = 'admin'
+			WHERE accountId = @accountId AND accountType = 'admin'
 		)
 		BEGIN
 			THROW 50001, N'Tài khoản admin không thể thực hiện việc này .', 1;
 		END
 
-		IF NOT EXISTS (
+		IF EXISTS (
 			SELECT 1
 			FROM dbo.accountReceiveMessage
 			WHERE accountIdReceiveMessage = @accountId

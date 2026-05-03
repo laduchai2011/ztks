@@ -39,13 +39,15 @@ const Selected = () => {
 
     return (
         <div className={style.parent}>
-            {accountReceiveMessage?.accountIdReceiveMessage && (
+            {accountReceiveMessage?.accountIdReceiveMessage ? (
                 <div className={style.main}>
                     <div className={style.avatarContainer}>
                         <img src={accountWId?.avatar || avatarnull} alt="avatar" />
                     </div>
                     <div className={style.nameContainer}>{`${accountWId?.firstName} ${accountWId?.lastName}`}</div>
                 </div>
+            ) : (
+                <div>Chưa có tài khoản nào được chọn</div>
             )}
         </div>
     );

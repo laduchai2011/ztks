@@ -100,14 +100,30 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE GetZaloOaTokenWithFk
-    @zaloOaId INT
+ALTER PROCEDURE GetZaloOaTokenWithFk
+    @zaloOaId INT,
+	@accountId INT
 AS
 BEGIN
-	SELECT *
-	FROM dbo.zaloOaToken
-	WHERE zaloOaId = @zaloOaId
-END
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+		IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @accountId )
+		BEGIN
+			THROW 50001, N'Không phải OA của bạn .', 1;
+		END
+
+		SELECT * FROM dbo.zaloOaToken WHERE zaloOaId = @zaloOaId
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
 GO
 
 CREATE PROCEDURE PlaywightGetZaloApp

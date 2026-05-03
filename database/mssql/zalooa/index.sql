@@ -53,11 +53,26 @@ CREATE TABLE oaPermission (
     updateTime DATETIMEOFFSET(7) NOT NULL,
     createTime DATETIMEOFFSET(7) NOT NULL,
 
-	CONSTRAINT FK_oaPermistion_ZaloApp FOREIGN KEY (zaloOaId) REFERENCES zaloOa(id),
+	CONSTRAINT FK_oaPermistion_ZaloOa FOREIGN KEY (zaloOaId) REFERENCES zaloOa(id),
     CONSTRAINT FK_oaPermistion_Account FOREIGN KEY (accountId) REFERENCES account(id)
 )
 GO
-CREATE NONCLUSTERED INDEX idx_zaloApp_id ON oaPermission(zaloOaId);
+CREATE NONCLUSTERED INDEX idx_zaloOa_id ON oaPermission(zaloOaId);
 GO
 CREATE NONCLUSTERED INDEX idx_account_id ON oaPermission(accountId);
+GO
+
+CREATE TABLE znsTemplate (
+    id INT PRIMARY KEY IDENTITY(1,1),
+	temId NVARCHAR(255) NOT NULL,
+	dataFields NVARCHAR(MAX) NOT NULL,
+    isDelete BIT NOT NULL DEFAULT 0,
+	zaloOaId INT NOT NULL,
+    updateTime DATETIMEOFFSET(7) NOT NULL,
+    createTime DATETIMEOFFSET(7) NOT NULL,
+
+	CONSTRAINT FK_oaPermistion_ZaloOa FOREIGN KEY (zaloOaId) REFERENCES zaloOa(id)
+)
+GO
+CREATE NONCLUSTERED INDEX idx_zaloOa_id ON znsTemplate(zaloOaId);
 GO

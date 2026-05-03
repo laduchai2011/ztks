@@ -1,16 +1,16 @@
 import dotenv from 'dotenv';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import { consumeMessage, consumeStringMessage, consumeVideoMessage } from '@src/messageQueue/Consumer';
-import { sendMessage } from '@src/messageQueue/Producer';
-import { MessageZaloField } from './messageQueue/type';
+import { consumeStringMessage, consumeVideoMessage } from '@src/messageQueue/Consumer';
+// import { sendMessage } from '@src/messageQueue/Producer';
+// import { MessageZaloField } from './messageQueue/type';
 import process from 'process';
-import { customerSend_sendToMember, memberSend_sendToCustomer } from '@src/const/keyRabbitMQ';
+// import { customerSend_sendToMember, memberSend_sendToCustomer } from '@src/const/keyRabbitMQ';
 import { SocketMessageField } from './dataStruct/message_v1';
 import { AgentPayField } from './dataStruct/agent';
 import { OrderField } from './dataStruct/order';
 import { verifySocketToken } from './token';
-import { VideoMessageBodyField } from './dataStruct/message_v1/body';
+// import { VideoMessageBodyField } from './dataStruct/message_v1/body';
 
 dotenv.config();
 
@@ -51,6 +51,12 @@ consumeStringMessage(`orderPay_${dev_prefix}`, (payload) => {
     const accountId = data.accountId as number;
     const order = data.order as OrderField;
     io.to(`accountId_${accountId}`).emit('orderPay', order);
+});
+
+consumeStringMessage(`refreshTokenZalo_${dev_prefix}`, (payload) => {
+    const data = JSON.parse(payload);
+    const accountId = Number(data.accountId) as number;
+    io.to(`accountId_${accountId}`).emit('refreshTokenZalo', data);
 });
 
 io.use((socket, next) => {

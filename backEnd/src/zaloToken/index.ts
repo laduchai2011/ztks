@@ -59,7 +59,7 @@ export async function refreshAccessToken(zaloApp: ZaloAppField, zaloOa: ZaloOaFi
         }
 
         const queryDB = new QueryDB_GetZaloOaTokenWithFk();
-        queryDB.setGetZaloOaTokenWithFkBody({ zaloOaId: zaloOaId });
+        queryDB.setGetZaloOaTokenWithFkBody({ zaloOaId: zaloOaId, accountId: zaloOa.accountId });
         queryDB.set_connection_pool(connection_pool);
 
         const result = await queryDB.run();
@@ -91,7 +91,11 @@ export async function refreshAccessToken(zaloApp: ZaloAppField, zaloOa: ZaloOaFi
         }
 
         const queryDB_u = new MutateDB_UpdateRefreshTokenOfZaloOa();
-        queryDB_u.setUpdateRefreshTokenOfZaloOaBody({ refreshToken: newRefreshToken, zaloOaId: zaloOaId });
+        queryDB_u.setUpdateRefreshTokenOfZaloOaBody({
+            refreshToken: newRefreshToken,
+            zaloOaId: zaloOaId,
+            accountId: zaloOa.accountId,
+        });
         queryDB_u.set_connection_pool(connection_pool);
 
         const result_u = await queryDB_u.run();

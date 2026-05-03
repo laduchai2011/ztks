@@ -117,7 +117,7 @@ const List = () => {
 
     return (
         <div className={style.parent}>
-            <div>so luong thanh vien</div>
+            <div className={style.header}>{`Số lượng thành viên ${allMembers.length}`}</div>
             {accountReceiveMessage && <div className={style.list}>{list_account}</div>}
             {!accountReceiveMessage && (
                 <div className={style.activateContainer}>

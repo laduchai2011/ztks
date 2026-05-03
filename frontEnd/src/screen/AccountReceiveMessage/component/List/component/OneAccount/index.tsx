@@ -78,7 +78,7 @@ const OneAccount: FC<{ index: number; data: AccountField }> = ({ index, data }) 
     return (
         <div className={style.parent}>
             <div className={style.indexContainer}>
-                <div>{index}</div>
+                <div>{index + 1}</div>
                 <input type="checkbox" checked={selected} onChange={(e) => handleSelect(e)} />
             </div>
             <div className={style.inforContainer}>

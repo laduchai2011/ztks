@@ -6,6 +6,11 @@
     overflow-y: scroll;
     @include small-scroll-yy(3px);
 
+    > .header {
+        box-sizing: border-box;
+        padding: 10px;
+    }
+
     > .activateContainer {
         @include center-of-rectangle;
 

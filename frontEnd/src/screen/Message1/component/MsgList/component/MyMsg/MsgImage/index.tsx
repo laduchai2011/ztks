@@ -7,7 +7,15 @@ import LazyImage from '@src/component/LazyImage';
 const MsgImage: FC<{ data?: MessageV1Field<MessageImageField | MessageMultiImageField> }> = ({ data }) => {
     const url = data?.message.attachments[0].payload.url;
 
-    return <div className={style.parent}>{url && <LazyImage className={style.image} src={url} alt="img" />}</div>;
+    const handleSeeImage = () => {
+        window.open(url, '_blank');
+    };
+
+    return (
+        <div className={style.parent} onClick={() => handleSeeImage()}>
+            {url && <LazyImage className={style.image} src={url} alt="img" />}
+        </div>
+    );
 };
 
 export default memo(MsgImage);
