@@ -41,12 +41,13 @@ class Handle_GenZaloOaToken {
             const resultData = result.data;
             if (resultData) {
                 myResponse.data = resultData;
+                myResponse.isSuccess = true;
                 myResponse.message = 'Gen token zaloOa thành công !';
-                res.status(500).json(myResponse);
+                res.status(200).json(myResponse);
                 return;
             } else {
                 myResponse.message = 'Gen token zaloOa KHÔNG thành công !';
-                res.status(500).json(myResponse);
+                res.status(200).json(myResponse);
                 return;
             }
         } catch (error) {

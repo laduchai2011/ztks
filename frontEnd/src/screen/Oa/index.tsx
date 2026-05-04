@@ -7,6 +7,7 @@ import OaApp from './component/OaApp';
 import OaList from './component/OaList';
 import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
+import TakeTokenDialog from './component/TakeTokenDialog';
 import { OA_LIST } from '@src/const/text';
 import { route_enum } from '@src/router/type';
 import { setData_toastMessage } from '@src/redux/slice/Oa';
@@ -44,6 +45,7 @@ const Oa = () => {
                 <div>
                     <MyToastMessage />
                     <MyLoading />
+                    <TakeTokenDialog />
                 </div>
             </div>
         </div>

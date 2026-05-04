@@ -53,11 +53,11 @@ consumeStringMessage(`orderPay_${dev_prefix}`, (payload) => {
     io.to(`accountId_${accountId}`).emit('orderPay', order);
 });
 
-consumeStringMessage(`refreshTokenZalo_${dev_prefix}`, (payload) => {
-    const data = JSON.parse(payload);
-    const accountId = Number(data.accountId) as number;
-    io.to(`accountId_${accountId}`).emit('refreshTokenZalo', data);
-});
+// consumeStringMessage(`refreshTokenZalo_${dev_prefix}`, (payload) => {
+//     const data = JSON.parse(payload);
+//     const accountId = Number(data.accountId) as number;
+//     io.to(`accountId_${accountId}`).emit('refreshTokenZalo', data);
+// });
 
 io.use((socket, next) => {
     const token = socket.handshake.auth.token;
