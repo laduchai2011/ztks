@@ -10,4 +10,8 @@ export interface state_props {
         isShow: boolean;
         zaloOa?: ZaloOaField;
     };
+    createOa: {
+        isShow: boolean;
+        newZaloOa?: ZaloOaField;
+    };
 }

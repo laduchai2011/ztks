@@ -16,7 +16,7 @@ const handle_genZaloOaToken = new Handle_GenZaloOaToken();
 
 router_mutate_zalo.post('/createZaloOa', authentication, handle_createZaloOa.setup, handle_createZaloOa.main);
 
-router_mutate_zalo.post('/editZaloOa', authentication, handle_editZaloOa.setup, handle_editZaloOa.main);
+router_mutate_zalo.patch('/editZaloOa', authentication, handle_editZaloOa.setup, handle_editZaloOa.main);
 
 router_mutate_zalo.post(
     '/createZaloOaToken',

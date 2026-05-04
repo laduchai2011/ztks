@@ -145,14 +145,14 @@ const TakeTokenDialog = () => {
                     dispatch(
                         setData_toastMessage({
                             type: messageType_enum.SUCCESS,
-                            message: `Lấy token trên zalo oa ( ${zaloOa.oaName} ) thành công !`,
+                            message: `Cập nhật token trên zalo oa ( ${zaloOa.oaName} ) thành công !`,
                         })
                     );
                 } else {
                     dispatch(
                         setData_toastMessage({
                             type: messageType_enum.ERROR,
-                            message: `Lấy token trên zalo oa ( ${zaloOa.oaName} ) KHÔNG thành công !`,
+                            message: `Cập nhật token trên zalo oa ( ${zaloOa.oaName} ) KHÔNG thành công !`,
                         })
                     );
                 }
@@ -167,14 +167,14 @@ const TakeTokenDialog = () => {
                     dispatch(
                         setData_toastMessage({
                             type: messageType_enum.SUCCESS,
-                            message: `Lấy token trên zalo oa ( ${zaloOa.oaName} ) thành công !`,
+                            message: `Cập nhật token trên zalo oa ( ${zaloOa.oaName} ) thành công !`,
                         })
                     );
                 } else {
                     dispatch(
                         setData_toastMessage({
                             type: messageType_enum.ERROR,
-                            message: `Lấy token trên zalo oa ( ${zaloOa.oaName} ) KHÔNG thành công !`,
+                            message: `Cập nhật token trên zalo oa ( ${zaloOa.oaName} ) KHÔNG thành công !`,
                         })
                     );
                 }

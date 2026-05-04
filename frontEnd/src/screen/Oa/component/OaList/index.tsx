@@ -7,7 +7,7 @@ import { SEE_MORE } from '@src/const/text';
 import { useLazyGetZaloOaListWith2FkQuery } from '@src/redux/query/zaloRTK';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Oa';
+import { setData_toastMessage, set_isLoading, setIsShow_createOa } from '@src/redux/slice/Oa';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const OaList = () => {
@@ -59,6 +59,10 @@ const OaList = () => {
             });
     }, [zaloApp, accountInformation, page, getZaloOaListWith2Fk, dispatch]);
 
+    const handleOpenCreateOa = () => {
+        dispatch(setIsShow_createOa(true));
+    };
+
     const handleSeeMore = () => {
         setPage((prev) => prev + 1);
     };
@@ -69,7 +73,12 @@ const OaList = () => {
 
     return (
         <div className={style.parent}>
-            <div className={style.total}>{`Bạn có ${total} OA`}</div>
+            <div className={style.total}>
+                <div>
+                    <div>{`Bạn có ${total} OA`}</div>
+                    <div onClick={() => handleOpenCreateOa()}>Tạo Oa</div>
+                </div>
+            </div>
             <div className={style.list}>{list_oa}</div>
             <div className={style.btnContainer}>
                 {zaloOaList.length < total && (

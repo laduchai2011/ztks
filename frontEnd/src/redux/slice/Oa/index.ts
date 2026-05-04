@@ -12,6 +12,10 @@ const initialState: state_props = {
         isShow: false,
         zaloOa: undefined,
     },
+    createOa: {
+        isShow: false,
+        newZaloOa: undefined,
+    },
 };
 
 const OaSlice = createSlice({
@@ -30,9 +34,21 @@ const OaSlice = createSlice({
         setZaloOa_takeTokenDialog: (state, action: PayloadAction<ZaloOaField | undefined>) => {
             state.takeTokenDialog.zaloOa = action.payload;
         },
+        setIsShow_createOa: (state, action: PayloadAction<boolean>) => {
+            state.createOa.isShow = action.payload;
+        },
+        setNewZaloOa_createOa: (state, action: PayloadAction<ZaloOaField | undefined>) => {
+            state.createOa.newZaloOa = action.payload;
+        },
     },
 });
 
-export const { set_isLoading, setData_toastMessage, setIsShow_takeTokenDialog, setZaloOa_takeTokenDialog } =
-    OaSlice.actions;
+export const {
+    set_isLoading,
+    setData_toastMessage,
+    setIsShow_takeTokenDialog,
+    setZaloOa_takeTokenDialog,
+    setIsShow_createOa,
+    setNewZaloOa_createOa,
+} = OaSlice.actions;
 export default OaSlice.reducer;

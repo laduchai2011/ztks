@@ -14,6 +14,8 @@ import {
     GetZaloOaTokenWithFkBodyField,
     CreateZaloOaTokenBodyField,
     UpdateRefreshTokenOfZaloOaBodyField,
+    CreateZaloOaBodyField,
+    EditZaloOaBodyField,
 } from '@src/dataStruct/zalo/body';
 import { ZaloUserField } from '@src/dataStruct/zalo/user';
 import { ZaloUserBodyField } from '@src/dataStruct/zalo/user/body';
@@ -23,7 +25,7 @@ import { MyResponse } from '@src/dataStruct/response';
 export const zaloRTK = createApi({
     reducerPath: 'zaloRTK',
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
-    tagTypes: ['ZaloOaToken'],
+    tagTypes: ['ZaloOa_List', 'ZaloOa', 'ZaloOaToken'],
     endpoints: (builder) => ({
         getZaloAppWithAccountId: builder.query<MyResponse<ZaloAppField>, ZaloAppWithAccountIdBodyField>({
             query: (body) => ({
@@ -38,6 +40,7 @@ export const zaloRTK = createApi({
                 method: 'POST',
                 body,
             }),
+            providesTags: ['ZaloOa_List'],
         }),
         getZaloOaWithId: builder.query<MyResponse<ZaloOaField>, ZaloOaWithIdBodyField>({
             query: (body) => ({
@@ -45,6 +48,7 @@ export const zaloRTK = createApi({
                 method: 'POST',
                 body,
             }),
+            providesTags: (result, error, arg) => [{ type: 'ZaloOa', id: arg.id }],
         }),
         getZaloUser: builder.query<MyResponse<ZaloUserField>, ZaloUserBodyField>({
             query: (body) => ({
@@ -67,6 +71,22 @@ export const zaloRTK = createApi({
                 body,
             }),
             providesTags: ['ZaloOaToken'],
+        }),
+        createZaloOa: builder.mutation<MyResponse<ZaloOaField>, CreateZaloOaBodyField>({
+            query: (body) => ({
+                url: ZALO_API.CREATE_ZALO_OA,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['ZaloOa_List'],
+        }),
+        editZaloOa: builder.mutation<MyResponse<ZaloOaField>, EditZaloOaBodyField>({
+            query: (body) => ({
+                url: ZALO_API.EDIT_ZALO_OA,
+                method: 'PATCH',
+                body,
+            }),
+            invalidatesTags: (result, error, arg) => [{ type: 'ZaloOa', id: arg.id }],
         }),
         createZaloOaToken: builder.mutation<MyResponse<ZaloOaTokenField>, CreateZaloOaTokenBodyField>({
             query: (body) => ({
@@ -97,6 +117,8 @@ export const {
     useGetZaloUserQuery,
     useGenZaloOaTokenMutation,
     useLazyGetZaloOaTokenWithFkQuery,
+    useCreateZaloOaMutation,
+    useEditZaloOaMutation,
     useCreateZaloOaTokenMutation,
     useUpdateRefreshTokenOfZaloOaMutation,
 } = zaloRTK;
