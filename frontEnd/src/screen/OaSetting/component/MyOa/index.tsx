@@ -93,7 +93,7 @@ const MyOa = () => {
     return (
         <div className={style.parent}>
             <div>
-                <div className={style.label}>label</div>
+                <div className={style.label}>{zaloOa?.label}</div>
                 <div>
                     <div>
                         <div>Tên OA</div>

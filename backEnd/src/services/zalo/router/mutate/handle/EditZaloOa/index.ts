@@ -50,7 +50,7 @@ class Handle_EditZaloOa {
     };
 
     main = async (_: Request, res: Response) => {
-        const editZaloOaBody = res.locals.editZaloOaTokenBody as EditZaloOaBodyField;
+        const editZaloOaBody = res.locals.editZaloOaBody as EditZaloOaBodyField;
 
         const myResponse: MyResponse<ZaloOaField> = {
             isSuccess: false,
