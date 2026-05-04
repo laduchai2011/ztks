@@ -7,7 +7,7 @@ import { SEE_MORE } from '@src/const/text';
 import { useLazyGetZaloOaListWith2FkQuery } from '@src/redux/query/zaloRTK';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { setData_toastMessage, set_isLoading, setIsShow_createOa } from '@src/redux/slice/Oa';
+import { setData_toastMessage, set_isLoading, setIsShow_createOa, setNewZaloOa_createOa } from '@src/redux/slice/Oa';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const OaList = () => {
@@ -16,6 +16,7 @@ const OaList = () => {
         (state: RootState) => state.AppSlice.accountInformation
     );
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
+    const newZaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.OaSlice.createOa.newZaloOa);
     const [page, setPage] = useState<number>(1);
     const size: number = 10;
     const [zaloOaList, setZaloOaList] = useState<ZaloOaField[]>([]);
@@ -58,6 +59,13 @@ const OaList = () => {
                 dispatch(set_isLoading(false));
             });
     }, [zaloApp, accountInformation, page, getZaloOaListWith2Fk, dispatch]);
+
+    useEffect(() => {
+        if (newZaloOa) {
+            setZaloOaList((prev) => [...[newZaloOa], ...prev]);
+            dispatch(setNewZaloOa_createOa(undefined));
+        }
+    }, [newZaloOa, dispatch]);
 
     const handleOpenCreateOa = () => {
         dispatch(setIsShow_createOa(true));

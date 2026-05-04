@@ -17,6 +17,15 @@ const initialState: state_props = {
     },
     zaloOa: undefined,
     chatSessions: [],
+    takeTokenDialog: {
+        isShow: false,
+        zaloOa: undefined,
+    },
+    editZaloOa: {
+        isShow: false,
+        zaloOa: undefined,
+        newZaloOa: undefined,
+    },
 };
 
 const OaSettingSlice = createSlice({
@@ -63,6 +72,21 @@ const OaSettingSlice = createSlice({
                 }
             }
         },
+        setIsShow_takeTokenDialog: (state, action: PayloadAction<boolean>) => {
+            state.takeTokenDialog.isShow = action.payload;
+        },
+        setZaloOa_takeTokenDialog: (state, action: PayloadAction<ZaloOaField | undefined>) => {
+            state.takeTokenDialog.zaloOa = action.payload;
+        },
+        setIsShow_editZaloOa: (state, action: PayloadAction<boolean>) => {
+            state.editZaloOa.isShow = action.payload;
+        },
+        setZaloOa_editZaloOa: (state, action: PayloadAction<ZaloOaField | undefined>) => {
+            state.editZaloOa.zaloOa = action.payload;
+        },
+        setNewZaloOa_editZaloOa: (state, action: PayloadAction<ZaloOaField | undefined>) => {
+            state.editZaloOa.newZaloOa = action.payload;
+        },
     },
 });
 
@@ -73,5 +97,10 @@ export const {
     setShow_dialogLoading,
     set_zaloOa,
     set_chatSessions,
+    setIsShow_takeTokenDialog,
+    setZaloOa_takeTokenDialog,
+    setIsShow_editZaloOa,
+    setZaloOa_editZaloOa,
+    setNewZaloOa_editZaloOa,
 } = OaSettingSlice.actions;
 export default OaSettingSlice.reducer;

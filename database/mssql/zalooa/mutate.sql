@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE CreateZaloOa
+﻿ALTER PROCEDURE CreateZaloOa
 	@label NVARCHAR(255),
 	@oaId NVARCHAR(255),
 	@oaName NVARCHAR(255),
@@ -40,7 +40,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE EditZaloOa
+ALTER PROCEDURE EditZaloOa
 	@id INT, 
 	@label NVARCHAR(255),
 	@oaId NVARCHAR(255),
@@ -66,7 +66,7 @@ BEGIN
 		END
 
 		UPDATE dbo.zaloOa
-		SET label = @label, oaId = @oaId, oaName = @oaName, oaSecret = @oaSecret
+		SET label = @label, oaId = @oaId, oaName = @oaName, oaSecret = @oaSecret, updateTime = SYSDATETIMEOFFSET()
 		WHERE status = 'normal' AND id = @id
 		IF @@ROWCOUNT = 0
         BEGIN

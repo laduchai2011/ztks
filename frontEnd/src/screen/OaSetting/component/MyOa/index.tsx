@@ -3,12 +3,22 @@ import style from './style.module.scss';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
+import { CiEdit } from 'react-icons/ci';
 import { FaRegEye, FaEyeSlash } from 'react-icons/fa';
 import { GoDotFill } from 'react-icons/go';
 import { useGetZaloOaWithIdQuery } from '@src/redux/query/zaloRTK';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { ZaloOaField } from '@src/dataStruct/zalo';
-import { set_zaloOa, set_isLoading, setData_toastMessage } from '@src/redux/slice/OaSetting';
+import {
+    set_zaloOa,
+    set_isLoading,
+    setData_toastMessage,
+    setIsShow_takeTokenDialog,
+    setZaloOa_takeTokenDialog,
+    setIsShow_editZaloOa,
+    setZaloOa_editZaloOa,
+    setNewZaloOa_editZaloOa,
+} from '@src/redux/slice/OaSetting';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const MyOa = () => {
@@ -18,6 +28,9 @@ const MyOa = () => {
         (state: RootState) => state.AppSlice.accountInformation
     );
     const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.OaSettingSlice.zaloOa);
+    const newZaloOa: ZaloOaField | undefined = useSelector(
+        (state: RootState) => state.OaSettingSlice.editZaloOa.newZaloOa
+    );
     const [isShow_id, setIsShow_id] = useState(false);
     const [isShow_secret, setIsShow_secret] = useState(false);
 
@@ -53,12 +66,28 @@ const MyOa = () => {
         }
     }, [dispatch, data_zaloOa]);
 
+    useEffect(() => {
+        if (!newZaloOa) return;
+        dispatch(set_zaloOa(newZaloOa));
+        dispatch(setNewZaloOa_editZaloOa(undefined));
+    }, [dispatch, newZaloOa]);
+
     const handleShow_id = (isShow: boolean) => {
         setIsShow_id(isShow);
     };
 
     const handleShow_secret = (isShow: boolean) => {
         setIsShow_secret(isShow);
+    };
+
+    const handleOpenTakeToken = () => {
+        dispatch(setIsShow_takeTokenDialog(true));
+        dispatch(setZaloOa_takeTokenDialog(zaloOa));
+    };
+
+    const handleOpenEdit = () => {
+        dispatch(setIsShow_editZaloOa(true));
+        dispatch(setZaloOa_editZaloOa(zaloOa));
     };
 
     return (
@@ -110,7 +139,10 @@ const MyOa = () => {
                     </div>
                 </div>
                 <div className={style.btnContainer}>
-                    <div className={style.refresh}>Lấy token mới</div>
+                    <div className={style.refresh} onClick={() => handleOpenTakeToken()}>
+                        Lấy token mới
+                    </div>
+                    <CiEdit onClick={() => handleOpenEdit()} size={30} color="green" />
                 </div>
                 <div className={style.warn}>Thông tin không được để lộ</div>
             </div>

@@ -15,6 +15,15 @@ export interface state_props {
     };
     zaloOa?: ZaloOaField;
     chatSessions: ChatSessionField[];
+    takeTokenDialog: {
+        isShow: boolean;
+        zaloOa?: ZaloOaField;
+    };
+    editZaloOa: {
+        isShow: boolean;
+        zaloOa?: ZaloOaField;
+        newZaloOa?: ZaloOaField;
+    };
 }
 
 export enum Crud_Enum {

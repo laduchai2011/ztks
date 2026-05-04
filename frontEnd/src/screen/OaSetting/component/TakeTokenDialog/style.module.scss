@@ -43,41 +43,62 @@
         > .header {
             @include center-of-rectangle;
             box-sizing: border-box;
-            padding: 5px;
+            padding: 10px;
         }
 
         > .contentContainer {
-            box-sizing: border-box;
-            padding: 5px;
-
-            > div {
-                box-sizing: border-box;
-                padding: 5px;
+            > .takeCode {
                 @include center-of-rectangle;
+                box-sizing: border-box;
+                padding: 10px;
 
                 > div {
-                    width: max-content;
-                    position: relative;
-                    margin: 10px 0;
+                    background-color: rgb(100, 255, 164);
+                    border: 1px solid rgb(47, 255, 134);
+                    box-sizing: border-box;
+                    padding: 5px 10px;
+                    border-radius: 10px;
+                    user-select: none;
+                    cursor: default;
+
+                    &:active {
+                        background-color: white;
+                    }
+                }
+            }
+
+            > .sendCodeContainer {
+                box-sizing: border-box;
+                padding: 10px;
+                @include center-of-row;
+                justify-content: space-between;
+
+                > input {
+                    box-sizing: border-box;
+                    padding: 5px 10px;
+                    border: none;
+                    outline: none;
+                    background-color: rgb(230, 230, 230);
+                    border-radius: 10px;
+                }
+
+                > div {
+                    @include center-of-rectangle;
 
                     > div {
-                        position: absolute;
-                        background-color: rgb(241, 241, 241);
-                        font-size: 0.8rem;
-                        top: -15px;
-                        left: 10px;
                         box-sizing: border-box;
-                        padding: 3px;
-                        border-radius: 5px;
-                    }
-
-                    > input {
-                        background-color: rgb(226, 226, 226);
-                        box-sizing: border-box;
-                        padding: 10px;
-                        border: none;
-                        outline: none;
+                        padding: 5px 10px;
                         border-radius: 10px;
+                        border: 1px solid #8787ff;
+                        background-color: rgb(136, 136, 255);
+                        user-select: none;
+                        cursor: default;
+                        color: white;
+
+                        &:active {
+                            background-color: white;
+                            color: black;
+                        }
                     }
                 }
             }

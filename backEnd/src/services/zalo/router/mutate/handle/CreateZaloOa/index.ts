@@ -50,7 +50,7 @@ class Handle_CreateZaloOa {
     };
 
     main = async (_: Request, res: Response) => {
-        const createZaloOaBody = res.locals.createZaloOaTokenBody as CreateZaloOaBodyField;
+        const createZaloOaBody = res.locals.createZaloOaBody as CreateZaloOaBodyField;
 
         const myResponse: MyResponse<ZaloOaField> = {
             isSuccess: false,

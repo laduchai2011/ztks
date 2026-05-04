@@ -4,11 +4,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE, AGREE, EXIT } from '@src/const/text';
-import { set_isLoading, setData_toastMessage, setIsShow_createOa, setNewZaloOa_createOa } from '@src/redux/slice/Oa';
+import {
+    set_isLoading,
+    setData_toastMessage,
+    setIsShow_editZaloOa,
+    setNewZaloOa_editZaloOa,
+} from '@src/redux/slice/OaSetting';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountField } from '@src/dataStruct/account';
-import { ZaloAppField } from '@src/dataStruct/zalo';
-import { useCreateZaloOaMutation } from '@src/redux/query/zaloRTK';
+import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
+import { useEditZaloOaMutation } from '@src/redux/query/zaloRTK';
 
 const CreateZaloOaDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -16,14 +21,15 @@ const CreateZaloOaDialog = () => {
 
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
-    const isShow: boolean = useSelector((state: RootState) => state.OaSlice.createOa.isShow);
+    const isShow: boolean = useSelector((state: RootState) => state.OaSettingSlice.editZaloOa.isShow);
+    const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.OaSettingSlice.editZaloOa.zaloOa);
 
     const [label, setLabel] = useState<string>('');
     const [oaId, setOaId] = useState<string>('');
     const [oaName, setOaName] = useState<string>('');
     const [oaSecret, setOaSecret] = useState<string>('');
 
-    const [createZaloOa] = useCreateZaloOaMutation();
+    const [editZaloOa] = useEditZaloOaMutation();
 
     useEffect(() => {
         if (!parent_element.current) return;
@@ -45,8 +51,16 @@ const CreateZaloOaDialog = () => {
         }
     }, [isShow]);
 
+    useEffect(() => {
+        if (!zaloOa) return;
+        setLabel(zaloOa.label);
+        setOaId(zaloOa.oaId);
+        setOaName(zaloOa.oaName);
+        setOaSecret(zaloOa.oaSecret);
+    }, [zaloOa]);
+
     const handleClose = () => {
-        dispatch(setIsShow_createOa(false));
+        dispatch(setIsShow_editZaloOa(false));
     };
 
     const handleLabel = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,6 +82,7 @@ const CreateZaloOaDialog = () => {
     const handleAgree = async () => {
         if (!account) return;
         if (!zaloApp) return;
+        if (!zaloOa) return;
 
         const label_t = label.trim();
         if (label_t.length === 0) {
@@ -114,7 +129,8 @@ const CreateZaloOaDialog = () => {
         }
 
         dispatch(set_isLoading(true));
-        createZaloOa({
+        editZaloOa({
+            id: zaloOa.id,
             label: label_t,
             oaId: oaId_t,
             oaName: oaName_t,
@@ -126,18 +142,18 @@ const CreateZaloOaDialog = () => {
                 const resData = res.data;
                 console.log('createZaloOa', resData);
                 if (resData?.isSuccess && resData.data) {
-                    dispatch(setNewZaloOa_createOa(resData.data));
+                    dispatch(setNewZaloOa_editZaloOa(resData.data));
                     dispatch(
                         setData_toastMessage({
                             type: messageType_enum.SUCCESS,
-                            message: 'Tạo thành công !',
+                            message: 'Chỉnh sửa thành công !',
                         })
                     );
                 } else {
                     dispatch(
                         setData_toastMessage({
                             type: messageType_enum.ERROR,
-                            message: 'Tạo không thành công !',
+                            message: 'Chỉnh sửa không thành công !',
                         })
                     );
                 }
@@ -162,7 +178,7 @@ const CreateZaloOaDialog = () => {
                 <div className={style.closeContainer}>
                     <IoMdClose onClick={() => handleClose()} size={25} title={CLOSE} />
                 </div>
-                <div className={style.header}>Tạo OA mới</div>
+                <div className={style.header}>{`Chỉnh sửa zalo oa ${zaloOa?.oaName}`}</div>
                 <div className={style.contentContainer}>
                     <div>
                         <div>
