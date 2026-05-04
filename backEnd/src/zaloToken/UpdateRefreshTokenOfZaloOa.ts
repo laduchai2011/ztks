@@ -23,6 +23,7 @@ class MutateDB_UpdateRefreshTokenOfZaloOa {
                     .request()
                     .input('refreshToken', sql.NVarChar(sql.MAX), this._updateRefreshTokenOfZaloOaBody.refreshToken)
                     .input('zaloOaId', sql.Int, this._updateRefreshTokenOfZaloOaBody.zaloOaId)
+                    .input('accountId', sql.Int, this._updateRefreshTokenOfZaloOaBody.accountId)
                     .execute('UpdateRefreshTokenOfZaloOa');
 
                 return result;

@@ -49,3 +49,9 @@ export interface PlaywightGetZaloAppBodyField {
     userName: string;
     password: string;
 }
+
+export interface GenZaloOaTokenBodyField {
+    appId: string;
+    appSecret: string;
+    code: string;
+}

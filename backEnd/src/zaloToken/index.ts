@@ -17,7 +17,7 @@ mssql_server.init();
 const serviceRedis = ServiceRedis.getInstance();
 serviceRedis.init();
 
-const timeExpireat = 60 * 60 * 24 * 30 * 12;
+const timeExpireat = 60 * 1; // 1p
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -32,6 +32,7 @@ export async function getAccessToken(zaloOa: ZaloOaField) {
     }
 
     return zaloAccessToken;
+    // return undefined;
 }
 
 export async function refreshAccessToken(zaloApp: ZaloAppField, zaloOa: ZaloOaField, repeat: number) {

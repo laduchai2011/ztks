@@ -1,9 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ZaloAppField, PagedZaloOaField, ZaloOaField, ZaloOaTokenField } from '@src/dataStruct/zalo';
+import {
+    ZaloAppField,
+    PagedZaloOaField,
+    ZaloOaField,
+    ZaloOaTokenField,
+    GenZaloOaTokenResultField,
+} from '@src/dataStruct/zalo';
 import {
     ZaloAppWithAccountIdBodyField,
     ZaloOaListWith2FkBodyField,
     ZaloOaWithIdBodyField,
+    GenZaloOaTokenBodyField,
     GetZaloOaTokenWithFkBodyField,
     CreateZaloOaTokenBodyField,
     UpdateRefreshTokenOfZaloOaBodyField,
@@ -46,6 +53,13 @@ export const zaloRTK = createApi({
                 body,
             }),
         }),
+        genZaloOaToken: builder.mutation<MyResponse<GenZaloOaTokenResultField>, GenZaloOaTokenBodyField>({
+            query: (body) => ({
+                url: ZALO_API.GEN_ZALO_OA_TOKEN,
+                method: 'POST',
+                body,
+            }),
+        }),
         getZaloOaTokenWithFk: builder.query<MyResponse<ZaloOaTokenField>, GetZaloOaTokenWithFkBodyField>({
             query: (body) => ({
                 url: ZALO_API.GET_ZALO_OA_TOKEN_WITH_FK,
@@ -81,6 +95,7 @@ export const {
     useGetZaloOaWithIdQuery,
     useLazyGetZaloOaWithIdQuery,
     useGetZaloUserQuery,
+    useGenZaloOaTokenMutation,
     useLazyGetZaloOaTokenWithFkQuery,
     useCreateZaloOaTokenMutation,
     useUpdateRefreshTokenOfZaloOaMutation,

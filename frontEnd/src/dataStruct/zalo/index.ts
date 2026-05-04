@@ -47,3 +47,9 @@ export interface PlaywightGetZaloAppField {
     zaloApp: ZaloAppField;
     token: string;
 }
+
+export interface GenZaloOaTokenResultField {
+    access_token: string;
+    refresh_token: string;
+    expires_in: string;
+}

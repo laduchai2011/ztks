@@ -137,9 +137,11 @@ const MyOa: FC<{ index: number; data: ZaloOaField }> = ({ index, data }) => {
             ? process.env.ZALO_REDIRECT_URI
             : 'https://zalowebhookdev.5kaquarium.com/zalo/tokenCallback';
 
-        const state = `${zaloApp.appId}@${zaloApp.appSecret}@${data.id}@${account.id}`;
+        // const state = `${zaloApp.appId}@${zaloApp.appSecret}@${data.id}@${account.id}`;
 
-        const url = `https://oauth.zaloapp.com/v4/permission?app_id=${zaloApp.appId}&redirect_uri=${redirectUrl}&state=${state}`;
+        // const url = `https://oauth.zaloapp.com/v4/oa/permission?app_id=${zaloApp.appId}&redirect_uri=${redirectUrl}&state=${state}`;
+
+        const url = `https://oauth.zaloapp.com/v4/oa/permission?app_id=${zaloApp.appId}&redirect_uri=${redirectUrl}`;
 
         window.open(url, '_blank');
     };
