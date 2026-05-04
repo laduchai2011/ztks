@@ -2,7 +2,7 @@ import sql from 'mssql';
 import { ZaloOaTokenField } from '@src/dataStruct/zalo';
 import { CreateZaloOaTokenBodyField } from '@src/dataStruct/zalo/body';
 
-class MutateDB_CreateZaloOaTokenWithFk {
+class MutateDB_CreateZaloOaToken {
     private _connectionPool: sql.ConnectionPool | undefined;
     private _createZaloOaTokenBody: CreateZaloOaTokenBodyField | undefined;
 
@@ -34,4 +34,4 @@ class MutateDB_CreateZaloOaTokenWithFk {
     }
 }
 
-export default MutateDB_CreateZaloOaTokenWithFk;
+export default MutateDB_CreateZaloOaToken;

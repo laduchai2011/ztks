@@ -4,6 +4,8 @@ const isProduct = process.env.NODE_ENV === 'production';
 const apiString = isProduct ? '' : '/api';
 
 export const ZALO_API = {
+    CREATE_ZALO_OA: `${BASE_URL}${apiString}/service_zalo/mutate/createZaloOa`,
+    EDIT_ZALO_OA: `${BASE_URL}${apiString}/service_zalo/mutate/editZaloOa`,
     GET_ZALOAPP_WITH_ACCOUNT_ID: `${BASE_URL}${apiString}/service_zalo/query/getZaloAppWithAccountId`,
     GET_ZALOOA_LIST_WITH_2FK: `${BASE_URL}${apiString}/service_zalo/query/getZaloOaListWith2Fk`,
     GET_ZALOOA_WITH_ID: `${BASE_URL}${apiString}/service_zalo/query/getZaloOaWithId`,

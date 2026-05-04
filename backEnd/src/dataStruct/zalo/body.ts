@@ -1,3 +1,22 @@
+export interface CreateZaloOaBodyField {
+    label: string;
+    oaId: string;
+    oaName: string;
+    oaSecret: string;
+    zaloAppId: number;
+    accountId: number;
+}
+
+export interface EditZaloOaBodyField {
+    id: number;
+    label: string;
+    oaId: string;
+    oaName: string;
+    oaSecret: string;
+    zaloAppId: number;
+    accountId: number;
+}
+
 export interface ZaloAppWithAccountIdBodyField {
     accountId: number;
     role: string;
