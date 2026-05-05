@@ -139,3 +139,47 @@ BEGIN
 	SELECT @accountId AS accountId;
 END
 GO
+
+CREATE PROCEDURE GetZnsTemplates
+	@page INT,
+    @size INT,
+	@offset INT,
+    @zaloOaId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+			IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @accountId )
+			BEGIN
+				THROW 50001, N'Không phải OA của bạn .', 1;
+			END
+
+			-- Tập kết quả 1: dữ liệu phân trang
+			;WITH znsTemplates AS (
+				SELECT z.*,
+					ROW_NUMBER() OVER (ORDER BY z.id DESC) AS rn
+				FROM dbo.znsTemplate AS z
+				WHERE zaloOaId = @zaloOaId AND isDelete = 0
+		
+			)
+			SELECT *
+			FROM znsTemplates
+			WHERE rn BETWEEN (((@page - 1) * @size + 1) + @offset) AND ((@page * @size) + @offset);
+
+			-- Tập kết quả 2: tổng số dòng
+			SELECT COUNT(*) AS totalCount
+			FROM dbo.znsTemplate AS z
+			WHERE zaloOaId = @zaloOaId AND isDelete = 0
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO

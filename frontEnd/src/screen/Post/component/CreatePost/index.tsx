@@ -216,12 +216,12 @@ const CreatePost = () => {
                     );
                     break;
                 }
-                dispatch(
-                    setData_toastMessage({
-                        type: messageType_enum.SUCCESS,
-                        message: 'Đăng tải hình ảnh thành công !',
-                    })
-                );
+                // dispatch(
+                //     setData_toastMessage({
+                //         type: messageType_enum.SUCCESS,
+                //         message: 'Đăng tải hình ảnh thành công !',
+                //     })
+                // );
 
                 const fileName = resData_image.fileName;
                 fileNames.push(fileName);

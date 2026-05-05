@@ -140,7 +140,6 @@ const CreateZaloOaDialog = () => {
         })
             .then((res) => {
                 const resData = res.data;
-                console.log('createZaloOa', resData);
                 if (resData?.isSuccess && resData.data) {
                     dispatch(setNewZaloOa_editZaloOa(resData.data));
                     dispatch(

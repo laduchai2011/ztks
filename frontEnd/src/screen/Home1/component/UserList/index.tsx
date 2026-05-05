@@ -1,6 +1,5 @@
 import { memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
-import User from './component/User';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { useLazyGetChatRoomsMongoQuery } from '@src/redux/query/chatRoomRTK';
@@ -12,6 +11,7 @@ import { ZaloOaField } from '@src/dataStruct/zalo';
 import { SEE_MORE } from '@src/const/text';
 import { getSocket } from '@src/socketIo';
 import { SocketMessageField } from '@src/dataStruct/message_v1';
+import User from './component/User';
 
 const UserList = () => {
     const dispatch = useDispatch<AppDispatch>();

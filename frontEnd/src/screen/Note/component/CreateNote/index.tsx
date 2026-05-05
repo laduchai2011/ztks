@@ -83,6 +83,7 @@ const CreateNote = () => {
             chatRoomId: Number(idInput_t),
             accountId: -1,
         };
+
         dispatch(set_isLoading(true));
         createNote(createNoteBody)
             .then((res) => {

@@ -83,6 +83,4 @@ export const CREATE_REGISTER_POST = 'Tạo đăng ký bài đăng';
 export const EDIT_REGISTER_POST = 'Chỉnh sửa đăng ký bài đăng';
 export const CHANGE_CHAT_ROOM_MASTER = 'Thay đổi chủ phòng hội thoại';
 export const LEAVE = 'Rời đi';
-// export const MEMBER_LEAVE = 'Thành viên rời đi';
-// export const MEMBER_LEAVE_ALL_CHAT_SESSION = 'Thành viên rời tất cả các phiên hội thoại';
-// export const MEMBER_LEAVE_ALL_RECEIVE_MESSAGE_STATUS = 'Thành viên rời tất cả các trạng thái nhận tin';
+export const CREATE_TEMPLATE = 'Tạo mẫu';

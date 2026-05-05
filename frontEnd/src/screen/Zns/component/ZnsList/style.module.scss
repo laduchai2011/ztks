@@ -14,7 +14,8 @@
 
         > div {
             color: blue;
-            cursor: pointer;
+            cursor: default;
+            user-select: none;
 
             &:hover {
                 text-decoration: underline;

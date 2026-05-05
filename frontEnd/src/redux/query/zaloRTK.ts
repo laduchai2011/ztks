@@ -5,6 +5,8 @@ import {
     ZaloOaField,
     ZaloOaTokenField,
     GenZaloOaTokenResultField,
+    ZnsTemplateField,
+    PagedZnsTemplateField,
 } from '@src/dataStruct/zalo';
 import {
     ZaloAppWithAccountIdBodyField,
@@ -16,6 +18,9 @@ import {
     UpdateRefreshTokenOfZaloOaBodyField,
     CreateZaloOaBodyField,
     EditZaloOaBodyField,
+    CreateZnsTemplateBodyField,
+    EditZnsTemplateBodyField,
+    GetZnsTemplatesBodyField,
 } from '@src/dataStruct/zalo/body';
 import { ZaloUserField } from '@src/dataStruct/zalo/user';
 import { ZaloUserBodyField } from '@src/dataStruct/zalo/user/body';
@@ -25,7 +30,7 @@ import { MyResponse } from '@src/dataStruct/response';
 export const zaloRTK = createApi({
     reducerPath: 'zaloRTK',
     baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
-    tagTypes: ['ZaloOa_List', 'ZaloOa', 'ZaloOaToken'],
+    tagTypes: ['ZaloOa_List', 'ZaloOa', 'ZaloOaToken', 'ZnsTemplates'],
     endpoints: (builder) => ({
         getZaloAppWithAccountId: builder.query<MyResponse<ZaloAppField>, ZaloAppWithAccountIdBodyField>({
             query: (body) => ({
@@ -106,6 +111,44 @@ export const zaloRTK = createApi({
                 invalidatesTags: ['ZaloOaToken'],
             }
         ),
+        getZnsTemplates: builder.query<MyResponse<PagedZnsTemplateField>, GetZnsTemplatesBodyField>({
+            query: (body) => ({
+                url: ZALO_API.GET_ZNS_TEMPLATES,
+                method: 'POST',
+                body,
+            }),
+            providesTags: (result) => {
+                const items = result?.data?.items;
+
+                if (!items) {
+                    return [{ type: 'ZnsTemplates', id: 'LIST' }];
+                }
+
+                return [
+                    ...items.map((item) => ({
+                        type: 'ZnsTemplates' as const,
+                        id: item.id,
+                    })),
+                    { type: 'ZnsTemplates', id: 'LIST' },
+                ];
+            },
+        }),
+        createZnsTemplate: builder.mutation<MyResponse<ZnsTemplateField>, CreateZnsTemplateBodyField>({
+            query: (body) => ({
+                url: ZALO_API.CREATE_ZNS_TEMPLATE,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: [{ type: 'ZnsTemplates', id: 'LIST' }],
+        }),
+        editZnsTemplate: builder.mutation<MyResponse<ZnsTemplateField>, EditZnsTemplateBodyField>({
+            query: (body) => ({
+                url: ZALO_API.EDIT_ZNS_TEMPLATE,
+                method: 'PATCH',
+                body,
+            }),
+            invalidatesTags: (result, error, { id }) => [{ type: 'ZnsTemplates', id }],
+        }),
     }),
 });
 
@@ -121,4 +164,7 @@ export const {
     useEditZaloOaMutation,
     useCreateZaloOaTokenMutation,
     useUpdateRefreshTokenOfZaloOaMutation,
+    useLazyGetZnsTemplatesQuery,
+    useCreateZnsTemplateMutation,
+    useEditZnsTemplateMutation,
 } = zaloRTK;

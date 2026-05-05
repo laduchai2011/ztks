@@ -6,6 +6,7 @@ import Handle_GetZaloOaWithId from './handle/GetZaloOaWithId';
 import Handle_GetZaloUserInfor from './handle/GetZaloUserInfor';
 import Handle_PlaywightGetZaloApp from './handle/PlaywightGetZaloApp';
 import Handle_GetZaloOaTokenWithFk from './handle/GetZaloOaTokenWithFk';
+import Handle_GetZnsTemplates from './handle/GetZnsTemplates';
 
 const router_query_zalo: Router = express.Router();
 
@@ -15,6 +16,7 @@ const handle_getZaloOaWithId = new Handle_GetZaloOaWithId();
 const handle_getZaloUserInfor = new Handle_GetZaloUserInfor();
 const handle_playwightGetZaloApp = new Handle_PlaywightGetZaloApp();
 const handle_getZaloOaTokenWithFk = new Handle_GetZaloOaTokenWithFk();
+const handle_getZnsTemplates = new Handle_GetZnsTemplates();
 
 router_query_zalo.post(
     '/getZaloAppWithAccountId',
@@ -47,5 +49,7 @@ router_query_zalo.post(
 router_query_zalo.post('/playwightGetZaloApp', handle_playwightGetZaloApp.main);
 
 router_query_zalo.post('/getZaloOaTokenWithFk', handle_getZaloOaTokenWithFk.setup, handle_getZaloOaTokenWithFk.main);
+
+router_query_zalo.post('/getZnsTemplates', handle_getZnsTemplates.main);
 
 export default router_query_zalo;

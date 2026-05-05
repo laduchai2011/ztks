@@ -53,3 +53,19 @@ export interface GenZaloOaTokenResultField {
     refresh_token: string;
     expires_in: string;
 }
+
+export interface ZnsTemplateField {
+    id: number;
+    temId: string;
+    images: string;
+    dataFields: string;
+    isDelete: boolean;
+    zaloOaId: number;
+    updateTime: string;
+    createTime: string;
+}
+
+export interface PagedZnsTemplateField {
+    items: ZnsTemplateField[];
+    totalCount: number;
+}

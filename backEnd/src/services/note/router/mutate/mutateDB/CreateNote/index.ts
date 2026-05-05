@@ -24,7 +24,7 @@ class MutateDB_CreateNote extends MutateDB {
             try {
                 const result = await this._connectionPool
                     .request()
-                    .input('note', sql.NVarChar(255), this._createNoteBody.note)
+                    .input('note', sql.NVarChar(sql.MAX), this._createNoteBody.note)
                     .input('chatRoomId', sql.Int, this._createNoteBody.chatRoomId)
                     .input('accountId', sql.Int, this._createNoteBody.accountId)
                     .execute('CreateNote');

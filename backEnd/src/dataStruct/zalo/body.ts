@@ -74,3 +74,28 @@ export interface GenZaloOaTokenBodyField {
     appSecret: string;
     code: string;
 }
+
+export interface CreateZnsTemplateBodyField {
+    temId: string;
+    images: string;
+    dataFields: string;
+    zaloOaId: number;
+    accountId: number;
+}
+
+export interface EditZnsTemplateBodyField {
+    id: number;
+    temId: string;
+    images: string;
+    dataFields: string;
+    zaloOaId: number;
+    accountId: number;
+}
+
+export interface GetZnsTemplatesBodyField {
+    page: number;
+    size: number;
+    offset: number;
+    zaloOaId: number;
+    accountId: number;
+}

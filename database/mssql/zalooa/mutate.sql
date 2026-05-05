@@ -156,3 +156,88 @@ BEGIN
 	END CATCH
 END;
 GO
+
+ALTER PROCEDURE CreateZnsTemplate
+	@temId NVARCHAR(255),
+	@images NVARCHAR(MAX),
+	@dataFields NVARCHAR(MAX),
+	@zaloOaId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @accountId )
+		BEGIN
+			THROW 50001, N'Không phải OA của bạn .', 1;
+		END
+
+		DECLARE @znsTemplateId INT;
+
+        INSERT INTO dbo.znsTemplate (temId, images, dataFields, isDelete, zaloOaId, updateTime, createTime)
+        VALUES (@temId, @images, @dataFields, 0, @zaloOaId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50002, 'Tạo znsTemplate không thành công.', 2;
+        END
+
+		SET @znsTemplateId = SCOPE_IDENTITY();
+
+		SELECT * FROM dbo.znsTemplate WHERE id = @znsTemplateId;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
+CREATE PROCEDURE EditZnsTemplate
+	@id INT,
+	@temId NVARCHAR(255),
+	@images NVARCHAR(MAX),
+	@dataFields NVARCHAR(MAX),
+	@zaloOaId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @accountId )
+		BEGIN
+			THROW 50001, N'Không phải OA của bạn .', 1;
+		END
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.znsTemplate WHERE id = @id AND zaloOaId = @zaloOaId )
+		BEGIN
+			THROW 50002, N'Không tồn tại znsTemplate này .', 2;
+		END
+
+		UPDATE dbo.znsTemplate
+		SET temId = @temId, images = @images, dataFields = @dataFields
+		WHERE id = @id AND isDelete = 0
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50003, 'Cập nhật znsTemplate của zaloOa không thành công.', 3;
+        END
+
+		SELECT * FROM dbo.znsTemplate WHERE id = @id;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
