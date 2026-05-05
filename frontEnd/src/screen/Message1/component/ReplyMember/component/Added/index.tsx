@@ -11,6 +11,7 @@ import avatarnull from '@src/asset/avatar/avatarnull.png';
 import { useGetChatRoomRoleWithCridAaidQuery, useUpdateSetupChatRoomRoleMutation } from '@src/redux/query/chatRoomRTK';
 import { setData_toastMessage, set_isLoading } from '@src/redux/slice/MessageV1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
+import { handleSrcImage } from '@src/utility/string';
 
 const Added: FC<{ index: number; data: AccountField }> = ({ index, data }) => {
     const defaultColor = '#EBEBEB';
@@ -117,11 +118,13 @@ const Added: FC<{ index: number; data: AccountField }> = ({ index, data }) => {
             .finally(() => dispatch(set_isLoading(false)));
     };
 
+    const avatarUrl = data.avatar ? handleSrcImage(data.avatar) : avatarnull;
+
     return (
         <div className={style.parent}>
             <div className={style.indexContainer}>{index + 1}</div>
             <div className={style.nameContainer}>
-                <img src={data.avatar ? data.avatar : avatarnull} alt="" />
+                <img src={avatarUrl} alt="" />
                 <div className={style.you}>{you}</div>
                 <div className={style.name}>{data.firstName + ' ' + data.lastName}</div>
             </div>

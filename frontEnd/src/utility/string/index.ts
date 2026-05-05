@@ -1,3 +1,5 @@
+import { BASE_URL_API } from '@src/const/api/baseUrl';
+
 // export function isString(value: unknown): boolean {
 //     return typeof value === 'string' || value instanceof String;
 // }
@@ -103,3 +105,8 @@ export function formatPhone(phone: string): string {
     }
     return phone;
 }
+
+export const handleSrcImage = (fileName: string) => {
+    const url = `${BASE_URL_API}/service_image_v1/query/image/${fileName}`;
+    return url;
+};

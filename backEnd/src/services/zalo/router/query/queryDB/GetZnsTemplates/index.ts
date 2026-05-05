@@ -37,7 +37,7 @@ class QueryDB_GetZnsTemplates {
                     .input('offset', sql.Int, this._getZnsTemplatesBody.offset)
                     .input('zaloOaId', sql.Int, this._getZnsTemplatesBody.zaloOaId)
                     .input('accountId', sql.Int, this._getZnsTemplatesBody.accountId)
-                    .execute('GetMyNotes');
+                    .execute('GetZnsTemplates');
 
                 return result as unknown as ZnsTemplateQueryResult;
             } catch (error) {

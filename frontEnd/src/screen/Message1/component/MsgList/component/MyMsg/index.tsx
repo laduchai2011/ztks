@@ -29,6 +29,7 @@ import { useGetChatRoomRoleWithCridAaidQuery } from '@src/redux/query/chatRoomRT
 import { useGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
 import { set_repliedMessage } from '@src/redux/slice/MessageV1';
 import { avatarnull } from '@src/utility/string';
+import { handleSrcImage } from '@src/utility/string';
 
 const MyMsg: FC<{
     msgList_element?: HTMLDivElement | null;
@@ -46,7 +47,7 @@ const MyMsg: FC<{
     const youString: string | null = isYou ? 'Bạn' : null;
     const [accountWId, setAccountWId] = useState<AccountField | undefined>(undefined);
     const [isAvatar, setIsAvatar] = useState<boolean>(true);
-    const avatarUrl = accountWId?.avatar || avatarnull;
+    const avatarUrl = accountWId?.avatar ? handleSrcImage(accountWId.avatar) : avatarnull;
 
     useEffect(() => {
         // const isUserSend_data = eventName.startsWith('user_send');

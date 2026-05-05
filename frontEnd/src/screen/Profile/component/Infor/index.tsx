@@ -22,6 +22,7 @@ import { IoAddCircleOutline } from 'react-icons/io5';
 import { IoIosEye, IoIosEyeOff } from 'react-icons/io';
 import { GoDotFill } from 'react-icons/go';
 import { useLazyGetMyRecommendQuery } from '@src/redux/query/accountRTK';
+import { handleSrcImage } from '@src/utility/string';
 
 const Infor = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -35,7 +36,7 @@ const Infor = () => {
     const [recommend, setRecommend] = useState<RecommendField | undefined>(undefined);
     const [isShowRecommentCode, setIsShowRecommentCode] = useState<boolean>(false);
     const maxCount = 3;
-    const avatarUrl = account?.avatar || avatarnull;
+    const avatarUrl = account?.avatar ? handleSrcImage(account.avatar) : avatarnull;
 
     const [getMyRecommend] = useLazyGetMyRecommendQuery();
 

@@ -200,8 +200,8 @@ const CreateTemplate = () => {
                 }
             })
             .catch((err) => {
-                dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Tạo mẫu không thành công !' }));
                 console.error(err);
+                dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
             })
             .finally(() => {
                 dispatch(set_isLoading(false));

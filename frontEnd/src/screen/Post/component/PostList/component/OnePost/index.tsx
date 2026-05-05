@@ -7,6 +7,7 @@ import { CiEdit } from 'react-icons/ci';
 import { PostField, PostTypeEnum } from '@src/dataStruct/post';
 import { BASE_URL_API } from '@src/const/api/baseUrl';
 import { setIsShow_editPostDialog, setPost_editPostDialog, setNewPost_editPostDialog } from '@src/redux/slice/Post';
+import { handleSrcImage } from '@src/utility/string';
 
 const OnePost: FC<{ data: PostField }> = ({ data }) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -62,11 +63,6 @@ const OnePost: FC<{ data: PostField }> = ({ data }) => {
         }
 
         return text;
-    };
-
-    const handleSrcImage = (fileName: string) => {
-        const url = `${BASE_URL_API}/service_image_v1/query/image/${fileName}`;
-        return url;
     };
 
     const handleOpenEdit = () => {
