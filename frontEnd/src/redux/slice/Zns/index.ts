@@ -10,6 +10,11 @@ const initialState: state_props = {
     },
     selectedOa: undefined,
     newZnsTemplates: [],
+    editZnsTemplateDialog: {
+        isShow: false,
+        znsTemplate: undefined,
+        newZnsTemplate: undefined,
+    },
 };
 
 const ZnsSlice = createSlice({
@@ -31,9 +36,26 @@ const ZnsSlice = createSlice({
         clear_newZnsTemplates: (state) => {
             state.newZnsTemplates = [];
         },
+        setIsShow_editZnsTemplateDialog: (state, action: PayloadAction<boolean>) => {
+            state.editZnsTemplateDialog.isShow = action.payload;
+        },
+        setZnsTemplate_editZnsTemplateDialog: (state, action: PayloadAction<ZnsTemplateField | undefined>) => {
+            state.editZnsTemplateDialog.znsTemplate = action.payload;
+        },
+        setNewZnsTemplate_editZnsTemplateDialog: (state, action: PayloadAction<ZnsTemplateField | undefined>) => {
+            state.editZnsTemplateDialog.newZnsTemplate = action.payload;
+        },
     },
 });
 
-export const { set_isLoading, setData_toastMessage, set_selectedOa, setData_addNewZnsTemplate, clear_newZnsTemplates } =
-    ZnsSlice.actions;
+export const {
+    set_isLoading,
+    setData_toastMessage,
+    set_selectedOa,
+    setData_addNewZnsTemplate,
+    clear_newZnsTemplates,
+    setIsShow_editZnsTemplateDialog,
+    setZnsTemplate_editZnsTemplateDialog,
+    setNewZnsTemplate_editZnsTemplateDialog,
+} = ZnsSlice.actions;
 export default ZnsSlice.reducer;

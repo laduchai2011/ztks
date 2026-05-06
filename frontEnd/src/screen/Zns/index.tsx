@@ -10,6 +10,7 @@ import ZnsList from './component/ZnsList';
 import CreateTemplate from './component/CreateTemplate';
 import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
+import EditTemplateDialog from './component/EditTemplateDialog';
 import { setData_toastMessage, clear_newZnsTemplates } from '@src/redux/slice/Zns';
 
 const Zns = () => {
@@ -44,6 +45,7 @@ const Zns = () => {
             <div>
                 <MyToastMessage />
                 <MyLoading />
+                <EditTemplateDialog />
             </div>
         </div>
     );

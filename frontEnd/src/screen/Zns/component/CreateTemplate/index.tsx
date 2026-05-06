@@ -175,9 +175,14 @@ const CreateTemplate = () => {
 
         const r_images = await handleUploadImages([image], account);
 
+        if (!r_images) {
+            dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Đăng tải hình ảnh thất bại !' }));
+            return;
+        }
+
         const createZnsTemplateBody: CreateZnsTemplateBodyField = {
-            temId: '',
-            images: JSON.stringify([r_images]),
+            temId: temId_t,
+            images: JSON.stringify(r_images),
             dataFields: JSON.stringify(parameters_t),
             zaloOaId: selectedOa.id,
             accountId: account.id,

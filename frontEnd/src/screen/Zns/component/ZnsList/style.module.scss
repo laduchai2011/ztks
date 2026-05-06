@@ -22,19 +22,41 @@
             }
 
             > div {
-                background-color: blue;
-                color: white;
-                text-align: center;
-                box-sizing: border-box;
-                padding: 5px;
-                border-radius: 15px;
-                user-select: none;
-                cursor: default;
-                border: 1px solid blue;
+                @include center-of-row;
 
-                &:active {
-                    background-color: white;
-                    color: blue;
+                > div:nth-child(1) {
+                    width: 70%;
+                    background-color: blue;
+                    color: white;
+                    text-align: center;
+                    box-sizing: border-box;
+                    padding: 5px;
+                    border-radius: 15px;
+                    user-select: none;
+                    cursor: default;
+                    border: 1px solid blue;
+
+                    &:active {
+                        background-color: white;
+                        color: blue;
+                    }
+                }
+
+                > div:nth-child(2) {
+                    width: 30%;
+                    background-color: rgb(157, 255, 157);
+                    text-align: center;
+                    box-sizing: border-box;
+                    padding: 5px;
+                    border-radius: 15px;
+                    user-select: none;
+                    cursor: default;
+                    border: 1px solid rgb(157, 255, 157);
+
+                    &:active {
+                        background-color: white;
+                        color: rgb(157, 255, 157);
+                    }
                 }
             }
         }

@@ -8,4 +8,9 @@ export interface state_props {
     };
     selectedOa?: ZaloOaField;
     newZnsTemplates: ZnsTemplateField[];
+    editZnsTemplateDialog: {
+        isShow: boolean;
+        znsTemplate?: ZnsTemplateField;
+        newZnsTemplate?: ZnsTemplateField;
+    };
 }

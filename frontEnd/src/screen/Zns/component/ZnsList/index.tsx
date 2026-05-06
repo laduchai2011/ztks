@@ -3,10 +3,14 @@ import style from './style.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { SEE_MORE } from '@src/const/text';
-import { ZaloOaField } from '@src/dataStruct/zalo';
+import { ZaloOaField, ZnsTemplateField } from '@src/dataStruct/zalo';
 import { AccountField } from '@src/dataStruct/account';
-import { ZnsTemplateField } from '@src/dataStruct/zalo';
-import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Zns';
+import {
+    setData_toastMessage,
+    set_isLoading,
+    setIsShow_editZnsTemplateDialog,
+    setZnsTemplate_editZnsTemplateDialog,
+} from '@src/redux/slice/Zns';
 import { useLazyGetZnsTemplatesQuery } from '@src/redux/query/zaloRTK';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { handleSrcImage } from '@src/utility/string';
@@ -49,13 +53,21 @@ const ZnsList = () => {
             });
     }, [account, selectedOa, dispatch, getZnsTemplates]);
 
+    const handleOpenEdit = (item: ZnsTemplateField) => {
+        dispatch(setIsShow_editZnsTemplateDialog(true));
+        dispatch(setZnsTemplate_editZnsTemplateDialog(item));
+    };
+
     const znsTemplate_list = znsTemplates.map((item, index) => {
         const images = JSON.parse(item.images);
         const url = images.length > 0 ? handleSrcImage(images[0]) : '';
         return (
             <div className={style.oneZnsTemplate} key={index}>
                 <img src={url} alt="" />
-                <div>Gửi tin với mẫu này</div>
+                <div>
+                    <div>Gửi tin với mẫu này</div>
+                    <div onClick={() => handleOpenEdit(item)}>Chỉnh sửa</div>
+                </div>
             </div>
         );
     });
