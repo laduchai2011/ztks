@@ -1,4 +1,5 @@
 import { ZnsMessageType } from '.';
+import { ZaloAppField, ZaloOaField } from '.';
 
 export interface CreateZaloOaBodyField {
     label: string;
@@ -111,6 +112,8 @@ export interface CreateZnsMessageBodyField {
     data: string;
     znsTemplateId: number;
     accountId: number;
+    zaloApp: ZaloAppField;
+    zaloOa: ZaloOaField;
 }
 
 export interface GetZnsMessagesBodyField {

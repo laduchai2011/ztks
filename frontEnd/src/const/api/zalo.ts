@@ -17,4 +17,6 @@ export const ZALO_API = {
     GET_ZNS_TEMPLATES: `${BASE_URL}${apiString}/service_zalo/query/getZnsTemplates`,
     CREATE_ZNS_TEMPLATE: `${BASE_URL}${apiString}/service_zalo/mutate/createZnsTemplate`,
     EDIT_ZNS_TEMPLATE: `${BASE_URL}${apiString}/service_zalo/mutate/editZnsTemplate`,
+    GET_ZNS_MESSAGE: `${BASE_URL}${apiString}/service_zalo/query/getZnsMessages`,
+    CREATE_ZNS_MESSAGE: `${BASE_URL}${apiString}/service_zalo/mutate/createZnsMessage`,
 };

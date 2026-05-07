@@ -17,6 +17,7 @@ import ProfileReducer from '@src/redux/slice/Profile';
 import ForgetPasswordReducer from '@src/redux/slice/ForgetPassword';
 import WalletReducer from '@src/redux/slice/Wallet';
 import ZnsReducer from '@src/redux/slice/Zns';
+import ZnsDetailReducer from '@src/redux/slice/ZnsDetail';
 import BankReducer from '@src/redux/slice/Bank';
 import PostReducer from '@src/redux/slice/Post';
 import RegisterPostReducer from '@src/redux/slice/RegisterPost';
@@ -56,6 +57,7 @@ export const store = configureStore({
         ForgetPasswordSlice: ForgetPasswordReducer,
         WalletSlice: WalletReducer,
         ZnsSlice: ZnsReducer,
+        ZnsDetailSlice: ZnsDetailReducer,
         BankSlice: BankReducer,
         PostSlice: PostReducer,
         RegisterPostSlice: RegisterPostReducer,

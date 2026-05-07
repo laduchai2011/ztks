@@ -17,6 +17,7 @@ import ManageAgent from '@src/screen/ManageAgent';
 import Member from '@src/screen/Member';
 import Wallet from '@src/screen/Wallet';
 import Zns from '@src/screen/Zns';
+import ZnsDetail from '@src/screen/ZnsDetail';
 import Bank from '@src/screen/Bank';
 import Post from '@src/screen/Post';
 import RegisterPost from '@src/screen/RegisterPost';
@@ -42,6 +43,7 @@ const router = createBrowserRouter(
         { path: route_enum.MEMBER, element: <Member /> },
         { path: route_enum.WALLET, element: <Wallet /> },
         { path: route_enum.ZNS, element: <Zns /> },
+        { path: route_enum.ZNS_DETAIL + '/:id', element: <ZnsDetail /> },
         { path: route_enum.BANK, element: <Bank /> },
         { path: route_enum.POST, element: <Post /> },
         { path: route_enum.REGISTER_POST, element: <RegisterPost /> },

@@ -62,6 +62,7 @@ export enum select_enum {
     MEMBER = _MEMBER,
     WALLET = _WALLET,
     ZNS = 'ZNS',
+    ZNS_DETAIL = 'ZNS chi tiết',
     BANK = _BANK,
     POST = _POST,
     REGISTER_POST = _REGISTER_POST,
@@ -86,6 +87,7 @@ export type selected_type =
     | select_enum.MEMBER
     | select_enum.WALLET
     | select_enum.ZNS
+    | select_enum.ZNS_DETAIL
     | select_enum.BANK
     | select_enum.POST
     | select_enum.REGISTER_POST
@@ -110,6 +112,7 @@ export enum route_enum {
     MEMBER = '/member',
     WALLET = '/wallet',
     ZNS = '/zns',
+    ZNS_DETAIL = '/zns_detail',
     BANK = '/bank',
     POST = '/post',
     REGISTER_POST = '/register_post',
@@ -134,6 +137,7 @@ export type routed_type =
     | route_enum.MEMBER
     | route_enum.WALLET
     | route_enum.ZNS
+    | route_enum.ZNS_DETAIL
     | route_enum.BANK
     | route_enum.POST
     | route_enum.REGISTER_POST

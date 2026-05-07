@@ -5,6 +5,7 @@ import { ZnsMessageField } from '@src/dataStruct/zalo';
 import { CreateZnsMessageBodyField } from '@src/dataStruct/zalo/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateZnsMessage from '../../mutateDB/CreateZnsMessage';
+import { sendViaPhone } from './handle';
 
 class Handle_CreateZnsMessage {
     private _mssql_server = mssql_server;
@@ -56,6 +57,18 @@ class Handle_CreateZnsMessage {
             isSuccess: false,
             message: 'Bắt đầu (Handle_CreateZnsMessage-main)',
         };
+
+        const r_sendViaPhone = await sendViaPhone(
+            createZnsMessageBody.data,
+            createZnsMessageBody.zaloApp,
+            createZnsMessageBody.zaloOa
+        );
+
+        if (r_sendViaPhone.error !== 0) {
+            myResponse.message = 'Gửi znsMessage KHÔNG thành công !';
+            res.status(200).json(myResponse);
+            return;
+        }
 
         const mutateDB = new MutateDB_CreateZnsMessage();
         mutateDB.setCreateZnsMessageBody(createZnsMessageBody);

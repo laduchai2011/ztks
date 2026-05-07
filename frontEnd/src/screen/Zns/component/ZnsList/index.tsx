@@ -1,5 +1,6 @@
 import { memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { SEE_MORE } from '@src/const/text';
@@ -17,10 +18,11 @@ import {
 import { useLazyGetZnsTemplatesQuery } from '@src/redux/query/zaloRTK';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { handleSrcImage } from '@src/utility/string';
+import { route_enum } from '@src/router/type';
 
 const ZnsList = () => {
     const dispatch = useDispatch<AppDispatch>();
-
+    const navigate = useNavigate();
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
     const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.ZnsSlice.selectedOa);
     const newZnsTemplate: ZnsTemplateField | undefined = useSelector(
@@ -113,8 +115,8 @@ const ZnsList = () => {
         dispatch(setZnsTemplate_editZnsTemplateDialog(item));
     };
 
-    const handleSeeImage = (url: string) => {
-        window.open(url, '_blank');
+    const handleSeeDetail = (item: ZnsTemplateField) => {
+        navigate(route_enum.ZNS_DETAIL + '/' + `${item.id}`);
     };
 
     const znsTemplate_list = znsTemplates.map((item, index) => {
@@ -122,7 +124,7 @@ const ZnsList = () => {
         const url = images.length > 0 ? handleSrcImage(images[0]) : '';
         return (
             <div className={style.oneZnsTemplate} key={index}>
-                <img src={url} onClick={() => handleSeeImage(url)} alt="" />
+                <img src={url} onClick={() => handleSeeDetail(item)} alt="" />
                 <div>
                     <div onClick={() => handleOpenSend(item)}>Gửi tin với mẫu này</div>
                     <div onClick={() => handleOpenEdit(item)}>Chỉnh sửa</div>

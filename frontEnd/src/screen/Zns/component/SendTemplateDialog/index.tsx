@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState, useId } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
@@ -7,15 +7,16 @@ import { CLOSE, AGREE, EXIT } from '@src/const/text';
 import { setData_toastMessage, set_isLoading, setIsShow_sendTemplateDialog } from '@src/redux/slice/Zns';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountField } from '@src/dataStruct/account';
-import { ZaloOaField, ZnsTemplateField, ZnsMessageEnum, ZnsMessageType } from '@src/dataStruct/zalo';
-import { EditZnsTemplateBodyField } from '@src/dataStruct/zalo/body';
-import { useEditZnsTemplateMutation } from '@src/redux/query/zaloRTK';
-import { handleSrcImage } from '@src/utility/string';
+import { ZaloAppField, ZaloOaField, ZnsTemplateField, ZnsMessageEnum, ZnsMessageType } from '@src/dataStruct/zalo';
+import { CreateZnsMessageBodyField } from '@src/dataStruct/zalo/body';
+import { useCreateZnsMessageMutation } from '@src/redux/query/zaloRTK';
+import { handleSrcImage, formatPhone } from '@src/utility/string';
 
 const SendTemplateDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
 
+    const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
     const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.ZnsSlice.selectedOa);
     const isShow: boolean = useSelector((state: RootState) => state.ZnsSlice.sendTemplateDialog.isShow);
@@ -30,7 +31,8 @@ const SendTemplateDialog = () => {
     const [selectedValue, setSelectedValue] = useState<string>('');
     const [selectedOption, setSelectedOption] = useState<ZnsMessageType>(ZnsMessageEnum.PHONE);
     const [znsTemplate1, setZnsTemplate1] = useState<ZnsTemplateField | undefined>(undefined);
-    const [editZnsTemplate] = useEditZnsTemplateMutation();
+
+    const [createZnsMessage] = useCreateZnsMessageMutation();
 
     useEffect(() => {
         if (!znsTemplate) return;
@@ -92,18 +94,66 @@ const SendTemplateDialog = () => {
     };
 
     const handleAgree = async () => {
-        const data: Record<string, string> = {};
+        if (!zaloApp) return;
+        if (!account) return;
+        if (!selectedOa) return;
+        if (!znsTemplate) return;
 
-        data[selectedOption] = selectedValue;
+        const data: Record<string, string | Record<string, string>> = {};
 
-        console.log(data);
+        if (selectedOption === ZnsMessageEnum.PHONE) {
+            data[selectedOption] = formatPhone(selectedValue);
+        } else {
+            data[selectedOption] = selectedValue;
+        }
+
+        data['template_id'] = temId;
+        data['tracking_id'] = 'tracking_id';
+
+        const templateData: Record<string, string> = {};
+
+        for (let i: number = 0; i < parameters.length; i++) {
+            templateData[parameters[i]] = values[i];
+        }
+
+        data['template_data'] = templateData;
+
+        const createZnsMessageBody: CreateZnsMessageBodyField = {
+            type: selectedOption,
+            data: JSON.stringify(data),
+            znsTemplateId: znsTemplate.id,
+            accountId: account.id,
+            zaloApp: zaloApp,
+            zaloOa: selectedOa,
+        };
+
+        dispatch(set_isLoading(true));
+        createZnsMessage(createZnsMessageBody)
+            .then((res) => {
+                const resData = res.data;
+                console.log('createZnsMessage', resData);
+                if (resData?.isSuccess && resData.data) {
+                    dispatch(setData_toastMessage({ type: messageType_enum.SUCCESS, message: 'Gửi tin thành công !' }));
+                } else {
+                    dispatch(
+                        setData_toastMessage({ type: messageType_enum.ERROR, message: 'Gửi tin không thành công !' })
+                    );
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
+            })
+            .finally(() => {
+                dispatch(set_isLoading(false));
+            });
     };
 
     const paramter_list = parameters.map((item, index) => {
         return (
             <div className={style.fieldContainer} key={index}>
                 <div>{item}</div>
-                <input value={values[index]} onChange={(e) => handleValues(e, index)} />
+                <input value={values[index] ?? ''} onChange={(e) => handleValues(e, index)} />
             </div>
         );
     });

@@ -49,7 +49,7 @@ router_mutate_zalo.post(
 
 router_mutate_zalo.patch('/editZnsTemplate', authentication, handle_editZnsTemplate.setup, handle_editZnsTemplate.main);
 
-router_mutate_zalo.patch(
+router_mutate_zalo.post(
     '/createZnsMessage',
     authentication,
     handle_createZnsMessage.setup,
