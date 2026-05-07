@@ -9,11 +9,17 @@ import { CiImageOn } from 'react-icons/ci';
 import { CREATE_TEMPLATE } from '@src/const/text';
 import { useCreateZnsTemplateMutation } from '@src/redux/query/zaloRTK';
 import { CreateZnsTemplateBodyField } from '@src/dataStruct/zalo/body';
-import { setData_toastMessage, set_isLoading, setData_addNewZnsTemplate } from '@src/redux/slice/Zns';
+import {
+    setData_toastMessage,
+    set_isLoading,
+    setData_addNewZnsTemplate,
+    set_newZnsTemplate,
+} from '@src/redux/slice/Zns';
 import { ZaloOaField } from '@src/dataStruct/zalo';
 import { AccountField } from '@src/dataStruct/account';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { uploadImage } from '../../handle';
+import { isPositiveInteger } from '@src/utility/string';
 
 const CreateTemplate = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -32,6 +38,8 @@ const CreateTemplate = () => {
     const [isDisplayIcon, setIsDisplayIcon] = useState(false);
     const [isShowIcon, setIsShowIcon] = useState(false);
     const [temId, setTemId] = useState<string>('');
+    const [phoneCost, setPhoneCost] = useState<string>('');
+    const [uidCost, setUidCost] = useState<string>('');
     const [parameters, setParameters] = useState<string[]>(['']);
 
     const [createZnsTemplate] = useCreateZnsTemplateMutation();
@@ -63,6 +71,16 @@ const CreateTemplate = () => {
     const handleTemId = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setTemId(value);
+    };
+
+    const handlePhoneCost = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setPhoneCost(value);
+    };
+
+    const handleUidCost = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setUidCost(value);
     };
 
     const handleAddParameter = () => {
@@ -154,6 +172,28 @@ const CreateTemplate = () => {
             return;
         }
 
+        const phoneCost_t = phoneCost.trim();
+        if (!isPositiveInteger(phoneCost_t)) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Chi phí số điện thoại phải là 1 số nguyên dương !',
+                })
+            );
+            return;
+        }
+
+        const uidCost_t = uidCost.trim();
+        if (!isPositiveInteger(uidCost_t)) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Chi phí uid phải là 1 số nguyên dương !',
+                })
+            );
+            return;
+        }
+
         const parameters_t: string[] = [];
         for (let i: number = 0; i < parameters.length; i++) {
             const parameter_t = parameters[i].trim();
@@ -184,6 +224,8 @@ const CreateTemplate = () => {
             temId: temId_t,
             images: JSON.stringify(r_images),
             dataFields: JSON.stringify(parameters_t),
+            phoneCost: Number(phoneCost_t),
+            uidCost: Number(uidCost_t),
             zaloOaId: selectedOa.id,
             accountId: account.id,
         };
@@ -193,6 +235,7 @@ const CreateTemplate = () => {
             .then((res) => {
                 const resData = res.data;
                 if (resData?.isSuccess && resData.data) {
+                    dispatch(set_newZnsTemplate(resData.data));
                     dispatch(setData_addNewZnsTemplate(resData.data));
                     dispatch(setData_toastMessage({ type: messageType_enum.SUCCESS, message: 'Tạo mẫu thành công !' }));
                 } else {
@@ -243,6 +286,18 @@ const CreateTemplate = () => {
                     <div className={style.inputContainer}>
                         <div>Định danh mẫu</div>
                         <input value={temId} onChange={(e) => handleTemId(e)} />
+                    </div>
+                </div>
+                <div className={style.fieldContainer}>
+                    <div className={style.inputContainer}>
+                        <div>Chi phí quá sđt</div>
+                        <input value={phoneCost} onChange={(e) => handlePhoneCost(e)} placeholder="VND" />
+                    </div>
+                </div>
+                <div className={style.fieldContainer}>
+                    <div className={style.inputContainer}>
+                        <div>Chi phí qua uid</div>
+                        <input value={uidCost} onChange={(e) => handleUidCost(e)} placeholder="VND" />
                     </div>
                 </div>
                 <div className={style.fieldContainer}>{paramter_list}</div>

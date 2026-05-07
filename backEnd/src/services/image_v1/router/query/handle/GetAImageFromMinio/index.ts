@@ -12,7 +12,12 @@ export async function getAImageFromMinio(req: Request, res: Response) {
         const stat = await minioService.stat(objectName);
         const stream = await minioService.getStream(objectName);
 
-        res.setHeader('Content-Type', stat.metaData['content-type'] || 'image/jpeg');
+        const contentType = stat.metaData['content-type'] || stat.metaData['Content-Type'] || 'image/jpeg';
+
+        res.setHeader('Content-Type', contentType);
+
+        // res.setHeader('Content-Type', stat.metaData['content-type'] || 'image/jpeg');
+        res.setHeader('Content-Disposition', `inline; filename="${objectName}"`);
 
         // cache 1 năm
         res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');

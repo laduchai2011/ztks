@@ -7,6 +7,7 @@ import Handle_UpdateRefreshTokenOfZaloOa from './handle/UpdateRefreshTokenOfZalo
 import Handle_GenZaloOaToken from './handle/GenZaloOaToken';
 import Handle_CreateZnsTemplate from './handle/CreateZnsTemplate';
 import Handle_EditZnsTemplate from './handle/EditZnsTemplate';
+import Handle_CreateZnsMessage from './handle/CreateZnsMessage';
 
 const router_mutate_zalo: Router = express.Router();
 
@@ -17,6 +18,7 @@ const handle_updateRefreshTokenOfZaloOa = new Handle_UpdateRefreshTokenOfZaloOa(
 const handle_genZaloOaToken = new Handle_GenZaloOaToken();
 const handle_createZnsTemplate = new Handle_CreateZnsTemplate();
 const handle_editZnsTemplate = new Handle_EditZnsTemplate();
+const handle_createZnsMessage = new Handle_CreateZnsMessage();
 
 router_mutate_zalo.post('/createZaloOa', authentication, handle_createZaloOa.setup, handle_createZaloOa.main);
 
@@ -46,5 +48,12 @@ router_mutate_zalo.post(
 );
 
 router_mutate_zalo.patch('/editZnsTemplate', authentication, handle_editZnsTemplate.setup, handle_editZnsTemplate.main);
+
+router_mutate_zalo.patch(
+    '/createZnsMessage',
+    authentication,
+    handle_createZnsMessage.setup,
+    handle_createZnsMessage.main
+);
 
 export default router_mutate_zalo;

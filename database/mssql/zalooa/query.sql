@@ -183,3 +183,47 @@ BEGIN
 	END CATCH
 END;
 GO
+
+ALTER PROCEDURE GetZnsMessages
+	@page INT,
+    @size INT,
+    @znsTemplateId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+			WITH pagedDates AS (
+				SELECT DISTINCT
+					CAST(createTime AS DATE) AS createDate
+				FROM znsMessage
+				WHERE accountId = @accountId AND znsTemplateId = @znsTemplateId
+				ORDER BY createDate DESC
+				OFFSET (@page - 1) * @size ROWS
+				FETCH NEXT @size ROWS ONLY
+			)
+
+			SELECT 
+				z.id,
+				z.type,
+				z.data,
+				z.znsTemplateId,
+				z.accountId,
+				z.createTime
+			FROM znsMessage z
+			JOIN pagedDates d
+				ON CAST(z.createTime AS DATE) = d.createDate
+			WHERE accountId = @accountId AND znsTemplateId = @znsTemplateId
+			ORDER BY z.createTime DESC;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO

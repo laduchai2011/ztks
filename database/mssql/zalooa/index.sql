@@ -67,13 +67,34 @@ CREATE TABLE znsTemplate (
 	temId NVARCHAR(255) NOT NULL,
 	images NVARCHAR(MAX) NOT NULL,
 	dataFields NVARCHAR(MAX) NOT NULL,
+	phoneCost DECIMAL(20,2) NOT NULL,
+	uidCost DECIMAL(20,2) NOT NULL,
     isDelete BIT NOT NULL DEFAULT 0,
 	zaloOaId INT NOT NULL,
     updateTime DATETIMEOFFSET(7) NOT NULL,
     createTime DATETIMEOFFSET(7) NOT NULL,
 
-	CONSTRAINT FK_oaPermistion_ZaloOa FOREIGN KEY (zaloOaId) REFERENCES zaloOa(id)
+	CONSTRAINT FK_znsTemplate_ZaloOa FOREIGN KEY (zaloOaId) REFERENCES zaloOa(id)
 )
 GO
 CREATE NONCLUSTERED INDEX idx_zaloOa_id ON znsTemplate(zaloOaId);
+GO
+
+CREATE TABLE znsMessage (
+    id INT PRIMARY KEY IDENTITY(1,1),
+	type NVARCHAR(255) NOT NULL,
+	data NVARCHAR(MAX) NOT NULL,
+	znsTemplateId INT NOT NULL,
+	accountId INT NOT NULL,
+    createTime DATETIMEOFFSET(7) NOT NULL,
+
+	CONSTRAINT FK_znsMessage_ZnsTemplate FOREIGN KEY (znsTemplateId) REFERENCES znsTemplate(id),
+	CONSTRAINT FK_znsMessage_Account FOREIGN KEY (accountId) REFERENCES account(id),
+
+	CONSTRAINT checkType_znsMessage CHECK (type IN ('phone', 'uid', 'hashPhone'))
+)
+GO
+CREATE NONCLUSTERED INDEX idx_znsTemplate_id ON znsMessage(znsTemplateId);
+GO
+CREATE NONCLUSTERED INDEX idx_account_id ON znsMessage(accountId);
 GO

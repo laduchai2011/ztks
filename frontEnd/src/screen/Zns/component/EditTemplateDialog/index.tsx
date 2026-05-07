@@ -20,8 +20,9 @@ import { EditZnsTemplateBodyField } from '@src/dataStruct/zalo/body';
 import { useEditZnsTemplateMutation } from '@src/redux/query/zaloRTK';
 import { handleSrcImage } from '@src/utility/string';
 import { uploadImage } from '../../handle';
+import { isPositiveInteger } from '@src/utility/string';
 
-const EditZnsTemplate = () => {
+const EditTemplateDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
 
@@ -37,6 +38,8 @@ const EditZnsTemplate = () => {
     const [image, setImage] = useState<File | undefined>(undefined);
     const [preView, setPreView] = useState<string | undefined>(undefined);
     const [temId, setTemId] = useState<string>('');
+    const [phoneCost, setPhoneCost] = useState<string>('');
+    const [uidCost, setUidCost] = useState<string>('');
     const [parameters, setParameters] = useState<string[]>(['']);
 
     const [znsTemplate1, setZnsTemplate1] = useState<ZnsTemplateField | undefined>(undefined);
@@ -50,6 +53,8 @@ const EditZnsTemplate = () => {
     useEffect(() => {
         if (!znsTemplate1) return;
         setTemId(znsTemplate1.temId);
+        setPhoneCost(znsTemplate1.phoneCost.toString());
+        setUidCost(znsTemplate1.uidCost.toString());
         setParameters(JSON.parse(znsTemplate1.dataFields));
         setPreView(handleSrcImage(JSON.parse(znsTemplate1.images)[0]));
     }, [znsTemplate1]);
@@ -79,6 +84,16 @@ const EditZnsTemplate = () => {
         setTemId(value);
     };
 
+    const handlePhoneCost = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setPhoneCost(value);
+    };
+
+    const handleUidCost = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setUidCost(value);
+    };
+
     const handleClose = () => {
         dispatch(setIsShow_editZnsTemplateDialog(false));
     };
@@ -92,6 +107,28 @@ const EditZnsTemplate = () => {
         if (temId_t.length === 0) {
             dispatch(
                 setData_toastMessage({ type: messageType_enum.ERROR, message: 'Định danh mẫu không được để trống !' })
+            );
+            return;
+        }
+
+        const phoneCost_t = phoneCost.trim();
+        if (!isPositiveInteger(phoneCost_t)) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Chi phí số điện thoại phải là 1 số nguyên dương !',
+                })
+            );
+            return;
+        }
+
+        const uidCost_t = uidCost.trim();
+        if (!isPositiveInteger(uidCost_t)) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Chi phí uid phải là 1 số nguyên dương !',
+                })
             );
             return;
         }
@@ -126,6 +163,8 @@ const EditZnsTemplate = () => {
             temId: '',
             images: final_images,
             dataFields: JSON.stringify(parameters_t),
+            phoneCost: Number(phoneCost_t),
+            uidCost: Number(uidCost_t),
             zaloOaId: selectedOa.id,
             accountId: account.id,
         };
@@ -254,6 +293,18 @@ const EditZnsTemplate = () => {
                             <input value={temId} onChange={(e) => handleTemId(e)} />
                         </div>
                     </div>
+                    <div className={style.fieldContainer}>
+                        <div className={style.inputContainer}>
+                            <div>Chi phí quá sđt</div>
+                            <input value={phoneCost} onChange={(e) => handlePhoneCost(e)} />
+                        </div>
+                    </div>
+                    <div className={style.fieldContainer}>
+                        <div className={style.inputContainer}>
+                            <div>Chi phí qua uid</div>
+                            <input value={uidCost} onChange={(e) => handleUidCost(e)} />
+                        </div>
+                    </div>
                     <div className={style.fieldContainer}>{paramter_list}</div>
                     <div className={style.iconContainer}>
                         <input
@@ -277,4 +328,4 @@ const EditZnsTemplate = () => {
     );
 };
 
-export default memo(EditZnsTemplate);
+export default memo(EditTemplateDialog);

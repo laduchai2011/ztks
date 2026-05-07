@@ -24,6 +24,8 @@ class MutateDB_CreateZnsTemplate {
                     .input('temId', sql.NVarChar(255), this._createZnsTemplateBody.temId)
                     .input('images', sql.NVarChar(sql.MAX), this._createZnsTemplateBody.images)
                     .input('dataFields', sql.NVarChar(sql.MAX), this._createZnsTemplateBody.dataFields)
+                    .input('phoneCost', sql.Decimal(20, 2), this._createZnsTemplateBody.phoneCost)
+                    .input('uidCost', sql.Decimal(20, 2), this._createZnsTemplateBody.uidCost)
                     .input('zaloOaId', sql.Int, this._createZnsTemplateBody.zaloOaId)
                     .input('accountId', sql.Int, this._createZnsTemplateBody.accountId)
                     .execute('CreateZnsTemplate');

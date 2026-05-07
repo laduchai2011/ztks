@@ -9,11 +9,16 @@ const initialState: state_props = {
         data: { type: undefined, message: '' },
     },
     selectedOa: undefined,
+    newZnsTemplate: undefined,
     newZnsTemplates: [],
     editZnsTemplateDialog: {
         isShow: false,
         znsTemplate: undefined,
         newZnsTemplate: undefined,
+    },
+    sendTemplateDialog: {
+        isShow: false,
+        znsTemplate: undefined,
     },
 };
 
@@ -30,6 +35,9 @@ const ZnsSlice = createSlice({
         set_selectedOa: (state, action: PayloadAction<ZaloOaField>) => {
             state.selectedOa = action.payload;
         },
+        set_newZnsTemplate: (state, action: PayloadAction<ZnsTemplateField | undefined>) => {
+            state.newZnsTemplate = action.payload;
+        },
         setData_addNewZnsTemplate: (state, action: PayloadAction<ZnsTemplateField>) => {
             state.newZnsTemplates = [...state.newZnsTemplates, action.payload];
         },
@@ -45,6 +53,12 @@ const ZnsSlice = createSlice({
         setNewZnsTemplate_editZnsTemplateDialog: (state, action: PayloadAction<ZnsTemplateField | undefined>) => {
             state.editZnsTemplateDialog.newZnsTemplate = action.payload;
         },
+        setIsShow_sendTemplateDialog: (state, action: PayloadAction<boolean>) => {
+            state.sendTemplateDialog.isShow = action.payload;
+        },
+        setZnsTemplate_sendTemplateDialog: (state, action: PayloadAction<ZnsTemplateField | undefined>) => {
+            state.sendTemplateDialog.znsTemplate = action.payload;
+        },
     },
 });
 
@@ -52,10 +66,13 @@ export const {
     set_isLoading,
     setData_toastMessage,
     set_selectedOa,
+    set_newZnsTemplate,
     setData_addNewZnsTemplate,
     clear_newZnsTemplates,
     setIsShow_editZnsTemplateDialog,
     setZnsTemplate_editZnsTemplateDialog,
     setNewZnsTemplate_editZnsTemplateDialog,
+    setIsShow_sendTemplateDialog,
+    setZnsTemplate_sendTemplateDialog,
 } = ZnsSlice.actions;
 export default ZnsSlice.reducer;

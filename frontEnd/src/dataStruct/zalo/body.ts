@@ -1,3 +1,5 @@
+import { ZnsMessageType } from '.';
+
 export interface CreateZaloOaBodyField {
     label: string;
     oaId: string;
@@ -79,6 +81,8 @@ export interface CreateZnsTemplateBodyField {
     temId: string;
     images: string;
     dataFields: string;
+    phoneCost: number;
+    uidCost: number;
     zaloOaId: number;
     accountId: number;
 }
@@ -88,6 +92,8 @@ export interface EditZnsTemplateBodyField {
     temId: string;
     images: string;
     dataFields: string;
+    phoneCost: number;
+    uidCost: number;
     zaloOaId: number;
     accountId: number;
 }
@@ -97,5 +103,19 @@ export interface GetZnsTemplatesBodyField {
     size: number;
     offset: number;
     zaloOaId: number;
+    accountId: number;
+}
+
+export interface CreateZnsMessageBodyField {
+    type: ZnsMessageType;
+    data: string;
+    znsTemplateId: number;
+    accountId: number;
+}
+
+export interface GetZnsMessagesBodyField {
+    page: number;
+    size: number;
+    znsTemplateId: number;
     accountId: number;
 }

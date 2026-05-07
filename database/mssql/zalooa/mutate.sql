@@ -161,6 +161,8 @@ ALTER PROCEDURE CreateZnsTemplate
 	@temId NVARCHAR(255),
 	@images NVARCHAR(MAX),
 	@dataFields NVARCHAR(MAX),
+	@phoneCost DECIMAL(20,2),
+	@uidCost DECIMAL(20,2),
 	@zaloOaId INT,
 	@accountId INT
 AS
@@ -177,8 +179,8 @@ BEGIN
 
 		DECLARE @znsTemplateId INT;
 
-        INSERT INTO dbo.znsTemplate (temId, images, dataFields, isDelete, zaloOaId, updateTime, createTime)
-        VALUES (@temId, @images, @dataFields, 0, @zaloOaId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+        INSERT INTO dbo.znsTemplate (temId, images, dataFields, phoneCost, uidCost, isDelete, zaloOaId, updateTime, createTime)
+        VALUES (@temId, @images, @dataFields, @phoneCost, @uidCost, 0, @zaloOaId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50002, 'Tạo znsTemplate không thành công.', 2;
@@ -198,11 +200,13 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE EditZnsTemplate
+ALTER PROCEDURE EditZnsTemplate
 	@id INT,
 	@temId NVARCHAR(255),
 	@images NVARCHAR(MAX),
 	@dataFields NVARCHAR(MAX),
+	@phoneCost DECIMAL(20,2),
+	@uidCost DECIMAL(20,2),
 	@zaloOaId INT,
 	@accountId INT
 AS
@@ -223,7 +227,7 @@ BEGIN
 		END
 
 		UPDATE dbo.znsTemplate
-		SET temId = @temId, images = @images, dataFields = @dataFields
+		SET temId = @temId, images = @images, dataFields = @dataFields, phoneCost = @phoneCost, uidCost = @uidCost
 		WHERE id = @id AND isDelete = 0
 		IF @@ROWCOUNT = 0
         BEGIN
@@ -231,6 +235,54 @@ BEGIN
         END
 
 		SELECT * FROM dbo.znsTemplate WHERE id = @id;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
+CREATE PROCEDURE CreateZnsMessage
+	@type NVARCHAR(255),
+	@data NVARCHAR(MAX),
+	@znsTemplateId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+		DECLARE @zaloOaId INT;
+		SELECT @zaloOaId = zaloOaId FROM dbo.znsTemplate WHERE id = @znsTemplateId;
+		IF @zaloOaId IS NULL THROW 50001, N'Không tìm thấy zaloOaId của znsTemplate .', 1;
+
+		DECLARE @adminId INT;
+		SELECT @adminId = accountId FROM dbo.zaloOa WHERE id = @zaloOaId;
+		IF @adminId IS NULL THROW 50002, N'Không tìm thấy adminId của zaloOa .', 2;
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.accountInformation WHERE addedById = @adminId AND accountId = @accountId )
+		BEGIN
+			THROW 50003, N'Bạn không có quyền trên oa này .', 3;
+		END
+
+		DECLARE @znsMessageId INT;
+
+        INSERT INTO dbo.znsMessage (type, data, znsTemplateId, accountId, createTime)
+        VALUES (@type, @data, @znsTemplateId, @accountId , SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50004, 'Tạo znsMessage không thành công.', 4;
+        END
+
+		SET @znsMessageId = SCOPE_IDENTITY();
+
+		SELECT * FROM dbo.znsMessage WHERE id = @znsMessageId;
 
 		COMMIT TRANSACTION;
 	END TRY

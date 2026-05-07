@@ -48,51 +48,6 @@
             overflow-y: auto;
             @include small-scroll-yy(1px);
 
-            > .fieldContainer {
-                box-sizing: border-box;
-                padding: 5px;
-
-                > .inputContainer {
-                    box-sizing: border-box;
-                    padding: 5px;
-                    @include center-of-row;
-                    font-size: 0.9rem;
-
-                    > div {
-                        width: 100px;
-                    }
-
-                    > input {
-                        border: none;
-                        outline: none;
-                        background-color: rgb(223, 223, 223);
-                        box-sizing: border-box;
-                        padding: 5px 10px;
-                        border-radius: 10px;
-                        width: 140px;
-                    }
-
-                    > svg {
-                        margin: 0 10px;
-                    }
-                }
-            }
-
-            > .iconContainer {
-                box-sizing: border-box;
-                padding: 5px;
-                @include center-of-row;
-                justify-content: flex-end;
-
-                > input {
-                    display: none;
-                }
-
-                > svg {
-                    margin: 0 5px;
-                }
-            }
-
             > .imgContainer {
                 @include center-of-rectangle;
 
@@ -100,6 +55,46 @@
                     width: 100%;
                     background-color: rgb(219, 219, 219);
                     object-fit: contain;
+                }
+            }
+
+            > .sendVia {
+                box-sizing: border-box;
+                padding: 10px;
+                @include center-of-row;
+
+                > select {
+                    border: none;
+                    outline: none;
+                }
+
+                > input {
+                    border: none;
+                    outline: none;
+                    background-color: rgb(233, 233, 233);
+                    box-sizing: border-box;
+                    padding: 5px;
+                    border-radius: 10px;
+                }
+            }
+
+            > .fieldsContainer {
+                box-sizing: border-box;
+                padding: 10px;
+
+                > .fieldContainer {
+                    box-sizing: border-box;
+                    padding: 10px;
+
+                    > input {
+                        background-color: rgb(243, 243, 243);
+                        border: none;
+                        outline: none;
+                        border-radius: 15px;
+                        box-sizing: border-box;
+                        padding: 5px 10px;
+                        width: 100%;
+                    }
                 }
             }
         }
