@@ -246,9 +246,10 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE CreateZnsMessage
+ALTER PROCEDURE CreateZnsMessage
 	@type NVARCHAR(255),
 	@data NVARCHAR(MAX),
+	@cost DECIMAL(20,2),
 	@znsTemplateId INT,
 	@accountId INT
 AS
@@ -273,8 +274,8 @@ BEGIN
 
 		DECLARE @znsMessageId INT;
 
-        INSERT INTO dbo.znsMessage (type, data, znsTemplateId, accountId, createTime)
-        VALUES (@type, @data, @znsTemplateId, @accountId , SYSDATETIMEOFFSET());
+        INSERT INTO dbo.znsMessage (type, data, cost, znsTemplateId, accountId, createTime)
+        VALUES (@type, @data, @cost, @znsTemplateId, @accountId , SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50004, 'Tạo znsMessage không thành công.', 4;

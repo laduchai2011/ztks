@@ -1,0 +1,46 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    margin: 5px 0;
+    box-sizing: border-box;
+    padding: 5px;
+    border: 1px solid rgb(221, 221, 221);
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+    > .total {
+        @include center-of-row;
+        justify-content: space-between;
+        box-sizing: border-box;
+        padding: 5px;
+
+        > div:nth-child(1) {
+            font-weight: 600;
+        }
+
+        > div:nth-child(2) {
+            color: green;
+        }
+    }
+
+    > .rows {
+        > .oneMessage {
+            @include center-of-row;
+            margin: 5px 0;
+
+            > div {
+                width: 50%;
+            }
+
+            > div:nth-child(2) {
+                > div {
+                    margin: 5px 0;
+                }
+
+                > div:nth-child(2) {
+                    color: gray;
+                }
+            }
+        }
+    }
+}

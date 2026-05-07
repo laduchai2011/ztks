@@ -153,14 +153,14 @@ export const zaloRTK = createApi({
             }),
             invalidatesTags: (result, error, { id }) => [{ type: 'ZnsTemplates', id }],
         }),
-        getZnsMessages: builder.query<MyResponse<PagedZnsMessageField>, GetZnsMessagesBodyField>({
+        getZnsMessages: builder.query<MyResponse<ZnsMessageField[]>, GetZnsMessagesBodyField>({
             query: (body) => ({
-                url: ZALO_API.GET_ZNS_MESSAGE,
+                url: ZALO_API.GET_ZNS_MESSAGES,
                 method: 'POST',
                 body,
             }),
             providesTags: (result) => {
-                const items = result?.data?.items;
+                const items = result?.data;
 
                 if (!items) {
                     return [{ type: 'ZnsMessages', id: 'LIST' }];

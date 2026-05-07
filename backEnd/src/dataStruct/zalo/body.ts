@@ -110,6 +110,7 @@ export interface GetZnsTemplatesBodyField {
 export interface CreateZnsMessageBodyField {
     type: ZnsMessageType;
     data: string;
+    cost: number;
     znsTemplateId: number;
     accountId: number;
     zaloApp: ZaloAppField;

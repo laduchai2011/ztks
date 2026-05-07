@@ -23,6 +23,7 @@ class MutateDB_CreateZnsMessage {
                     .request()
                     .input('type', sql.NVarChar(255), this._createZnsMessageBody.type)
                     .input('data', sql.NVarChar(255), this._createZnsMessageBody.data)
+                    .input('cost', sql.Decimal(20, 2), this._createZnsMessageBody.cost)
                     .input('znsTemplateId', sql.Int, this._createZnsMessageBody.znsTemplateId)
                     .input('accountId', sql.Int, this._createZnsMessageBody.accountId)
                     .execute('CreateZnsMessage');

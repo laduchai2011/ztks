@@ -76,6 +76,7 @@ export interface ZnsMessageField {
     id: number;
     type: ZnsMessageType;
     data: string;
+    cost: number;
     znsTemplateId: number;
     accountId: number;
     createTime: string;

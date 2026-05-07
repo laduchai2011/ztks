@@ -185,45 +185,60 @@ END;
 GO
 
 ALTER PROCEDURE GetZnsMessages
-	@page INT,
+    @page INT,
     @size INT,
     @znsTemplateId INT,
-	@accountId INT
+    @accountId INT
 AS
 BEGIN
-	SET NOCOUNT ON;
+    SET NOCOUNT ON;
 
-	BEGIN TRY
+    BEGIN TRY
         BEGIN TRANSACTION;
-			WITH pagedDates AS (
-				SELECT DISTINCT
-					CAST(createTime AS DATE) AS createDate
-				FROM znsMessage
-				WHERE accountId = @accountId AND znsTemplateId = @znsTemplateId
-				ORDER BY createDate DESC
-				OFFSET (@page - 1) * @size ROWS
-				FETCH NEXT @size ROWS ONLY
-			)
 
-			SELECT 
-				z.id,
-				z.type,
-				z.data,
-				z.znsTemplateId,
-				z.accountId,
-				z.createTime
-			FROM znsMessage z
-			JOIN pagedDates d
-				ON CAST(z.createTime AS DATE) = d.createDate
-			WHERE accountId = @accountId AND znsTemplateId = @znsTemplateId
-			ORDER BY z.createTime DESC;
+            WITH pagedDates AS (
+                SELECT DISTINCT
+                    CAST(
+                        createTime AT TIME ZONE 'SE Asia Standard Time'
+                        AS DATE
+                    ) AS createDate
+                FROM znsMessage
+                WHERE accountId = @accountId
+                    AND znsTemplateId = @znsTemplateId
+                ORDER BY createDate DESC
+                OFFSET (@page - 1) * @size ROWS
+                FETCH NEXT @size ROWS ONLY
+            )
 
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+            SELECT
+                z.id,
+                z.type,
+                z.data,
+                z.znsTemplateId,
+                z.accountId,
+
+                -- giờ Việt Nam
+                z.createTime AT TIME ZONE 'SE Asia Standard Time'
+                    AS createTimeVN
+
+            FROM znsMessage z
+            JOIN pagedDates d
+                ON CAST(
+                    z.createTime AT TIME ZONE 'SE Asia Standard Time'
+                    AS DATE
+                ) = d.createDate
+            WHERE z.accountId = @accountId
+                AND z.znsTemplateId = @znsTemplateId
+            ORDER BY
+                z.createTime AT TIME ZONE 'SE Asia Standard Time' DESC;
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        THROW;
+    END CATCH
 END;
 GO

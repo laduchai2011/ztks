@@ -121,11 +121,18 @@ const SendTemplateDialog = () => {
         const createZnsMessageBody: CreateZnsMessageBodyField = {
             type: selectedOption,
             data: JSON.stringify(data),
+            cost: -1,
             znsTemplateId: znsTemplate.id,
             accountId: account.id,
             zaloApp: zaloApp,
             zaloOa: selectedOa,
         };
+
+        if (selectedOption === ZnsMessageEnum.PHONE) {
+            createZnsMessageBody.cost = znsTemplate.phoneCost;
+        } else if (selectedOption === ZnsMessageEnum.HASH_PHONE) {
+            createZnsMessageBody.cost = znsTemplate.uidCost;
+        }
 
         dispatch(set_isLoading(true));
         createZnsMessage(createZnsMessageBody)
