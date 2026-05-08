@@ -32,6 +32,15 @@
                 width: 50%;
             }
 
+            > .cost {
+                &.red {
+                    color: red;
+                }
+                &.blue {
+                    color: blue;
+                }
+            }
+
             > div:nth-child(2) {
                 > div {
                     margin: 5px 0;
@@ -39,6 +48,8 @@
 
                 > div:nth-child(2) {
                     color: gray;
+                    font-size: 0.9rem;
+                    font-style: italic;
                 }
             }
         }

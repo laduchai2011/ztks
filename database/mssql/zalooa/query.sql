@@ -213,13 +213,14 @@ BEGIN
             SELECT
                 z.id,
                 z.type,
+				z.cost,
                 z.data,
                 z.znsTemplateId,
                 z.accountId,
 
                 -- giờ Việt Nam
                 z.createTime AT TIME ZONE 'SE Asia Standard Time'
-                    AS createTimeVN
+                    AS createTime
 
             FROM znsMessage z
             JOIN pagedDates d
