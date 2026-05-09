@@ -5,12 +5,15 @@ import { RootState } from '@src/redux';
 import { avatarnull } from '@src/utility/string';
 import { AccountField, AccountReceiveMessageField } from '@src/dataStruct/account';
 import { useGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
+import { handleSrcImage } from '@src/utility/string';
 
 const Selected = () => {
     const accountReceiveMessage: AccountReceiveMessageField | undefined = useSelector(
         (state: RootState) => state.AccountReceiveMessageSlice.accountReceiveMessage
     );
     const [accountWId, setAccountWId] = useState<AccountField | undefined>(undefined);
+
+    const avatarUrl = accountWId?.avatar ? handleSrcImage(accountWId.avatar) : avatarnull;
 
     const {
         data: data_account_wid,
@@ -42,7 +45,7 @@ const Selected = () => {
             {accountReceiveMessage?.accountIdReceiveMessage ? (
                 <div className={style.main}>
                     <div className={style.avatarContainer}>
-                        <img src={accountWId?.avatar || avatarnull} alt="avatar" />
+                        <img src={avatarUrl} alt="avatar" />
                     </div>
                     <div className={style.nameContainer}>{`${accountWId?.firstName} ${accountWId?.lastName}`}</div>
                 </div>

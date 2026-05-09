@@ -8,6 +8,7 @@ import { AccountField, AccountReceiveMessageField } from '@src/dataStruct/accoun
 import { useUpdateAccountReceiveMessageMutation } from '@src/redux/query/accountRTK';
 import { ZaloOaField } from '@src/dataStruct/zalo';
 import { messageType_enum } from '@src/component/ToastMessage/type';
+import { handleSrcImage } from '@src/utility/string';
 
 const OneAccount: FC<{ index: number; data: AccountField }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -21,6 +22,8 @@ const OneAccount: FC<{ index: number; data: AccountField }> = ({ index, data }) 
     const [selected, setSelected] = useState<boolean>(false);
 
     const [updateAccountReceiveMessage] = useUpdateAccountReceiveMessageMutation();
+
+    const avatarUrl = data.avatar ? handleSrcImage(data.avatar) : avatarnull;
 
     useEffect(() => {
         if (data.id === accountReceiveMessage?.accountIdReceiveMessage) {
@@ -83,7 +86,7 @@ const OneAccount: FC<{ index: number; data: AccountField }> = ({ index, data }) 
             </div>
             <div className={style.inforContainer}>
                 <div className={style.avatarContainer}>
-                    <img src={data.avatar ?? avatarnull} alt="avatar" />
+                    <img src={avatarUrl} alt="avatar" />
                 </div>
                 <div className={style.nameContainer}>{`${data.firstName} ${data.lastName}`}</div>
             </div>

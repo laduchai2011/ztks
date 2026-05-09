@@ -2,26 +2,26 @@ import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
 import { BalanceFluctuationField } from '@src/dataStruct/wallet';
-import { GetBalanceFluctuationLatestDayBodyField } from '@src/dataStruct/wallet/body';
-import QueryDB_GetBalanceFluctuationLatestDay from '../../queryDB/GetBalanceFluctuationLatestDay';
+import { GetBalanceFluctuationsBodyField } from '@src/dataStruct/wallet/body';
+import QueryDB_GetBalanceFluctuations from '../../queryDB/GetBalanceFluctuations';
 
-class Handle_GetBalanceFluctuationLatestDay {
+class Handle_GetBalanceFluctuations {
     private _mssql_server = mssql_server;
 
     constructor() {
         this._mssql_server.init();
     }
 
-    main = async (req: Request<any, any, GetBalanceFluctuationLatestDayBodyField>, res: Response) => {
-        const getBalanceFluctuationLatestDayBody = req.body;
+    main = async (req: Request<any, any, GetBalanceFluctuationsBodyField>, res: Response) => {
+        const getBalanceFluctuationsBody = req.body;
 
         const myResponse: MyResponse<BalanceFluctuationField[]> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_GetBalanceFluctuationLatestDay-main)',
+            message: 'Bắt đầu (Handle_GetBalanceFluctuations-main)',
         };
 
-        const queryDB = new QueryDB_GetBalanceFluctuationLatestDay();
-        queryDB.setGetBalanceFluctuationLatestDay(getBalanceFluctuationLatestDayBody);
+        const queryDB = new QueryDB_GetBalanceFluctuations();
+        queryDB.setGetBalanceFluctuationsBody(getBalanceFluctuationsBody);
 
         const connection_pool = this._mssql_server.get_connectionPool();
         if (connection_pool) {
@@ -54,4 +54,4 @@ class Handle_GetBalanceFluctuationLatestDay {
     };
 }
 
-export default Handle_GetBalanceFluctuationLatestDay;
+export default Handle_GetBalanceFluctuations;

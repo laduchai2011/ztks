@@ -15,6 +15,7 @@ BEGIN
 END
 GO
 
+-- bo
 CREATE PROCEDURE GetBalanceFluctuationLatestDay
     @walletId INT,
     @type VARCHAR(255) = NULL
@@ -36,6 +37,7 @@ BEGIN
 END
 GO
 
+-- bo
 CREATE PROCEDURE GetBalanceFluctuationsByDate
     @walletId INT,
 	@type VARCHAR(255) = NULL,
@@ -54,6 +56,65 @@ BEGIN
         AND createTime < @toDate
     ORDER BY createTime DESC;
 END
+GO
+
+CREATE PROCEDURE GetBalanceFluctuations
+    @page INT,
+    @size INT,
+    @walletId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+            WITH pagedDates AS (
+                SELECT DISTINCT
+                    CAST(
+                        createTime AT TIME ZONE 'SE Asia Standard Time'
+                        AS DATE
+                    ) AS createDate
+                FROM balanceFluctuation
+                WHERE walletId = @walletId
+                ORDER BY createDate DESC
+                OFFSET (@page - 1) * @size ROWS
+                FETCH NEXT @size ROWS ONLY
+            )
+
+            SELECT
+                bf.id,
+                bf.amount,
+				bf.type,
+                bf.payHookId,
+                bf.voucherId,
+                bf.orderId,
+				bf.requireTakeMoneyId,
+				bf.walletId,
+
+                -- giờ Việt Nam
+                bf.createTime AT TIME ZONE 'SE Asia Standard Time'
+                    AS createTime
+
+            FROM balanceFluctuation bf
+            JOIN pagedDates d
+                ON CAST(
+                    bf.createTime AT TIME ZONE 'SE Asia Standard Time'
+                    AS DATE
+                ) = d.createDate
+            WHERE walletId = @walletId
+            ORDER BY
+                bf.createTime AT TIME ZONE 'SE Asia Standard Time' DESC;
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        THROW;
+    END CATCH
+END;
 GO
 
 ALTER PROCEDURE MemberGetRequireTakeMoneyOfWallet

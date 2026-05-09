@@ -18,6 +18,7 @@ import {
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { useAgentDelAccountMutation, useLazyGetAgentWithIdQuery } from '@src/redux/query/agentRTK';
 import { getSocket } from '@src/socketIo';
+import { handleSrcImage } from '@src/utility/string';
 
 const OneService: FC<{ index: number; data: AgentField }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -34,6 +35,8 @@ const OneService: FC<{ index: number; data: AgentField }> = ({ index, data }) =>
     const [agentDelAccount] = useAgentDelAccountMutation();
     const [getAccountWithId] = useLazyGetAccountWithIdQuery();
     const [getAgentWithId] = useLazyGetAgentWithIdQuery();
+
+    const avatarUrl = account?.avatar ? handleSrcImage(account.avatar) : avatarnull;
 
     useEffect(() => {
         const socket = getSocket();
@@ -182,7 +185,7 @@ const OneService: FC<{ index: number; data: AgentField }> = ({ index, data }) =>
             {account && (
                 <div className={style.infor}>
                     <div>
-                        <img src={account.avatar ? account.avatar : avatarnull} alt="avatar" />
+                        <img src={avatarUrl} alt="avatar" />
                         <div>{`${account.firstName} ${account.lastName}`}</div>
                     </div>
                     <div>

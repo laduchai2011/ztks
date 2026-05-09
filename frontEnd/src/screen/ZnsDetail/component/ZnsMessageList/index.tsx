@@ -51,6 +51,7 @@ const ZnsMessageList = () => {
     }, [dispatch, getZnsMessages, account, id, page]);
 
     const handleSeeMore = () => {
+        if (!hasMore) return;
         setPage((prev) => prev + 1);
     };
 

@@ -3,8 +3,7 @@ import { MyResponse } from '@src/dataStruct/response';
 import { WalletField, BalanceFluctuationField, RequireTakeMoneyField } from '@src/dataStruct/wallet';
 import {
     GetMyWalletWithTypeBodyField,
-    GetBalanceFluctuationsByDateBodyField,
-    GetBalanceFluctuationLatestDayBodyField,
+    GetBalanceFluctuationsBodyField,
     PayAgentFromWalletBodyField,
     MemberGetRequireTakeMoneyOfWalletBodyField,
     CreateRequireTakeMoneyBodyField,
@@ -26,26 +25,13 @@ export const walletRTK = createApi({
             }),
             providesTags: (result, error, arg) => [{ type: 'Wallet', id: result?.data?.id }],
         }),
-        getBalanceFluctuationsByDate: builder.query<
-            MyResponse<BalanceFluctuationField[]>,
-            GetBalanceFluctuationsByDateBodyField
-        >({
+        getBalanceFluctuations: builder.query<MyResponse<BalanceFluctuationField[]>, GetBalanceFluctuationsBodyField>({
             query: (body) => ({
-                url: WALLET_API.GET_BALANCE_FLUCTUATIONS_BY_DATE,
+                url: WALLET_API.GET_BALANCE_FLUCTUATIONS,
                 method: 'POST',
                 body,
             }),
             providesTags: (result, error, arg) => [{ type: 'Wallet', id: arg.walletId }],
-        }),
-        getBalanceFluctuationLatestDay: builder.query<
-            MyResponse<BalanceFluctuationField[]>,
-            GetBalanceFluctuationLatestDayBodyField
-        >({
-            query: (body) => ({
-                url: WALLET_API.GET_BALANCE_FLUCTUATION_LATES_DAY,
-                method: 'POST',
-                body,
-            }),
         }),
         payAgentFromWallet: builder.mutation<MyResponse<WalletField>, PayAgentFromWalletBodyField>({
             query: (body) => ({
@@ -95,8 +81,7 @@ export const walletRTK = createApi({
 
 export const {
     useLazyGetMyWalletWithTypeQuery,
-    useLazyGetBalanceFluctuationsByDateQuery,
-    useLazyGetBalanceFluctuationLatestDayQuery,
+    useLazyGetBalanceFluctuationsQuery,
     usePayAgentFromWalletMutation,
     useLazyMemberGetRequireTakeMoneyOfWalletQuery,
     useCreateRequireTakeMoneyMutation,

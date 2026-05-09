@@ -1,39 +1,4 @@
-﻿-- bo
-ALTER PROCEDURE CreateWallet
-	@amount BIGINT, 
-	@type NVARCHAR(255),
-    @accountId INT
-AS
-BEGIN
-	SET NOCOUNT ON;
-
-	BEGIN TRY
-        BEGIN TRANSACTION;
-
-		DECLARE @newWalletId INT;
-
-        INSERT INTO dbo.wallet (amount, type, accountId, updateTime, createTime)
-        VALUES (@amount, @type, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50001, 'Tạo ví không thành công.', 1;
-        END
-
-		SET @newWalletId = SCOPE_IDENTITY();
-
-		SELECT * FROM dbo.wallet WHERE id = @newWalletId;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
-END;
-GO
-
-ALTER PROCEDURE PayOrder
+﻿ALTER PROCEDURE PayOrder
 	@walletId INT,
 	@addedAmount DECIMAL(20,2),
 	@orderId INT,

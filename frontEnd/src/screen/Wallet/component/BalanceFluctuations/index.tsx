@@ -1,115 +1,58 @@
 import { FC, memo, useState, useEffect } from 'react';
 import style from './style.module.scss';
-import { DateTime } from 'luxon';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@src/redux';
 import { WalletField, BalanceFluctuationField } from '@src/dataStruct/wallet';
 import { SEE_MORE } from '@src/const/text';
-import {
-    useLazyGetBalanceFluctuationsByDateQuery,
-    useLazyGetBalanceFluctuationLatestDayQuery,
-} from '@src/redux/query/walletRTK';
+import { useLazyGetBalanceFluctuationsQuery } from '@src/redux/query/walletRTK';
 import ACluster from './component/ACluster';
+import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Wallet';
+import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const BalanceFluctuations: FC<{ wallet: WalletField }> = ({ wallet }) => {
-    // const [currentDate, setCurrentDate] = useState(
-    //     new Date().toISOString().slice(0, 10) // YYYY-MM-DD
-    // );
-    const [init, setInit] = useState<boolean>(false);
-    const [currentDate, setCurrentDate] = useState<string | null>(null);
-    const [currentDates, setCurrentDates] = useState<string[]>([]);
+    const dispatch = useDispatch<AppDispatch>();
     const [clusters, setClusters] = useState<BalanceFluctuationField[][]>([]);
     const [hasMore, setHasMore] = useState<boolean>(true);
+    const [page, setPage] = useState<number>(1);
 
-    const [getBalanceFluctuationLatestDay] = useLazyGetBalanceFluctuationLatestDayQuery();
-    const [getBalanceFluctuationsByDate] = useLazyGetBalanceFluctuationsByDateQuery();
-
-    const zone = 'Asia/Ho_Chi_Minh';
+    const [getBalanceFluctuations] = useLazyGetBalanceFluctuationsQuery();
 
     useEffect(() => {
-        setInit(false);
-        setCurrentDate(null);
-        setCurrentDates([]);
         setClusters([]);
         setHasMore(true);
     }, [wallet]);
 
     useEffect(() => {
-        if (currentDate) {
-            if (!init) return;
-
-            const getDateRangeVN = (date: string) => {
-                const fromDate = DateTime.fromISO(date, { zone }).startOf('day').toUTC().toISO();
-
-                const toDate = DateTime.fromISO(date, { zone }).plus({ days: 1 }).startOf('day').toUTC().toISO();
-
-                return { fromDate, toDate };
-            };
-            const { fromDate, toDate } = getDateRangeVN(currentDate);
-
-            if (!fromDate || !toDate) return;
-
-            getBalanceFluctuationsByDate({
-                walletId: wallet.id,
-                type: null,
-                fromDate: fromDate,
-                toDate: toDate,
-            })
-                .then((res) => {
-                    const resData = res.data;
-                    if (resData?.isSuccess && resData.data) {
-                        setClusters((prev) => [...prev, resData.data ?? []]);
-                        setCurrentDates((prev) => [...prev, currentDate]);
-                        setHasMore(true);
-                    } else {
-                        setHasMore(false);
-                    }
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
-        } else {
-            getBalanceFluctuationLatestDay({
-                walletId: wallet.id,
-                type: null,
-            })
-                .then((res) => {
-                    const resData = res.data;
-                    if (resData?.isSuccess && resData.data) {
+        getBalanceFluctuations({ page: page, size: 1, walletId: wallet.id })
+            .then((res) => {
+                const resData = res.data;
+                if (resData?.isSuccess && resData.data) {
+                    if (page === 1) {
                         setClusters([resData.data]);
-                        // console.log(resData.data[0].createTime, 1111, new Date().toISOString().slice(0, 10));
-                        const createTime = resData.data[0].createTime;
-                        const date = new Date(createTime);
-                        const dateOnlyVN = date.toLocaleDateString('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' });
-                        setCurrentDates((prev) => [...prev, dateOnlyVN]);
-                        setCurrentDate(dateOnlyVN);
-                        setHasMore(true);
                     } else {
-                        setHasMore(false);
+                        setClusters((prev) => [...prev, resData.data ?? []]);
                     }
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
-        }
-    }, [currentDate, getBalanceFluctuationsByDate, getBalanceFluctuationLatestDay, wallet, init]);
-
-    // load ngày trước đó
-    const loadPreviousDay = () => {
-        if (!currentDate) return;
-        // const d = new Date(currentDate);
-        // d.setDate(d.getDate() - 1);
-        // const prevDate = d.toISOString().slice(0, 10);
-        const prevDate = DateTime.fromISO(currentDate, { zone: zone }).minus({ days: 1 }).toISODate();
-        setCurrentDate(prevDate);
-        setInit(true);
-    };
+                    setHasMore(true);
+                } else {
+                    setHasMore(false);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
+            })
+            .finally(() => {
+                dispatch(set_isLoading(false));
+            });
+    }, [dispatch, getBalanceFluctuations, wallet, page]);
 
     const handleSeeMore = () => {
         if (!hasMore) return;
-        loadPreviousDay();
+        setPage((prev) => prev + 1);
     };
 
     const list_cluster = clusters.map((item, index) => {
-        return <ACluster key={index} balanceFluctuations={item} currentDate={currentDates[index]} />;
+        return <ACluster key={index} balanceFluctuations={item} />;
     });
 
     return (

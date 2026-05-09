@@ -1,4 +1,5 @@
 1 - Chạy nginx với docker compose
+docker compose up -d nginx
 
 2 - cấp SSL bằng Certbot container
 docker compose run --rm certbot certonly --webroot --webroot-path=/var/www/certbot -d yourdomain.com --email youremail@gmail.com --agree-tos --no-eff-email
