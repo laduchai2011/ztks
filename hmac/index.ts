@@ -9,7 +9,7 @@ function verifySignature(rawBody: string, signature: string, secret: string) {
   return hash === signature;
 }
 
-const signature = signHmac("hello ztks", "ztks_taokosao") as string;
+const signature = signHmac("hello ztks", "zTksProd") as string;
 
 console.log(111111, signature);
 console.log(222222, verifySignature("hello ztks", signature, "ztks_taokosao"));

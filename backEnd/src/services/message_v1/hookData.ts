@@ -46,7 +46,7 @@ import { getEnv } from '@src/mode';
 import { myEnv } from '@src/mode/type';
 import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 
-const prefix = getEnv() === myEnv.Dev ? '_dev' : '';
+const prefix = getEnv() === myEnv.Dev ? 'dev' : '';
 
 mssql_server.init();
 
@@ -58,7 +58,7 @@ ensureIndexes();
 const timeExpireat = 60 * 3; // 3p
 
 export function hookData() {
-    consumeHookData(`zalo_hook_data_queue${prefix}`, async (data) => {
+    consumeHookData(`zalo_hook_data_queue_${prefix}`, async (data) => {
         // const chatRommRoleSchema: ChatRoomRoleSchema = {
         //     authorized_account_id: 1,
         //     is_read: true,

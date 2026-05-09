@@ -27,11 +27,9 @@ app.use(cookieParser());
 app.use(apiString, express.json());
 app.use(apiString, express.urlencoded({ extended: true }));
 
-const originArray: string[] = [
-    'http://zalo5k.local.com:3000',
-    'http://zalo5k.local.com:3001',
-    'http://zalo5k.local.com:3002',
-];
+const originArray: string[] = isProduct
+    ? ['https://web.5kaquarium.com', 'https://chat.5kaquarium.com', 'https://admin.5kaquarium.com']
+    : ['http://zalo5k.local.com:3000', 'http://zalo5k.local.com:3001', 'http://zalo5k.local.com:3002'];
 app.use(
     cors({
         origin: originArray,
