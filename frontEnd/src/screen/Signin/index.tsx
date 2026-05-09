@@ -46,12 +46,14 @@ const Signin = () => {
         signin(account)
             .then((res) => {
                 const resData = res.data;
+                console.log('signin', resData);
                 if (resData?.isSuccess) {
                     setNote('');
-                    setTimeout(() => {
-                        navigate(route_enum.HOME);
-                        window.location.reload();
-                    }, 500);
+                    // setTimeout(() => {
+                    //     navigate(route_enum.HOME);
+                    //     window.location.reload();
+                    // }, 500);
+                    navigate(route_enum.HOME);
                 } else {
                     setNote('Đăng nhập thất bại');
                 }
