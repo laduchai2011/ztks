@@ -4,8 +4,14 @@ docker build -t nodeserver .
 docker run -dit --name nodeserver_container --network network_zalo_5kaquarium --restart=unless-stopped --memory=1024m --memory-swap=1024m -p 4000:4000 -v /root/photo5k:/app/data --log-driver=json-file --log-opt max-size=10m --log-opt max-file=3 nodeserver
 docker logs -f nodeserver_container
 
-docker stop photoserver_container
-docker rm photoserver_container
-docker build -t photoserver .
-docker run -dit --name photoserver_container --network network_zalo_5kaquarium --restart=unless-stopped --memory=1024m --memory-swap=1024m -p 4000:4000 -v /root/photo5k:/app/data --log-driver=json-file --log-opt max-size=10m --log-opt max-file=3 photoserver
-docker logs -f photoserver_container
+docker stop nodeserver1_container
+docker rm nodeserver1_container
+docker build -t nodeserver1 .
+docker run -dit --name nodeserver1_container --network network_zalo_5kaquarium --restart=unless-stopped --memory=1024m --memory-swap=1024m -p 4001:4001 -v /root/photo5k:/app/data --log-driver=json-file --log-opt max-size=10m --log-opt max-file=3 nodeserver1
+docker logs -f nodeserver1_container
+
+docker stop nodeserver2_container
+docker rm nodeserver2_container
+docker build -t nodeserver2 .
+docker run -dit --name nodeserver2_container --network network_zalo_5kaquarium --restart=unless-stopped --memory=1024m --memory-swap=1024m -p 4001:4001 -v /root/photo5k:/app/data --log-driver=json-file --log-opt max-size=10m --log-opt max-file=3 nodeserver2
+docker logs -f nodeserver2_container

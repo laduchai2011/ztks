@@ -1,4 +1,4 @@
-docker stop webapp_container
-docker rm webapp_container
-docker build -t webapp .
-docker run -dit --name webapp_container --network network_zalo_5kaquarium -p 3000:3000 --log-driver=json-file --log-opt max-size=10m --log-opt max-file=3 webapp
+docker stop adminapp_container
+docker rm adminapp_container
+docker build -t adminapp .
+docker run -dit --name adminapp_container --network network_zalo_5kaquarium -p 3200:3200 --log-driver=json-file --log-opt max-size=10m --log-opt max-file=3 adminapp
