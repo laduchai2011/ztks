@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE CreateRegisterPost
+﻿CREATE PROCEDURE CreateRegisterPost
 	@name NVARCHAR(255), 
 	@type VARCHAR(255), 
     @zaloOaId INT,
@@ -110,7 +110,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE CreatePost
+CREATE PROCEDURE CreatePost
 	@index INT,
 	@name NVARCHAR(255), 
 	@type VARCHAR(255),
@@ -185,7 +185,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE EditPost
+CREATE PROCEDURE EditPost
 	@id INT,
 	@index INT,
 	@name NVARCHAR(255),

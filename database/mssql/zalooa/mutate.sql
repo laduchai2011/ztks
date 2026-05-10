@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE CreateZaloOa
+﻿CREATE PROCEDURE CreateZaloOa
 	@label NVARCHAR(255),
 	@oaId NVARCHAR(255),
 	@oaName NVARCHAR(255),
@@ -40,7 +40,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE EditZaloOa
+CREATE PROCEDURE EditZaloOa
 	@id INT, 
 	@label NVARCHAR(255),
 	@oaId NVARCHAR(255),
@@ -85,7 +85,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE CreateZaloOaToken
+CREATE PROCEDURE CreateZaloOaToken
 	@refreshToken NVARCHAR(MAX),
 	@zaloOaId INT,
 	@accountId INT
@@ -120,7 +120,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE UpdateRefreshTokenOfZaloOa
+CREATE PROCEDURE UpdateRefreshTokenOfZaloOa
 	@refreshToken NVARCHAR(MAX),
 	@zaloOaId INT,
 	@accountId INT
@@ -157,7 +157,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE CreateZnsTemplate
+CREATE PROCEDURE CreateZnsTemplate
 	@temId NVARCHAR(255),
 	@images NVARCHAR(MAX),
 	@dataFields NVARCHAR(MAX),
@@ -200,7 +200,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE EditZnsTemplate
+CREATE PROCEDURE EditZnsTemplate
 	@id INT,
 	@temId NVARCHAR(255),
 	@images NVARCHAR(MAX),
@@ -246,7 +246,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE CreateZnsMessage
+CREATE PROCEDURE CreateZnsMessage
 	@type NVARCHAR(255),
 	@data NVARCHAR(MAX),
 	@cost DECIMAL(20,2),

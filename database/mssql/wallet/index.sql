@@ -64,7 +64,7 @@ GO
 
 SELECT * 
 FROM sys.check_constraints 
-WHERE name = 'checkType_balanceFluctuation';
+WHERE name = 'checkType_wallet';
 
 DROP TABLE IF EXISTS balanceFluctuation;
 DROP TABLE IF EXISTS wallet;

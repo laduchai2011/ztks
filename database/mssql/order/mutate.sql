@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE CreateOrder
+﻿CREATE PROCEDURE CreateOrder
 	@uuid NVARCHAR(255),
 	@label NVARCHAR(255),
 	@content NVARCHAR(MAX),
@@ -46,7 +46,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE UpdateOrder
+CREATE PROCEDURE UpdateOrder
 	@id INT,
 	@label NVARCHAR(255),
 	@content NVARCHAR(MAX),
@@ -111,7 +111,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE CreateOrderStatus
+CREATE PROCEDURE CreateOrderStatus
 	@type NVARCHAR(255),
 	@content NVARCHAR(255),
     @orderId INT,

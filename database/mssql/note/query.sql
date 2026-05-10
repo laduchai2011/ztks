@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE GetMyNotes
+﻿CREATE PROCEDURE GetMyNotes
 	@page INT,
     @size INT,
 	@offset INT,

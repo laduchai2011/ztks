@@ -1,8 +1,10 @@
 import { memo, useState } from 'react';
 import style from './style.module.scss';
+import { handleSrcImage } from '@src/utility/string';
 
 const OverView = () => {
     const [isShow, setIsShow] = useState<boolean>(false);
+    //  const url = images.length > 0 ? handleSrcImage(images[0]) : '';
 
     const handleIsShow = () => {
         setIsShow(!isShow);

@@ -36,7 +36,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetPosts
+CREATE PROCEDURE GetPosts
 	@page INT,
     @size INT,
 	@isActive BIT = NULL,

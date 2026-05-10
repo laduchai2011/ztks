@@ -126,6 +126,8 @@ const rollup_dev = isDev && [
                 preventAssignment: true, // Cần thiết cho Rollup 3+
                 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
                 'process.env.API_URL': JSON.stringify(process.env.API_URL || ''),
+                'process.env.SOCKET_URL': JSON.stringify(process.env.SOCKET_URL || ''),
+                'process.env.ZALO_REDIRECT_URI': JSON.stringify(process.env.ZALO_REDIRECT_URI || ''),
             }),
             // html({
             //     fileName: 'index.html',
@@ -171,6 +173,7 @@ const rollup_prod = isProd && [
                 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
                 'process.env.API_URL': JSON.stringify(process.env.API_URL || ''),
                 'process.env.SOCKET_URL': JSON.stringify(process.env.SOCKET_URL || ''),
+                'process.env.ZALO_REDIRECT_URI': JSON.stringify(process.env.ZALO_REDIRECT_URI || ''),
             }),
             resolve({
                 browser: true, // Quan trọng: để build cho browser

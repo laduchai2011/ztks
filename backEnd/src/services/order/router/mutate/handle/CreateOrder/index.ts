@@ -1,7 +1,8 @@
 import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 import { MyResponse } from '@src/dataStruct/response';
 import { OrderField } from '@src/dataStruct/order';
 import { CreateOrderBodyField } from '@src/dataStruct/order/body';
@@ -132,7 +133,8 @@ class Handle_CreateOrder {
             message: 'Bắt đầu (Handle_CreateOrder-main)',
         };
 
-        const uuid = uuidv4();
+        // const uuid = uuidv4();
+        const uuid = crypto.randomBytes(16).toString('hex');
         createOrderBody.uuid = uuid;
         // createOrderBody.zaloOaId = zaloOaId;
 

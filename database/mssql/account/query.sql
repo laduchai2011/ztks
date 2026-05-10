@@ -89,7 +89,7 @@ BEGIN
 END
 GO
 --> chuyen sang dung
-ALTER PROCEDURE GetMyAccountInformation
+CREATE PROCEDURE GetMyAccountInformation
     @accountId INT
 AS
 BEGIN

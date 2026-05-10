@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE GetOrders
+﻿CREATE PROCEDURE GetOrders
 	@page INT,
     @size INT,
 	@uuid NVARCHAR(255) = NULL,
@@ -76,7 +76,7 @@ GO
 -- END
 -- GO
 
-ALTER PROCEDURE GetOrderWithId
+CREATE PROCEDURE GetOrderWithId
 	@id INT
 AS
 BEGIN
@@ -84,7 +84,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetOrdersWithPhone
+CREATE PROCEDURE GetOrdersWithPhone
 	@page INT,
     @size INT,
 	@phone INT

@@ -62,7 +62,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetZaloOaWithId
+CREATE PROCEDURE GetZaloOaWithId
 	@id INT,
 	@accountId INT
 AS
@@ -100,7 +100,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetZaloOaTokenWithFk
+CREATE PROCEDURE GetZaloOaTokenWithFk
     @zaloOaId INT,
 	@accountId INT
 AS
@@ -184,7 +184,46 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE GetZnsMessages
+CREATE PROCEDURE GetZnsTemplateWithId
+	@id INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+			DECLARE @zaloOaId INT;
+			SELECT @zaloOaId = zaloOaId FROM dbo.znsTemplate WHERE id = @id
+			IF @zaloOaId IS NULL THROW 50001, N'Không tìm thấy zaloOa', 1;
+
+			IF NOT EXISTS ( SELECT 1 FROM dbo.znsTemplate WHERE id = @id AND isDelete = 0 )
+			BEGIN
+				THROW 50002, N'ZnsTemplate này đã bị xóa .', 2;
+			END
+
+			DECLARE @adminId INT;
+			SELECT @adminId = accountId FROM dbo.zaloOa WHERE id = @zaloOaId
+			IF @adminId IS NULL THROW 50003, N'Không tìm thấy Admin', 3;
+
+			IF NOT EXISTS ( SELECT 1 FROM dbo.accountInformation WHERE addedById = @adminId AND accountId = @accountId )
+			BEGIN
+				THROW 50004, N'Admin này không phải của bạn .', 4;
+			END
+
+			SELECT * FROM dbo.znsTemplate WHERE id = @id;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
+CREATE PROCEDURE GetZnsMessages
     @page INT,
     @size INT,
     @znsTemplateId INT,

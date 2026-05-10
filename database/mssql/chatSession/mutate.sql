@@ -1,7 +1,7 @@
 ﻿DELETE FROM dbo.chatSession
 GO
 
-ALTER PROCEDURE CreateChatSession
+CREATE PROCEDURE CreateChatSession
 	@label NVARCHAR(255),
 	@code NVARCHAR(255),
 	@isReady BIT,
@@ -46,7 +46,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE UpdateSelectedAccountIdOfChatSession
+CREATE PROCEDURE UpdateSelectedAccountIdOfChatSession
 	@id INT,
 	@selectedAccountId INT,
 	@accountId INT
@@ -115,7 +115,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE LeaveAllChatSession
+CREATE PROCEDURE LeaveAllChatSession
 	@accountId INT
 AS
 BEGIN

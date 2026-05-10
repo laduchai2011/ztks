@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE CreatePayHook
+﻿CREATE PROCEDURE CreatePayHook
 	@id INT,
     @gateway varchar(255),
     @transactionDate DATETIME,

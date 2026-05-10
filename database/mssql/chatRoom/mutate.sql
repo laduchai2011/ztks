@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE CreateChatRoom
+﻿CREATE PROCEDURE CreateChatRoom
 	@userIdByApp NVARCHAR(255),
 	@zaloOaId INT,
 	@accountId INT
@@ -78,7 +78,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE ChangeChatRoomMaster
+CREATE PROCEDURE ChangeChatRoomMaster
 	@chatRoomId INT,
 	@newAccountId INT,
 	@accountId INT

@@ -32,9 +32,9 @@ INSERT INTO
     )
 VALUES
     (
-        7,
-        'memberZtks',
-        8
+        1,
+        'admin',
+        1
     );
 
 

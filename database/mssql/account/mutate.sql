@@ -135,7 +135,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE AddMemberV1
+CREATE PROCEDURE AddMemberV1
 	@addedById INT,
 	@accountId INT
 AS
@@ -205,7 +205,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE LeaveAllAccountReceiveMessage
+CREATE PROCEDURE LeaveAllAccountReceiveMessage
 	@accountId INT
 AS
 BEGIN
@@ -234,7 +234,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE LeaveAdmin
+CREATE PROCEDURE LeaveAdmin
 	@accountId INT
 AS
 BEGIN

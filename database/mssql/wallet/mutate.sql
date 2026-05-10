@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE PayOrder
+﻿CREATE PROCEDURE PayOrder
 	@walletId INT,
 	@addedAmount DECIMAL(20,2),
 	@orderId INT,
@@ -171,7 +171,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE CreateRequireTakeMoney
+CREATE PROCEDURE CreateRequireTakeMoney
 	@amount DECIMAL(20,2),
 	@bankId INT,
 	@walletId INT,
@@ -237,7 +237,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE EditRequireTakeMoney
+CREATE PROCEDURE EditRequireTakeMoney
 	@requireTakeMoneyId INT,
 	@amount DECIMAL(20,2),
 	@bankId INT,
@@ -307,7 +307,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE DeleteRequireTakeMoney
+CREATE PROCEDURE DeleteRequireTakeMoney
 	@requireTakeMoneyId INT,
 	@accountId INT
 AS
@@ -344,7 +344,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE MemberZtksConfirmTakeMoney
+CREATE PROCEDURE MemberZtksConfirmTakeMoney
 	@requireTakeMoneyId INT,
 	@memberZtksId INT
 AS
@@ -377,7 +377,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE TakeMoney
+CREATE PROCEDURE TakeMoney
 	@amount DECIMAL(20,2),
 	@bankId INT,
 	@payHookId INT,
