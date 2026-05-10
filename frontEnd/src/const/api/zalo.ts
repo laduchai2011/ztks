@@ -15,6 +15,7 @@ export const ZALO_API = {
     CREATE_ZALO_OA_TOKEN: `${BASE_URL}${apiString}/service_zalo/mutate/createZaloOaToken`,
     UPDATE_REFRESH_TOKEN_OF_ZALO_OA: `${BASE_URL}${apiString}/service_zalo/mutate/updateRefreshTokenOfZaloOa`,
     GET_ZNS_TEMPLATES: `${BASE_URL}${apiString}/service_zalo/query/getZnsTemplates`,
+    GET_ZNS_TEMPLATE_WITH_ID: `${BASE_URL}${apiString}/service_zalo/query/getZnsTemplateWithId`,
     CREATE_ZNS_TEMPLATE: `${BASE_URL}${apiString}/service_zalo/mutate/createZnsTemplate`,
     EDIT_ZNS_TEMPLATE: `${BASE_URL}${apiString}/service_zalo/mutate/editZnsTemplate`,
     GET_ZNS_MESSAGES: `${BASE_URL}${apiString}/service_zalo/query/getZnsMessages`,

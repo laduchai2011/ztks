@@ -107,6 +107,11 @@ export interface GetZnsTemplatesBodyField {
     accountId: number;
 }
 
+export interface GetZnsTemplateWithIdBodyField {
+    id: number;
+    accountId: number;
+}
+
 export interface CreateZnsMessageBodyField {
     type: ZnsMessageType;
     data: string;

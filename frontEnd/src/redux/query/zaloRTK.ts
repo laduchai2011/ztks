@@ -8,7 +8,6 @@ import {
     ZnsTemplateField,
     PagedZnsTemplateField,
     ZnsMessageField,
-    PagedZnsMessageField,
 } from '@src/dataStruct/zalo';
 import {
     ZaloAppWithAccountIdBodyField,
@@ -25,6 +24,7 @@ import {
     GetZnsTemplatesBodyField,
     CreateZnsMessageBodyField,
     GetZnsMessagesBodyField,
+    GetZnsTemplateWithIdBodyField,
 } from '@src/dataStruct/zalo/body';
 import { ZaloUserField } from '@src/dataStruct/zalo/user';
 import { ZaloUserBodyField } from '@src/dataStruct/zalo/user/body';
@@ -137,6 +137,14 @@ export const zaloRTK = createApi({
                 ];
             },
         }),
+        getZnsTemplateWithId: builder.query<MyResponse<ZnsTemplateField>, GetZnsTemplateWithIdBodyField>({
+            query: (body) => ({
+                url: ZALO_API.GET_ZNS_TEMPLATE_WITH_ID,
+                method: 'POST',
+                body,
+            }),
+            providesTags: (result, error, arg) => [{ type: 'ZnsTemplates', id: result?.data?.id }],
+        }),
         createZnsTemplate: builder.mutation<MyResponse<ZnsTemplateField>, CreateZnsTemplateBodyField>({
             query: (body) => ({
                 url: ZALO_API.CREATE_ZNS_TEMPLATE,
@@ -199,6 +207,7 @@ export const {
     useCreateZaloOaTokenMutation,
     useUpdateRefreshTokenOfZaloOaMutation,
     useLazyGetZnsTemplatesQuery,
+    useLazyGetZnsTemplateWithIdQuery,
     useCreateZnsTemplateMutation,
     useEditZnsTemplateMutation,
     useLazyGetZnsMessagesQuery,
