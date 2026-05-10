@@ -108,8 +108,28 @@ export async function mssqlUpdateValue(key: string, value: string): Promise<ResM
             return res;
         }
     } catch (error) {
-        res.message = 'Lỗi Cập nhật dữ liệu vào MSSQL !';
+        res.message = 'Lỗi cập nhật dữ liệu vào MSSQL !';
         res.error = error;
         return res;
+    }
+}
+
+export async function mssqlDeleteCacheRedisWithKey(key: string): Promise<boolean> {
+    const connection_pool = mssql_server.get_connectionPool();
+
+    if (!connection_pool) {
+        return false;
+    }
+
+    try {
+        const result = await connection_pool
+            .request()
+            .input('key', sql.NVarChar(255), key)
+            .execute<boolean>('DeleteCacheRedisWithKey');
+
+        return result.recordset[0];
+    } catch (error) {
+        console.error(error);
+        return false;
     }
 }

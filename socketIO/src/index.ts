@@ -15,20 +15,22 @@ import { verifySocketToken } from './token';
 dotenv.config();
 
 const isProduct = process.env.NODE_ENV === 'production';
-const dev_prefix = isProduct ? '' : 'dev';
+const prefix = isProduct ? '' : 'dev';
 
 const httpServer = createServer(); // ❗ Không dùng Express
 
-// const io = new Server(httpServer);
+const originArray: string[] = isProduct
+    ? ['https://web.5kaquarium.com', 'https://chat.5kaquarium.com', 'https://admin.5kaquarium.com']
+    : ['http://zalo5k.local.com:3000', 'http://zalo5k.local.com:3001', 'http://zalo5k.local.com:3002'];
 const io = new Server(httpServer, {
     cors: {
-        origin: ['http://zalo5k.local.com:3000', 'http://zalo5k.local.com:3001', 'http://zalo5k.local.com:3002'],
+        origin: originArray,
         methods: ['GET', 'POST'],
         credentials: true,
     },
 });
 
-consumeStringMessage(`store_msg_success_${dev_prefix}`, (msg) => {
+consumeStringMessage(`store_msg_success_${prefix}`, (msg) => {
     const socketMsg = JSON.parse(msg) as SocketMessageField;
     const allChatRoomRole = socketMsg.allChatRoomRoles;
     io.to(`chatRoomId_${socketMsg.chatRoomId}`).emit('socketMessage', socketMsg);
@@ -37,27 +39,21 @@ consumeStringMessage(`store_msg_success_${dev_prefix}`, (msg) => {
     }
 });
 
-consumeVideoMessage(`sendVideoMessage_${dev_prefix}`, (videoMessageBody) => {
+consumeVideoMessage(`sendVideoMessage_${prefix}`, (videoMessageBody) => {
     io.to(`playwright_${videoMessageBody.zaloAppId}`).emit('sendVideo_with_zalo_app_id', videoMessageBody);
 });
 
-consumeStringMessage(`agentPay_${dev_prefix}`, (data) => {
+consumeStringMessage(`agentPay_${prefix}`, (data) => {
     const agentPay = JSON.parse(data) as AgentPayField;
     io.to(`accountId_${agentPay.accountId}`).emit('agentPay', agentPay);
 });
 
-consumeStringMessage(`orderPay_${dev_prefix}`, (payload) => {
+consumeStringMessage(`orderPay_${prefix}`, (payload) => {
     const data = JSON.parse(payload);
     const accountId = data.accountId as number;
     const order = data.order as OrderField;
     io.to(`accountId_${accountId}`).emit('orderPay', order);
 });
-
-// consumeStringMessage(`refreshTokenZalo_${dev_prefix}`, (payload) => {
-//     const data = JSON.parse(payload);
-//     const accountId = Number(data.accountId) as number;
-//     io.to(`accountId_${accountId}`).emit('refreshTokenZalo', data);
-// });
 
 io.use((socket, next) => {
     const token = socket.handshake.auth.token;

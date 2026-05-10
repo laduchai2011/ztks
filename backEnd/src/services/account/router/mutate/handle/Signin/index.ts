@@ -92,30 +92,30 @@ class Handle_Signin {
                     const refreshToken = generateRefreshToken(myJwtPayload, signOptions_refreshToken);
                     const socketToken = generateSocketToken(myJwtPayload, signOptions_socketToken);
 
-                    const resultget = await mssqlGetValue(keyServiceRedis);
-
-                    if (resultget?.isSuccess) {
-                        const resultupdate = await mssqlUpdateValue(keyServiceRedis, refreshToken);
-                        if (!resultupdate?.isSuccess) {
-                            myResponse.message = 'Login NOT successly, account or password is incorrect !';
-                            res.status(200).json(myResponse);
-                            return;
-                        }
-                    } else {
-                        const resultset = await mssqlSetValue(keyServiceRedis, refreshToken);
-                        if (!resultset?.isSuccess) {
-                            myResponse.message = 'Login NOT successly, account or password is incorrect !';
-                            res.status(200).json(myResponse);
-                            return;
-                        }
-                    }
-
                     const storeAuthToken: StoreAuthToken = {
                         accessToken: accessToken,
                         refreshToken: refreshToken,
                         grayAccessToken: accessToken,
                         blackList: [],
                     };
+
+                    const resultget = await mssqlGetValue(keyServiceRedis);
+
+                    if (resultget?.isSuccess) {
+                        const resultupdate = await mssqlUpdateValue(keyServiceRedis, JSON.stringify(storeAuthToken));
+                        if (!resultupdate?.isSuccess) {
+                            myResponse.message = 'Login NOT successly, account or password is incorrect !';
+                            res.status(200).json(myResponse);
+                            return;
+                        }
+                    } else {
+                        const resultset = await mssqlSetValue(keyServiceRedis, JSON.stringify(storeAuthToken));
+                        if (!resultset?.isSuccess) {
+                            myResponse.message = 'Login NOT successly, account or password is incorrect !';
+                            res.status(200).json(myResponse);
+                            return;
+                        }
+                    }
 
                     await serviceRedis.setData<StoreAuthToken>(keyServiceRedis, storeAuthToken, timeExpireat);
 

@@ -1,7 +1,7 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { ZaloOaField } from '@src/dataStruct/zalo';
+// import { ZaloOaField } from '@src/dataStruct/zalo';
 import { ChatRoomField, ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
 import { ChangeChatRoomMasterBodyField } from '@src/dataStruct/chatRoom/body';
 import MutateDB_ChangeChatRoomMaster from '../../mutateDB/ChangeChatRoomMaster';

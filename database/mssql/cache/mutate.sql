@@ -62,4 +62,31 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE DeleteCacheRedisWithKey
+	@key NVARCHAR(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+
+		DELETE dbo.cacheRedis WHERE [key] = @key
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.cacheRedis WHERE [key] = @key)
+		BEGIN
+			SELECT CAST(1 AS BIT) AS success;
+		END
+
+		SELECT CAST(0 AS BIT) AS failure;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
 delete dbo.cacheRedis

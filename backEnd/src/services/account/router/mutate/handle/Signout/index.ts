@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { MyResponse } from '@src/dataStruct/response';
 import { dev_prefix } from '@src/mode';
+import { mssqlDeleteCacheRedisWithKey } from '@src/cache/cacheMssql';
 
 const serviceRedis = ServiceRedis.getInstance();
 serviceRedis.init();
@@ -30,6 +31,8 @@ class Handle_Signout {
                 // Xóa dữ liệu token trong Redis
                 const keyServiceRedis = `token-storeAuthToken-${id}_${dev_prefix}`;
                 await serviceRedis.deleteData(keyServiceRedis);
+
+                await mssqlDeleteCacheRedisWithKey(keyServiceRedis);
             }
 
             const cookieOptions = {

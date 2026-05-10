@@ -7,6 +7,7 @@ import LockError from 'redlock';
 import { MyResponse } from '@src/dataStruct/response';
 import { StoreAuthToken } from './type';
 import { dev_prefix } from '@src/mode';
+import { mssqlGetValue, mssqlUpdateValue } from '@src/cache/cacheMssql';
 
 const serviceRedis = ServiceRedis.getInstance();
 serviceRedis.init();
@@ -80,13 +81,21 @@ async function authentication_customer(req: Request, res: Response, next: NextFu
             next();
             return;
         } else {
-            const storeAuthToken = await serviceRedis.getData<StoreAuthToken>(keyServiceRedis);
+            let storeAuthToken: StoreAuthToken | null = null;
+            storeAuthToken = await serviceRedis.getData<StoreAuthToken>(keyServiceRedis);
             // console.log('4. Lấy storeAuthToken từ Redis:', storeAuthToken);
             if (!storeAuthToken) {
-                myResponse.isSignin = false;
-                myResponse.message = 'Không tìm thấy thông tin phiên đăng nhập, hãy đăng nhập lại !';
-                res.json(myResponse);
-                return;
+                const resultget = await mssqlGetValue(keyServiceRedis);
+
+                if (resultget?.isSuccess && resultget.data) {
+                    storeAuthToken = JSON.parse(resultget.data.value) as StoreAuthToken;
+                    // console.log(111111111, storeAuthToken_mmsql);
+                } else {
+                    myResponse.isSignin = false;
+                    myResponse.message = 'Không tìm thấy thông tin phiên đăng nhập, hãy đăng nhập lại !';
+                    res.json(myResponse);
+                    return;
+                }
             }
             if (storeAuthToken.refreshToken === refreshToken) {
                 let lock;
@@ -133,6 +142,12 @@ async function authentication_customer(req: Request, res: Response, next: NextFu
                     if (!isSet) {
                         console.error('Failed to set new token in cookie in Redis');
                         return;
+                    }
+                    const resultupdate = await mssqlUpdateValue(keyServiceRedis, JSON.stringify(storeAuthToken));
+                    if (!resultupdate?.isSuccess) {
+                        myResponse.message = 'Update storeAuthToken in auth successly !';
+                    } else {
+                        myResponse.message = 'Update storeAuthToken in auth failure !';
                     }
 
                     myResponse.isAuth = true;
