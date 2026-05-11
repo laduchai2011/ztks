@@ -11,7 +11,6 @@ import { MyResponse } from '@src/dataStruct/response';
 import { EditInforAccountBodyField } from '@src/dataStruct/account/body';
 import { AccountField } from '@src/dataStruct/account';
 import { uploadImage } from '../../handle';
-import { BASE_URL_API } from '@src/const/api/baseUrl';
 import { set_account } from '@src/redux/slice/App';
 
 const EditInforDialog = () => {
@@ -111,7 +110,6 @@ const EditInforDialog = () => {
                 );
 
                 const fileName = resData_image.fileName;
-                avatarUrl = `${BASE_URL_API}/service_image_v1/query/image/${fileName}`;
 
                 if (firstName_final.length === 0 && lastName_final.length === 0 && avatarUrl.length === 0) {
                     dispatch(
@@ -127,7 +125,7 @@ const EditInforDialog = () => {
                     id: account.id,
                     firstName: firstName_final.length > 0 ? firstName_final : account.firstName,
                     lastName: lastName_final.length > 0 ? lastName_final : account.lastName,
-                    avatar: avatarUrl,
+                    avatar: fileName,
                 };
 
                 const resData_account = await handle_editInforAccount(editInforAccountBody);
