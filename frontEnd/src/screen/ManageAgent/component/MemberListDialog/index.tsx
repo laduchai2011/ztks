@@ -17,6 +17,7 @@ import { useLazyGetMembersQuery } from '@src/redux/query/accountRTK';
 import { useAgentAddAccountMutation } from '@src/redux/query/agentRTK';
 import { AccountField, AccountInformationField } from '@src/dataStruct/account';
 import { AgentField } from '@src/dataStruct/agent';
+import { handleSrcImage } from '@src/utility/string';
 
 const MemberListDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -162,10 +163,12 @@ const MemberListDialog = () => {
     };
 
     const list_member = members.map((item, index) => {
+        const avatarUrl = item.avatar ? handleSrcImage(item.avatar) : avatarnull;
+
         return (
             <div className={style.row} key={item.id} onClick={() => handleSelect(item)}>
                 <div>{index + 1}</div>
-                <img src={item.avatar ?? avatarnull} alt="" />
+                <img src={avatarUrl} alt="" />
                 <div>{`${item.firstName} ${item.lastName}`}</div>
             </div>
         );

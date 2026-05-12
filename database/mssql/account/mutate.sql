@@ -57,10 +57,10 @@ BEGIN
 END;
 GO
 
-DELETE FROM account
+DELETE FROM account WHERE id = 2
 GO
 
-EXEC Signup N'laduchai1', N'passladuchai', N'0901234567', N'Hải', N'Lã';
+EXEC Signup N'member1', N'123hai', N'0789860854', N'Member', N'1';
 
 CREATE PROCEDURE EditInforAccount
 	@id INT,

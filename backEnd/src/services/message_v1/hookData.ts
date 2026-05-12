@@ -232,7 +232,7 @@ export function hookData() {
                                         allChatRoomRoles: allChatRoomRoles,
                                     };
 
-                                    sendStringMessage(`store_msg_success${prefix}`, JSON.stringify(socketMsg));
+                                    sendStringMessage(`store_msg_success_${prefix}`, JSON.stringify(socketMsg));
                                 }
                             } catch (error) {
                                 console.error('Error inserting message to MongoDB:', error);
@@ -281,7 +281,7 @@ export function hookData() {
                         allChatRoomRoles: allChatRoomRoles,
                     };
 
-                    sendStringMessage(`store_msg_success${prefix}`, JSON.stringify(socketMsg));
+                    sendStringMessage(`store_msg_success_${prefix}`, JSON.stringify(socketMsg));
                 }
             }
 
