@@ -160,7 +160,7 @@ const EditTemplateDialog = () => {
         const final_images = r_images && r_images?.length > 0 ? JSON.stringify(r_images) : znsTemplate1.images;
         const editZnsTemplateBody: EditZnsTemplateBodyField = {
             id: znsTemplate1.id,
-            temId: '',
+            temId: temId_t,
             images: final_images,
             dataFields: JSON.stringify(parameters_t),
             phoneCost: Number(phoneCost_t),
