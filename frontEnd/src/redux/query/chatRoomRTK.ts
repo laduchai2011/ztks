@@ -15,10 +15,18 @@ import {
 } from '@src/dataStruct/chatRoom/body';
 import { CHAT_ROOM_API } from '@src/const/api/chatRoom';
 import { MyResponse } from '@src/dataStruct/response';
+import { DeviceEnum } from '@src/device/type';
 
 export const chatRoomRTK = createApi({
     reducerPath: 'chatRoomRTK',
-    baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: '',
+        credentials: 'include',
+        prepareHeaders: async (headers) => {
+            headers.set('x-device-type', DeviceEnum.WEB);
+            return headers;
+        },
+    }),
     tagTypes: ['ChatRoomRole', 'ChatRoom'],
     endpoints: (builder) => ({
         getMyChatRooms: builder.query<MyResponse<PagedChatRoomField>, GetMyChatRoomsBodyField>({

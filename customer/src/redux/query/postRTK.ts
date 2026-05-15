@@ -3,10 +3,18 @@ import { PagedPostField, PostField, RegisterPostField } from '@src/dataStruct/po
 import { GetPostsBodyField, GetPostWithIdBodyField, GetRegisterPostWithIdBodyField } from '@src/dataStruct/post/body';
 import { POST_API } from '@src/const/api/post';
 import { MyResponse } from '@src/dataStruct/response';
+import { DeviceEnum } from '@src/device/type';
 
 export const postRTK = createApi({
     reducerPath: 'postRTK',
-    baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: '',
+        credentials: 'include',
+        prepareHeaders: async (headers) => {
+            headers.set('x-device-type', DeviceEnum.WEB);
+            return headers;
+        },
+    }),
     tagTypes: [],
     endpoints: (builder) => ({
         getPosts: builder.query<MyResponse<PagedPostField>, GetPostsBodyField>({

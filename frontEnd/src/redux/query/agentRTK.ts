@@ -11,10 +11,18 @@ import {
 } from '@src/dataStruct/agent/body';
 import { AGENT_API } from '@src/const/api/agent';
 import { MyResponse } from '@src/dataStruct/response';
+import { DeviceEnum } from '@src/device/type';
 
 export const agentRTK = createApi({
     reducerPath: 'agentRTK',
-    baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: '',
+        credentials: 'include',
+        prepareHeaders: async (headers) => {
+            headers.set('x-device-type', DeviceEnum.WEB);
+            return headers;
+        },
+    }),
     tagTypes: ['Agent', 'Agents', 'AgentPay'],
     endpoints: (builder) => ({
         getAgentWithId: builder.query<MyResponse<AgentField>, { id: number }>({

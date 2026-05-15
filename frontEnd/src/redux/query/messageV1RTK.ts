@@ -5,10 +5,18 @@ import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
 import { MESSAGEV1_API } from '@src/const/api/messageV1';
 import { MyResponse } from '@src/dataStruct/response';
 import { ResultSendToZaloField } from '@src/dataStruct/zalo/hookData';
+import { DeviceEnum } from '@src/device/type';
 
 export const messageV1RTK = createApi({
     reducerPath: 'messageV1RTK',
-    baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: '',
+        credentials: 'include',
+        prepareHeaders: async (headers) => {
+            headers.set('x-device-type', DeviceEnum.WEB);
+            return headers;
+        },
+    }),
     tagTypes: ['AllNewMessages'],
     endpoints: (builder) => ({
         getMessagesForChatScreen: builder.query<MyResponse<PagedMessageV1Field<ZaloMessageType>>, MessageV1BodyField>({

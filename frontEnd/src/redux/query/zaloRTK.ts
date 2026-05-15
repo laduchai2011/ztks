@@ -30,10 +30,18 @@ import { ZaloUserField } from '@src/dataStruct/zalo/user';
 import { ZaloUserBodyField } from '@src/dataStruct/zalo/user/body';
 import { ZALO_API } from '@src/const/api/zalo';
 import { MyResponse } from '@src/dataStruct/response';
+import { DeviceEnum } from '@src/device/type';
 
 export const zaloRTK = createApi({
     reducerPath: 'zaloRTK',
-    baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: '',
+        credentials: 'include',
+        prepareHeaders: async (headers) => {
+            headers.set('x-device-type', DeviceEnum.WEB);
+            return headers;
+        },
+    }),
     tagTypes: ['ZaloOa_List', 'ZaloOa', 'ZaloOaToken', 'ZnsTemplates', 'ZnsMessages'],
     endpoints: (builder) => ({
         getZaloAppWithAccountId: builder.query<MyResponse<ZaloAppField>, ZaloAppWithAccountIdBodyField>({

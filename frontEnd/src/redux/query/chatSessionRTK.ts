@@ -9,10 +9,18 @@ import {
 } from '@src/dataStruct/chatSession/body';
 import { CHAT_SESSION_API } from '@src/const/api/chatSession';
 import { MyResponse } from '@src/dataStruct/response';
+import { DeviceEnum } from '@src/device/type';
 
 export const chatSessionRTK = createApi({
     reducerPath: 'chatSessionRTK',
-    baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: '',
+        credentials: 'include',
+        prepareHeaders: async (headers) => {
+            headers.set('x-device-type', DeviceEnum.WEB);
+            return headers;
+        },
+    }),
     tagTypes: ['ChatSession'],
     endpoints: (builder) => ({
         getChatSessionsWithAccountId: builder.query<

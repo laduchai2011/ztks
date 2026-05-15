@@ -3,10 +3,18 @@ import { PagedOrderField, OrderStatusField } from '@src/dataStruct/order';
 import { GetOrdersWithPhoneBodyField, GetAllOrderStatusBodyField } from '@src/dataStruct/order/body';
 import { ORDER_API } from '@src/const/api/order';
 import { MyResponse } from '@src/dataStruct/response';
+import { DeviceEnum } from '@src/device/type';
 
 export const orderRTK = createApi({
     reducerPath: 'orderRTK',
-    baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: '',
+        credentials: 'include',
+        prepareHeaders: async (headers) => {
+            headers.set('x-device-type', DeviceEnum.WEB);
+            return headers;
+        },
+    }),
     tagTypes: ['Voucer'],
     endpoints: (builder) => ({
         getOrdersWithPhone: builder.query<MyResponse<PagedOrderField>, GetOrdersWithPhoneBodyField>({

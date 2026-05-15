@@ -8,10 +8,18 @@ import {
 } from '@src/dataStruct/note/body';
 import { NOTE_API } from '@src/const/api/note';
 import { MyResponse } from '@src/dataStruct/response';
+import { DeviceEnum } from '@src/device/type';
 
 export const noteRTK = createApi({
     reducerPath: 'noteRTK',
-    baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: '',
+        credentials: 'include',
+        prepareHeaders: async (headers) => {
+            headers.set('x-device-type', DeviceEnum.WEB);
+            return headers;
+        },
+    }),
     tagTypes: ['Notes', 'Note'],
     endpoints: (builder) => ({
         getNotes: builder.query<MyResponse<PagedNoteField>, GetNotesBodyField>({

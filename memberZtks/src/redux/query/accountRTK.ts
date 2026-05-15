@@ -25,10 +25,18 @@ import {
 import { ACCOUNT_API } from '@src/const/api/account';
 import { router_res_type } from '@src/interface';
 import { MyResponse } from '@src/dataStruct/response';
+import { DeviceEnum } from '@src/device/type';
 
 export const accountRTK = createApi({
     reducerPath: 'accountRTK',
-    baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: '',
+        credentials: 'include',
+        prepareHeaders: async (headers) => {
+            headers.set('x-device-type', DeviceEnum.WEB);
+            return headers;
+        },
+    }),
     tagTypes: [
         'Account',
         'MemberV1',

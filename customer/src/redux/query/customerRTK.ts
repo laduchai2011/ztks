@@ -7,10 +7,18 @@ import {
 } from '@src/dataStruct/customer/body';
 import { CUSTOMER_API } from '@src/const/api/customer';
 import { MyResponse } from '@src/dataStruct/response';
+import { DeviceEnum } from '@src/device/type';
 
 export const customerRTK = createApi({
     reducerPath: 'customerRTK',
-    baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: '',
+        credentials: 'include',
+        prepareHeaders: async (headers) => {
+            headers.set('x-device-type', DeviceEnum.WEB);
+            return headers;
+        },
+    }),
     tagTypes: [],
     endpoints: (builder) => ({
         signin: builder.mutation<MyResponse<CustomerField>, SigninCustomerBodyField>({

@@ -1,13 +1,20 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ZaloOaField } from '@src/dataStruct/zalo';
 import { ZaloOaWithIdBodyField } from '@src/dataStruct/zalo/body';
-
 import { ZALO_API } from '@src/const/api/zalo';
 import { MyResponse } from '@src/dataStruct/response';
+import { DeviceEnum } from '@src/device/type';
 
 export const zaloRTK = createApi({
     reducerPath: 'zaloRTK',
-    baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: '',
+        credentials: 'include',
+        prepareHeaders: async (headers) => {
+            headers.set('x-device-type', DeviceEnum.WEB);
+            return headers;
+        },
+    }),
     tagTypes: [],
     endpoints: (builder) => ({
         getZaloOaWithId: builder.query<MyResponse<ZaloOaField>, ZaloOaWithIdBodyField>({

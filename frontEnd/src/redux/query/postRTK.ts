@@ -3,7 +3,7 @@ import { PagedRegisterPostField, PagedPostField, PostField, RegisterPostField } 
 import {
     GetRegisterPostsBodyField,
     GetPostsBodyField,
-    GetPostWithIdBodyField,
+    // GetPostWithIdBodyField,
     CreateRegisterPostBodyField,
     EditRegisterPostBodyField,
     DeleteRegisterPostBodyField,
@@ -12,10 +12,18 @@ import {
 } from '@src/dataStruct/post/body';
 import { POST_API } from '@src/const/api/post';
 import { MyResponse } from '@src/dataStruct/response';
+import { DeviceEnum } from '@src/device/type';
 
 export const postRTK = createApi({
     reducerPath: 'postRTK',
-    baseQuery: fetchBaseQuery({ baseUrl: '', credentials: 'include' }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: '',
+        credentials: 'include',
+        prepareHeaders: async (headers) => {
+            headers.set('x-device-type', DeviceEnum.WEB);
+            return headers;
+        },
+    }),
     tagTypes: [],
     endpoints: (builder) => ({
         getRegisterPosts: builder.query<MyResponse<PagedRegisterPostField>, GetRegisterPostsBodyField>({
