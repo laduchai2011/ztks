@@ -5,6 +5,7 @@ import { AccountReceiveMessageField } from '@src/dataStruct/account';
 import { CreateAccountReceiveMessageBodyField } from '@src/dataStruct/account/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateAccountReceiveMessage from '../../mutateDB/CreateAccountReceiveMessage';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_CreateAccountReceiveMessage {
     private _mssql_server = mssql_server;
@@ -24,7 +25,8 @@ class Handle_CreateAccountReceiveMessage {
         };
 
         const createAccountReceiveMessageBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

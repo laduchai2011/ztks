@@ -4,6 +4,7 @@ import { MyResponse } from '@src/dataStruct/response';
 import { AccountField, AllMembersBodyField } from '@src/dataStruct/account';
 import QueryDB_GetAllMembers from '../../queryDB/GetAllMembers';
 import { verifyRefreshToken } from '@src/token';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_GetAllMembers {
     private _mssql_server = mssql_server;
@@ -16,7 +17,8 @@ class Handle_GetAllMembers {
         };
 
         const allMembersBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

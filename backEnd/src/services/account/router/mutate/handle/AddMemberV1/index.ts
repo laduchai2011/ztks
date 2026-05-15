@@ -5,6 +5,7 @@ import { AccountInformationField } from '@src/dataStruct/account';
 import { AddMemberV1BodyField } from '@src/dataStruct/account/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_AddMemberV1 from '../../mutateDB/AddMemberV1';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_AddMemberV1 {
     private _mssql_server = mssql_server;
@@ -24,7 +25,8 @@ class Handle_AddMemberV1 {
         };
 
         const addMemberV1Body = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

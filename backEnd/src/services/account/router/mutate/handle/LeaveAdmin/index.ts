@@ -4,6 +4,7 @@ import { MyResponse } from '@src/dataStruct/response';
 import { LeaveAdminBodyField } from '@src/dataStruct/account/body';
 import MutateDB_LeaveAdmin from '../../mutateDB/LeaveAdmin';
 import { verifyRefreshToken } from '@src/token';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_LeaveAdmin {
     private _mssql_server = mssql_server;
@@ -19,7 +20,8 @@ class Handle_LeaveAdmin {
         };
 
         const leaveAdminBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

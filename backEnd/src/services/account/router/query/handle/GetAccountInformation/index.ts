@@ -4,6 +4,7 @@ import { MyResponse } from '@src/dataStruct/response';
 import { AccountInformationField } from '@src/dataStruct/account';
 import QueryDB_GetAccountInformation from '../../queryDB/GetAccountInformation';
 import { verifyRefreshToken } from '@src/token';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_GetAccountInformation {
     private _mssql_server = mssql_server;
@@ -16,7 +17,8 @@ class Handle_GetAccountInformation {
             message: 'Bắt đầu Handle_GetAccountInformation để lấy tài khoản admin hay thành viên (setup) !',
         };
 
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

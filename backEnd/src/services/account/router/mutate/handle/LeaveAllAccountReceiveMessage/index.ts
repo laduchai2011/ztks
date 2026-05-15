@@ -4,6 +4,7 @@ import { MyResponse } from '@src/dataStruct/response';
 import { LeaveAllAccountReceiveMessageBodyField } from '@src/dataStruct/account/body';
 import MutateDB_LeaveAllAccountReceiveMessage from '../../mutateDB/LeaveAllAccountReceiveMessage';
 import { verifyRefreshToken } from '@src/token';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_LeaveAllAccountReceiveMessage {
     private _mssql_server = mssql_server;
@@ -23,7 +24,8 @@ class Handle_LeaveAllAccountReceiveMessage {
         };
 
         const leaveAllAccountReceiveMessageBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

@@ -5,6 +5,7 @@ import { AccountInformationField } from '@src/dataStruct/account';
 import { CreateAccountInformationBodyField } from '@src/dataStruct/account/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateAccountInformation from '../../mutateDB/CreateAccountInformation';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_CreateAccountInformation {
     private _mssql_server = mssql_server;
@@ -20,7 +21,8 @@ class Handle_CreateAccountInformation {
         };
 
         const createAccountInformationBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

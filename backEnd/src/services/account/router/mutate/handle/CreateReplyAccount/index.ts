@@ -18,7 +18,7 @@ import QueryDB_GetChatRoomWithId from '@src/services/chatRoom/router/query/query
 import { verifyRefreshToken } from '@src/token';
 import { prefix_cache_notReplyAccounts, prefix_cache_replyAccounts } from '@src/const/redisKey/account';
 import { CacheGetChatRoomWithId } from '@src/const/redisKey/chatRoom';
-
+import { getRefreshToken } from '@src/device/getDevice';
 // const timeExpireat = 60 * 5; // 5p
 
 class Handle_CreateReplyAccount {
@@ -43,7 +43,8 @@ class Handle_CreateReplyAccount {
         };
 
         const createReplyAccountBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

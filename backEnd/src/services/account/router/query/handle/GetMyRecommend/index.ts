@@ -5,6 +5,7 @@ import { RecommendField } from '@src/dataStruct/account';
 import { GetMyRecommendBodyField } from '@src/dataStruct/account/body';
 import QueryDB_GetMyRecommend from '../../queryDB/GetMyRecommend';
 import { verifyRefreshToken } from '@src/token';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_GetMyRecommend {
     private _mssql_server = mssql_server;
@@ -19,7 +20,8 @@ class Handle_GetMyRecommend {
             message: 'Bắt đầu Handle_GetMyRecommend-setup !',
         };
 
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

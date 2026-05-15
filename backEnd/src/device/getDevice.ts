@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { DeviceType } from './type';
+import { DeviceType, DeviceEnum } from './type';
 
 function getDevice(req: Request): DeviceType {
     const device = req.headers['x-device-type'] as DeviceType;
@@ -22,4 +22,40 @@ function getDevice(req: Request): DeviceType {
     // }
 }
 
-export { getDevice };
+function getAccessToken(req: Request): string | undefined {
+    const device = getDevice(req);
+
+    switch (device) {
+        case DeviceEnum.WEB: {
+            const { accessToken } = req.cookies;
+            return accessToken;
+        }
+        case DeviceEnum.MOBILE: {
+            const accessToken = req.headers['x-access-token'] as string;
+            return accessToken;
+        }
+        default: {
+            return undefined;
+        }
+    }
+}
+
+function getRefreshToken(req: Request): string | undefined {
+    const device = getDevice(req);
+
+    switch (device) {
+        case DeviceEnum.WEB: {
+            const { refreshToken } = req.cookies;
+            return refreshToken;
+        }
+        case DeviceEnum.MOBILE: {
+            const refreshToken = req.headers['x-refresh-token'] as string;
+            return refreshToken;
+        }
+        default: {
+            return undefined;
+        }
+    }
+}
+
+export { getDevice, getAccessToken, getRefreshToken };

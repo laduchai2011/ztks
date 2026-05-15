@@ -1,14 +1,16 @@
 import { Request, Response } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
 import { verifyRefreshToken, isJwtPayload } from '@src/token';
-
-const myResponse: MyResponse<number> = {
-    isSuccess: false,
-};
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_IsSignin {
     main = async (req: Request, res: Response) => {
-        const { refreshToken } = req.cookies;
+        const myResponse: MyResponse<number> = {
+            isSuccess: false,
+        };
+
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);
