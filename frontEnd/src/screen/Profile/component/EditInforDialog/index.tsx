@@ -47,6 +47,12 @@ const EditInforDialog = () => {
     }, [isShow]);
 
     useEffect(() => {
+        if (!account) return;
+        setFirstName(account.firstName);
+        setLastName(account.lastName);
+    }, [account]);
+
+    useEffect(() => {
         if (!image) return;
         const objectUrl = URL.createObjectURL(image);
         setPreview(objectUrl);

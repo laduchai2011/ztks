@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { BASE_URL } from '@src/const/api/baseUrl';
+import { DeviceEnum } from '@src/device/type';
 
 const isProduct = process.env.NODE_ENV === 'production';
 const apiString = isProduct ? '' : '/api';
@@ -10,6 +11,7 @@ const axiosInstance = axios.create({
     timeout: 5000,
     headers: {
         'Content-Type': 'application/json',
+        'x-device-type': DeviceEnum.WEB,
     },
     withCredentials: true,
 });

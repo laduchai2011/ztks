@@ -35,8 +35,8 @@ const Infor = () => {
     const [isShowId, setIsShowId] = useState<boolean>(false);
     const [recommend, setRecommend] = useState<RecommendField | undefined>(undefined);
     const [isShowRecommentCode, setIsShowRecommentCode] = useState<boolean>(false);
+    const [avatarUrl, setAvatarUrl] = useState<string>(avatarnull);
     const maxCount = 3;
-    const avatarUrl = account?.avatar ? handleSrcImage(account.avatar) : avatarnull;
 
     const [getMyRecommend] = useLazyGetMyRecommendQuery();
 
@@ -48,6 +48,11 @@ const Infor = () => {
             setAccountType(accountType_enum.MEMBER);
         }
     }, [accountInformation]);
+
+    useEffect(() => {
+        const avatarUrl_ = account?.avatar ? handleSrcImage(account.avatar) : avatarnull;
+        setAvatarUrl(avatarUrl_);
+    }, [account]);
 
     const handleSelected = (type: accountType_enum) => {
         if (selectedType === null) {
