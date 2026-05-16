@@ -9,8 +9,6 @@ export const ACCOUNT_API = {
     SIGNOUT: `${BASE_URL}${apiString}/service_account/mutate/signout`,
     ADD_MEMBER: `${BASE_URL}${apiString}/service_account/mutate/addMember`,
     GET_ALL_MEMBERS: `${BASE_URL}${apiString}/service_account/query/getAllMembers`,
-    SET_MEMBER_RECEIVE_MESSAGE: `${BASE_URL}${apiString}/service_account/mutate/setMemberReceiveMessage`,
-    GET_MEMBER_RECEIVE_MESSAGE: `${BASE_URL}${apiString}/service_account/query/getMemberReceiveMessage`,
     GET_ACCOUNT_WITH_ID: `${BASE_URL}${apiString}/service_account/query/getAccountWithId`,
     GET_REPLY_ACCOUNt: `${BASE_URL}${apiString}/service_account/query/getReplyAccounts`,
     GET_NOT_REPLY_ACCOUNT: `${BASE_URL}${apiString}/service_account/query/getNotReplyAccounts`,

@@ -53,10 +53,6 @@ export const accountRTK = createApi({
         getAccountWithId: builder.query<MyResponse<AccountField>, { id: number }>({
             query: ({ id }) => `${ACCOUNT_API.GET_ACCOUNT_WITH_ID}?id=${id}`,
         }),
-        getMemberReceiveMessage: builder.query<MyResponse<AccountField>, void>({
-            query: () => ACCOUNT_API.GET_MEMBER_RECEIVE_MESSAGE,
-            providesTags: ['MemberReceiveMessage'],
-        }),
         getAllMembers: builder.query<MyResponse<AccountField[]>, AllMembersBodyField>({
             query: (body) => ({
                 url: ACCOUNT_API.GET_ALL_MEMBERS,
@@ -161,14 +157,6 @@ export const accountRTK = createApi({
             }),
             invalidatesTags: ['MemberList'], // dùng nếu muốn refetch danh sách sau khi thêm
         }),
-        setMemberReceiveMessage: builder.mutation<MyResponse<AccountField>, AccountField>({
-            query: (body) => ({
-                url: ACCOUNT_API.SET_MEMBER_RECEIVE_MESSAGE,
-                method: 'POST',
-                body,
-            }),
-            invalidatesTags: ['MemberReceiveMessage'],
-        }),
         createReplyAccount: builder.mutation<MyResponse<AccountField>, CreateReplyAccountBodyField>({
             query: (body) => ({
                 url: ACCOUNT_API.CREATE_REPLY_ACCOUNT,
@@ -238,7 +226,6 @@ export const accountRTK = createApi({
 export const {
     useGetAccountWithIdQuery,
     useLazyGetAccountWithIdQuery,
-    useGetMemberReceiveMessageQuery,
     useGetAllMembersQuery,
     useGetReplyAccountsQuery,
     useGetNotReplyAccountsQuery,
@@ -250,7 +237,6 @@ export const {
     useSignoutMutation,
     useForgetPasswordMutation,
     useAddMemberMutation,
-    useSetMemberReceiveMessageMutation,
     useCreateReplyAccountMutation,
     useGetAccountReceiveMessageQuery,
     useCreateAccountReceiveMessageMutation,
