@@ -7,6 +7,7 @@ import { CreateNoteBodyField } from '@src/dataStruct/note/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateNote from '../../mutateDB/CreateNote';
 import { CacheGetChatRoomWithId } from '@src/const/redisKey/chatRoom';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_CreateNote {
     private _mssql_server = mssql_server;
@@ -29,7 +30,8 @@ class Handle_CreateNote {
         };
 
         const createNoteBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

@@ -6,6 +6,7 @@ import { EditRegisterPostBodyField } from '@src/dataStruct/post/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_EditRegisterPost from '../../mutateDB/EditRegisterPost';
 import { CacheGetRegisterPosts } from '@src/const/redisKey/post';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_EditRegisterPost {
     private _mssql_server = mssql_server;
@@ -23,7 +24,8 @@ class Handle_EditRegisterPost {
         };
 
         const editRegisterPostBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

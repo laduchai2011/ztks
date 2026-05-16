@@ -14,6 +14,7 @@ import {
     CacheGetChatRoomWithZaloOaIdUserIdByApp,
 } from '@src/const/redisKey/chatRoom';
 import { ChatRoomRoleZodSchema, ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_ChangeChatRoomMaster {
     private _mssql_server = mssql_server;
@@ -37,7 +38,8 @@ class Handle_ChangeChatRoomMaster {
         };
 
         const changeChatRoomMasterBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

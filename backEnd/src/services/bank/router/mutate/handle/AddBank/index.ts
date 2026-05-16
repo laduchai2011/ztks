@@ -5,6 +5,7 @@ import { BankField } from '@src/dataStruct/bank';
 import { AddBankBodyField } from '@src/dataStruct/bank/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_AddBank from '../../mutateDB/AddBank';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_AddBank {
     private _mssql_server = mssql_server;
@@ -20,7 +21,8 @@ class Handle_AddBank {
         };
 
         const addBankBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

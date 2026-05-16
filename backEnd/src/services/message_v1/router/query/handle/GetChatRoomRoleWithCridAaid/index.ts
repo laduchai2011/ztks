@@ -8,6 +8,7 @@ import { MessageV1BodyField } from '@src/dataStruct/message_v1/body';
 import QueryDB_GetChatRoomRoleWithCridAaid from '../../queryDB/GetChatRoomRoleWithCridAaid';
 import { verifyRefreshToken } from '@src/token';
 import { CacheGetChatRoomRoleWithCridAaid } from '@src/const/redisKey/chatRoom';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_GetChatRoomRoleWithCridAaid {
     private _mssql_server = mssql_server;
@@ -31,7 +32,8 @@ class Handle_GetChatRoomRoleWithCridAaid {
             chatRoomId: messageV1Body.chatRoomId,
             authorizedAccountId: -1,
         };
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

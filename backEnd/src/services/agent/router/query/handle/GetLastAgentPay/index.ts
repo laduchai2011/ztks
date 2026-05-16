@@ -5,6 +5,7 @@ import { AgentPayField } from '@src/dataStruct/agent';
 import { GetLastAgentPayBodyField } from '@src/dataStruct/agent/body';
 import QueryDB_GetLastAgentPay from '../../queryDB/GetLastAgentPay';
 import { verifyRefreshToken } from '@src/token';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_GetLastAgentPay {
     private _mssql_server = mssql_server;
@@ -15,12 +16,14 @@ class Handle_GetLastAgentPay {
 
     setup = (req: Request<any, any, GetLastAgentPayBodyField>, res: Response, next: NextFunction) => {
         const getLastAgentPayBody = req.body;
-        const { refreshToken } = req.cookies;
 
         const myResponse: MyResponse<AgentPayField> = {
             isSuccess: false,
             message: 'Bắt đầu (Handle_GetLastAgentPay-setup)',
         };
+
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

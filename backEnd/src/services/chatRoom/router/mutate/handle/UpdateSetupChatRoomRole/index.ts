@@ -9,6 +9,7 @@ import { verifyRefreshToken } from '@src/token';
 import { CacheGetChatRoomRoleWithCridAaid, CacheGetAllChatRoomRoleWithCrid } from '@src/const/redisKey/chatRoom';
 import { ChatRoomRoleZodSchema } from '@src/schema/chatRoom';
 import { getDbMonggo } from '@src/connect/mongo';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_UpdateSetupChatRoomRole {
     private _mssql_server = mssql_server;
@@ -34,7 +35,8 @@ class Handle_UpdateSetupChatRoomRole {
         };
 
         const updateSetupChatRoomRoleBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

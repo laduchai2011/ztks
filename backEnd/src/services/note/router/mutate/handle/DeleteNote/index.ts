@@ -5,6 +5,7 @@ import MutateDB_DeleteNote from '../../mutateDB/DeleteNote';
 import { verifyRefreshToken } from '@src/token';
 import { NoteField } from '@src/dataStruct/note';
 import { DeleteNoteBodyField } from '@src/dataStruct/note/body';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_DeleteNote {
     private _mssql_server = mssql_server;
@@ -20,7 +21,8 @@ class Handle_DeleteNote {
         };
 
         const deleteNoteBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

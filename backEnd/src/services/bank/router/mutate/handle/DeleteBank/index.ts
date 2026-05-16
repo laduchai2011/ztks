@@ -5,6 +5,7 @@ import { BankField } from '@src/dataStruct/bank';
 import { DeleteBankBodyField } from '@src/dataStruct/bank/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_DeleteBank from '../../mutateDB/DeleteBank';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_DeleteBank {
     private _mssql_server = mssql_server;
@@ -20,7 +21,8 @@ class Handle_DeleteBank {
         };
 
         const deleteBankBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

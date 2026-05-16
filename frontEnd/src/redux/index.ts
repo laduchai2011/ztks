@@ -3,7 +3,7 @@ import AppReducer from '@src/redux/slice/App';
 import Home1Reducer from '@src/redux/slice/Home1';
 import MessageV1Reducer from '@src/redux/slice/MessageV1';
 import ManageMembersReducer from '@src/redux/slice/ManageMembers';
-import MemberReceiveMessageReducer from '@src/redux/slice/MemberReceiveMessage';
+// import MemberReceiveMessageReducer from '@src/redux/slice/MemberReceiveMessage';
 import OaReducer from '@src/redux/slice/Oa';
 import OaSettingReducer from '@src/redux/slice/OaSetting';
 import SupportRoomReducer from '@src/redux/slice/SupportRoom';
@@ -23,7 +23,7 @@ import PostReducer from '@src/redux/slice/Post';
 import RegisterPostReducer from '@src/redux/slice/RegisterPost';
 import LeaveReducer from '@src/redux/slice/Leave';
 import { accountRTK } from './query/accountRTK';
-import { myCustomerRTK } from './query/myCustomerRTK';
+// import { myCustomerRTK } from './query/myCustomerRTK';
 import { messageV1RTK } from './query/messageV1RTK';
 import { zaloRTK } from './query/zaloRTK';
 import { chatSessionRTK } from './query/chatSessionRTK';
@@ -43,7 +43,7 @@ export const store = configureStore({
         Home1Slice: Home1Reducer,
         MessageV1Slice: MessageV1Reducer,
         ManageMembersSlice: ManageMembersReducer,
-        MemberReceiveMessageSlice: MemberReceiveMessageReducer,
+        // MemberReceiveMessageSlice: MemberReceiveMessageReducer,
         OaSlice: OaReducer,
         OaSettingSlice: OaSettingReducer,
         SupportRoomSlice: SupportRoomReducer,
@@ -63,7 +63,7 @@ export const store = configureStore({
         RegisterPostSlice: RegisterPostReducer,
         LeaveSlice: LeaveReducer,
         [accountRTK.reducerPath]: accountRTK.reducer,
-        [myCustomerRTK.reducerPath]: myCustomerRTK.reducer,
+        // [myCustomerRTK.reducerPath]: myCustomerRTK.reducer,
         [messageV1RTK.reducerPath]: messageV1RTK.reducer,
         [zaloRTK.reducerPath]: zaloRTK.reducer,
         [chatSessionRTK.reducerPath]: chatSessionRTK.reducer,
@@ -79,7 +79,7 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
             accountRTK.middleware,
-            myCustomerRTK.middleware,
+            // myCustomerRTK.middleware,
             messageV1RTK.middleware,
             zaloRTK.middleware,
             chatSessionRTK.middleware,

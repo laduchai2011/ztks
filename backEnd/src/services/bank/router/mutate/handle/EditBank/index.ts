@@ -5,6 +5,7 @@ import { BankField } from '@src/dataStruct/bank';
 import { EditBankBodyField } from '@src/dataStruct/bank/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_EditBank from '../../mutateDB/EditBank';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_EditBank {
     private _mssql_server = mssql_server;
@@ -20,7 +21,8 @@ class Handle_EditBank {
         };
 
         const editBankBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

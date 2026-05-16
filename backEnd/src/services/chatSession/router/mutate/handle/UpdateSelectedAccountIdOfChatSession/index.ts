@@ -5,6 +5,7 @@ import { ChatSessionField } from '@src/dataStruct/chatSession';
 import { UpdateSelectedAccountIdOfChatSessionBodyField } from '@src/dataStruct/chatSession/body';
 import MutateDB_UpdateSelectedAccountIdOfChatSession from '../../mutateDB/UpdateSelectedAccountIdOfChatSession';
 import { verifyRefreshToken } from '@src/token';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_UpdateSelectedAccountIdOfChatSession {
     private _mssql_server = mssql_server;
@@ -24,7 +25,8 @@ class Handle_UpdateSelectedAccountIdOfChatSession {
         };
 
         const updateSelectedAccountIdOfChatSessionBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

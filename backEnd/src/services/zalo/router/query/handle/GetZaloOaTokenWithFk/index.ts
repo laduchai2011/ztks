@@ -5,6 +5,7 @@ import { ZaloOaTokenField } from '@src/dataStruct/zalo';
 import { GetZaloOaTokenWithFkBodyField } from '@src/dataStruct/zalo/body';
 import QueryDB_GetZaloOaTokenWithFk from '../../queryDB/GetZaloOaTokenWithFk';
 import { verifyRefreshToken } from '@src/token';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_GetZaloOaTokenWithFk {
     private _mssql_server = mssql_server;
@@ -21,7 +22,8 @@ class Handle_GetZaloOaTokenWithFk {
             message: 'Bắt đầu Handle_GetZaloOaTokenWithFk-setup !',
         };
 
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

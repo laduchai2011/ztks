@@ -6,6 +6,7 @@ import { ZaloOaField, PagedZaloOaField } from '@src/dataStruct/zalo';
 import { ZaloOaListWith2FkBodyField } from '@src/dataStruct/zalo/body';
 import QueryDB_GetZaloOaListWith2Fk from '../../queryDB/GetZaloOaListWith2Fk';
 import { accountType_enum, accountType_type } from '@src/dataStruct/account';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_GetZaloOaListWith2Fk {
     private _mssql_server = mssql_server;
@@ -20,7 +21,8 @@ class Handle_GetZaloOaListWith2Fk {
             message: 'Bắt đầu Handle_GetZaloOaListWith2Fk (checkRole) !',
         };
 
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

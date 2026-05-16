@@ -5,6 +5,7 @@ import { ZaloOaField } from '@src/dataStruct/zalo';
 import { EditZaloOaBodyField } from '@src/dataStruct/zalo/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_EditZaloOa from '../../mutateDB/EditZaloOa';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_EditZaloOa {
     private _mssql_server = mssql_server;
@@ -20,7 +21,8 @@ class Handle_EditZaloOa {
         };
 
         const editZaloOaBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

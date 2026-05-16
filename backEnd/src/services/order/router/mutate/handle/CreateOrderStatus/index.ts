@@ -6,6 +6,7 @@ import { OrderStatusField } from '@src/dataStruct/order';
 import { CreateOrderStatusBodyField } from '@src/dataStruct/order/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateOrderStatus from '../../mutateDB/CreateOrderStatus';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_CreateOrderStatus {
     private _mssql_server = mssql_server;
@@ -27,7 +28,8 @@ class Handle_CreateOrderStatus {
         };
 
         const createOrderStatusBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

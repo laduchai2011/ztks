@@ -7,6 +7,7 @@ import { ZaloOaField } from '@src/dataStruct/zalo';
 import { IsMyOaBodyField } from '@src/dataStruct/zalo/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateChatSession from '../../mutateDB/CreateChatSession';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_CreateChatSession {
     private _mssql_server = mssql_server;
@@ -26,7 +27,8 @@ class Handle_CreateChatSession {
         };
 
         const chatSessionBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

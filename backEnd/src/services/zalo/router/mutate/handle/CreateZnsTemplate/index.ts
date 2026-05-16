@@ -5,6 +5,7 @@ import { ZnsTemplateField } from '@src/dataStruct/zalo';
 import { CreateZnsTemplateBodyField } from '@src/dataStruct/zalo/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateZnsTemplate from '../../mutateDB/CreateZnsTemplate';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_CreateZnsTemplate {
     private _mssql_server = mssql_server;
@@ -20,7 +21,8 @@ class Handle_CreateZnsTemplate {
         };
 
         const createZnsTemplateBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

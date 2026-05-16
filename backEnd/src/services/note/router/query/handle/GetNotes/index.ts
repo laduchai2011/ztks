@@ -5,6 +5,7 @@ import { PagedNoteField, NoteField } from '@src/dataStruct/note';
 import { GetNotesBodyField } from '@src/dataStruct/note/body';
 import QueryDB_GetNotes from '../../queryDB/GetNotes';
 import { verifyRefreshToken } from '@src/token';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_GetNotes {
     private _mssql_server = mssql_server;
@@ -24,7 +25,8 @@ class Handle_GetNotes {
         };
 
         const getNotesBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

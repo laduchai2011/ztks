@@ -30,8 +30,8 @@ import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 import { MessageSchemaType, MessageZodSchema } from '@src/schema/message';
 import { getDbMonggo } from '@src/connect/mongo';
 import dotenv from 'dotenv';
-
 dotenv.config();
+import { getRefreshToken } from '@src/device/getDevice';
 
 const isProduct = process.env.NODE_ENV === 'production';
 const dev_prefix = isProduct ? '' : 'dev';
@@ -54,8 +54,8 @@ class Handle_VideoMessage {
         };
 
         const videoMessageBody: VideoMessageBodyField = req.body;
-
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

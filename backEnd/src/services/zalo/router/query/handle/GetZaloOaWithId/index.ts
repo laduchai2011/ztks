@@ -8,6 +8,7 @@ import QueryDB_GetZaloOaWithId from '../../queryDB/GetZaloOaWithId';
 import { verifyRefreshToken } from '@src/token';
 import { accountType_enum, accountType_type } from '@src/dataStruct/account';
 import { prefix_cache_zaloOa } from '@src/const/redisKey/zalo';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_GetZaloOaWithId {
     private _mssql_server = mssql_server;
@@ -26,7 +27,8 @@ class Handle_GetZaloOaWithId {
             message: 'Bắt đầu (Handle_GetZaloOaWithId-checkRole) !',
         };
 
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

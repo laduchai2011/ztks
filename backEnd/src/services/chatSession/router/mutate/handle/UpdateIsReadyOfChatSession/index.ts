@@ -5,6 +5,7 @@ import { ChatSessionField } from '@src/dataStruct/chatSession';
 import { UpdateIsReadyOfChatSessionBodyField } from '@src/dataStruct/chatSession/body';
 import MutateDB_UpdateIsReadyOfChatSession from '../../mutateDB/UpdateIsReadyOfChatSession';
 import { verifyRefreshToken } from '@src/token';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_UpdateIsReadyOfChatSession {
     private _mssql_server = mssql_server;
@@ -24,7 +25,8 @@ class Handle_UpdateIsReadyOfChatSession {
         };
 
         const updateIsReadyOfChatSessionBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

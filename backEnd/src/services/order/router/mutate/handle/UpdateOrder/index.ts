@@ -6,6 +6,7 @@ import MutateDB_UpdateOrder from '../../mutateDB/UpdateOrder';
 import { verifyRefreshToken } from '@src/token';
 import { OrderField } from '@src/dataStruct/order';
 import { UpdateOrderBodyField } from '@src/dataStruct/order/body';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_UpdateOrder {
     private _mssql_server = mssql_server;
@@ -27,7 +28,8 @@ class Handle_UpdateOrder {
         };
 
         const updateOrderBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

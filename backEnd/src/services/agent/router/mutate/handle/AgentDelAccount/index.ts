@@ -5,6 +5,7 @@ import { AgentField } from '@src/dataStruct/agent';
 import { AgentDelAccountBodyField } from '@src/dataStruct/agent/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_AgentDelAccount from '../../mutateDB/AgentDelAccount';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_AgentDelAccount {
     private _mssql_server = mssql_server;
@@ -24,7 +25,8 @@ class Handle_AgentDelAccount {
         };
 
         const agentDelAccountBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

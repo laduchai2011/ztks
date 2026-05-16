@@ -5,6 +5,7 @@ import { WalletField } from '@src/dataStruct/wallet';
 import { CreateWalletBodyField } from '@src/dataStruct/wallet/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateWallet from '../../mutateDB/CreateWallet';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_CreateWallet {
     private _mssql_server = mssql_server;
@@ -20,7 +21,8 @@ class Handle_CreateWallet {
         };
 
         const createWalletBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

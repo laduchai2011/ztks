@@ -5,6 +5,7 @@ import { RequireTakeMoneyField } from '@src/dataStruct/wallet';
 import { MemberZtksConfirmTakeMoneyBodyField } from '@src/dataStruct/wallet/body';
 import MutateDB_MemberZtksConfirmTakeMoney from '../../mutateDB/MemberZtksConfirmTakeMoney';
 
+// không lấy id từ cookie, cần chú ý xem xét lại
 class Handle_MemberZtksConfirmTakeMoney {
     private _mssql_server = mssql_server;
 

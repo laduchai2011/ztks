@@ -5,6 +5,7 @@ import { WalletField } from '@src/dataStruct/wallet';
 import { GetMyWalletWithTypeBodyField } from '@src/dataStruct/wallet/body';
 import QueryDB_GetMyWalletWithType from '../../queryDB/GetMyWalletWithType';
 import { verifyRefreshToken } from '@src/token';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_GetMyWalletWithType {
     private _mssql_server = mssql_server;
@@ -18,7 +19,8 @@ class Handle_GetMyWalletWithType {
         };
 
         const getMyWalletWithTypeBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

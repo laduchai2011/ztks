@@ -5,6 +5,7 @@ import { BankField } from '@src/dataStruct/bank';
 import { GetAllBanksBodyField } from '@src/dataStruct/bank/body';
 import QueryDB_GetAllBanks from '../../queryDB/GetAllBanks';
 import { verifyRefreshToken } from '@src/token';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_GetAllBanks {
     private _mssql_server = mssql_server;
@@ -17,7 +18,8 @@ class Handle_GetAllBanks {
         };
 
         const getAllBanksBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

@@ -1,10 +1,10 @@
 import { mssql_server } from '@src/connect';
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
 import { RequireTakeMoneyField, PagedRequireTakeMoneyField } from '@src/dataStruct/wallet';
 import { MemberZtksGetRequiresTakeMoneyBodyField } from '@src/dataStruct/wallet/body';
 import QueryDB_MemberZtksGetRequiresTakeMoney from '../../queryDB/MemberZtksGetRequiresTakeMoney';
-import { verifyRefreshToken } from '@src/token';
+// import { verifyRefreshToken } from '@src/token';
 
 class Handle_MemberZtksGetRequiresTakeMoney {
     private _mssql_server = mssql_server;

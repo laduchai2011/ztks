@@ -5,6 +5,7 @@ import { AgentField, PagedAgentField } from '@src/dataStruct/agent';
 import { GetAgentsBodyField } from '@src/dataStruct/agent/body';
 import QueryDB_GetMembers from '../../queryDB/GetAgents';
 import { verifyRefreshToken } from '@src/token';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_GetAgents {
     private _mssql_server = mssql_server;
@@ -20,7 +21,8 @@ class Handle_GetAgents {
         };
 
         const getAgentsBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

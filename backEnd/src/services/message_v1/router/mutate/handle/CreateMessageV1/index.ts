@@ -18,6 +18,7 @@ import QueryDB_GetZaloAppWithAccountId from '../../queryDB/GetZaloAppWithAccount
 import QueryDB_GetZaloOaWithId from '../../queryDB/GetZaloOaWithId';
 import QueryDB_GetAgentWithAgentAccountId from '../../queryDB/GetAgentWithAgentAccountId';
 import { getMessageAmountInDay } from '../../queryMongo/GetMessageAmountInDay';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_CreateMessageV1 {
     private _mssql_server = mssql_server;
@@ -31,10 +32,11 @@ class Handle_CreateMessageV1 {
     setup = (req: Request<Record<string, never>, unknown, any>, res: Response, next: NextFunction) => {
         const myResponse: MyResponse<ResultSendToZaloField> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_GetChatRoomRoleWithCridAaid-setup)',
+            message: 'Bắt đầu (Handle_CreateMessageV1-setup)',
         };
 
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);
@@ -75,7 +77,7 @@ class Handle_CreateMessageV1 {
 
         const myResponse: MyResponse<ZaloAppField> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_GetZaloAppWithAccountId-getZaloApp) !',
+            message: 'Bắt đầu (Handle_CreateMessageV1-getZaloApp) !',
         };
 
         const keyRedis = `${prefix_cache_zaloApp.key.with_accountId}_${accountId}_${role}`;
@@ -143,7 +145,7 @@ class Handle_CreateMessageV1 {
 
         const myResponse: MyResponse<ZaloOaField> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_GetZaloAppWithAccountId-getZaloOa) !',
+            message: 'Bắt đầu (Handle_CreateMessageV1-getZaloOa) !',
         };
 
         const keyRedis = `${prefix_cache_zaloOa.key.with_id}_${id}_${role}`;
@@ -204,7 +206,7 @@ class Handle_CreateMessageV1 {
 
         const myResponse: MyResponse<AgentField> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_GetZaloAppWithAccountId-getAgent) !',
+            message: 'Bắt đầu (Handle_CreateMessageV1-getAgent) !',
         };
 
         const getAgentWithAgentAccountIdBody: GetAgentWithAgentAccountIdBodyField = {

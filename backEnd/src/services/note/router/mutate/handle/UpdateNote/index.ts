@@ -5,6 +5,7 @@ import MutateDB_UpdateNote from '../../mutateDB/UpdateNote';
 import { verifyRefreshToken } from '@src/token';
 import { NoteField } from '@src/dataStruct/note';
 import { UpdateNoteBodyField } from '@src/dataStruct/note/body';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_UpdateNote {
     private _mssql_server = mssql_server;
@@ -24,7 +25,8 @@ class Handle_UpdateNote {
         };
 
         const updateNoteBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

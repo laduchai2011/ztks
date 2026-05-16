@@ -5,6 +5,7 @@ import { RequireTakeMoneyField } from '@src/dataStruct/wallet';
 import { CreateRequireTakeMoneyBodyField } from '@src/dataStruct/wallet/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateRequireTakeMoney from '../../mutateDB/CreateRequireTakeMoney';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_CreateRequireTakeMoney {
     private _mssql_server = mssql_server;
@@ -20,7 +21,8 @@ class Handle_CreateRequireTakeMoney {
         };
 
         const createRequireTakeMoneyBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

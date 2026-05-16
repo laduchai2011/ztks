@@ -5,6 +5,7 @@ import { AgentField } from '@src/dataStruct/agent';
 import { AgentAddAccountBodyField } from '@src/dataStruct/agent/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_AgentAddAccount from '../../mutateDB/AgentAddAccount';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_AgentAddAccount {
     private _mssql_server = mssql_server;
@@ -20,7 +21,8 @@ class Handle_AgentAddAccount {
         };
 
         const agentAddAccountBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);

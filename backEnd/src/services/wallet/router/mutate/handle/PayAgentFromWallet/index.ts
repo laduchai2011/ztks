@@ -5,6 +5,7 @@ import { WalletField } from '@src/dataStruct/wallet';
 import { PayAgentFromWalletBodyField } from '@src/dataStruct/wallet/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_PayAgentFromWallet from '../../mutateDB/PayAgentFromWallet';
+import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_PayAgentFromWallet {
     private _mssql_server = mssql_server;
@@ -20,7 +21,8 @@ class Handle_PayAgentFromWallet {
         };
 
         const payAgentFromWalletBody = req.body;
-        const { refreshToken } = req.cookies;
+        // const { refreshToken } = req.cookies;
+        const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
             const verify_refreshToken = verifyRefreshToken(refreshToken);
