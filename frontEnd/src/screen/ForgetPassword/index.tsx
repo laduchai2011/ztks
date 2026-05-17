@@ -3,7 +3,7 @@ import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
-import { SIGNIN, ACCOUNT, SIGNUP, FORGET_PASSWORD, PHONE_NUMBER, SEND } from '@src/const/text';
+import { SIGNIN, ACCOUNT, SIGNUP, FORGET_PASSWORD, PHONE_NUMBER, SEND, NEW_PASSWORD } from '@src/const/text';
 import { route_enum } from '@src/router/type';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 // import { AccountField } from '@src/dataStruct/account';
@@ -155,7 +155,7 @@ const ForgetPassword = () => {
                         />
                     </div>
                     <div className={style.aInput}>
-                        <div>{PHONE_NUMBER}</div>
+                        <div>{NEW_PASSWORD}</div>
                         <input
                             value={newPassword}
                             onChange={(e) => handleChangeNewPassword(e)}

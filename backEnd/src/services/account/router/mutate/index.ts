@@ -43,7 +43,7 @@ router_mutate_account.post(
     '/signup',
     handle_signup.isAccountCheckUserName,
     handle_signup.isAccountCheckPhone,
-    // authOtpFirebaseMiddleware,
+    authOtpFirebaseMiddleware,
     handle_signup.main
 );
 
