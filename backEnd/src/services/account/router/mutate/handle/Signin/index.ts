@@ -76,6 +76,8 @@ class Handle_Signin {
 
                     switch (device) {
                         case DeviceEnum.WEB: {
+                            console.log('login with: ', DeviceEnum.WEB);
+
                             const keyServiceRedisWeb = `web-token-storeAuthToken-${id}_${dev_prefix}`;
 
                             const myJwtPayload: MyJwtPayload = {
@@ -169,6 +171,8 @@ class Handle_Signin {
                             return;
                         }
                         case DeviceEnum.MOBILE: {
+                            console.log('login with: ', DeviceEnum.MOBILE);
+
                             const keyServiceRedisMobile = `mobile-token-storeAuthToken-${id}_${dev_prefix}`;
 
                             const myJwtPayload: MyJwtPayload = {
@@ -226,7 +230,12 @@ class Handle_Signin {
                                 timeExpireat
                             );
 
-                            res.setHeader('x-account-id', id);
+                            res.setHeader(
+                                'Access-Control-Expose-Headers',
+                                'x-account-id,x-access-token,x-refresh-token,x-socket-token'
+                            );
+
+                            res.setHeader('x-account-id', id.toString());
                             res.setHeader('x-access-token', accessToken);
                             res.setHeader('x-refresh-token', refreshToken);
                             res.setHeader('x-socket-token', socketToken);

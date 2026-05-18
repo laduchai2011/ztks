@@ -35,6 +35,7 @@ app.use(
         origin: originArray,
         methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
         credentials: true,
+        exposedHeaders: ['x-account-id', 'x-access-token', 'x-refresh-token', 'x-socket-token'],
     })
 );
 
