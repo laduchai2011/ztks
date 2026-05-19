@@ -51,7 +51,7 @@ const OneAccount: FC<{ index: number; data: AccountField }> = ({ index, data }) 
                     dispatch(
                         setData_toastMessage({
                             type: messageType_enum.SUCCESS,
-                            message: 'Thay đổi thanh công !',
+                            message: 'Thay đổi thành công !',
                         })
                     );
                 } else {
