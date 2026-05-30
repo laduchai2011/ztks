@@ -5,6 +5,8 @@ import { SIGNIN, ACCOUNT, PASSWORD, SIGNUP, FORGET_PASSWORD } from '@src/const/t
 import { route_enum } from '@src/router/type';
 import { useSigninMutation } from '@src/redux/query/accountRTK';
 import { AccountField } from '@src/dataStruct/account';
+import axiosInstance from '@src/api/axiosInstance';
+import { MyResponse } from '@src/dataStruct/response';
 
 const Signin = () => {
     const navigate = useNavigate();
@@ -49,11 +51,30 @@ const Signin = () => {
                 console.log('signin', resData);
                 if (resData?.isSuccess) {
                     setNote('');
-                    // setTimeout(() => {
-                    //     navigate(route_enum.HOME);
-                    //     window.location.reload();
-                    // }, 500);
-                    navigate(route_enum.HOME);
+                    setTimeout(() => {
+                        const fetchCheckSignin = async () => {
+                            try {
+                                const response = await axiosInstance.get<MyResponse<number>>(
+                                    `/service_account/query/isSignin`
+                                );
+                                const resData = response.data;
+                                if (resData.isSuccess) {
+                                    if (resData.data) {
+                                        sessionStorage.setItem('myId', `${resData.data}`);
+                                    } else {
+                                        sessionStorage.removeItem('myId');
+                                    }
+                                }
+                            } catch (error) {
+                                console.error(error);
+                            } finally {
+                                window.location.reload();
+                            }
+                        };
+
+                        fetchCheckSignin();
+                    }, 1500);
+                    // navigate(route_enum.HOME);
                 } else {
                     setNote('Đăng nhập thất bại');
                 }

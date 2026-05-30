@@ -1,0 +1,24 @@
+services:
+  asterisk:
+    image: andrius/asterisk:latest
+    container_name: asterisk_container
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    ports:
+      - "5060:5060/udp"
+      - "8088:8088"
+      - "8089:8089"
+      - "10000-20000:10000-20000/udp"
+
+    volumes:
+      - ./config:/etc/asterisk
+
+    network_mode: bridge
+
+    environment:
+      - TZ=Asia/Ho_Chi_Minh

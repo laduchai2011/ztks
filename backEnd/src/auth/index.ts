@@ -323,6 +323,8 @@ async function authenticationMobile(req: Request, res: Response, next: NextFunct
 
                     res.setHeader('x-account-id', id);
                     res.setHeader('x-access-token', new_accessToken);
+                    res.setHeader('x-refresh-token', refreshToken);
+                    res.setHeader('x-isRefresh', '1');
 
                     const isSet = await serviceRedis.setData<StoreAuthToken>(
                         keyServiceRedis,

@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { SEE_MORE } from '@src/const/text';
 import { ZaloOaField, ZnsTemplateField } from '@src/dataStruct/zalo';
-import { AccountField } from '@src/dataStruct/account';
+import { AccountInformationField } from '@src/dataStruct/account';
 import {
     setData_toastMessage,
     set_isLoading,
@@ -23,7 +23,10 @@ import { route_enum } from '@src/router/type';
 const ZnsList = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
+    // const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
+    const accountInformation: AccountInformationField | undefined = useSelector(
+        (state: RootState) => state.AppSlice.accountInformation
+    );
     const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.ZnsSlice.selectedOa);
     const newZnsTemplate: ZnsTemplateField | undefined = useSelector(
         (state: RootState) => state.ZnsSlice.newZnsTemplate
@@ -44,7 +47,7 @@ const ZnsList = () => {
     }, [newZnsTemplate, dispatch]);
 
     useEffect(() => {
-        if (!account) return;
+        if (!accountInformation) return;
         if (!selectedOa) return;
 
         dispatch(set_isLoading(true));
@@ -53,7 +56,7 @@ const ZnsList = () => {
             size: size,
             offset: 0,
             zaloOaId: selectedOa.id,
-            accountId: account.id,
+            accountId: accountInformation.addedById || -1,
         })
             .then((res) => {
                 const resData = res.data;
@@ -72,10 +75,10 @@ const ZnsList = () => {
             .finally(() => {
                 dispatch(set_isLoading(false));
             });
-    }, [account, selectedOa, dispatch, getZnsTemplates]);
+    }, [accountInformation, selectedOa, dispatch, getZnsTemplates]);
 
     const handleSeeMore = () => {
-        if (!account) return;
+        if (!accountInformation) return;
         if (!selectedOa) return;
 
         dispatch(set_isLoading(true));
@@ -84,7 +87,7 @@ const ZnsList = () => {
             size: size,
             offset: newZnsTemplates.length,
             zaloOaId: selectedOa.id,
-            accountId: account.id,
+            accountId: accountInformation.addedById || -1,
         })
             .then((res) => {
                 const resData = res.data;
