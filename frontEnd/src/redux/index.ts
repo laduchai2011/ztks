@@ -23,7 +23,7 @@ import PostReducer from '@src/redux/slice/Post';
 import RegisterPostReducer from '@src/redux/slice/RegisterPost';
 import LeaveReducer from '@src/redux/slice/Leave';
 import { accountRTK } from './query/accountRTK';
-// import { myCustomerRTK } from './query/myCustomerRTK';
+import { callRTK } from './query/callRTK';
 import { messageV1RTK } from './query/messageV1RTK';
 import { zaloRTK } from './query/zaloRTK';
 import { chatSessionRTK } from './query/chatSessionRTK';
@@ -63,7 +63,7 @@ export const store = configureStore({
         RegisterPostSlice: RegisterPostReducer,
         LeaveSlice: LeaveReducer,
         [accountRTK.reducerPath]: accountRTK.reducer,
-        // [myCustomerRTK.reducerPath]: myCustomerRTK.reducer,
+        [callRTK.reducerPath]: callRTK.reducer,
         [messageV1RTK.reducerPath]: messageV1RTK.reducer,
         [zaloRTK.reducerPath]: zaloRTK.reducer,
         [chatSessionRTK.reducerPath]: chatSessionRTK.reducer,
@@ -79,7 +79,7 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
             accountRTK.middleware,
-            // myCustomerRTK.middleware,
+            callRTK.middleware,
             messageV1RTK.middleware,
             zaloRTK.middleware,
             chatSessionRTK.middleware,

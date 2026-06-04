@@ -79,6 +79,11 @@ app.use(`${apiString}/hello`, (req, res) => {
         hookData();
     }
 
+    if (services.includes('call')) {
+        const service_call = (await import('./services/call')).default;
+        app.use(`${prefix}/service_call`, service_call);
+    }
+
     if (services.includes('note')) {
         const service_note = (await import('@src/services/note')).default;
         app.use(`${prefix}/service_note`, service_note);

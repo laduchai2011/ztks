@@ -34,3 +34,9 @@ export interface InboundBodyField {
     zaloApp: ZaloAppField;
     accountId: number;
 }
+
+export interface GetMccInfoBodyField {
+    zaloOa: ZaloOaField;
+    zaloApp: ZaloAppField;
+    accountId: number;
+}
