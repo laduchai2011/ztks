@@ -15,4 +15,7 @@ export interface state_props {
     changeChatRoomMasterDialog: {
         isShow: boolean;
     };
+    callDialog: {
+        isShow: boolean;
+    };
 }

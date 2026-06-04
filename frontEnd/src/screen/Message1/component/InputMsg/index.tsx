@@ -11,6 +11,7 @@ import { LuNotebookPen } from 'react-icons/lu';
 import { MdOutlineOndemandVideo, MdAttachFile } from 'react-icons/md';
 import { PiSmileyStickerLight } from 'react-icons/pi';
 import { TbTransfer } from 'react-icons/tb';
+import { IoIosCall } from 'react-icons/io';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import {
     useCreateMessageV1Mutation,
@@ -27,6 +28,7 @@ import {
     setData_toastMessage,
     set_isLoading,
     setIsShow_changeChatRoomMasterDialog,
+    setIsShow_callDialog,
 } from '@src/redux/slice/MessageV1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { uploadAImageToZalo, uploadVideo } from '../../handle';
@@ -347,6 +349,10 @@ const InputMsg = () => {
         }
     };
 
+    const handleOpenCall = () => {
+        dispatch(setIsShow_callDialog(true));
+    };
+
     const handleGoToOrder = () => {
         navigate(route_enum.ORDER, {
             state: { chatRoomId: id || '' },
@@ -390,6 +396,7 @@ const InputMsg = () => {
                     />
                     <MdAttachFile size={20} />
                     <PiSmileyStickerLight size={20} />
+                    <IoIosCall onClick={() => handleOpenCall()} size={20} />
                 </div>
                 <div className={style.icons2}>
                     <FaShoppingCart onClick={() => handleGoToOrder()} size={20} color="red" />

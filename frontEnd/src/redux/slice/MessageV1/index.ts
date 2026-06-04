@@ -17,6 +17,9 @@ const initialState: state_props = {
     changeChatRoomMasterDialog: {
         isShow: false,
     },
+    callDialog: {
+        isShow: false,
+    },
 };
 
 const MessageV1Slice = createSlice({
@@ -41,6 +44,9 @@ const MessageV1Slice = createSlice({
         setIsShow_changeChatRoomMasterDialog: (state, action: PayloadAction<boolean>) => {
             state.changeChatRoomMasterDialog.isShow = action.payload;
         },
+        setIsShow_callDialog: (state, action: PayloadAction<boolean>) => {
+            state.callDialog.isShow = action.payload;
+        },
     },
 });
 
@@ -51,5 +57,6 @@ export const {
     set_zaloOa,
     set_repliedMessage,
     setIsShow_changeChatRoomMasterDialog,
+    setIsShow_callDialog,
 } = MessageV1Slice.actions;
 export default MessageV1Slice.reducer;
