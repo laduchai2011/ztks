@@ -15,14 +15,14 @@ services:
       - network_zalo_5kaquarium
     volumes:
       - ./nginx:/etc/nginx/conf.d
-      - ./certbot/www:/var/www/certbot
-      - ./certbot/conf:/etc/letsencrypt
+      - /root/certbot/www:/var/www/certbot
+      - /root/certbot/conf:/etc/letsencrypt
 
   certbot:
     image: certbot/certbot
     volumes:
-      - ./certbot/www:/var/www/certbot
-      - ./certbot/conf:/etc/letsencrypt
+      - /root/certbot/www:/var/www/certbot
+      - /root/certbot/conf:/etc/letsencrypt
 
 networks:
   network_zalo_5kaquarium:

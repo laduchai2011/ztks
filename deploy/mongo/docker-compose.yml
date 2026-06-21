@@ -16,7 +16,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: admin123
       MONGO_INITDB_DATABASE: ztks
     volumes:
-      - ./mongo_data:/data/db
+      # - ./mongo_data:/data/db
+      - /root/mongo_data:/data/db
     networks:
       - network_ztks
 
@@ -24,5 +25,5 @@ networks:
   network_ztks:
     external: true
 
-volumes:
-  mongo_data:
+# volumes:
+#   mongo_data:

@@ -16,7 +16,8 @@ services:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: ztkzstore
     volumes:
-      - ./minio_data:/data
+      # - ./minio_data:/data
+      - /root/minio_data:/data
 
     command: server /data --console-address ":9001" # 👈 THÊM DÒNG NÀY
 

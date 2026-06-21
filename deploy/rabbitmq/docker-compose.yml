@@ -23,12 +23,12 @@ services:
       RABBITMQ_ERLANG_COOKIE: ZTKS_SUPERSECRETCOOKIE123456
 
     volumes:
-      # - rabbitmq_data:/var/lib/rabbitmq
-      - ./rabbitmq_data:/var/lib/rabbitmq
+      - /root/rabbitmq_data:/var/lib/rabbitmq
+      # - ./rabbitmq_data:/var/lib/rabbitmq
 
 networks:
   network_ztks:
     external: true
 
-volumes:
-  rabbitmq_data:
+# volumes:
+#   rabbitmq_data:
