@@ -11,7 +11,7 @@ services:
         max-file: "3"
 
     networks:
-      - network_zalo_5kaquarium
+      - network_ztks
 
     ports:
       - "5672:5672"
@@ -20,14 +20,14 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin123
-      RABBITMQ_ERLANG_COOKIE: ZALO_5K_AQUARIUMSUPERSECRETCOOKIE123456
+      RABBITMQ_ERLANG_COOKIE: ZTKS_SUPERSECRETCOOKIE123456
 
     volumes:
       # - rabbitmq_data:/var/lib/rabbitmq
       - ./rabbitmq_data:/var/lib/rabbitmq
 
 networks:
-  network_zalo_5kaquarium:
+  network_ztks:
     external: true
 
 volumes:

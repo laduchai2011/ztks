@@ -13,24 +13,23 @@ services:
 
     command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
 
-    volumes:
-      # dùng config redis.conf trên host
-      # - /etc/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
-      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+    # volumes:
+    #   # dùng config redis.conf trên host
+    #   # - /etc/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    #   - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
 
-      # nơi lưu dump.rdb + appendonly.aof
-      - ./redis_data:/data
+    #   # nơi lưu dump.rdb + appendonly.aof
+    #   - ./redis_data:/data
 
     ports:
       # chỉ expose nếu cần debug
       - "6379:6379"
 
     networks:
-      - network_zalo_5kaquarium
-
+      - network_ztks
 networks:
-  network_zalo_5kaquarium:
+  network_ztks:
     external: true
 
-volumes:
-  redis_data:
+# volumes:
+#   redis_data:

@@ -21,10 +21,10 @@ services:
     command: server /data --console-address ":9001" # 👈 THÊM DÒNG NÀY
 
     networks:
-      - network_zalo_5kaquarium
+      - network_ztks
 
 networks:
-  network_zalo_5kaquarium:
+  network_ztks:
     external: true
 
 volumes:

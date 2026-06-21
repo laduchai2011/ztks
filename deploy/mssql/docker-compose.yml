@@ -19,7 +19,7 @@ services:
       - "1433:1433"
 
     networks:
-      - network_zalo_5kaquarium
+      - network_ztks
 
     volumes:
       # - /root/sql_data:/var/opt/mssql
@@ -32,7 +32,7 @@ services:
           memory: 2G
 
 networks:
-  network_zalo_5kaquarium:
+  network_ztks:
     external: true
 
 volumes:

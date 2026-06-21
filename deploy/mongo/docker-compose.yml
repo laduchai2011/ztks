@@ -14,14 +14,14 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin123
-      MONGO_INITDB_DATABASE: zalo5k
+      MONGO_INITDB_DATABASE: ztks
     volumes:
       - ./mongo_data:/data/db
     networks:
-      - network_zalo_5kaquarium
+      - network_ztks
 
 networks:
-  network_zalo_5kaquarium:
+  network_ztks:
     external: true
 
 volumes:

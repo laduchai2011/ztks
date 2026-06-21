@@ -73,16 +73,12 @@ class Handle_GetMccInfo {
             token = await refreshAccessToken(zaloApp, zaloOa, 10);
         }
 
-        const response = await axios.get(
-            API_GET_MCC_INFOR,
-            {},
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    access_token: token,
-                },
-            }
-        );
+        const response = await axios.get(API_GET_MCC_INFOR, {
+            headers: {
+                'Content-Type': 'application/json',
+                access_token: token,
+            },
+        });
 
         console.log(2222222222222, response);
     };
