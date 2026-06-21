@@ -17,7 +17,7 @@ services:
       MINIO_ROOT_PASSWORD: ztkzstore
     volumes:
       # - ./minio_data:/data
-      - /root/minio_data:/data
+      - /var/docker_mount/minio_data:/data
 
     command: server /data --console-address ":9001" # 👈 THÊM DÒNG NÀY
 
@@ -28,5 +28,5 @@ networks:
   network_ztks:
     external: true
 
-volumes:
-  minio_data:
+# volumes:
+#   minio_data:

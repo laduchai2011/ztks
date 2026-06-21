@@ -2,7 +2,7 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq_container
-    hostname: mssql_container
+    hostname: rabbitmq_container
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -23,7 +23,7 @@ services:
       RABBITMQ_ERLANG_COOKIE: ZTKS_SUPERSECRETCOOKIE123456
 
     volumes:
-      - /root/rabbitmq_data:/var/lib/rabbitmq
+      - /var/docker_mount/rabbitmq_data:/var/lib/rabbitmq
       # - ./rabbitmq_data:/var/lib/rabbitmq
 
 networks:

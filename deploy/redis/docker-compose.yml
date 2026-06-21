@@ -16,10 +16,10 @@ services:
     volumes:
       # dùng config redis.conf trên host
       # - /etc/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
-      - /root/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
 
       # nơi lưu dump.rdb + appendonly.aof
-      - /root/redis_data:/data
+      - /var/docker_mount/redis_data:/data
 
     ports:
       # chỉ expose nếu cần debug

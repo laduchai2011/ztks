@@ -17,7 +17,7 @@ services:
       MONGO_INITDB_DATABASE: ztks
     volumes:
       # - ./mongo_data:/data/db
-      - /root/mongo_data:/data/db
+      - /var/docker_mount/mongo_data:/data/db
     networks:
       - network_ztks
 

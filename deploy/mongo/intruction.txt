@@ -1,2 +1,7 @@
 docker compose up -d
 docker compose down -v
+docker logs -f mongo_container
+
+- Cấp quyền cho thư mục:
+    sudo chown -R 10001:0 /var/docker_mount/mongo_data
+    sudo chmod -R 770 /var/docker_mount/mongo_data

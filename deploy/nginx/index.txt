@@ -3,7 +3,7 @@ docker compose up -d nginx
 
 2 - cấp SSL bằng Certbot container
 docker compose run --rm certbot certonly --webroot --webroot-path=/var/www/certbot -d yourdomain.com --email youremail@gmail.com --agree-tos --no-eff-email
-vd: docker compose run --rm certbot certonly --webroot --webroot-path=/var/www/certbot -d zalowebhookdev.5kaquarium.com --email laduchai20111995@gmail.com --agree-tos --no-eff-email
+vd: docker compose run --rm certbot certonly --webroot --webroot-path=/var/www/certbot -d zalowebhookdev.taokosao.com --email laduchai20111995@gmail.com --agree-tos --no-eff-email
 
 3 - Chạy serverConf 
 docker compose restart nginx

@@ -22,7 +22,7 @@ services:
       - network_ztks
 
     volumes:
-      - /root/sql_data:/var/opt/mssql
+      - /var/docker_mount/sql_data:/var/opt/mssql
       # - ./sql_data:/var/opt/mssql
 
     deploy:
