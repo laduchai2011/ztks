@@ -1,5 +1,5 @@
 import sql from 'mssql';
-import { AccountInformationField } from '@src/dataStruct/account';
+import { AccountInformationField, accountType_enum } from '@src/dataStruct/account';
 import { CreateAccountInformationBodyField } from '@src/dataStruct/account/body';
 
 class MutateDB_CreateAccountInformation {
@@ -19,8 +19,14 @@ class MutateDB_CreateAccountInformation {
     async run(): Promise<sql.IProcedureResult<AccountInformationField> | undefined> {
         if (this._connectionPool !== undefined && this._createAccountInformationBody !== undefined) {
             try {
+                const addedById =
+                    this._createAccountInformationBody.accountType === accountType_enum.ADMIN
+                        ? this._createAccountInformationBody.accountId
+                        : null;
+
                 const result = await this._connectionPool
                     .request()
+                    .input('addedById', sql.Int, addedById ?? null)
                     .input('accountType', sql.NVarChar(255), this._createAccountInformationBody.accountType)
                     .input('accountId', sql.Int, this._createAccountInformationBody.accountId)
                     .execute('CreateAccountInformation');

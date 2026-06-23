@@ -10,6 +10,7 @@ import ReplyMember from './component/ReplyMember';
 import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import ChangeChatRoomMasterDialog from './component/ChangeChatRoomMasterDialog';
+import CallDialog from './component/CallDialog';
 import { useGetChatRoomsWithIdQuery } from '@src/redux/query/chatRoomRTK';
 import { useGetZaloOaWithIdQuery } from '@src/redux/query/zaloRTK';
 import {
@@ -151,6 +152,7 @@ const Message1 = () => {
                 <MyToastMessage />
                 <MyLoading />
                 <ChangeChatRoomMasterDialog />
+                <CallDialog />
             </div>
         </div>
     );

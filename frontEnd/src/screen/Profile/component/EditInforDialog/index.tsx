@@ -96,7 +96,7 @@ const EditInforDialog = () => {
 
         try {
             dispatch(set_isLoading(true));
-            let avatarUrl: string = '';
+            const avatarUrl: string = '';
             if (image) {
                 const resData_image = await uploadImage(image, account.id.toString());
                 if (!resData_image) {

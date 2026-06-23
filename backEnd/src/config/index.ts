@@ -14,28 +14,12 @@ const mssql_config: my_interface['mssql']['config'] = isProduct
           password: process.env.MSSQL_SERVER_PASSWORD,
       }
     : {
-          host: '103.249.200.80',
+          host: '103.38.236.182',
           port: 1433,
-          database: 'zalo5kdev',
+          database: 'ztksdev',
           username: 'sa',
           password: '201195laducHai',
       };
-
-// const mssql_change_history_config: my_interface['mssql']['config'] = isProduct
-//     ? {
-//           host: process.env.MSSQL_CHANGE_HISTORY_SERVER_HOST,
-//           port: Number(process.env.MSSQL_CHANGE_HISTORY_SERVER_PORT),
-//           database: process.env.MSSQL_CHANGE_HISTORY_SERVER_DATABASE,
-//           username: process.env.MSSQL_CHANGE_HISTORY_SERVER_USERNAME,
-//           password: process.env.MSSQL_CHANGE_HISTORY_SERVER_PASSWORD,
-//       }
-//     : {
-//           host: '127.0.0.1',
-//           port: 1433,
-//           database: 'zalo5k_change_history',
-//           username: 'sa',
-//           password: '201195laducHai',
-//       };
 
 const redis_config: my_interface['redis']['config'] = isProduct
     ? {
@@ -45,9 +29,9 @@ const redis_config: my_interface['redis']['config'] = isProduct
           password: process.env.REDIS_SERVER_PASSWORD,
       }
     : {
-          host: '103.249.200.80',
+          host: '103.38.236.182',
           port: 6379,
-          username: 'zalo5k',
+          username: 'ztks',
           password: 'hai20111995',
       };
 
@@ -59,7 +43,7 @@ const rabbitmq_config: my_interface['rabbitmq']['config'] = isProduct
           password: process.env.RABBITMQ_SERVER_PASSWORD,
       }
     : {
-          host: '103.249.200.80',
+          host: '103.38.236.182',
           port: 5672,
           username: 'admin',
           password: 'admin123',
@@ -74,11 +58,11 @@ const mongo_config: my_interface['mongo']['config'] = isProduct
           database: process.env.MONGO_SERVER_DATABASE,
       }
     : {
-          host: '103.249.200.80',
+          host: '103.38.236.182',
           port: 27017,
           username: 'admin',
           password: 'admin123',
-          database: 'zalo5kdev',
+          database: 'ztksdev',
       };
 
 const minio_config: my_interface['minio']['config'] = isProduct
@@ -90,10 +74,10 @@ const minio_config: my_interface['minio']['config'] = isProduct
           useSSL: process.env.MINIO_SERVER_USE_SSL === 'true',
       }
     : {
-          endPoint: '103.249.200.80',
+          endPoint: '103.38.236.182',
           port: 9000,
-          accessKey: 'tksstore',
-          secretKey: 'Taokosao2011@',
+          accessKey: 'minioadmin',
+          secretKey: 'ztkzstore',
           useSSL: false,
       };
 

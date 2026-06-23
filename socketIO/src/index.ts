@@ -20,8 +20,8 @@ const prefix = isProduct ? '' : 'dev';
 const httpServer = createServer(); // ❗ Không dùng Express
 
 const originArray: string[] = isProduct
-    ? ['https://web.5kaquarium.com', 'https://chat.5kaquarium.com', 'https://admin.5kaquarium.com']
-    : ['http://zalo5k.local.com:3000', 'http://zalo5k.local.com:3001', 'http://zalo5k.local.com:3002'];
+    ? ['https://wztks.taokosao.com', 'https://ztks.taokosao.com', 'https://mtks.taokosao.com']
+    : ['http://ztks.local.com:3000', 'http://ztks.local.com:3001', 'http://ztks.local.com:3002'];
 const io = new Server(httpServer, {
     cors: {
         origin: originArray,

@@ -62,6 +62,10 @@ GO
 -- ADD CONSTRAINT checkType_balanceFluctuation
 -- CHECK (type IN ('payOrder', 'payAgent', 'takeMoney', 'costTakeMoney5', 'recommend', 'voucher', 'cost1%'));
 
+SELECT *
+FROM sys.tables
+WHERE name = 'wallet'
+
 SELECT * 
 FROM sys.check_constraints 
 WHERE name = 'checkType_wallet';

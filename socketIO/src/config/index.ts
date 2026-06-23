@@ -59,7 +59,7 @@ const rabbitmq_config: my_interface['rabbitmq']['config'] = isProduct
           password: process.env.RABBITMQ_SERVER_PASSWORD,
       }
     : {
-          host: '103.249.200.80',
+          host: '103.38.236.182',
           port: 5672,
           username: 'admin',
           password: 'admin123',

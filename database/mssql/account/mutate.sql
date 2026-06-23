@@ -106,7 +106,8 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE CreateAccountInformation
+ALTER PROCEDURE CreateAccountInformation
+	@addedById INT = NULL,
 	@accountType NVARCHAR(255),
 	@accountId INT
 AS

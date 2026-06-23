@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '@src/redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '@src/redux';
 import {
     PROFILE,
     SIGNOUT,
@@ -22,10 +22,23 @@ import Infor from './component/Infor';
 import EditInforDialog from './component/EditInforDialog';
 import { select_enum, route_enum } from '@src/router/type';
 import { AccountInformationField, accountType_enum } from '@src/dataStruct/account';
+import { setData_toastMessage } from '@src/redux/slice/Profile';
 
 const Profile = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
     const myId = sessionStorage.getItem('myId');
+
+    useEffect(() => {
+        return () => {
+            dispatch(
+                setData_toastMessage({
+                    type: undefined,
+                    message: '',
+                })
+            );
+        };
+    }, [dispatch]);
 
     const accountInformation: AccountInformationField | undefined = useSelector(
         (state: RootState) => state.AppSlice.accountInformation

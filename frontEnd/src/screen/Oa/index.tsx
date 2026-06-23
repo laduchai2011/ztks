@@ -25,12 +25,14 @@ const Oa = () => {
     }, [navigate, myId]);
 
     useEffect(() => {
-        dispatch(
-            setData_toastMessage({
-                type: undefined,
-                message: '',
-            })
-        );
+        return () => {
+            dispatch(
+                setData_toastMessage({
+                    type: undefined,
+                    message: '',
+                })
+            );
+        };
     }, [dispatch]);
 
     return (

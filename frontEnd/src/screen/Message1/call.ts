@@ -2,12 +2,12 @@
 import { UserAgent, Registerer, RegistererState } from 'sip.js';
 
 const userAgent = new UserAgent({
-    uri: UserAgent.makeURI('sip:1001@sip.taokosao.com')!,
+    uri: UserAgent.makeURI('sip:101@sip.taokosao.com')!,
     transportOptions: {
-        server: 'wss://sip.taokosao.com/ws',
+        server: 'wss://sip.taokosao.com:8088/ws',
     },
-    authorizationUsername: '1001',
-    authorizationPassword: '123456',
+    authorizationUsername: '101',
+    authorizationPassword: 'taokosao201195',
 });
 
 const registerer = new Registerer(userAgent);
