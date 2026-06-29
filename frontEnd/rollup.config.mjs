@@ -40,7 +40,7 @@ const getLocalIp = () => {
 };
 
 const PORT = 3000;
-const HOST = getLocalIp();
+const HOST = '0.0.0.0';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -111,7 +111,7 @@ const rollup_dev = isDev && [
                 customResolver,
             }),
             serve({
-                open: true, // Tự động mở trình duyệt
+                open: false, // Tự động mở trình duyệt
                 contentBase: 'dist', // Thư mục chứa file được phục vụ
                 host: HOST,
                 port: PORT, // Cổng chạy server
@@ -233,7 +233,15 @@ let rollup_final;
 switch (process.env.NODE_ENV) {
     case 'development':
         setTimeout(() => {
-            console.log(`🚀 (rollup) Dev server running at: http://${HOST}:${PORT}`);
+            const localIp = getLocalIp();
+
+            console.log(`🚀 Localhost : http://localhost:${PORT}`);
+            console.log(`🚀 127.0.0.1 : http://127.0.0.1:${PORT}`);
+
+            if (localIp) {
+                console.log(`🚀 LAN       : http://${localIp}:${PORT}`);
+            }
+
             console.log(process.env.NODE_ENV !== 'production', process.env.NODE_ENV);
         }, [5000]);
         rollup_final = rollup_dev;

@@ -29,7 +29,7 @@ app.use(apiString, express.urlencoded({ extended: true }));
 
 const originArray: string[] = isProduct
     ? ['https://wztks.taokosao.com', 'https://ztks.taokosao.com', 'https://mtks.taokosao.com']
-    : ['http://ztks.local.com:3000', 'http://ztks.local.com:3001', 'http://ztks.local.com:3002'];
+    : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'];
 app.use(
     cors({
         origin: originArray,

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { AGREE, EXIT, CLOSE } from '@src/const/text';
-import { connectSip } from '../../call';
+import { connectSip, callUid } from '../../call';
 import { setIsShow_callDialog } from '@src/redux/slice/MessageV1';
 import { useLazyGetMccInfoQuery, useRequestConsentMutation, useOutboundMutation } from '@src/redux/query/callRTK';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
@@ -107,6 +107,11 @@ const CallDialog = () => {
         //     });
     };
 
+    const handleCallUid = () => {
+        // callUid('995324785107455488962');
+        callUid('998721866515278588973');
+    };
+
     return (
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
@@ -117,6 +122,7 @@ const CallDialog = () => {
                     <button onClick={() => handleRequestConsent()}>Xin cấp quyền gọi</button>
                     <button onClick={() => handleGetAgent()}>Lấy agent</button>
                     <button onClick={() => handleOutbound()}>Tạo link cuộc gọi</button>
+                    <button onClick={() => handleCallUid()}>CallUid</button>
                 </div>
                 <div className={style.buttonContainer}>
                     <button>{AGREE}</button>

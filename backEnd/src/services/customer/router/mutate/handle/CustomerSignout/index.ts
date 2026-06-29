@@ -15,7 +15,7 @@ if (process.env.NODE_ENV !== 'development') {
 
 const sameSite = process.env.NODE_ENV === 'development' ? 'lax' : 'none';
 // const sameSite = 'none';
-const cookieDomain = isProduct ? '.5kaquarium.com' : 'zalo5k.local.com';
+const cookieDomain = isProduct ? '.taokosao.com' : 'localhost';
 
 class Handle_CustomerSignout {
     async main(req: Request, res: Response) {
