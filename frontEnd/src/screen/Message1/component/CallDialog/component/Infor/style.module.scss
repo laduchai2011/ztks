@@ -1,0 +1,47 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+
+    > .consents {
+        @include center-of-rectangle;
+
+        > div {
+            @include center-of-row;
+            align-items: center;
+
+            > div {
+                @include center-of-row;
+                align-items: center;
+                margin: 0 5px;
+                cursor: pointer;
+                background-color: rgb(240, 240, 240);
+                box-sizing: border-box;
+                padding: 5px;
+                border-radius: 5px;
+                user-select: none;
+            }
+        }
+    }
+
+    > .requestContent {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 5px;
+
+        > div {
+            color: blue;
+            font-style: italic;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            padding: 2px;
+            cursor: pointer;
+            user-select: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}

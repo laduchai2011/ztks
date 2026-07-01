@@ -3,8 +3,9 @@ import style from './style.module.scss';
 // import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
-import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import Infor from './component/Infor';
 import RequestConsent from './component/RequestConsent';
+import Call from './component/Call';
 import { IoMdClose } from 'react-icons/io';
 import { AGREE, EXIT, CLOSE } from '@src/const/text';
 import { MySip } from '../../call';
@@ -16,7 +17,6 @@ import {
     useOutboundMutation,
 } from '@src/redux/query/callRTK';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { CallTypeEnum } from '@src/dataStruct/call';
 
 const CallDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -28,6 +28,7 @@ const CallDialog = () => {
 
     const [agentCode, setAgentCode] = useState<string>('');
     const [agentPassword, setAgentPassword] = useState<string>('taokosao201195');
+    const [isRequestConsent, setIsRequestConsent] = useState<boolean>(false);
 
     const [checkConsent] = useLazyCheckConsentQuery();
     const [requestConsent] = useRequestConsentMutation();
@@ -60,24 +61,23 @@ const CallDialog = () => {
         dispatch(setIsShow_callDialog(false));
     };
 
-    const handleRequestConsent = () => {
-        if (!zaloApp) return;
-        if (!zaloOa) return;
-
-        requestConsent({
-            phone: '84869628195',
-            call_type: CallTypeEnum.AUDIO,
-            reason_code: 101,
-            zaloApp: zaloApp,
-            zaloOa: zaloOa,
-            accountId: -1,
-        })
-            .then((res) => {
-                console.log(res);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+    const handleOpenRequestConsent = () => {
+        // if (!zaloApp) return;
+        // if (!zaloOa) return;
+        // requestConsent({
+        //     phone: '84869628195',
+        //     call_type: CallTypeEnum.AUDIO,
+        //     reason_code: 101,
+        //     zaloApp: zaloApp,
+        //     zaloOa: zaloOa,
+        //     accountId: -1,
+        // })
+        //     .then((res) => {
+        //         console.log(res);
+        //     })
+        //     .catch((err) => {
+        //         console.error(err);
+        //     });
     };
 
     const handleGetAgent = () => {
@@ -136,26 +136,24 @@ const CallDialog = () => {
                 </div>
                 <div className={style.contentContainer}>
                     <div className={style.header}>Cuộc gọi</div>
-                    <div className={style.consent}>
+                    {/* <div className={style.content}>
                         <div>Bạn chưa có quyền gọi tới người dùng này</div>
-                        <div onClick={() => handleRequestConsent()}>Gửi yêu cầu cấp quyền gọi</div>
-                    </div>
-                    <RequestConsent />
-                    <div>
+                        <div onClick={() => handleOpenRequestConsent()}>Gửi yêu cầu cấp quyền gọi</div>
+                    </div> */}
+                    <Infor setIsRequestConsent={setIsRequestConsent} />
+                    <RequestConsent isShow={isRequestConsent} setIsShow={setIsRequestConsent} />
+                    <Call />
+                    {/* <div>
                         <input
                             value={agentCode}
                             onChange={(e) => setAgentCode(e.target.value)}
                             placeholder="agentcode"
                         />
-                    </div>
-                    <button onClick={() => handleRequestConsent()}>Xin cấp quyền gọi</button>
+                    </div> */}
+                    {/* <button onClick={() => handleRequestConsent()}>Xin cấp quyền gọi</button>
                     <button onClick={() => handleGetAgent()}>Lấy agent</button>
                     <button onClick={() => handleOutbound()}>Tạo link cuộc gọi</button>
-                    <button onClick={() => handleCallUid()}>CallUid</button>
-                </div>
-                <div className={style.buttonContainer}>
-                    <button>{AGREE}</button>
-                    <button>{EXIT}</button>
+                    <button onClick={() => handleCallUid()}>CallUid</button> */}
                 </div>
             </div>
         </div>

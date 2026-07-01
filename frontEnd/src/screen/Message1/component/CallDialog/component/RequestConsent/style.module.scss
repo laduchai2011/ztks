@@ -2,9 +2,37 @@
 
 .parent {
     box-sizing: border-box;
-    padding: 5px;
-    border: 1px solid rgb(233, 233, 233);
     border-radius: 10px;
+    max-height: 0;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 0px solid rgb(233, 233, 233);
+    background-color: rgb(240, 240, 240);
+    overflow: hidden;
+    transition:
+        max-height 0.3s ease-in-out,
+        padding-top 0.3s ease-in-out,
+        padding-bottom 0.3s ease-in-out;
+
+    &.isShow {
+        max-height: 800px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border: 1px solid rgb(233, 233, 233);
+    }
+
+    > .closeContainer {
+        display: flex;
+        justify-content: flex-end;
+        box-sizing: border-box;
+        padding: 5px;
+
+        > svg {
+            cursor: pointer;
+        }
+    }
 
     > .phone {
         > div:nth-child(1) {
@@ -18,6 +46,8 @@
             > input {
                 width: 100%;
                 box-sizing: border-box;
+                border-radius: 10px;
+                padding: 5px;
                 border: none;
                 outline: none;
                 border-bottom: 1px solid rgb(233, 233, 233);
@@ -40,7 +70,7 @@
             > .selected {
                 @include center-of-row;
                 align-items: center;
-                background-color: rgb(245, 245, 245);
+                background-color: rgb(221, 221, 221);
                 box-sizing: border-box;
                 padding: 5px;
                 border-radius: 5px;
@@ -52,14 +82,53 @@
             }
 
             > .options {
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease-in-out;
+
+                &.isShow {
+                    max-height: 100px;
+                }
+
                 > div {
                     box-sizing: border-box;
                     padding: 5px;
                     cursor: pointer;
+                    user-select: none;
 
                     &:hover {
                         background-color: rgb(233, 233, 233);
                     }
+                }
+            }
+        }
+    }
+
+    > .send {
+        > div:nth-child(1) {
+            box-sizing: border-box;
+            padding: 5px;
+        }
+
+        > div:nth-child(2) {
+            @include center-of-row;
+            justify-content: flex-end;
+            box-sizing: border-box;
+            padding: 5px;
+
+            > button {
+                box-sizing: border-box;
+                background-color: rgb(46, 255, 91);
+                border: 1px solid rgb(46, 255, 91);
+                border-radius: 5px;
+                color: white;
+                cursor: default;
+                padding: 5px 10px;
+
+                &:active {
+                    background-color: white;
+                    color: rgb(46, 255, 91);
+                    border: 1px solid rgb(46, 255, 91);
                 }
             }
         }

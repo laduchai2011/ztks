@@ -1,0 +1,7 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+    @include center-of-rectangle;
+}
