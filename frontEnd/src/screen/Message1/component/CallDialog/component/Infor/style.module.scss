@@ -21,8 +21,24 @@
                 padding: 5px;
                 border-radius: 5px;
                 user-select: none;
+
+                &:hover {
+                    background-color: rgb(220, 220, 220);
+                }
+
+                &.selected {
+                    background-color: rgb(200, 200, 200);
+                }
             }
         }
+    }
+
+    > .time {
+        color: gray;
+        text-align: center;
+        box-sizing: border-box;
+        padding: 5px;
+        font-style: italic;
     }
 
     > .requestContent {

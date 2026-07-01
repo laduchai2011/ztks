@@ -51,8 +51,8 @@ const RequestConsent: FC<{ isShow: boolean; setIsShow: React.Dispatch<React.SetS
         switch (callType) {
             case CallTypeEnum.AUDIO:
                 return 'Chỉ âm thanh';
-            case CallTypeEnum.VIDEO:
-                return 'Chỉ thước phim';
+            // case CallTypeEnum.VIDEO:
+            //     return 'Chỉ thước phim';
             case CallTypeEnum.AUDIO_AND_VIDEO:
                 return 'Cả âm thanh và thước phim';
             default:
@@ -93,9 +93,9 @@ const RequestConsent: FC<{ isShow: boolean; setIsShow: React.Dispatch<React.SetS
                         <div onClick={() => handleSelectCallType(CallTypeEnum.AUDIO)}>
                             {handleTextCallType(CallTypeEnum.AUDIO)}
                         </div>
-                        <div onClick={() => handleSelectCallType(CallTypeEnum.VIDEO)}>
+                        {/* <div onClick={() => handleSelectCallType(CallTypeEnum.VIDEO)}>
                             {handleTextCallType(CallTypeEnum.VIDEO)}
-                        </div>
+                        </div> */}
                         <div onClick={() => handleSelectCallType(CallTypeEnum.AUDIO_AND_VIDEO)}>
                             {handleTextCallType(CallTypeEnum.AUDIO_AND_VIDEO)}
                         </div>

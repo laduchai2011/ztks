@@ -29,6 +29,7 @@ const CallDialog = () => {
     const [agentCode, setAgentCode] = useState<string>('');
     const [agentPassword, setAgentPassword] = useState<string>('taokosao201195');
     const [isRequestConsent, setIsRequestConsent] = useState<boolean>(false);
+    const [isRinging, setIsRinging] = useState<boolean>(false);
 
     const [checkConsent] = useLazyCheckConsentQuery();
     const [requestConsent] = useRequestConsentMutation();
@@ -140,9 +141,9 @@ const CallDialog = () => {
                         <div>Bạn chưa có quyền gọi tới người dùng này</div>
                         <div onClick={() => handleOpenRequestConsent()}>Gửi yêu cầu cấp quyền gọi</div>
                     </div> */}
-                    <Infor setIsRequestConsent={setIsRequestConsent} />
+                    <Infor isRinging={isRinging} setIsRequestConsent={setIsRequestConsent} />
                     <RequestConsent isShow={isRequestConsent} setIsShow={setIsRequestConsent} />
-                    <Call />
+                    <Call setIsRinging={setIsRinging} />
                     {/* <div>
                         <input
                             value={agentCode}
