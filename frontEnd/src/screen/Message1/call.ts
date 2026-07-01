@@ -1,126 +1,256 @@
 // src/sip.ts
-import { UserAgent, Registerer, RegistererState, Inviter, SessionState } from 'sip.js';
+import { UserAgent, Registerer, Inviter, SessionState } from 'sip.js';
 
-const userAgent = new UserAgent({
-    uri: UserAgent.makeURI('sip:101@sip.taokosao.com')!,
-    transportOptions: {
-        server: 'wss://sip.taokosao.com/ws',
-    },
-    authorizationUsername: '101',
-    authorizationPassword: 'taokosao201195',
-    sessionDescriptionHandlerFactoryOptions: {
-        peerConnectionConfiguration: {
-            iceServers: [
-                {
-                    urls: 'stun:stun.l.google.com:19302',
-                },
-            ],
-        },
-    },
-});
+// const userAgent = (agentCode: string, agentPassword: string) => {
+//     const config = new UserAgent({
+//         uri: UserAgent.makeURI(`sip:${agentCode}@sip.taokosao.com`)!,
+//         transportOptions: {
+//             server: 'wss://sip.taokosao.com/ws',
+//         },
+//         authorizationUsername: agentCode,
+//         authorizationPassword: agentPassword,
+//         sessionDescriptionHandlerFactoryOptions: {
+//             peerConnectionConfiguration: {
+//                 iceServers: [
+//                     {
+//                         urls: 'stun:stun.l.google.com:19302',
+//                     },
+//                 ],
+//             },
+//         },
+//     });
 
-const registerer = new Registerer(userAgent);
+//     return config;
+// };
 
-export async function connectSip() {
-    // console.log('1. connectSip called');
+// const registerer = new Registerer(userAgent);
 
-    try {
-        registerer.stateChange.addListener((state) => {
-            // console.log('Register state:', state);
-        });
+// export async function connectSip(registerer: Registerer) {
+//     // console.log('1. connectSip called');
 
-        // console.log('2. before start');
-        await userAgent.start();
+//     try {
+//         registerer.stateChange.addListener((state) => {
+//             // console.log('Register state:', state);
+//         });
 
-        // console.log('3. WebSocket connected');
+//         // console.log('2. before start');
+//         await userAgent.start();
 
-        // console.log('4. before register');
-        await registerer.register();
+//         // console.log('3. WebSocket connected');
 
-        // console.log('5. REGISTER sent');
-    } catch (error) {
-        console.error('SIP Error:', error);
+//         // console.log('4. before register');
+//         await registerer.register();
+
+//         // console.log('5. REGISTER sent');
+//     } catch (error) {
+//         console.error('SIP Error:', error);
+//     }
+// }
+
+// export async function callUid(uid: string) {
+//     try {
+//         console.log('micro phone', window.isSecureContext);
+
+//         await navigator.mediaDevices.getUserMedia({
+//             audio: true,
+//         });
+
+//         const inviter = new Inviter(userAgent, UserAgent.makeURI(`sip:${uid}@sip.taokosao.com`)!, {
+//             sessionDescriptionHandlerOptions: {
+//                 constraints: {
+//                     audio: true,
+//                     video: false,
+//                 },
+//             },
+//         });
+
+//         inviter.stateChange.addListener(async (state) => {
+//             switch (state) {
+//                 case SessionState.Initial:
+//                     console.log('Khởi tạo');
+//                     break;
+
+//                 case SessionState.Establishing:
+//                     console.log('Đang đổ chuông...');
+//                     break;
+
+//                 case SessionState.Established: {
+//                     console.log('Đã kết nối');
+//                     const pc = (inviter.sessionDescriptionHandler as any).peerConnection as RTCPeerConnection;
+
+//                     const remoteStream = new MediaStream();
+
+//                     pc.getReceivers().forEach((receiver) => {
+//                         if (receiver.track) {
+//                             remoteStream.addTrack(receiver.track);
+//                         }
+//                     });
+
+//                     const audio = new Audio();
+
+//                     audio.srcObject = remoteStream;
+
+//                     await audio.play();
+//                     break;
+//                 }
+
+//                 case SessionState.Terminating:
+//                     console.log('Đang kết thúc');
+//                     break;
+
+//                 case SessionState.Terminated:
+//                     console.log('Cuộc gọi đã kết thúc');
+//                     // Cleanup
+//                     break;
+//             }
+//         });
+
+//         await inviter.invite();
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }
+
+export class MySip {
+    private _agentCode: string = '';
+    private _agentPassword: string = '';
+    private _userAgent: UserAgent | undefined;
+    private _registerer: Registerer | undefined;
+
+    constructor(agentCode: string, agentPassword: string) {
+        this._agentCode = agentCode;
+        this._agentPassword = agentPassword;
     }
-}
 
-export async function callUid(uid: string) {
-    try {
-        console.log('micro phone', window.isSecureContext);
-
-        await navigator.mediaDevices.getUserMedia({
-            audio: true,
-        });
-
-        const inviter = new Inviter(userAgent, UserAgent.makeURI(`sip:${uid}@sip.taokosao.com`)!, {
-            sessionDescriptionHandlerOptions: {
-                constraints: {
-                    audio: true,
-                    video: false,
+    createUserAgent() {
+        this._userAgent = new UserAgent({
+            uri: UserAgent.makeURI(`sip:${this._agentCode}@sip.taokosao.com`)!,
+            transportOptions: {
+                server: 'wss://sip.taokosao.com/ws',
+            },
+            authorizationUsername: this._agentCode,
+            authorizationPassword: this._agentPassword,
+            sessionDescriptionHandlerFactoryOptions: {
+                peerConnectionConfiguration: {
+                    iceServers: [
+                        {
+                            urls: 'stun:stun.l.google.com:19302',
+                        },
+                    ],
                 },
             },
         });
+    }
 
-        inviter.stateChange.addListener(async (state) => {
-            // if (state === SessionState.Established) {
-            //     const pc = (inviter.sessionDescriptionHandler as any).peerConnection as RTCPeerConnection;
+    createRegisterer() {
+        if (!this._userAgent) {
+            console.error('userAgent is undefine');
+            return;
+        }
+        this._registerer = new Registerer(this._userAgent);
+    }
 
-            //     const remoteStream = new MediaStream();
+    async connectSip() {
+        if (!this._userAgent) {
+            console.error('userAgent is undefine');
+            return;
+        }
+        if (!this._registerer) {
+            console.error('registerer is undefine');
+            return;
+        }
+        // console.log('1. connectSip called');
 
-            //     pc.getReceivers().forEach((receiver) => {
-            //         if (receiver.track) {
-            //             remoteStream.addTrack(receiver.track);
-            //         }
-            //     });
+        try {
+            this._registerer.stateChange.addListener((state) => {
+                // console.log('Register state:', state);
+            });
 
-            //     const audio = new Audio();
+            // console.log('2. before start');
+            await this._userAgent.start();
 
-            //     audio.srcObject = remoteStream;
+            // console.log('3. WebSocket connected');
 
-            //     await audio.play();
-            // }
+            // console.log('4. before register');
+            await this._registerer.register();
 
-            switch (state) {
-                case SessionState.Initial:
-                    console.log('Khởi tạo');
-                    break;
+            // console.log('5. REGISTER sent');
+        } catch (error) {
+            console.error('SIP Error:', error);
+        }
+    }
 
-                case SessionState.Establishing:
-                    console.log('Đang đổ chuông...');
-                    break;
+    async callUid(uid: string, isVideo?: boolean) {
+        if (!this._userAgent) {
+            console.error('userAgent is undefine');
+            return;
+        }
+        if (!this._registerer) {
+            console.error('registerer is undefine');
+            return;
+        }
 
-                case SessionState.Established: {
-                    console.log('Đã kết nối');
-                    const pc = (inviter.sessionDescriptionHandler as any).peerConnection as RTCPeerConnection;
+        try {
+            console.log('micro phone', window.isSecureContext);
 
-                    const remoteStream = new MediaStream();
+            await navigator.mediaDevices.getUserMedia({
+                audio: true,
+                video: isVideo ? isVideo : false,
+            });
 
-                    pc.getReceivers().forEach((receiver) => {
-                        if (receiver.track) {
-                            remoteStream.addTrack(receiver.track);
-                        }
-                    });
+            const inviter = new Inviter(this._userAgent, UserAgent.makeURI(`sip:${uid}@sip.taokosao.com`)!, {
+                sessionDescriptionHandlerOptions: {
+                    constraints: {
+                        audio: true,
+                        video: isVideo ? isVideo : false,
+                    },
+                },
+            });
 
-                    const audio = new Audio();
+            inviter.stateChange.addListener(async (state) => {
+                switch (state) {
+                    case SessionState.Initial:
+                        console.log('Khởi tạo');
+                        break;
 
-                    audio.srcObject = remoteStream;
+                    case SessionState.Establishing:
+                        console.log('Đang đổ chuông...');
+                        break;
 
-                    await audio.play();
-                    break;
+                    case SessionState.Established: {
+                        console.log('Đã kết nối');
+                        const pc = (inviter.sessionDescriptionHandler as any).peerConnection as RTCPeerConnection;
+
+                        const remoteStream = new MediaStream();
+
+                        pc.getReceivers().forEach((receiver) => {
+                            if (receiver.track) {
+                                remoteStream.addTrack(receiver.track);
+                            }
+                        });
+
+                        const audio = new Audio();
+
+                        audio.srcObject = remoteStream;
+
+                        await audio.play();
+                        break;
+                    }
+
+                    case SessionState.Terminating:
+                        console.log('Đang kết thúc');
+                        break;
+
+                    case SessionState.Terminated:
+                        console.log('Cuộc gọi đã kết thúc');
+                        // Cleanup
+                        break;
                 }
+            });
 
-                case SessionState.Terminating:
-                    console.log('Đang kết thúc');
-                    break;
-
-                case SessionState.Terminated:
-                    console.log('Cuộc gọi đã kết thúc');
-                    // Cleanup
-                    break;
-            }
-        });
-
-        await inviter.invite();
-    } catch (error) {
-        console.error(error);
+            await inviter.invite();
+        } catch (error) {
+            console.error(error);
+        }
     }
 }

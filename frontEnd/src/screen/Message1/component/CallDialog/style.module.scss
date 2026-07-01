@@ -42,6 +42,39 @@
         }
 
         > .contentContainer {
+            > .header {
+                text-align: center;
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: blue;
+            }
+
+            > .consent {
+                box-sizing: border-box;
+                padding: 10px;
+
+                > div {
+                    text-align: center;
+                }
+
+                > div:nth-child(1) {
+                    color: red;
+                }
+
+                > div:nth-child(2) {
+                    color: blue;
+                    font-style: italic;
+                    font-size: 0.9rem;
+                    box-sizing: border-box;
+                    padding: 2px;
+                    cursor: pointer;
+                    user-select: none;
+
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
         }
 
         > .buttonContainer {

@@ -10,7 +10,8 @@ declare global {
 const setupRecaptcha = () => {
     if (!window.recaptchaVerifier) {
         window.recaptchaVerifier = new RecaptchaVerifier(auth_firebase, 'recaptcha-container', {
-            size: 'invisible',
+            // size: 'invisible',
+            size: 'normal',
         });
     }
 
@@ -18,21 +19,23 @@ const setupRecaptcha = () => {
 };
 
 export const sendOtp = async (phone: string) => {
-    const appVerifier = setupRecaptcha();
-
-    await appVerifier.verify();
-
-    const confirmationResult = await signInWithPhoneNumber(auth_firebase, phone, appVerifier);
-
-    return confirmationResult;
+    try {
+        const appVerifier = setupRecaptcha();
+        await appVerifier.verify();
+        const confirmationResult = await signInWithPhoneNumber(auth_firebase, phone, appVerifier);
+        return confirmationResult;
+    } catch (error) {
+        console.error(error);
+    }
 };
 
 export const verifyOtp = async (confirmationResult: any, code: string) => {
-    const result = await confirmationResult.confirm(code);
-
-    const user = result.user;
-
-    const token = await user.getIdToken();
-
-    return token;
+    try {
+        const result = await confirmationResult.confirm(code);
+        const user = result.user;
+        const token = await user.getIdToken();
+        return token;
+    } catch (error) {
+        console.error(error);
+    }
 };

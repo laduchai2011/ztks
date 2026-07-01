@@ -18,4 +18,5 @@ export interface state_props {
     callDialog: {
         isShow: boolean;
     };
+    uid: string;
 }

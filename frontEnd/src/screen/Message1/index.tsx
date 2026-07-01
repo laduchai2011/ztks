@@ -13,12 +13,14 @@ import ChangeChatRoomMasterDialog from './component/ChangeChatRoomMasterDialog';
 import CallDialog from './component/CallDialog';
 import { useGetChatRoomsWithIdQuery } from '@src/redux/query/chatRoomRTK';
 import { useGetZaloOaWithIdQuery } from '@src/redux/query/zaloRTK';
+import { useLazyGetLastMessageQuery } from '@src/redux/query/messageV1RTK';
 import {
     setData_chatRoom,
     setData_toastMessage,
     set_isLoading,
     set_zaloOa,
     setIsShow_changeChatRoomMasterDialog,
+    set_uid,
 } from '@src/redux/slice/MessageV1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountInformationField } from '@src/dataStruct/account';
@@ -35,6 +37,8 @@ const Message1 = () => {
         (state: RootState) => state.AppSlice.accountInformation
     );
     const chatRoom: ChatRoomField | undefined = useSelector((state: RootState) => state.MessageV1Slice.chatRoom);
+
+    const [getLastMessage] = useLazyGetLastMessageQuery();
 
     useEffect(() => {
         if (myId === null) {
@@ -139,6 +143,30 @@ const Message1 = () => {
             dispatch(set_zaloOa(resData.data));
         }
     }, [dispatch, data_zaloOa]);
+
+    useEffect(() => {
+        if (!id) return;
+        getLastMessage({ chatRoomId: id })
+            .then((res) => {
+                const resData = res.data;
+                if (resData?.isSuccess && resData.data) {
+                    const lastMessage = resData.data;
+                    const eventName = lastMessage.event_name;
+
+                    const isUserSend = eventName.startsWith('user_send');
+                    const isOaSend = eventName.startsWith('oa_send');
+
+                    if (isUserSend) {
+                        dispatch(set_uid(lastMessage.sender_id));
+                    }
+
+                    if (isOaSend) {
+                        dispatch(set_uid(lastMessage.recipient_id));
+                    }
+                }
+            })
+            .catch((err) => console.error(err));
+    }, [dispatch, getLastMessage, id]);
 
     return (
         <div className={style.parent}>

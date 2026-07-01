@@ -1,5 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { RequestConsentBodyField, OutboundBodyField, GetMccInfoBodyField } from '@src/dataStruct/call/body';
+import {
+    CheckConsentBodyField,
+    RequestConsentBodyField,
+    OutboundBodyField,
+    GetMccInfoBodyField,
+} from '@src/dataStruct/call/body';
 import { CALL_API } from '@src/const/api/call';
 import { MyResponse } from '@src/dataStruct/response';
 import { DeviceEnum } from '@src/device/type';
@@ -16,6 +21,13 @@ export const callRTK = createApi({
     }),
     tagTypes: [],
     endpoints: (builder) => ({
+        checkConsent: builder.query<MyResponse<any>, CheckConsentBodyField>({
+            query: (body) => ({
+                url: CALL_API.CHECK_CONSENT,
+                method: 'POST',
+                body,
+            }),
+        }),
         getMccInfo: builder.query<MyResponse<any>, GetMccInfoBodyField>({
             query: (body) => ({
                 url: CALL_API.GET_MCC_INFOR,
@@ -40,4 +52,5 @@ export const callRTK = createApi({
     }),
 });
 
-export const { useLazyGetMccInfoQuery, useRequestConsentMutation, useOutboundMutation } = callRTK;
+export const { useLazyCheckConsentQuery, useLazyGetMccInfoQuery, useRequestConsentMutation, useOutboundMutation } =
+    callRTK;

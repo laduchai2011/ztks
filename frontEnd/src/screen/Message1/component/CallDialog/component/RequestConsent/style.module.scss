@@ -1,0 +1,67 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 5px;
+    border: 1px solid rgb(233, 233, 233);
+    border-radius: 10px;
+
+    > .phone {
+        > div:nth-child(1) {
+            box-sizing: border-box;
+            padding: 5px;
+        }
+
+        > div:nth-child(2) {
+            box-sizing: border-box;
+            padding: 5px;
+            > input {
+                width: 100%;
+                box-sizing: border-box;
+                border: none;
+                outline: none;
+                border-bottom: 1px solid rgb(233, 233, 233);
+            }
+        }
+    }
+
+    > .callType {
+        > div:nth-child(1) {
+            box-sizing: border-box;
+            padding: 5px;
+        }
+
+        > .select {
+            box-sizing: border-box;
+            padding: 5px;
+            border: 1px solid rgb(233, 233, 233);
+            border-radius: 5px;
+
+            > .selected {
+                @include center-of-row;
+                align-items: center;
+                background-color: rgb(245, 245, 245);
+                box-sizing: border-box;
+                padding: 5px;
+                border-radius: 5px;
+
+                > div:nth-child(1) {
+                    flex: 1;
+                    user-select: none;
+                }
+            }
+
+            > .options {
+                > div {
+                    box-sizing: border-box;
+                    padding: 5px;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: rgb(233, 233, 233);
+                    }
+                }
+            }
+        }
+    }
+}
