@@ -7,22 +7,26 @@ import { CallTypeEnum, CallTypeType } from '@src/dataStruct/call';
 import { MySip } from '../../../../call';
 
 const Call: FC<{
+    mySip: MySip | null;
     isConnecting: boolean;
     isRinging: boolean;
     setIsConnecting: React.Dispatch<React.SetStateAction<boolean>>;
     setIsRinging: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ isConnecting, isRinging, setIsRinging, setIsConnecting }) => {
+}> = ({ mySip, isConnecting, isRinging, setIsRinging, setIsConnecting }) => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
     const uid: string = useSelector((state: RootState) => state.MessageV1Slice.uid);
 
-    const handleOpenCall = async () => {
+    const handleOpenCall = () => {
         setIsConnecting(true);
         // const mySip = new MySip('101', 'taokosao201195');
         // mySip.createUserAgent();
         // mySip.createRegisterer();
         // await mySip.connectSip();
         // await mySip.callUid(`99${uid}`);
+        if (mySip) {
+            mySip.callUid(`99${uid}`);
+        }
     };
 
     const handleOfCall = () => {

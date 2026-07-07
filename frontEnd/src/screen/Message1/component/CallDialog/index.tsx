@@ -196,6 +196,7 @@ const CallDialog = () => {
                         setIsShow={setIsRequestConsent}
                     />
                     <Call
+                        mySip={mySip}
                         isConnecting={isConnecting}
                         isRinging={isRinging}
                         setIsRinging={setIsRinging}
