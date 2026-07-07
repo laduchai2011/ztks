@@ -6,6 +6,7 @@ export class MySip {
     private _agentPassword: string = '';
     private _userAgent: UserAgent | undefined;
     private _registerer: Registerer | undefined;
+    private _inviter: Inviter | undefined;
     private localStream?: MediaStream;
 
     constructor(agentCode: string, agentPassword: string) {
@@ -159,7 +160,7 @@ export class MySip {
         try {
             console.log('micro phone', window.isSecureContext);
 
-            const inviter = new Inviter(this._userAgent, UserAgent.makeURI(`sip:${uid}@sip.taokosao.com`)!, {
+            this._inviter = new Inviter(this._userAgent, UserAgent.makeURI(`sip:${uid}@sip.taokosao.com`)!, {
                 sessionDescriptionHandlerOptions: {
                     constraints: {
                         audio: true,
@@ -168,7 +169,7 @@ export class MySip {
                 },
             });
 
-            inviter.stateChange.addListener(async (state) => {
+            this._inviter.stateChange.addListener(async (state) => {
                 if (this.localStream) {
                     console.log('Media chưa được giải phóng !');
                 }
@@ -189,7 +190,8 @@ export class MySip {
 
                     case SessionState.Established: {
                         console.log('Đã kết nối');
-                        const pc = (inviter.sessionDescriptionHandler as any).peerConnection as RTCPeerConnection;
+                        const pc = (this._inviter?.sessionDescriptionHandler as any)
+                            .peerConnection as RTCPeerConnection;
 
                         const remoteStream = new MediaStream();
 
@@ -224,9 +226,15 @@ export class MySip {
                 }
             });
 
-            await inviter.invite();
+            await this._inviter.invite();
         } catch (error) {
             console.error(error);
+        }
+    }
+
+    async destroyCallUid() {
+        if (this._inviter) {
+            await this._inviter.bye();
         }
     }
 }

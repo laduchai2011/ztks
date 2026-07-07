@@ -32,6 +32,9 @@ const Call: FC<{
     const handleOfCall = () => {
         setIsRinging(false);
         setIsConnecting(false);
+        if (mySip) {
+            mySip.destroyCallUid();
+        }
     };
 
     return (
