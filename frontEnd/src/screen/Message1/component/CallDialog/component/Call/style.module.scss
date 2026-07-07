@@ -1,7 +1,25 @@
 @use 'src/utility/style/mixin.scss' as *;
 
 .parent {
-    box-sizing: border-box;
-    padding: 10px;
-    @include center-of-rectangle;
+    > .connecting {
+        box-sizing: border-box;
+        padding: 5px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: gray;
+    }
+
+    > .ring {
+        box-sizing: border-box;
+        padding: 5px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: gray;
+    }
+
+    > .icon {
+        box-sizing: border-box;
+        padding: 10px;
+        @include center-of-rectangle;
+    }
 }

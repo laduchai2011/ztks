@@ -79,14 +79,17 @@ class Handle_CheckConsent {
         //     reason_code: requestConsentBody.reason_code,
         // };
 
-        const response = await axios.get(`${API_CHECK_CONSENT}?data=${checkConsentBody.phone}`, {
-            headers: {
-                'Content-Type': 'application/json',
-                access_token: token,
-            },
-        });
+        const response = await axios.get(
+            `${API_CHECK_CONSENT}?data=${JSON.stringify({ phone: checkConsentBody.phone })}`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    access_token: token,
+                },
+            }
+        );
 
-        console.log(3333333333, response);
+        console.log(3333333333, response.data);
     };
 }
 

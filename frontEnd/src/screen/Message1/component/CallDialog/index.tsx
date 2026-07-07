@@ -29,7 +29,11 @@ const CallDialog = () => {
     const [agentCode, setAgentCode] = useState<string>('');
     const [agentPassword, setAgentPassword] = useState<string>('taokosao201195');
     const [isRequestConsent, setIsRequestConsent] = useState<boolean>(false);
+    const [isConnecting, setIsConnecting] = useState<boolean>(false);
     const [isRinging, setIsRinging] = useState<boolean>(false);
+    const [isCallIn, setIsCallIn] = useState<boolean>(false);
+    const [isCallOut, setIsCallOut] = useState<boolean>(false);
+    const [mySip, setMySip] = useState<MySip | null>(null);
 
     const [checkConsent] = useLazyCheckConsentQuery();
     const [requestConsent] = useRequestConsentMutation();
@@ -56,7 +60,50 @@ const CallDialog = () => {
         }
     }, [isShow]);
 
-    useEffect(() => {}, []);
+    const audioRef = useRef<HTMLAudioElement>(null);
+    useEffect(() => {
+        const handleSip = async () => {
+            const mySip_ = new MySip('103', agentPassword);
+            mySip_.createUserAgent();
+            mySip_.createRegisterer();
+            await mySip_.connectSip();
+            await mySip_.handleIncomingCall((stream: MediaStream) => {
+                console.log('Receive remote stream');
+
+                if (audioRef.current) {
+                    audioRef.current.srcObject = stream;
+                    audioRef.current.play().catch(console.error);
+                }
+            });
+            setMySip(mySip_);
+        };
+        handleSip();
+    }, [agentPassword]);
+
+    useEffect(() => {
+        if (!mySip) return;
+        mySip.handleIncomingCall((stream: MediaStream) => {
+            console.log('Receive remote stream');
+            if (audioRef.current) {
+                audioRef.current.srcObject = stream;
+                audioRef.current.play().catch(console.error);
+            }
+        });
+    }, [mySip, isCallIn, isCallOut]);
+
+    const handleInComing = async () => {
+        // const mySip = new MySip('103', agentPassword);
+        // mySip.createUserAgent();
+        // mySip.createRegisterer();
+        // await mySip.connectSip();
+        // await mySip.handleIncomingCall((stream: MediaStream) => {
+        //     console.log('Receive remote stream');
+        //     if (audioRef.current) {
+        //         audioRef.current.srcObject = stream;
+        //         audioRef.current.play().catch(console.error);
+        //     }
+        // });
+    };
 
     const handleClose = () => {
         dispatch(setIsShow_callDialog(false));
@@ -142,8 +189,22 @@ const CallDialog = () => {
                         <div onClick={() => handleOpenRequestConsent()}>Gửi yêu cầu cấp quyền gọi</div>
                     </div> */}
                     <Infor isRinging={isRinging} setIsRequestConsent={setIsRequestConsent} />
-                    <RequestConsent isShow={isRequestConsent} setIsShow={setIsRequestConsent} />
-                    <Call setIsRinging={setIsRinging} />
+                    <RequestConsent
+                        isConnecting={isConnecting}
+                        isRinging={isRinging}
+                        isShow={isRequestConsent}
+                        setIsShow={setIsRequestConsent}
+                    />
+                    <Call
+                        isConnecting={isConnecting}
+                        isRinging={isRinging}
+                        setIsRinging={setIsRinging}
+                        setIsConnecting={setIsConnecting}
+                    />
+                    <audio ref={audioRef} autoPlay playsInline />
+                    <button className={style.button} onClick={() => handleInComing()}>
+                        In Coming
+                    </button>
                     {/* <div>
                         <input
                             value={agentCode}

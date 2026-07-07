@@ -86,7 +86,7 @@ class Handle_RequestConsent {
             },
         });
 
-        console.log(3333333333, response);
+        console.log(3333333333, 'requestConsent', response);
     };
 }
 

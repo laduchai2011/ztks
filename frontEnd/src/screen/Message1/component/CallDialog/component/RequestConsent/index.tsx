@@ -6,16 +6,26 @@ import { IoMdClose } from 'react-icons/io';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { CLOSE, SEND } from '@src/const/text';
 import { CallTypeEnum, CallTypeType } from '@src/dataStruct/call';
+import { useRequestConsentMutation } from '@src/redux/query/callRTK';
+import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 
-const RequestConsent: FC<{ isShow: boolean; setIsShow: React.Dispatch<React.SetStateAction<boolean>> }> = ({
-    isShow,
-    setIsShow,
-}) => {
+const RequestConsent: FC<{
+    isConnecting: boolean;
+    isRinging: boolean;
+    isShow: boolean;
+    setIsShow: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ isConnecting, isRinging, isShow, setIsShow }) => {
     const dispatch = useDispatch<AppDispatch>();
+    const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
+    const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
     const parent_element = useRef<HTMLDivElement | null>(null);
     const options_element = useRef<HTMLDivElement | null>(null);
     const [isShowOptions, setIsShowOptions] = useState<boolean>(false);
     const [selectedCallType, setSelectedCallType] = useState<CallTypeType>(CallTypeEnum.AUDIO);
+
+    const [phone, setPhone] = useState<string>('');
+
+    const [requestConsent] = useRequestConsentMutation();
 
     useEffect(() => {
         if (!parent_element.current) return;
@@ -38,6 +48,14 @@ const RequestConsent: FC<{ isShow: boolean; setIsShow: React.Dispatch<React.SetS
             optionsElement.classList.remove(style.isShow);
         }
     }, [isShowOptions]);
+
+    useEffect(() => {
+        if (isRinging || isConnecting) {
+            setIsShow(false);
+        } else {
+            setIsShow(isShow);
+        }
+    }, [isRinging, isConnecting, setIsShow, isShow]);
 
     const handleClose = () => {
         setIsShow(false);
@@ -65,6 +83,29 @@ const RequestConsent: FC<{ isShow: boolean; setIsShow: React.Dispatch<React.SetS
         setIsShowOptions(false);
     };
 
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPhone(e.target.value);
+    };
+
+    const handleRequestConsent = () => {
+        if (!zaloApp) return;
+        if (!zaloOa) return;
+        requestConsent({
+            phone: phone,
+            call_type: selectedCallType,
+            reason_code: 101,
+            zaloApp: zaloApp,
+            zaloOa: zaloOa,
+            accountId: -1,
+        })
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
+
     return (
         <div className={style.parent} ref={parent_element}>
             <div className={style.closeContainer}>
@@ -73,7 +114,7 @@ const RequestConsent: FC<{ isShow: boolean; setIsShow: React.Dispatch<React.SetS
             <div className={style.phone}>
                 <div>1 - Nhập số điện thoại của zalo này</div>
                 <div>
-                    <input placeholder="Số điện thoại" />
+                    <input value={phone} onChange={handlePhoneChange} placeholder="Số điện thoại" />
                 </div>
             </div>
             <div className={style.callType}>
@@ -105,7 +146,7 @@ const RequestConsent: FC<{ isShow: boolean; setIsShow: React.Dispatch<React.SetS
             <div className={style.send}>
                 <div>3 - Gửi yêu cầu</div>
                 <div>
-                    <button>{SEND}</button>
+                    <button onClick={() => handleRequestConsent()}>{SEND}</button>
                 </div>
             </div>
         </div>
