@@ -3,50 +3,80 @@ import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { MdCall, MdWifiCalling3 } from 'react-icons/md';
-import { CallTypeEnum, CallTypeType } from '@src/dataStruct/call';
+// import { CallTypeEnum, CallTypeType } from '@src/dataStruct/call';
 import { MySip } from '../../../../call';
+import { SessionState } from 'sip.js';
+import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
 
 const Call: FC<{
     mySip: MySip | null;
-    isConnecting: boolean;
-    isRinging: boolean;
-    setIsConnecting: React.Dispatch<React.SetStateAction<boolean>>;
-    setIsRinging: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ mySip, isConnecting, isRinging, setIsRinging, setIsConnecting }) => {
+    callInState: CallInStateType;
+    setCallInState: React.Dispatch<React.SetStateAction<CallInStateType>>;
+    callOutState: CallOutStateType;
+    setCallOutState: React.Dispatch<React.SetStateAction<CallOutStateType>>;
+}> = ({ mySip, callInState, setCallInState, callOutState, setCallOutState }) => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
     const uid: string = useSelector((state: RootState) => state.MessageV1Slice.uid);
 
     const handleOpenCall = () => {
-        setIsConnecting(true);
-        // const mySip = new MySip('101', 'taokosao201195');
-        // mySip.createUserAgent();
-        // mySip.createRegisterer();
-        // await mySip.connectSip();
-        // await mySip.callUid(`99${uid}`);
         if (mySip) {
-            mySip.callUid(`99${uid}`);
+            mySip.callUid(`99${uid}`, false, (state) => {
+                switch (state) {
+                    case SessionState.Initial:
+                        setCallOutState(CallOutStateEnum.CONNECTING);
+                        break;
+
+                    case SessionState.Establishing:
+                        setCallOutState(CallOutStateEnum.RINGING);
+                        break;
+
+                    case SessionState.Established:
+                        setCallOutState(CallOutStateEnum.CALL_IN);
+                        break;
+
+                    case SessionState.Terminating:
+                        setCallOutState(CallOutStateEnum.CALL_END);
+                        break;
+
+                    case SessionState.Terminated:
+                        setCallOutState(CallOutStateEnum.CALL_END);
+                        break;
+                }
+            });
         }
     };
 
     const handleOfCall = () => {
-        setIsRinging(false);
-        setIsConnecting(false);
         if (mySip) {
-            mySip.destroyCallUid();
+            setCallOutState(CallOutStateEnum.CALL_END);
+            mySip.destroyCallOut();
+            mySip.destroyCallIn();
         }
     };
 
     return (
         <div className={style.parent} ref={parent_element}>
-            {isConnecting && <div className={style.connecting}>Đang kết nối ...</div>}
-            {isRinging && <div className={style.ring}>Đổ chuông</div>}
-            <div className={style.icon}>
-                {!isRinging && !isConnecting && (
-                    <MdCall onClick={() => handleOpenCall()} size={40} color="greenyellow" />
-                )}
-                {(isRinging || isConnecting) && <MdCall onClick={() => handleOfCall()} size={40} color="red" />}
-            </div>
+            {callOutState === CallOutStateEnum.CONNECTING && <div className={style.connecting}>Đang kết nối ...</div>}
+            {callOutState === CallOutStateEnum.RINGING && <div className={style.ring}>Đổ chuông</div>}
+            {callInState === CallInStateEnum.CALL_END && (
+                <div className={style.icon1}>
+                    {callOutState === CallOutStateEnum.CALL_END && (
+                        <MdCall onClick={() => handleOpenCall()} size={40} color="greenyellow" />
+                    )}
+                    {(callOutState === CallOutStateEnum.RINGING || callOutState === CallOutStateEnum.CALL_IN) && (
+                        <MdCall onClick={() => handleOfCall()} size={40} color="red" />
+                    )}
+                </div>
+            )}
+            {callInState === CallInStateEnum.RINGING && (
+                <div className={style.icon2}>
+                    <div>
+                        <MdCall size={40} color="greenyellow" />
+                        <MdCall size={40} color="red" />
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

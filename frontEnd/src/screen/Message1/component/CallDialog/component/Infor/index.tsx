@@ -4,14 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { TiTick } from 'react-icons/ti';
 import { IoClose } from 'react-icons/io5';
-import { CallTypeEnum, CallTypeType } from '@src/dataStruct/call';
+import { CallTypeEnum, CallTypeType, CallInStateEnum, CallInStateType } from '@src/dataStruct/call';
 import { useLazyCheckConsentQuery } from '@src/redux/query/callRTK';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 
-const Infor: FC<{ isRinging: boolean; setIsRequestConsent: React.Dispatch<React.SetStateAction<boolean>> }> = ({
-    isRinging,
-    setIsRequestConsent,
-}) => {
+const Infor: FC<{
+    isRinging: boolean;
+    callInState: CallInStateType;
+    setIsRequestConsent: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ isRinging, callInState, setIsRequestConsent }) => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);

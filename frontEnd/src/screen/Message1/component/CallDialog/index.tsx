@@ -7,7 +7,7 @@ import Infor from './component/Infor';
 import RequestConsent from './component/RequestConsent';
 import Call from './component/Call';
 import { IoMdClose } from 'react-icons/io';
-import { AGREE, EXIT, CLOSE } from '@src/const/text';
+import { CLOSE } from '@src/const/text';
 import { MySip } from '../../call';
 import { setIsShow_callDialog } from '@src/redux/slice/MessageV1';
 import {
@@ -17,6 +17,8 @@ import {
     useOutboundMutation,
 } from '@src/redux/query/callRTK';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
+import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
+import { SessionState } from 'sip.js';
 
 const CallDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -34,6 +36,8 @@ const CallDialog = () => {
     const [isCallIn, setIsCallIn] = useState<boolean>(false);
     const [isCallOut, setIsCallOut] = useState<boolean>(false);
     const [mySip, setMySip] = useState<MySip | null>(null);
+    const [callInState, setCallInState] = useState<CallInStateType>(CallInStateEnum.CALL_END);
+    const [callOutState, setCallOutState] = useState<CallOutStateType>(CallOutStateEnum.CALL_END);
 
     const [checkConsent] = useLazyCheckConsentQuery();
     const [requestConsent] = useRequestConsentMutation();
@@ -67,29 +71,58 @@ const CallDialog = () => {
             mySip_.createUserAgent();
             mySip_.createRegisterer();
             await mySip_.connectSip();
-            await mySip_.handleIncomingCall((stream: MediaStream) => {
-                console.log('Receive remote stream');
+            await mySip_.handleIncomingCall(
+                (stream: MediaStream) => {
+                    console.log('Receive remote stream');
 
-                if (audioRef.current) {
-                    audioRef.current.srcObject = stream;
-                    audioRef.current.play().catch(console.error);
+                    if (audioRef.current) {
+                        audioRef.current.srcObject = stream;
+                        audioRef.current.play().catch(console.error);
+                    }
+                },
+                (state) => {
+                    switch (state) {
+                        case SessionState.Initial:
+                            break;
+
+                        case SessionState.Establishing:
+                            break;
+
+                        case SessionState.Established:
+                            setCallInState(CallInStateEnum.CALL_IN);
+                            break;
+
+                        case SessionState.Terminating:
+                            setCallInState(CallInStateEnum.CALL_END);
+                            break;
+
+                        case SessionState.Terminated:
+                            setCallInState(CallInStateEnum.CALL_END);
+                            break;
+                    }
+                },
+                (invitation) => {
+                    console.log(11111111, invitation.request.from.uri);
+                    if (invitation) {
+                        setCallInState(CallInStateEnum.RINGING);
+                    }
                 }
-            });
+            );
             setMySip(mySip_);
         };
         handleSip();
     }, [agentPassword]);
 
-    useEffect(() => {
-        if (!mySip) return;
-        mySip.handleIncomingCall((stream: MediaStream) => {
-            console.log('Receive remote stream');
-            if (audioRef.current) {
-                audioRef.current.srcObject = stream;
-                audioRef.current.play().catch(console.error);
-            }
-        });
-    }, [mySip, isCallIn, isCallOut]);
+    // useEffect(() => {
+    //     if (!mySip) return;
+    //     mySip.handleIncomingCall((stream: MediaStream) => {
+    //         console.log('Receive remote stream');
+    //         if (audioRef.current) {
+    //             audioRef.current.srcObject = stream;
+    //             audioRef.current.play().catch(console.error);
+    //         }
+    //     });
+    // }, [mySip]);
 
     const handleInComing = async () => {
         // const mySip = new MySip('103', agentPassword);
@@ -165,17 +198,6 @@ const CallDialog = () => {
         //     });
     };
 
-    const handleCallUid = async () => {
-        const mySip = new MySip(agentCode, agentPassword);
-        mySip.createUserAgent();
-        mySip.createRegisterer();
-        await mySip.connectSip();
-        await mySip.callUid(`99${uid}`);
-        // await mySip.callUid(`990789860854`);
-        // callUid('995324785107455488962');
-        // callUid('998721866515278588973');
-    };
-
     return (
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
@@ -188,7 +210,7 @@ const CallDialog = () => {
                         <div>Bạn chưa có quyền gọi tới người dùng này</div>
                         <div onClick={() => handleOpenRequestConsent()}>Gửi yêu cầu cấp quyền gọi</div>
                     </div> */}
-                    <Infor isRinging={isRinging} setIsRequestConsent={setIsRequestConsent} />
+                    <Infor isRinging={isRinging} callInState={callInState} setIsRequestConsent={setIsRequestConsent} />
                     <RequestConsent
                         isConnecting={isConnecting}
                         isRinging={isRinging}
@@ -197,10 +219,10 @@ const CallDialog = () => {
                     />
                     <Call
                         mySip={mySip}
-                        isConnecting={isConnecting}
-                        isRinging={isRinging}
-                        setIsRinging={setIsRinging}
-                        setIsConnecting={setIsConnecting}
+                        callInState={callInState}
+                        setCallInState={setCallInState}
+                        callOutState={callOutState}
+                        setCallOutState={setCallOutState}
                     />
                     <audio ref={audioRef} autoPlay playsInline />
                     <button className={style.button} onClick={() => handleInComing()}>

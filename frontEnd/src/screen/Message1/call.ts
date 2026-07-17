@@ -6,7 +6,8 @@ export class MySip {
     private _agentPassword: string = '';
     private _userAgent: UserAgent | undefined;
     private _registerer: Registerer | undefined;
-    private _inviter: Inviter | undefined;
+    private _inviterIn: Invitation | undefined;
+    private _inviterOut: Inviter | undefined;
     private localStream?: MediaStream;
 
     constructor(agentCode: string, agentPassword: string) {
@@ -42,7 +43,11 @@ export class MySip {
         this._registerer = new Registerer(this._userAgent);
     }
 
-    async handleIncomingCall(onRemoteStream: (stream: MediaStream) => void) {
+    async handleIncomingCall(
+        onRemoteStream: (stream: MediaStream) => void,
+        onStateChange?: (state: SessionState) => void,
+        onInvitation?: (invitation: Invitation) => void
+    ) {
         if (!this._userAgent) {
             console.error('userAgent is undefine');
             return;
@@ -50,16 +55,12 @@ export class MySip {
 
         this._userAgent.delegate = {
             onInvite: (invitation) => {
-                invitation.stateChange.addListener(async (state) => {
-                    if (this.localStream) {
-                        console.log('Media chưa được giải phóng !');
-                    }
+                this._inviterIn = invitation;
 
-                    // xin quyền microphone
-                    this.localStream = await navigator.mediaDevices.getUserMedia({
-                        audio: true,
-                        video: false,
-                    });
+                onInvitation?.(invitation);
+
+                this._inviterIn.stateChange.addListener(async (state) => {
+                    onStateChange?.(state);
 
                     switch (state) {
                         case SessionState.Initial:
@@ -68,10 +69,20 @@ export class MySip {
 
                         case SessionState.Establishing:
                             console.log('Đang đổ chuông... IncomingCall');
+                            if (this.localStream) {
+                                console.log('Media chưa được giải phóng !');
+                            }
+
+                            // xin quyền microphone
+                            this.localStream = await navigator.mediaDevices.getUserMedia({
+                                audio: true,
+                                video: false,
+                            });
                             break;
 
                         case SessionState.Established: {
                             console.log('Đã kết nối IncomingCall');
+
                             const pc = (invitation.sessionDescriptionHandler as any)
                                 .peerConnection as RTCPeerConnection;
 
@@ -105,14 +116,14 @@ export class MySip {
                     }
                 });
 
-                invitation.accept({
-                    sessionDescriptionHandlerOptions: {
-                        constraints: {
-                            audio: true,
-                            video: false,
-                        },
-                    },
-                });
+                // this._inviterIn.accept({
+                //     sessionDescriptionHandlerOptions: {
+                //         constraints: {
+                //             audio: true,
+                //             video: false,
+                //         },
+                //     },
+                // });
             },
         };
     }
@@ -147,7 +158,7 @@ export class MySip {
         }
     }
 
-    async callUid(uid: string, isVideo?: boolean) {
+    async callUid(uid: string, isVideo?: boolean, onStateChange?: (state: SessionState) => void) {
         if (!this._userAgent) {
             console.error('userAgent is undefine');
             return;
@@ -160,7 +171,7 @@ export class MySip {
         try {
             console.log('micro phone', window.isSecureContext);
 
-            this._inviter = new Inviter(this._userAgent, UserAgent.makeURI(`sip:${uid}@sip.taokosao.com`)!, {
+            this._inviterOut = new Inviter(this._userAgent, UserAgent.makeURI(`sip:${uid}@sip.taokosao.com`)!, {
                 sessionDescriptionHandlerOptions: {
                     constraints: {
                         audio: true,
@@ -169,16 +180,17 @@ export class MySip {
                 },
             });
 
-            this._inviter.stateChange.addListener(async (state) => {
-                if (this.localStream) {
-                    console.log('Media chưa được giải phóng !');
-                }
+            if (this.localStream) {
+                console.log('Media chưa được giải phóng !');
+            }
 
-                this.localStream = await navigator.mediaDevices.getUserMedia({
-                    audio: true,
-                    video: isVideo ? isVideo : false,
-                });
+            this.localStream = await navigator.mediaDevices.getUserMedia({
+                audio: true,
+                video: isVideo ? isVideo : false,
+            });
 
+            this._inviterOut.stateChange.addListener(async (state) => {
+                onStateChange?.(state);
                 switch (state) {
                     case SessionState.Initial:
                         console.log('Khởi tạo');
@@ -190,7 +202,8 @@ export class MySip {
 
                     case SessionState.Established: {
                         console.log('Đã kết nối');
-                        const pc = (this._inviter?.sessionDescriptionHandler as any)
+
+                        const pc = (this._inviterOut?.sessionDescriptionHandler as any)
                             .peerConnection as RTCPeerConnection;
 
                         const remoteStream = new MediaStream();
@@ -226,15 +239,37 @@ export class MySip {
                 }
             });
 
-            await this._inviter.invite();
+            await this._inviterOut.invite();
         } catch (error) {
             console.error(error);
         }
     }
 
-    async destroyCallUid() {
-        if (this._inviter) {
-            await this._inviter.bye();
+    async destroyCallIn() {
+        if (this.localStream) {
+            this.localStream.getTracks().forEach((track) => {
+                track.stop();
+
+                if (this._inviterIn) {
+                    this._inviterIn._bye();
+                }
+            });
+
+            this.localStream = undefined;
+        }
+    }
+
+    async destroyCallOut() {
+        if (this.localStream) {
+            this.localStream.getTracks().forEach((track) => {
+                track.stop();
+
+                if (this._inviterOut) {
+                    this._inviterOut.cancel();
+                }
+            });
+
+            this.localStream = undefined;
         }
     }
 }

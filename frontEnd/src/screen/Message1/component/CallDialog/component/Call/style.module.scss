@@ -1,6 +1,8 @@
 @use 'src/utility/style/mixin.scss' as *;
 
 .parent {
+    height: max-content;
+
     > .connecting {
         box-sizing: border-box;
         padding: 5px;
@@ -17,9 +19,23 @@
         color: gray;
     }
 
-    > .icon {
+    > .icon1 {
         box-sizing: border-box;
         padding: 10px;
         @include center-of-rectangle;
+    }
+
+    > .icon2 {
+        @include center-of-rectangle;
+
+        > div {
+            @include center-of-row;
+            justify-content: space-around;
+            width: 80%;
+
+            > svg {
+                box-sizing: border-box;
+            }
+        }
     }
 }
