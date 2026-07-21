@@ -8,13 +8,18 @@ BEGIN
 	BEGIN TRY
         BEGIN TRANSACTION;
 
+		IF EXISTS ( SELECT 1 FROM dbo.callAgent WHERE accountId = @accountId )
+		BEGIN
+			THROW 50001, N'Đã tồn tại callAgent cho tài khoản này .', 1;
+		END
+
 		DECLARE @newCallAgentId INT;
 
 		INSERT dbo.callAgent (agentCode, password, accountId)
 		VALUES (@agentCode, @password, @accountId)
 		IF @@ROWCOUNT = 0
         BEGIN
-            THROW 50001, 'Tạo callAgent không thành công.', 1;
+            THROW 50002, N'Tạo callAgent không thành công.', 2;
         END
 
 		SELECT * FROM dbo.callAgent WHERE id = @newCallAgentId;
@@ -78,7 +83,7 @@ BEGIN
 		VALUES ( 'zcc01', appId + '.zcc.openapi.zaloapp.com', oaId, 'sip:' + appId + '.zcc.openapi.zaloapp.com:' + port, 1)
 		IF @@ROWCOUNT = 0
         BEGIN
-            THROW 50001, 'Tạo callAgent không thành công.', 1;
+            THROW 50001, N'Tạo callAgent không thành công.', 1;
         END
 
 		SELECT * FROM dbo.callAgent WHERE id = @newCallAgentId;

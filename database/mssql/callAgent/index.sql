@@ -1,113 +1,24 @@
--- CREATE TABLE callAgent (
---     id INT PRIMARY KEY IDENTITY(1,1),
--- 	agentCode NVARCHAR(255) NOT NULL UNIQUE,
---     password NVARCHAR(255) NOT NULL,
--- 	uid NVARCHAR(255),
--- 	isDelete BIT NOT NULL DEFAULT 0,
--- 	accountId INT NOT NULL,
---     createTime DATETIMEOFFSET(7) NOT NULL,
-
---     CONSTRAINT UQ_callAgent_zaloOaId_userIdByApp UNIQUE (zaloOaId, userIdByApp),
--- 	CONSTRAINT FK_callAgent_Account FOREIGN KEY (accountId) REFERENCES account(id)
--- )
--- GO
--- CREATE NONCLUSTERED INDEX idx_account_id ON bank(accountId);
--- GO
-
--- CREATE TABLE ps_endpoints (
---     id INT PRIMARY KEY IDENTITY(1,1),
-
---     transport NVARCHAR(255),
---     aors NVARCHAR(255),
---     auth NVARCHAR(255),
-
---     context NVARCHAR(255),
-
---     disallow NVARCHAR(255),
---     allow NVARCHAR(255),
-
---     webrtc NVARCHAR(255),
-
---     media_encryption NVARCHAR(255),
---     dtls_auto_generate_cert NVARCHAR(255),
-
---     ice_support NVARCHAR(255),
---     rtcp_mux NVARCHAR(255),
---     use_avpf NVARCHAR(255),
-
---     rtp_symmetric NVARCHAR(255),
---     rewrite_contact NVARCHAR(255),
---     force_rport NVARCHAR(255),
-
---     direct_media NVARCHAR(255),
-
---     from_domain NVARCHAR(255),
---     from_user NVARCHAR(255),
-
---     trust_id_outbound NVARCHAR(255),
---     send_pai NVARCHAR(255),
---     send_rpid NVARCHAR(255),
-
--- 	callAgentId INT NOT NULL,
-
--- 	CONSTRAINT FK_ps_endpoints_CallAgent FOREIGN KEY (callAgentId) REFERENCES callAgent(id)
--- );
-
-
--- CREATE TABLE ps_auths (
---     id nvarchar(80) PRIMARY KEY,
---     auth_type NVARCHAR(255),
---     username NVARCHAR(255),
---     password NVARCHAR(255),
-
--- 	callAgentId INT NOT NULL,
-
--- 	CONSTRAINT FK_ps_endpoints_CallAgent FOREIGN KEY (callAgentId) REFERENCES callAgent(id)
--- );
-
--- CREATE TABLE ps_aors (
---     id INT PRIMARY KEY IDENTITY(1,1),
---     max_contacts INT,
---     remove_existing NVARCHAR(255),
---     contact NVARCHAR(255),
-
--- 	callAgentId INT NOT NULL,
-
--- 	CONSTRAINT FK_ps_endpoints_CallAgent FOREIGN KEY (callAgentId) REFERENCES callAgent(id)
--- );
-
--- -- CREATE TABLE ps_endpoint_id_ips (
--- --     id nvarchar(80) PRIMARY KEY,
--- --     endpoint nvarchar(80),
--- --     match nvarchar(200),
-
--- -- 	callAgentId INT NOT NULL,
-
--- -- 	CONSTRAINT FK_ps_endpoints_CallAgent FOREIGN KEY (callAgentId) REFERENCES callAgent(id)
--- -- );
-
-
 CREATE TABLE callAgent
 (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    agentCode NVARCHAR(255) NOT NULL,
+    agentCode NVARCHAR(255) NOT NULL UNIQUE,
     password NVARCHAR(255) NOT NULL,
     transport NVARCHAR(255) NOT NULL DEFAULT 'transport-ws',
     context NVARCHAR(255) NOT NULL DEFAULT 'agent-to-zaloUser',
     allowCodec NVARCHAR(255) NOT NULL DEFAULT 'opus,ulaw,alaw',
     maxContacts INT NOT NULL DEFAULT 1,
     isDelete BIT NOT NULL DEFAULT 0,
-    accountId INT NOT NULL,
+    accountId INT NOT NULL UNIQUE,
     createTime DATETIMEOFFSET(7) NOT NULL DEFAULT SYSDATETIMEOFFSET(),
 
-    CONSTRAINT UQ_callAgent_agentCode UNIQUE(agentCode),
+    -- CONSTRAINT UQ_callAgent_agentCode UNIQUE(agentCode),
     CONSTRAINT FK_callAgent_Account FOREIGN KEY(accountId) REFERENCES account(id)
 );
 GO
-CREATE INDEX IX_callAgent_accountId ON callAgent(accountId);
-GO
-CREATE INDEX IX_callAgent_isDelete ON callAgent(isDelete);
-GO
+-- CREATE INDEX IX_callAgent_accountId ON callAgent(accountId);
+-- GO
+-- CREATE INDEX IX_callAgent_isDelete ON callAgent(isDelete);
+-- GO
 
 CREATE TABLE callPermit
 (
@@ -117,10 +28,10 @@ CREATE TABLE callPermit
     callAgentId INT NOT NULL,
     createTime DATETIMEOFFSET(7) NOT NULL DEFAULT SYSDATETIMEOFFSET(),
 
-    CONSTRAINT FK_callPermittance_CallAgent FOREIGN KEY(callAgentId) REFERENCES callAgent(id)
+    CONSTRAINT FK_callPermit_CallAgent FOREIGN KEY(callAgentId) REFERENCES callAgent(id)
 )
 GO
-CREATE INDEX IX_callPermit_callAgentId ON callPermit(callAgentId);
+CREATE NONCLUSTERED INDEX IX_callPermit_callAgentId ON callPermit(callAgentId);
 GO
 
 CREATE TABLE zaloTrunk
@@ -144,10 +55,10 @@ CREATE TABLE zaloTrunk
     CONSTRAINT FK_zaloTrunk_Account FOREIGN KEY(accountId) REFERENCES account(id)
 );
 GO
-CREATE INDEX IX_zaloTrunk_accountId ON zaloTrunk(accountId);
+CREATE NONCLUSTERED INDEX IX_zaloTrunk_accountId ON zaloTrunk(accountId);
 GO
-CREATE INDEX IX_zaloTrunk_isDelete ON zaloTrunk(isDelete);
-GO
+-- CREATE NONCLUSTERED INDEX IX_zaloTrunk_isDelete ON zaloTrunk(isDelete);
+-- GO
 
 CREATE VIEW ps_endpoints
 AS

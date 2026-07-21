@@ -125,6 +125,22 @@ BEGIN
             THROW 50006, 'Tạo chatRoomRole không thành công.', 6;
         END
 
+
+		DECLARE @oldCallAgentId INT;
+		DECLARE @newCallAgentId INT;
+		SELECT @oldCallAgentId = id FROM dbo.callAgent WHERE accountId = @accountId;
+		IF @oldCallAgentId IS NULL THROW 50007, N'Không tìm thấy oldCallAgentId .', 7;
+		SELECT @newCallAgentId = id FROM dbo.callAgent WHERE accountId = @accountId;
+		IF @newCallAgentId IS NULL THROW 50008, N'Không tìm thấy newCallAgentId .', 8;
+
+		UPDATE dbo.callPermit
+		SET callAgentId = @newCallAgentId
+		WHERE callAgentId = @oldCallAgentId AND isDelete = 0;
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50009, 'Cập nhật callPermit không thành công.', 9;
+        END
+
 		SELECT * FROM dbo.chatRoom WHERE id = @chatRoomId;
 
 		COMMIT TRANSACTION;
