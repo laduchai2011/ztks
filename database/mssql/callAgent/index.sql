@@ -37,7 +37,7 @@ GO
 CREATE TABLE zaloTrunk
 (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    trunkCode NVARCHAR(255) NOT NULL,
+    trunkCode NVARCHAR(255) NOT NULL UNIQUE,
     transport NVARCHAR(255) NOT NULL DEFAULT 'transport-udp',
     context NVARCHAR(255) NOT NULL DEFAULT 'userZalo-to-agent',
     allowCodec NVARCHAR(255) NOT NULL DEFAULT 'ulaw,alaw',

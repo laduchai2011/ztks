@@ -1,10 +1,14 @@
-export interface CreateCallAgentField {
-    agentCode: string;
-    password: string;
+export interface GetCallAgentWithAccountIdBodyField {
     accountId: number;
 }
 
-export interface CreateCallAgentField {
+export interface CreateCallPermitBodyField {
+    uid: string;
+    callAgentId: number;
+    accountId: number;
+}
+
+export interface CreateZaloTrunkBodyField {
     trunkCode: string;
     domain: string;
     appId: string;

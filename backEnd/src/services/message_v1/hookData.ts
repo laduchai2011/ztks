@@ -22,12 +22,16 @@ import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { ChatRoomField, ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
 import { UserTakeRoomToChatBodyField, ChatRoomBodyField } from '@src/dataStruct/chatRoom/body';
 import { CheckZaloAppWithAppIdBodyField, CheckZaloOaListWithZaloAppIdBodyField } from '@src/dataStruct/zalo/body';
+import { CallAgentField, CallPerMitField } from '@src/dataStruct/callAgent';
+import { GetCallAgentWithAccountIdBodyField, CreateCallPermitBodyField } from '@src/dataStruct/callAgent/body';
 import QueryDB_CheckZaloAppWithAppId from './handleHookData/queryDB/CheckZaloAppWithAppId';
 import QueryDB_CheckZaloOaListWithZaloAppId from './handleHookData/queryDB/CheckZaloOaListWithZaloAppId';
 import QueryDB_UserTakeRoomToChat from './handleHookData/queryDB/UserTakeRoomToChat';
 import QueryDB_GetAccountReceiveMessage from './handleHookData/queryDB/GetAccountReceiveMessage';
 import QueryDB_GetAllChatRoomRolesWithChatRoomId from './handleHookData/queryDB/GetAllChatRoomRolesWithChatRoomId';
 import MutateDB_CreateChatRoom from './handleHookData/mutateDB/CreateChatRoom';
+import QueryDB_GetCallAgentWithAccountId from './handleHookData/queryDB/GetCallAgent';
+import MutateDB_CreateCallPermit from './handleHookData/mutateDB/CreateCallPermit';
 import { prefix_cache_zaloApp_with_appId, prefix_cache_zaloOa_list_with_zaloAppId } from '@src/const/redisKey';
 import { CacheGetAllChatRoomRoleWithCrid, CacheGetChatRoomWithZaloOaIdUserIdByApp } from '@src/const/redisKey/chatRoom';
 import { IsPassField, WaitSessionField } from './type';
@@ -141,6 +145,8 @@ export function hookData() {
 
             // console.log(1111, chatRoom);
             if (!chatRoom) return;
+
+            // create callPermit
 
             if (isFeedback && waitSession) {
                 // store message then feedback
@@ -706,4 +712,68 @@ async function getWaitVideoMessage(reply_account_id: number): Promise<MessageV1F
     );
 
     return result ?? undefined;
+}
+
+async function getCallAgentWithAccountId(accountId: number) {
+    const getCallAgentWithAccountIdBody: GetCallAgentWithAccountIdBodyField = {
+        accountId: accountId,
+    };
+
+    const queryDB = new QueryDB_GetCallAgentWithAccountId();
+    queryDB.setGetCallAgentWithAccountIdBody(getCallAgentWithAccountIdBody);
+
+    const connection_pool = mssql_server.get_connectionPool();
+    if (connection_pool) {
+        queryDB.set_connection_pool(connection_pool);
+    } else {
+        my_log.withYellow('Kết nối cơ sở dữ liệu không thành công !');
+        return;
+    }
+
+    try {
+        const result = await queryDB.run();
+        if (result?.recordset.length && result?.recordset.length > 0) {
+            const callAgent: CallAgentField = result?.recordset[0];
+
+            return callAgent;
+        } else {
+            return;
+        }
+    } catch (error) {
+        console.error(error);
+        return;
+    }
+}
+
+async function createCallPermit(uid: string, callAgentId: number, accountId: number) {
+    const createCallPermitRoomBody: CreateCallPermitBodyField = {
+        uid: uid,
+        callAgentId: callAgentId,
+        accountId: accountId,
+    };
+
+    const mutateDB = new MutateDB_CreateCallPermit();
+    mutateDB.setCreateCallPermitBody(createCallPermitRoomBody);
+
+    const connection_pool = mssql_server.get_connectionPool();
+    if (connection_pool) {
+        mutateDB.set_connection_pool(connection_pool);
+    } else {
+        my_log.withYellow('Kết nối cơ sở dữ liệu không thành công !');
+        return;
+    }
+
+    try {
+        const result = await mutateDB.run();
+        if (result?.recordset.length && result?.recordset.length > 0) {
+            const callPerMit: CallPerMitField = result?.recordset[0];
+
+            return callPerMit;
+        } else {
+            return;
+        }
+    } catch (error) {
+        console.error(error);
+        return;
+    }
 }

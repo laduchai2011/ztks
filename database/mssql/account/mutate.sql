@@ -45,6 +45,28 @@ BEGIN
             THROW 50004, 'Tạo ví 2 không thành công.', 4;
         END
 
+		DECLARE @agentCode NVARCHAR(255);
+		SET @agentCode = CONVERT(NVARCHAR(255), NEWID());
+		SELECT @agentCode;
+		DECLARE @password NVARCHAR(255);
+		SET @password = CONVERT(NVARCHAR(255), NEWID());
+		SELECT @password;
+
+		-- EXEC CreateCallAgent @agentCode @password @newAccountId
+		IF EXISTS ( SELECT 1 FROM dbo.callAgent WHERE accountId = @accountId )
+		BEGIN
+			THROW 50005, N'Đã tồn tại callAgent cho tài khoản này .', 5;
+		END
+
+		DECLARE @newCallAgentId INT;
+
+		INSERT dbo.callAgent (agentCode, password, accountId)
+		VALUES (@agentCode, @password, @accountId)
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50006, N'Tạo callAgent không thành công.', 6;
+        END
+
 		SELECT * FROM dbo.account WHERE id = @newAccountId;
 
 		COMMIT TRANSACTION;

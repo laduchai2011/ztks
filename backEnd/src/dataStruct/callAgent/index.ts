@@ -10,3 +10,11 @@ export interface CallAgentField {
     accountId: number;
     createTime: string;
 }
+
+export interface CallPerMitField {
+    id: number;
+    uid: string;
+    isDelete: boolean;
+    callAgentId: number;
+    createTime: string;
+}

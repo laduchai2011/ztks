@@ -84,6 +84,11 @@ app.use(`${apiString}/hello`, (req, res) => {
         app.use(`${prefix}/service_call`, service_call);
     }
 
+    if (services.includes('callAgent')) {
+        const service_callAgent = (await import('./services/callAgent')).default;
+        app.use(`${prefix}/service_callAgent`, service_callAgent);
+    }
+
     if (services.includes('note')) {
         const service_note = (await import('@src/services/note')).default;
         app.use(`${prefix}/service_note`, service_note);
