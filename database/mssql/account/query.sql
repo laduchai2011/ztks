@@ -23,7 +23,6 @@ BEGIN
 END
 GO
 
-
 CREATE PROCEDURE GetMembers
 	@page INT,
     @size INT,
@@ -120,7 +119,6 @@ BEGIN
 		AND id = @id
 END
 GO
-
 
 --  WITH chatRoomRole
 CREATE PROCEDURE GetReplyAccounts

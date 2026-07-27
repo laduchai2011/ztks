@@ -44,21 +44,21 @@ BEGIN
 	BEGIN TRY
         BEGIN TRANSACTION;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.callAgent WHERE accountId = @accountId )
+		IF NOT EXISTS ( SELECT 1 FROM dbo.callAgent WHERE id = @callAgentId AND  accountId = @accountId )
 		BEGIN
 			THROW 50001, N'callAgent này không phải của bạn .', 1;
 		END
 
 		DECLARE @newCallPermitId INT;
 
-		INSERT dbo.callAgent (agentCode, password, accountId)
-		VALUES (@agentCode, @password, @accountId)
+		INSERT dbo.callPermit (uid, callAgentId)
+		VALUES (@uid, @callAgentId)
 		IF @@ROWCOUNT = 0
         BEGIN
-            THROW 50002, N'Tạo callAgent không thành công.', 2;
+            THROW 50002, N'Tạo callPermit không thành công.', 2;
         END
 
-		SELECT * FROM dbo.callAgent WHERE id = @newCallAgentId;
+		SELECT * FROM dbo.callPermit WHERE id = @newCallPermitId;
 
 		COMMIT TRANSACTION;
 	END TRY
@@ -86,7 +86,7 @@ BEGIN
 		DECLARE @newCallAgentId INT;
 
 		INSERT zaloTrunk (trunkCode, domain, fromUser, contact, accountId)
-		VALUES ( @trunkCode, appId + '.zcc.openapi.zaloapp.com', oaId, 'sip:' + appId + '.zcc.openapi.zaloapp.com:' + port, 1)
+		VALUES ( @trunkCode, @appId + '.zcc.openapi.zaloapp.com', @oaId, 'sip:' + @appId + '.zcc.openapi.zaloapp.com:' + @port, 1)
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50001, N'Tạo callAgent không thành công.', 1;

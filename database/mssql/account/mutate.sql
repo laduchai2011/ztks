@@ -48,12 +48,12 @@ BEGIN
 		DECLARE @agentCode NVARCHAR(255);
 		SET @agentCode = CONVERT(NVARCHAR(255), NEWID());
 		SELECT @agentCode;
-		DECLARE @password NVARCHAR(255);
-		SET @password = CONVERT(NVARCHAR(255), NEWID());
-		SELECT @password;
+		DECLARE @password2 NVARCHAR(255);
+		SET @password2 = CONVERT(NVARCHAR(255), NEWID());
+		SELECT @password2;
 
 		-- EXEC CreateCallAgent @agentCode @password @newAccountId
-		IF EXISTS ( SELECT 1 FROM dbo.callAgent WHERE accountId = @accountId )
+		IF EXISTS ( SELECT 1 FROM dbo.callAgent WHERE accountId = @newAccountId )
 		BEGIN
 			THROW 50005, N'Đã tồn tại callAgent cho tài khoản này .', 5;
 		END
@@ -61,7 +61,7 @@ BEGIN
 		DECLARE @newCallAgentId INT;
 
 		INSERT dbo.callAgent (agentCode, password, accountId)
-		VALUES (@agentCode, @password, @accountId)
+		VALUES (@agentCode, @password2, @newAccountId)
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50006, N'Tạo callAgent không thành công.', 6;
@@ -82,7 +82,7 @@ GO
 DELETE FROM account WHERE id = 2
 GO
 
-EXEC Signup N'member1', N'123hai', N'0789860854', N'Member', N'1';
+EXEC Signup N'admin4', N'admin4', N'0789860858', N'admin', N'4';
 
 CREATE PROCEDURE EditInforAccount
 	@id INT,
@@ -128,7 +128,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE CreateAccountInformation
+CREATE PROCEDURE CreateAccountInformation
 	@addedById INT = NULL,
 	@accountType NVARCHAR(255),
 	@accountId INT
@@ -140,7 +140,7 @@ BEGIN
         BEGIN TRANSACTION;
 
         INSERT INTO dbo.accountInformation (addedById, accountType, accountId)
-        VALUES (NULL, @accountType, @accountId);
+        VALUES (@addedById, @accountType, @accountId);
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50001, 'Thêm thông tin tài khoản không thành công.', 1;

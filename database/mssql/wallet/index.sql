@@ -75,12 +75,10 @@ DROP TABLE IF EXISTS wallet;
 GO
 
 DECLARE @sql NVARCHAR(MAX);
-
 SELECT @sql = 
     'ALTER TABLE [' + OBJECT_NAME(parent_object_id) + '] DROP CONSTRAINT [checkType_wallet]'
 FROM sys.check_constraints
 WHERE name = 'checkType_wallet';
-
 EXEC(@sql);
 
 CREATE TABLE requireTakeMoney (

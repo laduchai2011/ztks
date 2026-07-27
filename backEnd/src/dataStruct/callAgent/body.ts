@@ -2,6 +2,10 @@ export interface GetCallAgentWithAccountIdBodyField {
     accountId: number;
 }
 
+export interface GetCallPermitWithUidBodyField {
+    uid: string;
+}
+
 export interface CreateCallPermitBodyField {
     uid: string;
     callAgentId: number;

@@ -113,6 +113,7 @@ AS
         'yes'
     FROM zaloTrunk
     WHERE isDelete=0;
+GO
 
 CREATE VIEW ps_auths
 AS
@@ -123,6 +124,7 @@ AS
         password
     FROM callAgent
     WHERE isDelete=0;
+GO
 
 CREATE VIEW ps_aors
 AS
@@ -141,6 +143,7 @@ AS
         NULL
     FROM zaloTrunk
     WHERE isDelete=0;
+GO
 
 CREATE VIEW ps_endpoint_id_ips
 AS
@@ -150,3 +153,4 @@ AS
         domain AS match
     FROM zaloTrunk
     WHERE isDelete=0;
+GO

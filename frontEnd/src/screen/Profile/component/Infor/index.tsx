@@ -55,6 +55,8 @@ const Infor = () => {
     }, [account]);
 
     const handleSelected = (type: accountType_enum) => {
+        if (!account) return;
+
         if (selectedType === null) {
             setSelectedType({
                 type,

@@ -22,16 +22,12 @@ import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { ChatRoomField, ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
 import { UserTakeRoomToChatBodyField, ChatRoomBodyField } from '@src/dataStruct/chatRoom/body';
 import { CheckZaloAppWithAppIdBodyField, CheckZaloOaListWithZaloAppIdBodyField } from '@src/dataStruct/zalo/body';
-import { CallAgentField, CallPerMitField } from '@src/dataStruct/callAgent';
-import { GetCallAgentWithAccountIdBodyField, CreateCallPermitBodyField } from '@src/dataStruct/callAgent/body';
 import QueryDB_CheckZaloAppWithAppId from './handleHookData/queryDB/CheckZaloAppWithAppId';
 import QueryDB_CheckZaloOaListWithZaloAppId from './handleHookData/queryDB/CheckZaloOaListWithZaloAppId';
 import QueryDB_UserTakeRoomToChat from './handleHookData/queryDB/UserTakeRoomToChat';
 import QueryDB_GetAccountReceiveMessage from './handleHookData/queryDB/GetAccountReceiveMessage';
 import QueryDB_GetAllChatRoomRolesWithChatRoomId from './handleHookData/queryDB/GetAllChatRoomRolesWithChatRoomId';
 import MutateDB_CreateChatRoom from './handleHookData/mutateDB/CreateChatRoom';
-import QueryDB_GetCallAgentWithAccountId from './handleHookData/queryDB/GetCallAgent';
-import MutateDB_CreateCallPermit from './handleHookData/mutateDB/CreateCallPermit';
 import { prefix_cache_zaloApp_with_appId, prefix_cache_zaloOa_list_with_zaloAppId } from '@src/const/redisKey';
 import { CacheGetAllChatRoomRoleWithCrid, CacheGetChatRoomWithZaloOaIdUserIdByApp } from '@src/const/redisKey/chatRoom';
 import { IsPassField, WaitSessionField } from './type';
@@ -49,6 +45,7 @@ import { ensureIndexes } from './handleHookData/ensureIndexes';
 import { getEnv } from '@src/mode';
 import { myEnv } from '@src/mode/type';
 import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
+import handleCreateCallPermit from './handleCreateCallPermit';
 
 const prefix = getEnv() === myEnv.Dev ? 'dev' : '';
 
@@ -80,11 +77,12 @@ export function hookData() {
             //     const dataParse = parsedChatRoomRole.data;
             //     await dbMonggo.collection<ChatRoomRoleSchemaType>('chatRoomRole').insertOne(dataParse);
             // }
-            console.log('Hook Data Received:');
-            console.dir(data, { depth: null });
+            // console.log('Hook Data Received:');
+            // console.dir(data, { depth: null });
             const app_id = data.app_id;
             const oa_id = determineOaId(data);
             const sender_id_of_user = determineSenderIdOfUser(data);
+            if (!sender_id_of_user) return;
             let chatRoom: ChatRoomField | undefined;
 
             if (!oa_id) return;
@@ -147,6 +145,7 @@ export function hookData() {
             if (!chatRoom) return;
 
             // create callPermit
+            handleCreateCallPermit(sender_id_of_user, chatRoom.accountId);
 
             if (isFeedback && waitSession) {
                 // store message then feedback
@@ -184,7 +183,7 @@ export function hookData() {
                         .bulkWrite(ops, { ordered: false });
                     // console.log(33333333, kq);
                     if (kq) {
-                        if (!sender_id_of_user) return;
+                        // if (!sender_id_of_user) return;
                         sendMessageToUser(zaloApp, zaloOa, {
                             recipient: { user_id: sender_id_of_user },
                             message: {
@@ -712,68 +711,4 @@ async function getWaitVideoMessage(reply_account_id: number): Promise<MessageV1F
     );
 
     return result ?? undefined;
-}
-
-async function getCallAgentWithAccountId(accountId: number) {
-    const getCallAgentWithAccountIdBody: GetCallAgentWithAccountIdBodyField = {
-        accountId: accountId,
-    };
-
-    const queryDB = new QueryDB_GetCallAgentWithAccountId();
-    queryDB.setGetCallAgentWithAccountIdBody(getCallAgentWithAccountIdBody);
-
-    const connection_pool = mssql_server.get_connectionPool();
-    if (connection_pool) {
-        queryDB.set_connection_pool(connection_pool);
-    } else {
-        my_log.withYellow('Kết nối cơ sở dữ liệu không thành công !');
-        return;
-    }
-
-    try {
-        const result = await queryDB.run();
-        if (result?.recordset.length && result?.recordset.length > 0) {
-            const callAgent: CallAgentField = result?.recordset[0];
-
-            return callAgent;
-        } else {
-            return;
-        }
-    } catch (error) {
-        console.error(error);
-        return;
-    }
-}
-
-async function createCallPermit(uid: string, callAgentId: number, accountId: number) {
-    const createCallPermitRoomBody: CreateCallPermitBodyField = {
-        uid: uid,
-        callAgentId: callAgentId,
-        accountId: accountId,
-    };
-
-    const mutateDB = new MutateDB_CreateCallPermit();
-    mutateDB.setCreateCallPermitBody(createCallPermitRoomBody);
-
-    const connection_pool = mssql_server.get_connectionPool();
-    if (connection_pool) {
-        mutateDB.set_connection_pool(connection_pool);
-    } else {
-        my_log.withYellow('Kết nối cơ sở dữ liệu không thành công !');
-        return;
-    }
-
-    try {
-        const result = await mutateDB.run();
-        if (result?.recordset.length && result?.recordset.length > 0) {
-            const callPerMit: CallPerMitField = result?.recordset[0];
-
-            return callPerMit;
-        } else {
-            return;
-        }
-    } catch (error) {
-        console.error(error);
-        return;
-    }
 }

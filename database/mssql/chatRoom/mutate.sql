@@ -125,7 +125,6 @@ BEGIN
             THROW 50006, 'Tạo chatRoomRole không thành công.', 6;
         END
 
-
 		DECLARE @oldCallAgentId INT;
 		DECLARE @newCallAgentId INT;
 		SELECT @oldCallAgentId = id FROM dbo.callAgent WHERE accountId = @accountId;
