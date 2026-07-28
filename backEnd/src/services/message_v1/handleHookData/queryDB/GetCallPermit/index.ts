@@ -21,7 +21,7 @@ class QueryDB_GetCallPermitWithAccountId {
             try {
                 const result = await this._connectionPool
                     .request()
-                    .input('uid', sql.Int, this._getCallPermitWithUidBody.uid)
+                    .input('uid', sql.NVarChar(255), this._getCallPermitWithUidBody.uid)
                     .execute('GetCallPermitWithUid');
 
                 return result;

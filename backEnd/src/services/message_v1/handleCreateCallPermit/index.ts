@@ -130,7 +130,6 @@ async function createCallPermit(uid: string, callAgentId: number, accountId: num
 
 async function handleCreateCallPermit(uid: string, accountId: number) {
     const callPermit = await getCallPermitWithUid(uid);
-    console.log(111111111, callPermit);
     if (callPermit) return;
 
     const callAgent = await getCallAgentWithAccountId(accountId);

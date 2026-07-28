@@ -285,7 +285,7 @@ class Handle_CreateMessageV1 {
         }
 
         const messageAmount = data.amount;
-        if (messageAmount < 30) {
+        if (messageAmount < 3000) {
             next();
             return;
         }
