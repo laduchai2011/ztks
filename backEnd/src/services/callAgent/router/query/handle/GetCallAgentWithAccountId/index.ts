@@ -97,17 +97,17 @@ class Handle_GetCallAgentWithAccountId {
                 this._cacheGetCallAgentWithAccountId.setData(rData);
 
                 myResponse.data = rData;
-                myResponse.message = 'Lấy thông tin quyền truy cập phòng hội thoại thành công !';
+                myResponse.message = 'Lấy thông tin callAgent thành công !';
                 myResponse.isSuccess = true;
                 res.status(200).json(myResponse);
                 return;
             } else {
-                myResponse.message = 'Lấy thông tin quyền truy cập phòng hội thoại KHÔNG thành công !';
+                myResponse.message = 'Lấy thông tin callAgent KHÔNG thành công !';
                 res.status(200).json(myResponse);
                 return;
             }
         } catch (error) {
-            myResponse.message = 'Lấy thông tin quyền truy cập phòng hội thoại KHÔNG thành công !!';
+            myResponse.message = 'Lấy thông tin callAgent KHÔNG thành công !!';
             myResponse.err = error;
             res.status(500).json(myResponse);
             return;

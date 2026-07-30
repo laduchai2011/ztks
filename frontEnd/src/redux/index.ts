@@ -24,6 +24,7 @@ import RegisterPostReducer from '@src/redux/slice/RegisterPost';
 import LeaveReducer from '@src/redux/slice/Leave';
 import { accountRTK } from './query/accountRTK';
 import { callRTK } from './query/callRTK';
+import { callAgentRTK } from './query/callAgentRTK';
 import { messageV1RTK } from './query/messageV1RTK';
 import { zaloRTK } from './query/zaloRTK';
 import { chatSessionRTK } from './query/chatSessionRTK';
@@ -64,6 +65,7 @@ export const store = configureStore({
         LeaveSlice: LeaveReducer,
         [accountRTK.reducerPath]: accountRTK.reducer,
         [callRTK.reducerPath]: callRTK.reducer,
+        [callAgentRTK.reducerPath]: callAgentRTK.reducer,
         [messageV1RTK.reducerPath]: messageV1RTK.reducer,
         [zaloRTK.reducerPath]: zaloRTK.reducer,
         [chatSessionRTK.reducerPath]: chatSessionRTK.reducer,
@@ -80,6 +82,7 @@ export const store = configureStore({
         getDefaultMiddleware().concat(
             accountRTK.middleware,
             callRTK.middleware,
+            callAgentRTK.middleware,
             messageV1RTK.middleware,
             zaloRTK.middleware,
             chatSessionRTK.middleware,

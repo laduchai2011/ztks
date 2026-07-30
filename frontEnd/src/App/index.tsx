@@ -7,7 +7,9 @@ import { AppDispatch, RootState } from '@src/redux';
 import { set_account, set_accountInformation, set_myAdmin, set_zaloApp } from '@src/redux/slice/App';
 import { AccountField, AccountInformationField } from '@src/dataStruct/account';
 import { useGetZaloAppWithAccountIdQuery } from '@src/redux/query/zaloRTK';
+import { useLazyGetCallAgentWithAccountIdQuery } from '@src/redux/query/callAgentRTK';
 import { getSocket } from '@src/socketIo';
+import { MySip } from '@src/call';
 
 const App = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -16,6 +18,8 @@ const App = () => {
     );
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
     const myAdmin: number | undefined = useSelector((state: RootState) => state.AppSlice.myAdmin);
+
+    const [getCallAgentWithAccountId] = useLazyGetCallAgentWithAccountIdQuery();
 
     useEffect(() => {
         if (!account) return;
@@ -141,6 +145,24 @@ const App = () => {
             dispatch(set_zaloApp(resData.data));
         }
     }, [dispatch, data_zaloApp]);
+
+    useEffect(() => {
+        getCallAgentWithAccountId({ accountId: -1 })
+            .then(async (res) => {
+                const resData = res.data;
+                console.log(111111, resData);
+                if (resData?.isSuccess && resData.data) {
+                    const mySip = new MySip(resData.data.agentCode, resData.data.password);
+                    mySip.createUserAgent();
+                    mySip.createUserAgent();
+                    mySip.createRegisterer();
+                    await mySip.connectSip();
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, [getCallAgentWithAccountId]);
 
     return (
         <div>
