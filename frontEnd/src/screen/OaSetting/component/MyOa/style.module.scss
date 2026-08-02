@@ -69,6 +69,10 @@
                     color: blue;
                 }
             }
+
+            > svg {
+                margin: 0 5px;
+            }
         }
 
         > .warn {

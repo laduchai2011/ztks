@@ -22,7 +22,6 @@ class MutateDB_CreateZaloTrunk {
                 const result = await this._connectionPool
                     .request()
                     .input('trunkCode', sql.NVarChar(255), this._createZaloTrunkBody.trunkCode)
-                    .input('domain', sql.NVarChar(255), this._createZaloTrunkBody.domain)
                     .input('appId', sql.NVarChar(255), this._createZaloTrunkBody.appId)
                     .input('oaId', sql.NVarChar(255), this._createZaloTrunkBody.oaId)
                     .input('port', sql.NVarChar(255), this._createZaloTrunkBody.port)

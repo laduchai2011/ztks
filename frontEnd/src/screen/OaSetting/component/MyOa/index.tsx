@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { CiEdit } from 'react-icons/ci';
 import { FaRegEye, FaEyeSlash } from 'react-icons/fa';
+import { MdOutlineWifiCalling } from 'react-icons/md';
 import { GoDotFill } from 'react-icons/go';
 import { useGetZaloOaWithIdQuery } from '@src/redux/query/zaloRTK';
 import { AccountInformationField } from '@src/dataStruct/account';
@@ -18,6 +19,8 @@ import {
     setIsShow_editZaloOa,
     setZaloOa_editZaloOa,
     setNewZaloOa_editZaloOa,
+    setIsShow_createZaloTrunkDialog,
+    setZaloOa_createZaloTrunkDialog,
 } from '@src/redux/slice/OaSetting';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
@@ -90,6 +93,11 @@ const MyOa = () => {
         dispatch(setZaloOa_editZaloOa(zaloOa));
     };
 
+    const handleOpenCreateZaloTrunk = () => {
+        dispatch(setIsShow_createZaloTrunkDialog(true));
+        dispatch(setZaloOa_createZaloTrunkDialog(zaloOa));
+    };
+
     return (
         <div className={style.parent}>
             <div>
@@ -143,6 +151,7 @@ const MyOa = () => {
                         Lấy token mới
                     </div>
                     <CiEdit onClick={() => handleOpenEdit()} size={30} color="green" />
+                    <MdOutlineWifiCalling onClick={() => handleOpenCreateZaloTrunk()} size={25} color="red" />
                 </div>
                 <div className={style.warn}>Thông tin không được để lộ</div>
             </div>

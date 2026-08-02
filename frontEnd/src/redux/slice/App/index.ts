@@ -9,6 +9,10 @@ const initialState: state_props = {
     accountInformation: undefined,
     myAdmin: undefined,
     zaloApp: undefined,
+    calling: {
+        is: false,
+        uid: undefined,
+    },
 };
 
 const AppSlice = createSlice({
@@ -30,9 +34,18 @@ const AppSlice = createSlice({
         set_zaloApp: (state, action: PayloadAction<ZaloAppField>) => {
             state.zaloApp = action.payload;
         },
+        set_calling: (state, action: PayloadAction<{ is: boolean; uid?: string }>) => {
+            state.calling = action.payload;
+        },
     },
 });
 
-export const { set_id_isNewMessage_current, set_account, set_accountInformation, set_myAdmin, set_zaloApp } =
-    AppSlice.actions;
+export const {
+    set_id_isNewMessage_current,
+    set_account,
+    set_accountInformation,
+    set_myAdmin,
+    set_zaloApp,
+    set_calling,
+} = AppSlice.actions;
 export default AppSlice.reducer;

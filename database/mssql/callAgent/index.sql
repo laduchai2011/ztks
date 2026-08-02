@@ -51,6 +51,8 @@ CREATE TABLE zaloTrunk
     accountId INT NOT NULL,
     createTime DATETIMEOFFSET(7) NOT NULL DEFAULT SYSDATETIMEOFFSET(),
 
+	CONSTRAINT UQ_zaloTrunk_domain_fromUser UNIQUE (domain, fromUser),
+
     CONSTRAINT UQ_zaloTrunk_trunkCode UNIQUE(trunkCode),
     CONSTRAINT FK_zaloTrunk_Account FOREIGN KEY(accountId) REFERENCES account(id)
 );

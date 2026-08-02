@@ -26,6 +26,10 @@ const initialState: state_props = {
         zaloOa: undefined,
         newZaloOa: undefined,
     },
+    createZaloTrunkDialog: {
+        isShow: false,
+        zaloOa: undefined,
+    },
 };
 
 const OaSettingSlice = createSlice({
@@ -87,6 +91,12 @@ const OaSettingSlice = createSlice({
         setNewZaloOa_editZaloOa: (state, action: PayloadAction<ZaloOaField | undefined>) => {
             state.editZaloOa.newZaloOa = action.payload;
         },
+        setIsShow_createZaloTrunkDialog: (state, action: PayloadAction<boolean>) => {
+            state.createZaloTrunkDialog.isShow = action.payload;
+        },
+        setZaloOa_createZaloTrunkDialog: (state, action: PayloadAction<ZaloOaField | undefined>) => {
+            state.createZaloTrunkDialog.zaloOa = action.payload;
+        },
     },
 });
 
@@ -102,5 +112,7 @@ export const {
     setIsShow_editZaloOa,
     setZaloOa_editZaloOa,
     setNewZaloOa_editZaloOa,
+    setIsShow_createZaloTrunkDialog,
+    setZaloOa_createZaloTrunkDialog,
 } = OaSettingSlice.actions;
 export default OaSettingSlice.reducer;

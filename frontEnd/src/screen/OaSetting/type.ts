@@ -24,6 +24,10 @@ export interface state_props {
         zaloOa?: ZaloOaField;
         newZaloOa?: ZaloOaField;
     };
+    createZaloTrunkDialog: {
+        isShow: boolean;
+        zaloOa?: ZaloOaField;
+    };
 }
 
 export enum Crud_Enum {

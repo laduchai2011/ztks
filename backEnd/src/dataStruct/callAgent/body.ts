@@ -14,7 +14,6 @@ export interface CreateCallPermitBodyField {
 
 export interface CreateZaloTrunkBodyField {
     trunkCode: string;
-    domain: string;
     appId: string;
     oaId: string;
     port: string;

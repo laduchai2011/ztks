@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import AppRouter from '@src/router';
 import axiosInstance from '@src/api/axiosInstance';
 import { MyResponse } from '@src/dataStruct/response';
@@ -10,6 +10,8 @@ import { useGetZaloAppWithAccountIdQuery } from '@src/redux/query/zaloRTK';
 import { useLazyGetCallAgentWithAccountIdQuery } from '@src/redux/query/callAgentRTK';
 import { getSocket } from '@src/socketIo';
 import { MySip } from '@src/call';
+import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
+import { SessionState } from 'sip.js';
 
 const App = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -18,8 +20,11 @@ const App = () => {
     );
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
     const myAdmin: number | undefined = useSelector((state: RootState) => state.AppSlice.myAdmin);
+    const calling: { is: boolean; uid?: string } = useSelector((state: RootState) => state.AppSlice.calling);
 
     const [getCallAgentWithAccountId] = useLazyGetCallAgentWithAccountIdQuery();
+
+    const [mySip, setMySip] = useState<MySip | null>(null);
 
     useEffect(() => {
         if (!account) return;
@@ -146,23 +151,122 @@ const App = () => {
         }
     }, [dispatch, data_zaloApp]);
 
+    // useEffect(() => {
+    //     getCallAgentWithAccountId({ accountId: -1 })
+    //         .then(async (res) => {
+    //             const resData = res.data;
+    //             if (resData?.isSuccess && resData.data) {
+    //                 const mySip_ = new MySip(resData.data.agentCode, resData.data.password);
+    //                 mySip_.createUserAgent();
+    //                 mySip_.createRegisterer();
+    //                 await mySip_.connectSip();
+    //                 await mySip_.handleIncomingCall(
+    //                     (stream: MediaStream) => {
+    //                         console.log('Receive remote stream');
+
+    //                         // if (audioRef.current) {
+    //                         //     audioRef.current.srcObject = stream;
+    //                         //     audioRef.current.play().catch(console.error);
+    //                         // }
+    //                     },
+    //                     (state) => {
+    //                         switch (state) {
+    //                             case SessionState.Initial:
+    //                                 break;
+
+    //                             case SessionState.Establishing:
+    //                                 break;
+
+    //                             case SessionState.Established:
+    //                                 // setCallInState(CallInStateEnum.CALL_IN);
+    //                                 break;
+
+    //                             case SessionState.Terminating:
+    //                                 // setCallInState(CallInStateEnum.CALL_END);
+    //                                 break;
+
+    //                             case SessionState.Terminated:
+    //                                 // setCallInState(CallInStateEnum.CALL_END);
+    //                                 break;
+    //                         }
+    //                     },
+    //                     (invitation) => {
+    //                         console.log(11111111, invitation.request.from.uri);
+    //                         if (invitation) {
+    //                             // setCallInState(CallInStateEnum.RINGING);
+    //                         }
+    //                     }
+    //                 );
+    //                 setMySip(mySip_);
+    //             }
+    //         })
+    //         .catch((err) => {
+    //             console.error(err);
+    //         });
+    // }, [dispatch, getCallAgentWithAccountId]);
+
     useEffect(() => {
-        getCallAgentWithAccountId({ accountId: -1 })
-            .then(async (res) => {
-                const resData = res.data;
-                console.log(111111, resData);
-                if (resData?.isSuccess && resData.data) {
-                    const mySip = new MySip(resData.data.agentCode, resData.data.password);
-                    mySip.createUserAgent();
-                    mySip.createUserAgent();
-                    mySip.createRegisterer();
-                    await mySip.connectSip();
+        let sip: MySip | null = null;
+        let mounted = true;
+
+        (async () => {
+            const res = await getCallAgentWithAccountId({ accountId: -1 });
+
+            if (!(res.data?.isSuccess && res.data.data)) {
+                console.error('Failed to get call agent');
+                return;
+            }
+
+            if (!mounted) return;
+
+            sip = new MySip(res.data.data.agentCode, res.data.data.password);
+
+            sip.createUserAgent();
+            sip.createRegisterer();
+
+            await sip.connectSip();
+
+            // await sip.handleIncomingCall(...);
+
+            setMySip(sip);
+        })();
+
+        return () => {
+            mounted = false;
+
+            if (sip) {
+                void sip.disconnectSip();
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!mySip) return;
+
+        if (calling.is && calling.uid) {
+            mySip.callUid(`99${calling.uid}`, false, (state) => {
+                console.log('callUid state', state);
+                switch (state) {
+                    case SessionState.Initial:
+                        break;
+
+                    case SessionState.Establishing:
+                        break;
+
+                    case SessionState.Established:
+                        break;
+
+                    case SessionState.Terminating:
+                        break;
+
+                    case SessionState.Terminated:
+                        break;
                 }
-            })
-            .catch((err) => {
-                console.error(err);
             });
-    }, [getCallAgentWithAccountId]);
+        }
+    }, [mySip, calling]);
+
+    useEffect(() => {}, []);
 
     return (
         <div>

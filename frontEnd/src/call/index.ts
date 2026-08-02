@@ -10,9 +10,51 @@ export class MySip {
     private _inviterOut: Inviter | undefined;
     private localStream?: MediaStream;
 
+    private _reconnectTimer?: ReturnType<typeof setTimeout>;
+    private _reconnectDelay = 1000; // 1s
+    private readonly _maxReconnectDelay = 30000; // 30s
+    private _stopped = false;
+
     constructor(agentCode: string, agentPassword: string) {
         this._agentCode = agentCode;
         this._agentPassword = agentPassword;
+    }
+
+    private scheduleReconnect() {
+        if (this._stopped) {
+            return;
+        }
+
+        if (this._reconnectTimer) {
+            clearTimeout(this._reconnectTimer);
+        }
+
+        console.log(`Reconnect sau ${this._reconnectDelay / 1000}s`);
+
+        this._reconnectTimer = setTimeout(async () => {
+            if (this._stopped) {
+                return;
+            }
+
+            try {
+                if (this._userAgent) {
+                    try {
+                        await this._userAgent.stop();
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+
+                this.createUserAgent();
+                this.createRegisterer();
+
+                await this.connectSip();
+            } catch (err) {
+                console.error(err);
+            }
+        }, this._reconnectDelay);
+
+        this._reconnectDelay = Math.min(this._reconnectDelay * 2, this._maxReconnectDelay);
     }
 
     createUserAgent() {
@@ -54,6 +96,14 @@ export class MySip {
         }
 
         this._userAgent.delegate = {
+            onDisconnect: async () => {
+                console.log('WebSocket disconnected');
+
+                if (!this._stopped) {
+                    this.scheduleReconnect();
+                }
+            },
+
             onInvite: (invitation) => {
                 this._inviterIn = invitation;
 
@@ -139,22 +189,20 @@ export class MySip {
         }
         // console.log('1. connectSip called');
 
+        this._stopped = false;
+
         try {
             this._registerer.stateChange.addListener((state) => {
                 // console.log('Register state:', state);
             });
 
-            // console.log('2. before start');
             await this._userAgent.start();
-
-            // console.log('3. WebSocket connected');
-
-            // console.log('4. before register');
             await this._registerer.register();
 
-            // console.log('5. REGISTER sent');
+            this._reconnectDelay = 1000;
         } catch (error) {
             console.error('SIP Error:', error);
+            this.scheduleReconnect();
         }
     }
 
@@ -270,6 +318,70 @@ export class MySip {
             });
 
             this.localStream = undefined;
+        }
+    }
+
+    async disconnectSip() {
+        try {
+            // Kết thúc cuộc gọi nếu có
+            if (this._inviterOut) {
+                try {
+                    if (this._inviterOut.state === SessionState.Established) {
+                        await this._inviterOut.bye();
+                    } else {
+                        await this._inviterOut.cancel();
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+
+                this._inviterOut = undefined;
+            }
+
+            if (this._inviterIn) {
+                try {
+                    if (this._inviterIn.state === SessionState.Established) {
+                        await this._inviterIn.bye();
+                    } else {
+                        await this._inviterIn.reject();
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+
+                this._inviterIn = undefined;
+            }
+
+            // Giải phóng microphone
+            if (this.localStream) {
+                this.localStream.getTracks().forEach((track) => track.stop());
+                this.localStream = undefined;
+            }
+
+            // Gửi REGISTER expires=0
+            if (this._registerer) {
+                try {
+                    await this._registerer.unregister();
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            // Đóng WebSocket
+            if (this._userAgent) {
+                try {
+                    await this._userAgent.stop();
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            this._registerer = undefined;
+            this._userAgent = undefined;
+
+            console.log('Disconnected from Asterisk');
+        } catch (err) {
+            console.error(err);
         }
     }
 }

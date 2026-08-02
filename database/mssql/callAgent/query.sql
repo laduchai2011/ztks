@@ -6,6 +6,19 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE GetAgentCodeFromUid
+	@uid INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+    DECLARE @callAgentId INT;
+    SELECT @callAgentId = callAgentId FROM dbo.callPermit WHERE isDelete = 0 AND uid = @uid;
+
+    SELECT agentCode FROM dbo.callAgent WHERE id = @callAgentId;
+END
+GO
+
 CREATE PROCEDURE GetCallPermitWithUid
 	@uid NVARCHAR(255)
 AS

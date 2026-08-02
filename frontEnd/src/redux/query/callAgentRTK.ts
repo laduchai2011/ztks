@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { CallAgentField } from '@src/dataStruct/callAgent';
-import { GetCallAgentWithAccountIdBodyField } from '@src/dataStruct/callAgent/body';
+import { CallAgentField, ZaloTrunkField } from '@src/dataStruct/callAgent';
+import { GetCallAgentWithAccountIdBodyField, CreateZaloTrunkBodyField } from '@src/dataStruct/callAgent/body';
 import { CALL_AGENT_API } from '@src/const/api/callAgent';
 import { MyResponse } from '@src/dataStruct/response';
 import { DeviceEnum } from '@src/device/type';
@@ -31,14 +31,14 @@ export const callAgentRTK = createApi({
         //         body,
         //     }),
         // }),
-        // requestConsent: builder.mutation<MyResponse<any>, RequestConsentBodyField>({
-        //     query: (body) => ({
-        //         url: CALL_API.REQUEST_CONSENT,
-        //         method: 'POST',
-        //         body,
-        //     }),
-        // }),
+        createZaloTrunk: builder.mutation<MyResponse<ZaloTrunkField>, CreateZaloTrunkBodyField>({
+            query: (body) => ({
+                url: CALL_AGENT_API.CREATE_ZALO_TRUNK,
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useLazyGetCallAgentWithAccountIdQuery } = callAgentRTK;
+export const { useLazyGetCallAgentWithAccountIdQuery, useCreateZaloTrunkMutation } = callAgentRTK;

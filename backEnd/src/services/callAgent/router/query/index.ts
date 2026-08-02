@@ -5,9 +5,9 @@ import Handle_GetCallAgentWithAccountId from './handle/GetCallAgentWithAccountId
 
 dotenv.config();
 
-const handle_getCallAgentWithAccountId = new Handle_GetCallAgentWithAccountId();
-
 const router_query_callAgent: Router = express.Router();
+
+const handle_getCallAgentWithAccountId = new Handle_GetCallAgentWithAccountId();
 
 router_query_callAgent.post(
     '/getCallAgentWithAccountId',

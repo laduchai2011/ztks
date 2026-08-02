@@ -7,6 +7,7 @@ import { MdCall, MdWifiCalling3 } from 'react-icons/md';
 import { MySip } from '../../../../call';
 import { SessionState } from 'sip.js';
 import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
+import { set_calling } from '@src/redux/slice/App';
 
 const Call: FC<{
     mySip: MySip | null;
@@ -20,31 +21,32 @@ const Call: FC<{
     const uid: string = useSelector((state: RootState) => state.MessageV1Slice.uid);
 
     const handleOpenCall = () => {
-        if (mySip) {
-            mySip.callUid(`99${uid}`, false, (state) => {
-                switch (state) {
-                    case SessionState.Initial:
-                        setCallOutState(CallOutStateEnum.CONNECTING);
-                        break;
+        dispatch(set_calling({ is: true, uid }));
+        // if (mySip) {
+        //     mySip.callUid(`99${uid}`, false, (state) => {
+        //         switch (state) {
+        //             case SessionState.Initial:
+        //                 setCallOutState(CallOutStateEnum.CONNECTING);
+        //                 break;
 
-                    case SessionState.Establishing:
-                        setCallOutState(CallOutStateEnum.RINGING);
-                        break;
+        //             case SessionState.Establishing:
+        //                 setCallOutState(CallOutStateEnum.RINGING);
+        //                 break;
 
-                    case SessionState.Established:
-                        setCallOutState(CallOutStateEnum.CALL_IN);
-                        break;
+        //             case SessionState.Established:
+        //                 setCallOutState(CallOutStateEnum.CALL_IN);
+        //                 break;
 
-                    case SessionState.Terminating:
-                        setCallOutState(CallOutStateEnum.CALL_END);
-                        break;
+        //             case SessionState.Terminating:
+        //                 setCallOutState(CallOutStateEnum.CALL_END);
+        //                 break;
 
-                    case SessionState.Terminated:
-                        setCallOutState(CallOutStateEnum.CALL_END);
-                        break;
-                }
-            });
-        }
+        //             case SessionState.Terminated:
+        //                 setCallOutState(CallOutStateEnum.CALL_END);
+        //                 break;
+        //         }
+        //     });
+        // }
     };
 
     const handleOfCall = () => {

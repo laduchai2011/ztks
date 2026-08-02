@@ -7,4 +7,8 @@ export interface state_props {
     accountInformation?: AccountInformationField;
     myAdmin?: number;
     zaloApp?: ZaloAppField;
+    calling: {
+        is: boolean;
+        uid?: string;
+    };
 }

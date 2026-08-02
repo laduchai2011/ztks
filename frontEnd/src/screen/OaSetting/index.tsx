@@ -12,6 +12,7 @@ import DelDialog from './component/DelDialog';
 import DialogLoading from './component/DialogLoading';
 import TakeTokenDialog from './component/TakeTokenDialog';
 import EditZaloOa from './component/EditZaloOa';
+import CreateZaloTrunkDialog from './component/CreateZaloTrunkDialog';
 import { route_enum } from '@src/router/type';
 import { setData_toastMessage } from '@src/redux/slice/Order';
 
@@ -56,6 +57,7 @@ const OaSetting = () => {
                     <DialogLoading />
                     <TakeTokenDialog />
                     <EditZaloOa />
+                    <CreateZaloTrunkDialog />
                 </div>
             </div>
         </div>
