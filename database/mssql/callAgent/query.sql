@@ -7,7 +7,7 @@ END
 GO
 
 CREATE PROCEDURE GetAgentCodeFromUid
-	@uid INT
+	@uid NVARCHAR(255)
 AS
 BEGIN
 	SET NOCOUNT ON;

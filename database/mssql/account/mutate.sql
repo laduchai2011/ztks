@@ -82,7 +82,7 @@ GO
 DELETE FROM account WHERE id = 2
 GO
 
-EXEC Signup N'admin4', N'admin4', N'0789860858', N'admin', N'4';
+EXEC Signup N'member4', N'member4', N'0789860859', N'Member', N'4';
 
 CREATE PROCEDURE EditInforAccount
 	@id INT,

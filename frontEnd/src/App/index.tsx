@@ -226,7 +226,43 @@ const App = () => {
 
             await sip.connectSip();
 
-            // await sip.handleIncomingCall(...);
+            await sip.handleIncomingCall(
+                (stream: MediaStream) => {
+                    console.log('Receive remote stream');
+
+                    // if (audioRef.current) {
+                    //     audioRef.current.srcObject = stream;
+                    //     audioRef.current.play().catch(console.error);
+                    // }
+                },
+                (state) => {
+                    switch (state) {
+                        case SessionState.Initial:
+                            break;
+
+                        case SessionState.Establishing:
+                            break;
+
+                        case SessionState.Established:
+                            // setCallInState(CallInStateEnum.CALL_IN);
+                            break;
+
+                        case SessionState.Terminating:
+                            // setCallInState(CallInStateEnum.CALL_END);
+                            break;
+
+                        case SessionState.Terminated:
+                            // setCallInState(CallInStateEnum.CALL_END);
+                            break;
+                    }
+                },
+                (invitation) => {
+                    console.log(11111111, invitation.request.from.uri);
+                    if (invitation) {
+                        // setCallInState(CallInStateEnum.RINGING);
+                    }
+                }
+            );
 
             setMySip(sip);
         })();
