@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { state_props } from '@src/App/type';
 import { AccountField, AccountInformationField } from '@src/dataStruct/account';
 import { ZaloAppField } from '@src/dataStruct/zalo';
+import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
 
 const initialState: state_props = {
     id_isNewMessage_current: -1, // bỏ
@@ -12,6 +13,10 @@ const initialState: state_props = {
     calling: {
         is: false,
         uid: undefined,
+    },
+    call: {
+        inState: CallInStateEnum.CALL_END,
+        outState: CallOutStateEnum.CALL_END,
     },
 };
 
