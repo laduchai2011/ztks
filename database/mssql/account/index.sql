@@ -18,7 +18,6 @@ GO
 CREATE NONCLUSTERED INDEX idx_phone ON account(phone);
 GO
 
-
 CREATE TABLE accountInformation (
     addedById INT,
     accountType NVARCHAR(255) NOT NULL,

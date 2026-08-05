@@ -145,7 +145,7 @@ export function hookData() {
             if (!chatRoom) return;
 
             // create callPermit
-            handleCreateCallPermit(sender_id_of_user, chatRoom.accountId);
+            handleCreateCallPermit(sender_id_of_user, zaloApp.appId, zaloOa.oaId, chatRoom.accountId);
 
             if (isFeedback && waitSession) {
                 // store message then feedback

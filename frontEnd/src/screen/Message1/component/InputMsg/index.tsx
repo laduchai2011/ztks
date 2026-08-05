@@ -28,8 +28,8 @@ import {
     setData_toastMessage,
     set_isLoading,
     setIsShow_changeChatRoomMasterDialog,
-    setIsShow_callDialog,
 } from '@src/redux/slice/MessageV1';
+import { set_calling } from '@src/redux/slice/App';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { uploadAImageToZalo, uploadVideo } from '../../handle';
 import { AccountField } from '@src/dataStruct/account';
@@ -350,7 +350,7 @@ const InputMsg = () => {
     };
 
     const handleOpenCall = () => {
-        dispatch(setIsShow_callDialog(true));
+        dispatch(set_calling({ is: true, uid: undefined }));
     };
 
     const handleGoToOrder = () => {

@@ -8,6 +8,8 @@ export interface GetCallPermitWithUidBodyField {
 
 export interface CreateCallPermitBodyField {
     uid: string;
+    appId: string;
+    oaId: string;
     callAgentId: number;
     accountId: number;
 }

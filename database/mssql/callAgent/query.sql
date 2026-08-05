@@ -19,6 +19,34 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE GetTrunkCodeFromUid
+	@uid NVARCHAR(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+    DECLARE @zaloTrunkId INT;
+    SELECT @zaloTrunkId = zaloTrunkId FROM dbo.callPermit WHERE isDelete = 0 AND uid = @uid;
+	IF @zaloTrunkId IS NULL THROW 50003, N'ZaloTrunk không tồn tại .', 3;
+
+    SELECT trunkCode, domain FROM dbo.zaloTrunk WHERE id = @zaloTrunkId;
+END
+GO
+
+CREATE PROCEDURE GetDomainFromUid
+	@uid NVARCHAR(255)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+    DECLARE @zaloTrunkId INT;
+    SELECT @zaloTrunkId = zaloTrunkId FROM dbo.callPermit WHERE isDelete = 0 AND uid = @uid;
+	IF @zaloTrunkId IS NULL THROW 50003, N'ZaloTrunk không tồn tại .', 3;
+
+    SELECT trunkCode, domain FROM dbo.zaloTrunk WHERE id = @zaloTrunkId;
+END
+GO
+
 CREATE PROCEDURE GetCallPermitWithUid
 	@uid NVARCHAR(255)
 AS

@@ -22,6 +22,8 @@ class MutateDB_CreateCallPermit {
                 const result = await this._connectionPool
                     .request()
                     .input('uid', sql.NVarChar(255), this._createCallPermitBody.uid)
+                    .input('appId', sql.NVarChar(255), this._createCallPermitBody.appId)
+                    .input('oaId', sql.NVarChar(255), this._createCallPermitBody.oaId)
                     .input('callAgentId', sql.Int, this._createCallPermitBody.callAgentId)
                     .input('accountId', sql.Int, this._createCallPermitBody.accountId)
                     .execute('CreateCallPermit');

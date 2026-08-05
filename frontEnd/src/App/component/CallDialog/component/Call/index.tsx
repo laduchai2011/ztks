@@ -1,25 +1,22 @@
-import { FC, memo, useRef } from 'react';
+import { memo, useRef } from 'react';
 import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { MdCall, MdWifiCalling3 } from 'react-icons/md';
-// import { CallTypeEnum, CallTypeType } from '@src/dataStruct/call';
 import { SessionState } from 'sip.js';
 import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
 import { set_calling } from '@src/redux/slice/App';
 
-const Call: FC<{
-    callInState: CallInStateType;
-    setCallInState: React.Dispatch<React.SetStateAction<CallInStateType>>;
-    callOutState: CallOutStateType;
-    setCallOutState: React.Dispatch<React.SetStateAction<CallOutStateType>>;
-}> = ({ callInState, setCallInState, callOutState, setCallOutState }) => {
+const Call = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
-    const uid: string = useSelector((state: RootState) => state.MessageV1Slice.uid);
+    const uid: string | undefined = useSelector((state: RootState) => state.MessageV1Slice.uid);
+    const callInState: CallInStateType = useSelector((state: RootState) => state.AppSlice.call.inState);
+    const callOutState: CallOutStateType = useSelector((state: RootState) => state.AppSlice.call.outState);
 
     const handleOpenCall = () => {
-        dispatch(set_calling({ is: true, uid }));
+        if (!uid) return;
+        dispatch(set_calling({ is: true, uid: uid }));
     };
 
     const handleOfCall = () => {

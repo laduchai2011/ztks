@@ -69,7 +69,6 @@ CREATE PROCEDURE GetPostWithId
 	@id INT
 AS
 BEGIN
-	
     SELECT * FROM dbo.post WHERE id = @id
 END
 GO

@@ -36,6 +36,8 @@
 
 CREATE PROCEDURE CreateCallPermit
 	@uid NVARCHAR(255),
+	@appId NVARCHAR(255),
+	@oaId NVARCHAR(255),
 	@callAgentId INT,
 	@accountId INT
 AS
@@ -49,10 +51,14 @@ BEGIN
 			THROW 50001, N'callAgent này không phải của bạn .', 1;
 		END
 
+		DECLARE @zaloTrunkId INT;
+
+		SELECT @zaloTrunkId = id FROM dbo.zaloTrunk WHERE domain = @appId + '.zcc.openapi.zaloapp.com' AND fromUser = @oaId;
+
 		DECLARE @newCallPermitId INT;
 
-		INSERT dbo.callPermit (uid, callAgentId)
-		VALUES (@uid, @callAgentId)
+		INSERT dbo.callPermit (uid, callAgentId, zaloTrunkId)
+		VALUES (@uid, @callAgentId, @zaloTrunkId)
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50002, N'Tạo callPermit không thành công.', 2;

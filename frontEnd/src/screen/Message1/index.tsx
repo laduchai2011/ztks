@@ -180,7 +180,7 @@ const Message1 = () => {
                 <MyToastMessage />
                 <MyLoading />
                 <ChangeChatRoomMasterDialog />
-                <CallDialog />
+                {/* <CallDialog /> */}
             </div>
         </div>
     );

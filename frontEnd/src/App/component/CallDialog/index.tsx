@@ -24,7 +24,7 @@ const CallDialog = () => {
     const parent_element = useRef<HTMLDivElement | null>(null);
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
-    const isShow: boolean = useSelector((state: RootState) => state.MessageV1Slice.callDialog.isShow);
+    const isShow: boolean = useSelector((state: RootState) => state.AppSlice.calling.is);
     const uid: string = useSelector((state: RootState) => state.MessageV1Slice.uid);
 
     const [agentCode, setAgentCode] = useState<string>('');
@@ -151,12 +151,7 @@ const CallDialog = () => {
                         isShow={isRequestConsent}
                         setIsShow={setIsRequestConsent}
                     />
-                    <Call
-                        callInState={callInState}
-                        setCallInState={setCallInState}
-                        callOutState={callOutState}
-                        setCallOutState={setCallOutState}
-                    />
+                    <Call />
                     <audio ref={audioRef} autoPlay playsInline />
                     <button className={style.button} onClick={() => handleInComing()}>
                         In Coming

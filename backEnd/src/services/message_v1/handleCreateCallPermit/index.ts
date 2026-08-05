@@ -95,9 +95,11 @@ async function getCallPermitWithUid(uid: string) {
     }
 }
 
-async function createCallPermit(uid: string, callAgentId: number, accountId: number) {
+async function createCallPermit(uid: string, appId: string, oaId: string, callAgentId: number, accountId: number) {
     const createCallPermitRoomBody: CreateCallPermitBodyField = {
         uid: uid,
+        appId: appId,
+        oaId: oaId,
         callAgentId: callAgentId,
         accountId: accountId,
     };
@@ -128,7 +130,7 @@ async function createCallPermit(uid: string, callAgentId: number, accountId: num
     }
 }
 
-async function handleCreateCallPermit(uid: string, accountId: number) {
+async function handleCreateCallPermit(uid: string, appId: string, oaId: string, accountId: number) {
     const callPermit = await getCallPermitWithUid(uid);
     if (callPermit) return;
 
@@ -138,7 +140,7 @@ async function handleCreateCallPermit(uid: string, accountId: number) {
         return;
     }
 
-    const newCallPermit = await createCallPermit(uid, callAgent.id, accountId);
+    const newCallPermit = await createCallPermit(uid, appId, oaId, callAgent.id, accountId);
     if (!newCallPermit) {
         console.warn(`Tạo callPermit cho ${uid} không thành công !`);
         return;

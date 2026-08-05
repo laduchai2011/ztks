@@ -42,6 +42,12 @@ const AppSlice = createSlice({
         set_calling: (state, action: PayloadAction<{ is: boolean; uid?: string }>) => {
             state.calling = action.payload;
         },
+        set_callInState: (state, action: PayloadAction<CallInStateType>) => {
+            state.call.inState = action.payload;
+        },
+        set_callOutState: (state, action: PayloadAction<CallOutStateType>) => {
+            state.call.outState = action.payload;
+        },
     },
 });
 
@@ -52,5 +58,7 @@ export const {
     set_myAdmin,
     set_zaloApp,
     set_calling,
+    set_callInState,
+    set_callOutState,
 } = AppSlice.actions;
 export default AppSlice.reducer;

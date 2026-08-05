@@ -20,20 +20,6 @@ GO
 -- CREATE INDEX IX_callAgent_isDelete ON callAgent(isDelete);
 -- GO
 
-CREATE TABLE callPermit
-(
-    id INT IDENTITY(1,1) PRIMARY KEY,
-    uid NVARCHAR(255) NOT NULL UNIQUE,
-    isDelete BIT NOT NULL DEFAULT 0,
-    callAgentId INT NOT NULL,
-    createTime DATETIMEOFFSET(7) NOT NULL DEFAULT SYSDATETIMEOFFSET(),
-
-    CONSTRAINT FK_callPermit_CallAgent FOREIGN KEY(callAgentId) REFERENCES callAgent(id)
-)
-GO
-CREATE NONCLUSTERED INDEX IX_callPermit_callAgentId ON callPermit(callAgentId);
-GO
-
 CREATE TABLE zaloTrunk
 (
     id INT IDENTITY(1,1) PRIMARY KEY,
@@ -62,6 +48,24 @@ GO
 -- CREATE NONCLUSTERED INDEX IX_zaloTrunk_isDelete ON zaloTrunk(isDelete);
 -- GO
 
+CREATE TABLE callPermit
+(
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    uid NVARCHAR(255) NOT NULL UNIQUE,
+    isDelete BIT NOT NULL DEFAULT 0,
+    callAgentId INT NOT NULL,
+	zaloTrunkId INT,
+    createTime DATETIMEOFFSET(7) NOT NULL DEFAULT SYSDATETIMEOFFSET(),
+
+    CONSTRAINT FK_callPermit_CallAgent FOREIGN KEY(callAgentId) REFERENCES callAgent(id),
+	CONSTRAINT FK_callPermit_ZaloTrunk FOREIGN KEY(zaloTrunkId) REFERENCES zaloTrunk(id)
+)
+GO
+CREATE NONCLUSTERED INDEX IX_callPermit_callAgentId ON callPermit(callAgentId);
+GO
+CREATE NONCLUSTERED INDEX IX_callPermit_zaloTrunkId ON callPermit(zaloTrunkId);
+GO
+
 CREATE VIEW ps_endpoints
 AS
     SELECT
@@ -69,7 +73,7 @@ AS
         'transport-ws' AS transport,
         agentCode AS aors,
         'auth' + agentCode AS auth,
-        'internal' AS context,
+        context AS context,
         'all' AS disallow,
         'opus,ulaw,alaw' AS allow,
         'yes' AS webrtc,

@@ -12,6 +12,7 @@ import { getSocket } from '@src/socketIo';
 import { MySip } from '@src/call';
 import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
 import { SessionState } from 'sip.js';
+import CallDialog from './component/CallDialog';
 
 const App = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -274,7 +275,7 @@ const App = () => {
                 void sip.disconnectSip();
             }
         };
-    }, []);
+    }, [getCallAgentWithAccountId]);
 
     useEffect(() => {
         if (!mySip) return;
@@ -307,6 +308,7 @@ const App = () => {
     return (
         <div>
             <AppRouter />
+            <CallDialog />
         </div>
     );
 };
