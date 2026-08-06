@@ -18,7 +18,7 @@ const RequestConsent: FC<{
     setIsShow: React.Dispatch<React.SetStateAction<boolean>>;
     chatRoomId: number;
 }> = ({ isConnecting, isRinging, isShow, setIsShow, chatRoomId }) => {
-    // const dispatch = useDispatch<AppDispatch>();
+    const dispatch = useDispatch<AppDispatch>();
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
     const parent_element = useRef<HTMLDivElement | null>(null);
@@ -104,8 +104,9 @@ const RequestConsent: FC<{
     const handleRequestConsent = () => {
         if (!zaloApp) return;
         if (!zaloOa) return;
+        const phone1 = phone.trim();
         requestConsent({
-            phone: formatPhone(phone),
+            phone: formatPhone(phone1),
             call_type: selectedCallType,
             reason_code: 101,
             zaloApp: zaloApp,
@@ -117,6 +118,16 @@ const RequestConsent: FC<{
                 if (resData?.isSuccess && resData?.data) {
                     setResultRequestConsentResult(resData.data);
                 }
+                createChatRoomPhone({
+                    phone: phone1,
+                    chatRoomId: chatRoomId,
+                    accountId: -1,
+                })
+                    .then((res) => {
+                        const resData = res.data;
+                        console.log('createChatRoomPhone resData', resData);
+                    })
+                    .catch((err) => console.error('createChatRoomPhone err', err));
             })
             .catch((err) => {
                 console.error(err);

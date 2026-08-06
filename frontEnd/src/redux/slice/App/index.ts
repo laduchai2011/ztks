@@ -3,8 +3,13 @@ import { state_props } from '@src/App/type';
 import { AccountField, AccountInformationField } from '@src/dataStruct/account';
 import { ZaloAppField } from '@src/dataStruct/zalo';
 import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
+import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
 
 const initialState: state_props = {
+    isLoading: false,
+    toastMessage: {
+        data: { type: undefined, message: '' },
+    },
     id_isNewMessage_current: -1, // bỏ
     account: undefined,
     accountInformation: undefined,
@@ -25,6 +30,12 @@ const AppSlice = createSlice({
     name: 'AppSlice',
     initialState,
     reducers: {
+        set_isLoading: (state, action: PayloadAction<boolean>) => {
+            state.isLoading = action.payload;
+        },
+        setData_toastMessage: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
+            state.toastMessage.data = action.payload;
+        },
         set_id_isNewMessage_current: (state, action: PayloadAction<number>) => {
             state.id_isNewMessage_current = action.payload;
         },
@@ -53,6 +64,8 @@ const AppSlice = createSlice({
 });
 
 export const {
+    set_isLoading,
+    setData_toastMessage,
     set_id_isNewMessage_current,
     set_account,
     set_accountInformation,

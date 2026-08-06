@@ -20,7 +20,7 @@ import {
     CallInStateType,
     CallOutStateEnum,
     CallOutStateType,
-    CallTypeEnum,
+    // CallTypeEnum,
 } from '@src/dataStruct/call';
 import { set_calling } from '@src/redux/slice/App';
 
@@ -123,30 +123,28 @@ const CallDialog = () => {
         // handleSip();
     }, []);
 
-    const handleInComing = async () => {};
-
     const handleClose = () => {
         dispatch(set_calling({ is: false, uid: undefined, chatRoomId: undefined }));
     };
 
-    const handleOpenRequestConsent = () => {
-        if (!zaloApp) return;
-        if (!zaloOa) return;
-        requestConsent({
-            phone: '84789860854',
-            call_type: CallTypeEnum.AUDIO,
-            reason_code: 101,
-            zaloApp: zaloApp,
-            zaloOa: zaloOa,
-            accountId: -1,
-        })
-            .then((res) => {
-                console.log(res);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-    };
+    // const handleOpenRequestConsent = () => {
+    //     if (!zaloApp) return;
+    //     if (!zaloOa) return;
+    //     requestConsent({
+    //         phone: '84789860854',
+    //         call_type: CallTypeEnum.AUDIO,
+    //         reason_code: 101,
+    //         zaloApp: zaloApp,
+    //         zaloOa: zaloOa,
+    //         accountId: -1,
+    //     })
+    //         .then((res) => {
+    //             console.log(res);
+    //         })
+    //         .catch((err) => {
+    //             console.error(err);
+    //         });
+    // };
 
     const handleGetAgent = () => {
         if (!zaloApp) return;
@@ -188,9 +186,9 @@ const CallDialog = () => {
                     />
                     <Call />
                     <audio ref={audioRef} autoPlay playsInline />
-                    <button className={style.button} onClick={() => handleOpenRequestConsent()}>
+                    {/* <button className={style.button} onClick={() => handleOpenRequestConsent()}>
                         Request Consent
-                    </button>
+                    </button> */}
                 </div>
             </div>
         </div>
