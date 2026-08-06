@@ -9,6 +9,7 @@ import { CallTypeEnum, CallTypeType } from '@src/dataStruct/call';
 import { useRequestConsentMutation } from '@src/redux/query/callRTK';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { useLazyGetLatestChatRoomPhoneQuery, useCreateChatRoomPhoneMutation } from '@src/redux/query/chatRoomRTK';
+import { formatPhone } from '@src/utility/string';
 
 const RequestConsent: FC<{
     isConnecting: boolean;
@@ -28,6 +29,7 @@ const RequestConsent: FC<{
     const [requestConsent] = useRequestConsentMutation();
 
     const [getLatestChatRoomPhone] = useLazyGetLatestChatRoomPhoneQuery();
+    const [createChatRoomPhone] = useCreateChatRoomPhoneMutation();
 
     useEffect(() => {
         if (!parent_element.current) return;
@@ -102,7 +104,7 @@ const RequestConsent: FC<{
         if (!zaloApp) return;
         if (!zaloOa) return;
         requestConsent({
-            phone: phone,
+            phone: formatPhone(phone),
             call_type: selectedCallType,
             reason_code: 101,
             zaloApp: zaloApp,
