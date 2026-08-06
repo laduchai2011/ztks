@@ -19,11 +19,7 @@ const Call = () => {
     };
 
     const handleOfCall = () => {
-        // if (mySip) {
-        //     setCallOutState(CallOutStateEnum.CALL_END);
-        //     mySip.destroyCallOut();
-        //     mySip.destroyCallIn();
-        // }
+        dispatch(set_calling({ is: true, uid: undefined }));
     };
 
     return (
@@ -44,7 +40,7 @@ const Call = () => {
                 <div className={style.icon2}>
                     <div>
                         <MdCall size={40} color="greenyellow" />
-                        <MdCall size={40} color="red" />
+                        <MdCall onClick={() => handleOfCall()} size={40} color="red" />
                     </div>
                 </div>
             )}

@@ -282,11 +282,21 @@ const App = () => {
         if (!mySip) return;
 
         if (calling.is && calling.uid) {
+            let isTimeout = true;
+            dispatch(set_callOutState(CallOutStateEnum.CONNECTING));
+            setTimeout(() => {
+                if (!isTimeout) return;
+                dispatch(set_callOutState(CallOutStateEnum.CALL_END));
+                mySip.destroyCallOut();
+                mySip.destroyCallIn();
+            }, 6000);
             mySip.callUid(`99${calling.uid}`, false, (state) => {
-                console.log('callUid state', state);
+                // console.log('callUid state', state);
+                isTimeout = false;
                 switch (state) {
                     case SessionState.Initial:
-                        dispatch(set_callOutState(CallOutStateEnum.CONNECTING));
+                        // console.log('callUid state Initial', CallOutStateEnum.CONNECTING);
+                        // dispatch(set_callOutState(CallOutStateEnum.CONNECTING));
                         break;
 
                     case SessionState.Establishing:
@@ -307,9 +317,12 @@ const App = () => {
                 }
             });
         }
-    }, [mySip, calling]);
 
-    useEffect(() => {}, []);
+        if (!calling.uid) {
+            mySip.destroyCallOut();
+            mySip.destroyCallIn();
+        }
+    }, [dispatch, mySip, calling]);
 
     return (
         <div>
