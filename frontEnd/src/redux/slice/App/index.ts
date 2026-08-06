@@ -13,6 +13,7 @@ const initialState: state_props = {
     calling: {
         is: false,
         uid: undefined,
+        chatRoomId: undefined,
     },
     call: {
         inState: CallInStateEnum.CALL_END,
@@ -39,7 +40,7 @@ const AppSlice = createSlice({
         set_zaloApp: (state, action: PayloadAction<ZaloAppField>) => {
             state.zaloApp = action.payload;
         },
-        set_calling: (state, action: PayloadAction<{ is: boolean; uid?: string }>) => {
+        set_calling: (state, action: PayloadAction<{ is: boolean; uid?: string; chatRoomId?: number }>) => {
             state.calling = action.payload;
         },
         set_callInState: (state, action: PayloadAction<CallInStateType>) => {

@@ -11,6 +11,7 @@ export interface state_props {
     calling: {
         is: boolean;
         uid?: string;
+        chatRoomId?: number;
     };
     call: {
         inState: CallInStateType;

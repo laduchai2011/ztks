@@ -8,13 +8,15 @@ import { CLOSE, SEND } from '@src/const/text';
 import { CallTypeEnum, CallTypeType } from '@src/dataStruct/call';
 import { useRequestConsentMutation } from '@src/redux/query/callRTK';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
+import { useLazyGetLatestChatRoomPhoneQuery, useCreateChatRoomPhoneMutation } from '@src/redux/query/chatRoomRTK';
 
 const RequestConsent: FC<{
     isConnecting: boolean;
     isRinging: boolean;
     isShow: boolean;
     setIsShow: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ isConnecting, isRinging, isShow, setIsShow }) => {
+    chatRoomId: number;
+}> = ({ isConnecting, isRinging, isShow, setIsShow, chatRoomId }) => {
     // const dispatch = useDispatch<AppDispatch>();
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
@@ -22,10 +24,10 @@ const RequestConsent: FC<{
     const options_element = useRef<HTMLDivElement | null>(null);
     const [isShowOptions, setIsShowOptions] = useState<boolean>(false);
     const [selectedCallType, setSelectedCallType] = useState<CallTypeType>(CallTypeEnum.AUDIO);
-
     const [phone, setPhone] = useState<string>('');
-
     const [requestConsent] = useRequestConsentMutation();
+
+    const [getLatestChatRoomPhone] = useLazyGetLatestChatRoomPhoneQuery();
 
     useEffect(() => {
         if (!parent_element.current) return;
@@ -56,6 +58,15 @@ const RequestConsent: FC<{
             setIsShow(isShow);
         }
     }, [isRinging, isConnecting, setIsShow, isShow]);
+
+    useEffect(() => {
+        getLatestChatRoomPhone({ chatRoomId: chatRoomId, accountId: -1 })
+            .then((res) => {
+                const resData = res.data;
+                console.log('getLatestChatRoomPhone resData', resData);
+            })
+            .catch((err) => console.error('getLatestChatRoomPhone err', err));
+    }, [getLatestChatRoomPhone, chatRoomId]);
 
     const handleClose = () => {
         setIsShow(false);

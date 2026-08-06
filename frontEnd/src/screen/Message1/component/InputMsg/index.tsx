@@ -350,7 +350,8 @@ const InputMsg = () => {
     };
 
     const handleOpenCall = () => {
-        dispatch(set_calling({ is: true, uid: undefined }));
+        if (!id) return;
+        dispatch(set_calling({ is: true, uid: undefined, chatRoomId: Number(id) }));
     };
 
     const handleGoToOrder = () => {

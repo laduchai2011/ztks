@@ -8,7 +8,6 @@ import RequestConsent from './component/RequestConsent';
 import Call from './component/Call';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE } from '@src/const/text';
-import { setIsShow_callDialog } from '@src/redux/slice/MessageV1';
 import {
     useLazyGetMccInfoQuery,
     useLazyCheckConsentQuery,
@@ -31,6 +30,7 @@ const CallDialog = () => {
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
     const isShow: boolean = useSelector((state: RootState) => state.AppSlice.calling.is);
+    const chatRoomId: number | undefined = useSelector((state: RootState) => state.AppSlice.calling.chatRoomId);
     const inState: CallInStateType = useSelector((state: RootState) => state.AppSlice.call.inState);
     const outState: CallOutStateType = useSelector((state: RootState) => state.AppSlice.call.outState);
 
@@ -126,7 +126,7 @@ const CallDialog = () => {
     const handleInComing = async () => {};
 
     const handleClose = () => {
-        dispatch(set_calling({ is: false, uid: undefined }));
+        dispatch(set_calling({ is: false, uid: undefined, chatRoomId: undefined }));
     };
 
     const handleOpenRequestConsent = () => {
@@ -184,6 +184,7 @@ const CallDialog = () => {
                         isRinging={isRinging}
                         isShow={isRequestConsent}
                         setIsShow={setIsRequestConsent}
+                        chatRoomId={chatRoomId || -1}
                     />
                     <Call />
                     <audio ref={audioRef} autoPlay playsInline />
