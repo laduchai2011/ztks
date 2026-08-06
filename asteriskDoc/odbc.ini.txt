@@ -1,0 +1,18 @@
+; [asterisk]
+; Driver=ODBC Driver 18 for SQL Server
+; Server=103.38.236.182
+; Port=1433
+; Database=ztksdev
+; UID=sa
+; PWD=201195laducHai
+; Encrypt=no
+; TrustServerCertificate=yes
+
+[MSSQL_ztksdev]
+Driver = ODBC Driver 18 for SQL Server
+Server = tcp:103.38.236.182,1433
+Database = ztksdev
+User = sa
+Password = 201195laducHai
+Encrypt = no
+TrustServerCertificate = yes

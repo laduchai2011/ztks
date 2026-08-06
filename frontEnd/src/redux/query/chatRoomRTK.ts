@@ -4,6 +4,8 @@ import {
     ChatRoomRoleField,
     PagedChatRoomMongoField,
     PagedChatRoomField,
+    ChatRoomPhoneField,
+    PagedChatRoomPhoneField,
 } from '@src/dataStruct/chatRoom';
 import {
     GetChatRoomWithIdBodyField,
@@ -12,6 +14,8 @@ import {
     ChatRoomsMongoBodyField,
     ChangeChatRoomMasterBodyField,
     GetMyChatRoomsBodyField,
+    CreateChatRoomPhoneBodyField,
+    GetListChatRoomPhonesBodyField,
 } from '@src/dataStruct/chatRoom/body';
 import { CHAT_ROOM_API } from '@src/const/api/chatRoom';
 import { MyResponse } from '@src/dataStruct/response';
@@ -59,6 +63,20 @@ export const chatRoomRTK = createApi({
                 body,
             }),
         }),
+        getLatestChatRoomPhone: builder.query<MyResponse<ChatRoomPhoneField>, GetListChatRoomPhonesBodyField>({
+            query: (body) => ({
+                url: CHAT_ROOM_API.GET_LATEST_CHAT_ROOM_PHONE,
+                method: 'POST',
+                body,
+            }),
+        }),
+        getListChatRoomPhones: builder.query<MyResponse<PagedChatRoomPhoneField>, GetListChatRoomPhonesBodyField>({
+            query: (body) => ({
+                url: CHAT_ROOM_API.GET_LIST_CHAT_ROOM_PHONES,
+                method: 'POST',
+                body,
+            }),
+        }),
         updateSetupChatRoomRole: builder.mutation<MyResponse<ChatRoomRoleField>, UpdateSetupChatRoomRoleBodyField>({
             query: (body) => ({
                 url: CHAT_ROOM_API.UPDATE_SETUP_CHAT_ROOM_ROLE,
@@ -75,6 +93,14 @@ export const chatRoomRTK = createApi({
             }),
             invalidatesTags: (result) => [{ type: 'ChatRoom', id: result?.data?.id }],
         }),
+        createChatRoomPhone: builder.mutation<MyResponse<ChatRoomPhoneField>, CreateChatRoomPhoneBodyField>({
+            query: (body) => ({
+                url: CHAT_ROOM_API.CREATE_CHAT_ROOM_PHONE,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: (result) => [{ type: 'ChatRoom', id: result?.data?.id }],
+        }),
     }),
 });
 
@@ -84,6 +110,9 @@ export const {
     useGetChatRoomsWithIdQuery,
     useGetChatRoomRoleWithCridAaidQuery,
     useLazyGetChatRoomsMongoQuery,
+    useLazyGetLatestChatRoomPhoneQuery,
+    useLazyGetListChatRoomPhonesQuery,
     useUpdateSetupChatRoomRoleMutation,
     useChangeChatRoomMasterMutation,
+    useCreateChatRoomPhoneMutation,
 } = chatRoomRTK;

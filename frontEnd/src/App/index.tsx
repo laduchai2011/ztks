@@ -11,6 +11,7 @@ import { useLazyGetCallAgentWithAccountIdQuery } from '@src/redux/query/callAgen
 import { getSocket } from '@src/socketIo';
 import { MySip } from '@src/call';
 import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
+import { set_callOutState } from '@src/redux/slice/App';
 import { SessionState } from 'sip.js';
 import CallDialog from './component/CallDialog';
 
@@ -285,18 +286,23 @@ const App = () => {
                 console.log('callUid state', state);
                 switch (state) {
                     case SessionState.Initial:
+                        dispatch(set_callOutState(CallOutStateEnum.CONNECTING));
                         break;
 
                     case SessionState.Establishing:
+                        dispatch(set_callOutState(CallOutStateEnum.RINGING));
                         break;
 
                     case SessionState.Established:
+                        dispatch(set_callOutState(CallOutStateEnum.CALL_IN));
                         break;
 
                     case SessionState.Terminating:
+                        dispatch(set_callOutState(CallOutStateEnum.CALL_END));
                         break;
 
                     case SessionState.Terminated:
+                        dispatch(set_callOutState(CallOutStateEnum.CALL_END));
                         break;
                 }
             });

@@ -18,7 +18,6 @@ import {
 } from '@src/redux/query/callRTK';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
-import { SessionState } from 'sip.js';
 
 const CallDialog = () => {
     const dispatch = useDispatch<AppDispatch>();

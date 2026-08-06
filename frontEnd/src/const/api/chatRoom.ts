@@ -11,4 +11,7 @@ export const CHAT_ROOM_API = {
     CREATE_CHAT_ROOM_ROLE: `${BASE_URL}${apiString}/service_chatRoom/mutate/createChatRoomRole`,
     GET_CHAT_ROOMS_MONGO: `${BASE_URL}${apiString}/service_chatRoom/query/getChatRoomsMongo`,
     CHANGE_CHAT_ROOM_MASTER: `${BASE_URL}${apiString}/service_chatRoom/mutate/changeChatRoomMaster`,
+    CREATE_CHAT_ROOM_PHONE: `${BASE_URL}${apiString}/service_chatRoom/mutate/createChatRoomPhone`,
+    GET_LATEST_CHAT_ROOM_PHONE: `${BASE_URL}${apiString}/service_chatRoom/query/getLatestChatRoomPhone`,
+    GET_LIST_CHAT_ROOM_PHONES: `${BASE_URL}${apiString}/service_chatRoom/query/getListChatRoomPhones`,
 };
