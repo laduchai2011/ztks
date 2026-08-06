@@ -38,3 +38,15 @@ CREATE NONCLUSTERED INDEX idx_chatRoom_id ON chatRoomRole(chatRoomId);
 GO
 CREATE NONCLUSTERED INDEX idx_account_id ON chatRoomRole(accountId);
 GO
+
+CREATE TABLE chatRoomPhone (
+	id INT PRIMARY KEY IDENTITY(1,1),
+	phone NVARCHAR(15) NOT NULL,
+	chatRoomId INT NOT NULL,
+    createTime DATETIMEOFFSET(7) NOT NULL,
+    
+	CONSTRAINT FK_chatRoomPhone_ChatRoom FOREIGN KEY (chatRoomId) REFERENCES chatRoom(id)
+)
+GO
+CREATE NONCLUSTERED INDEX idx_chatRoom_id ON chatRoomPhone(chatRoomId);
+GO

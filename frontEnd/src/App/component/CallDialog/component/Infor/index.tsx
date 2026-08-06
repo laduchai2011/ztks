@@ -19,6 +19,7 @@ const Infor: FC<{
     const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
 
     const [selectedCallType, setSelectedCallType] = useState<CallTypeType>(CallTypeEnum.AUDIO);
+    const [expriedTime, setExpriedTime] = useState<string>('');
 
     const [checkConsent] = useLazyCheckConsentQuery();
 
@@ -31,7 +32,17 @@ const Infor: FC<{
             zaloApp: zaloApp,
             zaloOa: zaloOa,
             accountId: -11,
-        });
+        })
+            .then((res) => {
+                const resData = res.data;
+                // console.log('checkConsent resData', resData);
+                if (resData?.isSuccess && resData.data) {
+                    const expired_time = resData.data.data.expired_time;
+                    const expired_date = new Date(expired_time);
+                    setExpriedTime(expired_date.toLocaleString('vi-VN'));
+                }
+            })
+            .catch((err) => console.error('checkConsent err', err));
     }, [checkConsent, zaloApp, zaloOa]);
 
     const handleOpenRequestConsent = () => {
@@ -39,7 +50,10 @@ const Infor: FC<{
     };
 
     const handleClassNameSelectedCallType = (callType: CallTypeType) => {
-        if (selectedCallType === callType) {
+        // if (selectedCallType === callType) {
+        //     return style.selected;
+        // }
+        if (CallTypeEnum.AUDIO === callType) {
             return style.selected;
         }
     };
@@ -57,7 +71,7 @@ const Infor: FC<{
                         onClick={() => handleSelectCallType(CallTypeEnum.AUDIO)}
                     >
                         <div>Audio</div>
-                        <IoClose size={20} color="red" />
+                        <TiTick size={20} color="greenyellow" />
                     </div>
                     <div
                         className={handleClassNameSelectedCallType(CallTypeEnum.AUDIO_AND_VIDEO)}
@@ -68,7 +82,7 @@ const Infor: FC<{
                     </div>
                 </div>
             </div>
-            {!isRinging && <div className={style.time}>{`Hạn đến ngày`}</div>}
+            {!isRinging && <div className={style.time}>{`Hạn đến ${expriedTime}`}</div>}
             {!isRinging && (
                 <div className={style.requestContent}>
                     <div onClick={() => handleOpenRequestConsent()}>Gửi yêu cầu cấp quyền gọi</div>

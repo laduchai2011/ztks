@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { CheckConsentField } from '@src/dataStruct/call';
 import {
     CheckConsentBodyField,
     RequestConsentBodyField,
@@ -21,7 +22,7 @@ export const callRTK = createApi({
     }),
     tagTypes: [],
     endpoints: (builder) => ({
-        checkConsent: builder.query<MyResponse<any>, CheckConsentBodyField>({
+        checkConsent: builder.query<MyResponse<CheckConsentField>, CheckConsentBodyField>({
             query: (body) => ({
                 url: CALL_API.CHECK_CONSENT,
                 method: 'POST',

@@ -77,3 +77,35 @@ BEGIN
     SELECT * FROM dbo.chatRoomRole WHERE status = 'normal' AND chatRoomId = @chatRoomId
 END
 GO
+
+CREATE PROCEDURE GetLatestChatRoomPhone
+	@chatRoomId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	IF NOT EXISTS ( SELECT 1 FROM dbo.chatRoom WHERE accountId = @accountId AND id = @chatRoomId )
+	BEGIN
+		THROW 50001, N'Không phải chatRoom của bạn .', 1;
+	END
+
+    SELECT TOP 1 * FROM dbo.chatRoomPhone WHERE chatRoomId = @chatRoomId ORDER BY id DESC
+END
+GO
+
+CREATE PROCEDURE GetListChatRoomPhones
+	@chatRoomId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	IF NOT EXISTS ( SELECT 1 FROM dbo.chatRoom WHERE accountId = @accountId AND id = @chatRoomId )
+	BEGIN
+		THROW 50001, N'Không phải chatRoom của bạn .', 1;
+	END
+
+    SELECT * FROM dbo.chatRoomPhone WHERE chatRoomId = @chatRoomId
+END
+GO

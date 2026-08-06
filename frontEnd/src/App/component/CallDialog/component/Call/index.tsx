@@ -3,7 +3,6 @@ import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { MdCall, MdWifiCalling3 } from 'react-icons/md';
-import { SessionState } from 'sip.js';
 import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
 import { set_calling } from '@src/redux/slice/App';
 

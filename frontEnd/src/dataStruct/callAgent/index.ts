@@ -16,6 +16,7 @@ export interface CallPerMitField {
     uid: string;
     isDelete: boolean;
     callAgentId: number;
+    zaloTrunkId: number | null;
     createTime: string;
 }
 

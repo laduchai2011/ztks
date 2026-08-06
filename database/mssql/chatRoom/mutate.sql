@@ -150,3 +150,41 @@ BEGIN
 	END CATCH
 END;
 GO
+
+CREATE PROCEDURE CreateChatRoomPhone
+	@phone NVARCHAR(15),
+	@chatRoomId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+		
+		IF NOT EXISTS ( SELECT 1 FROM dbo.chatRoom WHERE accountId = @accountId AND id = @chatRoomId )
+		BEGIN
+			THROW 50001, N'Không phải chatRoom của bạn .', 1;
+		END
+
+		DECLARE @newChatRoomPhoneId INT;
+
+        INSERT INTO dbo.chatRoomPhone (phone, chatRoomId, createTime)
+        VALUES (@phone, @chatRoomId, SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50002, 'Tạo chatRoomPhone không thành công.', 2;
+        END
+
+		SET @newChatRoomPhoneId = SCOPE_IDENTITY();
+
+		SELECT * FROM dbo.chatRoomPhone WHERE id = @newChatRoomPhoneId;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO

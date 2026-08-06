@@ -15,7 +15,7 @@ const RequestConsent: FC<{
     isShow: boolean;
     setIsShow: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ isConnecting, isRinging, isShow, setIsShow }) => {
-    const dispatch = useDispatch<AppDispatch>();
+    // const dispatch = useDispatch<AppDispatch>();
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
     const parent_element = useRef<HTMLDivElement | null>(null);

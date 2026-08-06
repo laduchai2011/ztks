@@ -1,6 +1,7 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
+import { CheckConsentField } from '@src/dataStruct/call';
 import { CheckConsentBodyField } from '@src/dataStruct/call/body';
 import { verifyRefreshToken } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
@@ -60,7 +61,7 @@ class Handle_CheckConsent {
         const zaloApp = checkConsentBody.zaloApp;
         const zaloOa = checkConsentBody.zaloOa;
 
-        const myResponse: MyResponse<any> = {
+        const myResponse: MyResponse<CheckConsentField> = {
             isSuccess: false,
             message: 'Bắt đầu (Handle_CheckConsent-main)',
         };
@@ -79,7 +80,7 @@ class Handle_CheckConsent {
         //     reason_code: requestConsentBody.reason_code,
         // };
 
-        const response = await axios.get(
+        const response = await axios.get<CheckConsentField>(
             `${API_CHECK_CONSENT}?data=${JSON.stringify({ phone: checkConsentBody.phone })}`,
             {
                 headers: {
@@ -89,7 +90,11 @@ class Handle_CheckConsent {
             }
         );
 
-        console.log(3333333333, response.data);
+        myResponse.data = response.data;
+        myResponse.message = response.data.message;
+        myResponse.isSuccess = true;
+        res.status(200).json(myResponse);
+        return;
     };
 }
 

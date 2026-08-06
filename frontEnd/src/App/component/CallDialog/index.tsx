@@ -16,8 +16,14 @@ import {
     useOutboundMutation,
 } from '@src/redux/query/callRTK';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
-import { SessionState } from 'sip.js';
+import {
+    CallInStateEnum,
+    CallInStateType,
+    CallOutStateEnum,
+    CallOutStateType,
+    CallTypeEnum,
+} from '@src/dataStruct/call';
+import { set_calling } from '@src/redux/slice/App';
 
 const CallDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -25,10 +31,11 @@ const CallDialog = () => {
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
     const isShow: boolean = useSelector((state: RootState) => state.AppSlice.calling.is);
-    const uid: string = useSelector((state: RootState) => state.MessageV1Slice.uid);
+    const inState: CallInStateType = useSelector((state: RootState) => state.AppSlice.call.inState);
+    const outState: CallOutStateType = useSelector((state: RootState) => state.AppSlice.call.outState);
 
-    const [agentCode, setAgentCode] = useState<string>('');
-    const [agentPassword, setAgentPassword] = useState<string>('taokosao201195');
+    // const [agentCode, setAgentCode] = useState<string>('');
+    // const [agentPassword, setAgentPassword] = useState<string>('taokosao201195');
     const [isRequestConsent, setIsRequestConsent] = useState<boolean>(false);
     const [isConnecting, setIsConnecting] = useState<boolean>(false);
     const [isRinging, setIsRinging] = useState<boolean>(false);
@@ -61,6 +68,16 @@ const CallDialog = () => {
             }, 550);
         }
     }, [isShow]);
+
+    useEffect(() => {
+        if (inState !== CallInStateEnum.CALL_END || outState !== CallOutStateEnum.CALL_END) {
+            setIsRinging(true);
+            setIsRequestConsent(false);
+        } else {
+            setIsRinging(false);
+        }
+        setCallInState(inState);
+    }, [inState, outState]);
 
     const audioRef = useRef<HTMLAudioElement>(null);
     useEffect(() => {
@@ -104,15 +121,32 @@ const CallDialog = () => {
         //     setMySip(mySip_);
         // };
         // handleSip();
-    }, [agentPassword]);
+    }, []);
 
     const handleInComing = async () => {};
 
     const handleClose = () => {
-        dispatch(setIsShow_callDialog(false));
+        dispatch(set_calling({ is: false, uid: undefined }));
     };
 
-    const handleOpenRequestConsent = () => {};
+    const handleOpenRequestConsent = () => {
+        if (!zaloApp) return;
+        if (!zaloOa) return;
+        requestConsent({
+            phone: '84789860854',
+            call_type: CallTypeEnum.AUDIO,
+            reason_code: 101,
+            zaloApp: zaloApp,
+            zaloOa: zaloOa,
+            accountId: -1,
+        })
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
 
     const handleGetAgent = () => {
         if (!zaloApp) return;
@@ -153,8 +187,8 @@ const CallDialog = () => {
                     />
                     <Call />
                     <audio ref={audioRef} autoPlay playsInline />
-                    <button className={style.button} onClick={() => handleInComing()}>
-                        In Coming
+                    <button className={style.button} onClick={() => handleOpenRequestConsent()}>
+                        Request Consent
                     </button>
                 </div>
             </div>

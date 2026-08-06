@@ -63,3 +63,19 @@ export interface ChangeChatRoomMasterBodyField {
     newAccountId: number;
     accountId: number;
 }
+
+export interface CreateChatRoomPhoneBodyField {
+    phone: string;
+    chatRoomId: number;
+    accountId: number;
+}
+
+export interface GetLatestChatRoomPhoneBodyField {
+    chatRoomId: number;
+    accountId: number;
+}
+
+export interface GetListChatRoomPhonesBodyField {
+    chatRoomId: number;
+    accountId: number;
+}

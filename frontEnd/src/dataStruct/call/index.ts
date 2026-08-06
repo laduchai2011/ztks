@@ -31,3 +31,9 @@ export type CallOutStateType =
     | CallOutStateEnum.CONNECTING
     | CallOutStateEnum.CALL_IN
     | CallOutStateEnum.CALL_END;
+
+export interface CheckConsentField {
+    data: { expired_time: number };
+    error: number;
+    message: string;
+}
