@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { CheckConsentField } from '@src/dataStruct/call';
+import { CheckConsentField, RequestConsentField } from '@src/dataStruct/call';
 import {
     CheckConsentBodyField,
     RequestConsentBodyField,
@@ -36,7 +36,7 @@ export const callRTK = createApi({
                 body,
             }),
         }),
-        requestConsent: builder.mutation<MyResponse<any>, RequestConsentBodyField>({
+        requestConsent: builder.mutation<MyResponse<RequestConsentField>, RequestConsentBodyField>({
             query: (body) => ({
                 url: CALL_API.REQUEST_CONSENT,
                 method: 'POST',

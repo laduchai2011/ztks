@@ -1,6 +1,7 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
+import { RequestConsentField } from '@src/dataStruct/call';
 import { RequestConsentBodyField } from '@src/dataStruct/call/body';
 import { verifyRefreshToken } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
@@ -79,14 +80,18 @@ class Handle_RequestConsent {
             reason_code: requestConsentBody.reason_code,
         };
 
-        const response = await axios.post(API_REQUEST_CONSENT, body, {
+        const response = await axios.post<RequestConsentField>(API_REQUEST_CONSENT, body, {
             headers: {
                 'Content-Type': 'application/json',
                 access_token: token,
             },
         });
 
-        console.log(3333333333, 'requestConsent', response);
+        myResponse.data = response.data;
+        myResponse.message = response.data.message;
+        myResponse.isSuccess = true;
+        res.status(200).json(myResponse);
+        return;
     };
 }
 

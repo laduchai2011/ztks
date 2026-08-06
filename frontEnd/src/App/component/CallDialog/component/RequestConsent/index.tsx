@@ -5,7 +5,7 @@ import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { CLOSE, SEND } from '@src/const/text';
-import { CallTypeEnum, CallTypeType } from '@src/dataStruct/call';
+import { CallTypeEnum, CallTypeType, RequestConsentField } from '@src/dataStruct/call';
 import { useRequestConsentMutation } from '@src/redux/query/callRTK';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { useLazyGetLatestChatRoomPhoneQuery, useCreateChatRoomPhoneMutation } from '@src/redux/query/chatRoomRTK';
@@ -26,8 +26,9 @@ const RequestConsent: FC<{
     const [isShowOptions, setIsShowOptions] = useState<boolean>(false);
     const [selectedCallType, setSelectedCallType] = useState<CallTypeType>(CallTypeEnum.AUDIO);
     const [phone, setPhone] = useState<string>('');
-    const [requestConsent] = useRequestConsentMutation();
+    const [resultRequestConsentResult, setResultRequestConsentResult] = useState<RequestConsentField | null>(null);
 
+    const [requestConsent] = useRequestConsentMutation();
     const [getLatestChatRoomPhone] = useLazyGetLatestChatRoomPhoneQuery();
     const [createChatRoomPhone] = useCreateChatRoomPhoneMutation();
 
@@ -112,7 +113,10 @@ const RequestConsent: FC<{
             accountId: -1,
         })
             .then((res) => {
-                console.log(res);
+                const resData = res.data;
+                if (resData?.isSuccess && resData?.data) {
+                    setResultRequestConsentResult(resData.data);
+                }
             })
             .catch((err) => {
                 console.error(err);
@@ -161,6 +165,7 @@ const RequestConsent: FC<{
                 <div>
                     <button onClick={() => handleRequestConsent()}>{SEND}</button>
                 </div>
+                <div>{resultRequestConsentResult && <div>{resultRequestConsentResult.message}</div>}</div>
             </div>
         </div>
     );

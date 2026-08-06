@@ -37,3 +37,8 @@ export interface CheckConsentField {
     error: number;
     message: string;
 }
+
+export interface RequestConsentField {
+    error: number;
+    message: string;
+}
