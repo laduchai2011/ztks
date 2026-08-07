@@ -10,6 +10,8 @@ import { useRequestConsentMutation } from '@src/redux/query/callRTK';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { useLazyGetLatestChatRoomPhoneQuery, useCreateChatRoomPhoneMutation } from '@src/redux/query/chatRoomRTK';
 import { formatPhone } from '@src/utility/string';
+import { set_isLoading, setData_toastMessage } from '@src/redux/slice/App';
+import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const RequestConsent: FC<{
     isConnecting: boolean;
@@ -63,10 +65,13 @@ const RequestConsent: FC<{
     }, [isRinging, isConnecting, setIsShow, isShow]);
 
     useEffect(() => {
+        if (!chatRoomId) return;
         getLatestChatRoomPhone({ chatRoomId: chatRoomId, accountId: -1 })
             .then((res) => {
                 const resData = res.data;
-                console.log('getLatestChatRoomPhone resData', resData);
+                if (resData?.isSuccess && resData?.data) {
+                    setPhone(resData.data.phone);
+                }
             })
             .catch((err) => console.error('getLatestChatRoomPhone err', err));
     }, [getLatestChatRoomPhone, chatRoomId]);
@@ -101,37 +106,75 @@ const RequestConsent: FC<{
         setPhone(e.target.value);
     };
 
-    const handleRequestConsent = () => {
+    const handleRequestConsent = async () => {
         if (!zaloApp) return;
         if (!zaloOa) return;
         const phone1 = phone.trim();
-        requestConsent({
-            phone: formatPhone(phone1),
-            call_type: selectedCallType,
-            reason_code: 101,
-            zaloApp: zaloApp,
-            zaloOa: zaloOa,
-            accountId: -1,
-        })
-            .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData?.data) {
-                    setResultRequestConsentResult(resData.data);
-                }
-                createChatRoomPhone({
-                    phone: phone1,
-                    chatRoomId: chatRoomId,
-                    accountId: -1,
-                })
-                    .then((res) => {
-                        const resData = res.data;
-                        console.log('createChatRoomPhone resData', resData);
-                    })
-                    .catch((err) => console.error('createChatRoomPhone err', err));
-            })
-            .catch((err) => {
-                console.error(err);
+
+        dispatch(set_isLoading(true));
+
+        try {
+            const res1 = await requestConsent({
+                phone: formatPhone(phone1),
+                call_type: selectedCallType,
+                reason_code: 101,
+                zaloApp: zaloApp,
+                zaloOa: zaloOa,
+                accountId: -1,
             });
+            const res1Data = res1.data;
+            if (res1Data?.isSuccess && res1Data?.data) {
+                setResultRequestConsentResult(res1Data.data);
+            }
+
+            if (!chatRoomId) return;
+            const res2 = await createChatRoomPhone({
+                phone: phone1,
+                chatRoomId: chatRoomId,
+                accountId: -1,
+            });
+
+            const res2Data = res2.data;
+            console.log('createChatRoomPhone res2Data', res2Data);
+        } catch (error) {
+            console.error(error);
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Đã có lỗi xảy ra',
+                })
+            );
+        } finally {
+            dispatch(set_isLoading(false));
+        }
+
+        // requestConsent({
+        //     phone: formatPhone(phone1),
+        //     call_type: selectedCallType,
+        //     reason_code: 101,
+        //     zaloApp: zaloApp,
+        //     zaloOa: zaloOa,
+        //     accountId: -1,
+        // })
+        //     .then((res) => {
+        //         const resData = res.data;
+        //         if (resData?.isSuccess && resData?.data) {
+        //             setResultRequestConsentResult(resData.data);
+        //         }
+        //         createChatRoomPhone({
+        //             phone: phone1,
+        //             chatRoomId: chatRoomId,
+        //             accountId: -1,
+        //         })
+        //             .then((res) => {
+        //                 const resData = res.data;
+        //                 console.log('createChatRoomPhone resData', resData);
+        //             })
+        //             .catch((err) => console.error('createChatRoomPhone err', err));
+        //     })
+        //     .catch((err) => {
+        //         console.error(err);
+        //     });
     };
 
     return (

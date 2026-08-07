@@ -19,7 +19,7 @@ const Call = () => {
     };
 
     const handleOfCall = () => {
-        dispatch(set_calling({ is: true, uid: undefined }));
+        dispatch(set_calling({ is: true, uid: undefined, chatRoomId: undefined }));
     };
 
     return (

@@ -11,7 +11,7 @@ import { useLazyGetCallAgentWithAccountIdQuery } from '@src/redux/query/callAgen
 import { getSocket } from '@src/socketIo';
 import { MySip } from '@src/call';
 import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
-import { set_callOutState } from '@src/redux/slice/App';
+import { set_callOutState, set_callInState } from '@src/redux/slice/App';
 import { SessionState } from 'sip.js';
 import CallDialog from './component/CallDialog';
 
@@ -246,22 +246,22 @@ const App = () => {
                             break;
 
                         case SessionState.Established:
-                            // setCallInState(CallInStateEnum.CALL_IN);
+                            dispatch(set_callInState(CallInStateEnum.CALL_IN));
                             break;
 
                         case SessionState.Terminating:
-                            // setCallInState(CallInStateEnum.CALL_END);
+                            dispatch(set_callInState(CallInStateEnum.CALL_END));
                             break;
 
                         case SessionState.Terminated:
-                            // setCallInState(CallInStateEnum.CALL_END);
+                            dispatch(set_callInState(CallInStateEnum.CALL_END));
                             break;
                     }
                 },
                 (invitation) => {
                     console.log(11111111, invitation.request.from.uri);
                     if (invitation) {
-                        // setCallInState(CallInStateEnum.RINGING);
+                        dispatch(set_callInState(CallInStateEnum.RINGING));
                     }
                 }
             );
@@ -276,7 +276,7 @@ const App = () => {
                 void sip.disconnectSip();
             }
         };
-    }, [getCallAgentWithAccountId]);
+    }, [dispatch, getCallAgentWithAccountId]);
 
     useEffect(() => {
         if (!mySip) return;
