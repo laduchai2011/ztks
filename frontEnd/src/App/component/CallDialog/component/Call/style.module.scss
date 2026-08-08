@@ -19,6 +19,33 @@
         color: gray;
     }
 
+    > .avatarContainer {
+        @include center-of-rectangle;
+
+        > img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+    }
+
+    > .userName {
+        box-sizing: border-box;
+        padding: 5px;
+        text-align: center;
+        font-size: 1.05rem;
+        font-weight: 500;
+        color: black;
+    }
+
+    > .callIn {
+        box-sizing: border-box;
+        padding: 5px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: gray;
+    }
+
     > .icon1 {
         box-sizing: border-box;
         padding: 10px;
@@ -27,6 +54,8 @@
 
     > .icon2 {
         @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 10px;
 
         > div {
             @include center-of-row;

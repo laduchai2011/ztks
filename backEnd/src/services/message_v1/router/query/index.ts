@@ -4,6 +4,7 @@ import authentication from '@src/auth';
 import Handle_GetChatRoomRoleWithCridAaid from './handle/GetChatRoomRoleWithCridAaid';
 import Handle_GetMessagesForChatScreen from './handle/GetMessagesForChatScreen';
 import Handle_GetLastMessage from './handle/GetLastMessage';
+import Handle_GetLastMessageWithUid from './handle/GetLastMessageWithUid';
 import Handle_GetMessageWithId from './handle/GetMessageWithId';
 import Handle_GetMessageWithMsgId from './handle/GetMessageWithMsgId';
 import Handle_GetAllNewMessages from './handle/GetAllNewMessages';
@@ -14,6 +15,7 @@ const router_query_message_v1: Router = express.Router();
 const handle_getChatRoomRoleWithCridAaid = new Handle_GetChatRoomRoleWithCridAaid();
 const handle_getMessagesForChatScreen = new Handle_GetMessagesForChatScreen();
 const handle_getLastMessage = new Handle_GetLastMessage();
+const handle_getLastMessageWithUid = new Handle_GetLastMessageWithUid();
 const handle_getMessageWithId = new Handle_GetMessageWithId();
 const handle_getMessageWithMsgId = new Handle_GetMessageWithMsgId();
 const handle_getAllNewMessages = new Handle_GetAllNewMessages();
@@ -35,6 +37,8 @@ router_query_message_v1.get(
     handle_getLastMessage.isPassRole,
     handle_getLastMessage.main
 );
+
+router_query_message_v1.get('/getLastMessageWithUid', authentication, handle_getLastMessageWithUid.main);
 
 router_query_message_v1.get('/getMessageWithId', authentication, handle_getMessageWithId.main);
 

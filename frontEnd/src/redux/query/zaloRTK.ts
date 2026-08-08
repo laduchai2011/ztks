@@ -13,6 +13,7 @@ import {
     ZaloAppWithAccountIdBodyField,
     ZaloOaListWith2FkBodyField,
     ZaloOaWithIdBodyField,
+    GetZaloOaWithOaIdBodyField,
     GenZaloOaTokenBodyField,
     GetZaloOaTokenWithFkBodyField,
     CreateZaloOaTokenBodyField,
@@ -66,6 +67,14 @@ export const zaloRTK = createApi({
                 body,
             }),
             providesTags: (result, error, arg) => [{ type: 'ZaloOa', id: arg.id }],
+        }),
+        getZaloOaWithOaId: builder.query<MyResponse<ZaloOaField>, GetZaloOaWithOaIdBodyField>({
+            query: (body) => ({
+                url: ZALO_API.GET_ZALOOA_WITH_OA_ID,
+                method: 'POST',
+                body,
+            }),
+            providesTags: (result, error, arg) => [{ type: 'ZaloOa', id: arg.oaId }],
         }),
         getZaloUser: builder.query<MyResponse<ZaloUserField>, ZaloUserBodyField>({
             query: (body) => ({
@@ -207,7 +216,9 @@ export const {
     useLazyGetZaloOaListWith2FkQuery,
     useGetZaloOaWithIdQuery,
     useLazyGetZaloOaWithIdQuery,
+    useLazyGetZaloOaWithOaIdQuery,
     useGetZaloUserQuery,
+    useLazyGetZaloUserQuery,
     useGenZaloOaTokenMutation,
     useLazyGetZaloOaTokenWithFkQuery,
     useCreateZaloOaMutation,

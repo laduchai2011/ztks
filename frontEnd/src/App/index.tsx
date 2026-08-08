@@ -4,16 +4,19 @@ import axiosInstance from '@src/api/axiosInstance';
 import { MyResponse } from '@src/dataStruct/response';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
-import { set_account, set_accountInformation, set_myAdmin, set_zaloApp } from '@src/redux/slice/App';
+import { set_account, set_accountInformation, set_myAdmin, set_zaloApp, set_calling } from '@src/redux/slice/App';
 import { AccountField, AccountInformationField } from '@src/dataStruct/account';
 import { useGetZaloAppWithAccountIdQuery } from '@src/redux/query/zaloRTK';
 import { useLazyGetCallAgentWithAccountIdQuery } from '@src/redux/query/callAgentRTK';
+import { useLazyGetLastMessageWithUidQuery } from '@src/redux/query/messageV1RTK';
 import { getSocket } from '@src/socketIo';
 import { MySip } from '@src/call';
 import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
 import { set_callOutState, set_callInState } from '@src/redux/slice/App';
 import { SessionState } from 'sip.js';
 import CallDialog from './component/CallDialog';
+import { useLazyGetZaloUserQuery, useLazyGetZaloOaWithOaIdQuery } from '@src/redux/query/zaloRTK';
+import { ZaloAppField } from '@src/dataStruct/zalo';
 
 const App = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -21,10 +24,14 @@ const App = () => {
         (state: RootState) => state.AppSlice.accountInformation
     );
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
+    const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const myAdmin: number | undefined = useSelector((state: RootState) => state.AppSlice.myAdmin);
     const calling: { is: boolean; uid?: string } = useSelector((state: RootState) => state.AppSlice.calling);
 
     const [getCallAgentWithAccountId] = useLazyGetCallAgentWithAccountIdQuery();
+    const [getLastMessageWithUid] = useLazyGetLastMessageWithUidQuery();
+    const [getZaloUser] = useLazyGetZaloUserQuery();
+    const [getZaloOaWithOaId] = useLazyGetZaloOaWithOaIdQuery();
 
     const [mySip, setMySip] = useState<MySip | null>(null);
 
@@ -258,10 +265,49 @@ const App = () => {
                             break;
                     }
                 },
-                (invitation) => {
-                    console.log(11111111, invitation.request.from.uri);
-                    if (invitation) {
-                        dispatch(set_callInState(CallInStateEnum.RINGING));
+                async (invitation) => {
+                    const uid = invitation.request.from.uri.user;
+                    // console.log('Incoming call from uid:', uid);
+
+                    if (!uid) return;
+                    if (!zaloApp) return;
+                    if (!account) return;
+
+                    try {
+                        const resLastMessage = await getLastMessageWithUid({ uid });
+                        const resDataLastMessage = resLastMessage.data;
+
+                        if (resDataLastMessage?.isSuccess && resDataLastMessage.data) {
+                            const resZaloOa = await getZaloOaWithOaId({
+                                oaId: resDataLastMessage.data.oa_id,
+                                accountId: account.id,
+                            });
+                            const resDataZaloOa = resZaloOa.data;
+                            if (resDataZaloOa?.isSuccess && resDataZaloOa.data) {
+                                const resZaloUser = await getZaloUser({
+                                    zaloApp: zaloApp,
+                                    zaloOa: resDataZaloOa.data,
+                                    userIdByApp: resDataLastMessage.data.user_id_by_app,
+                                });
+
+                                const resDataZaloUser = resZaloUser.data;
+
+                                if (invitation) {
+                                    dispatch(
+                                        set_calling({
+                                            is: true,
+                                            uid: undefined,
+                                            chatRoomId: undefined,
+                                            zaloOa: resDataZaloOa.data,
+                                            zaloUser: resDataZaloUser?.data,
+                                        })
+                                    );
+                                    dispatch(set_callInState(CallInStateEnum.RINGING));
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error fetching Zalo user:', error);
                     }
                 }
             );
@@ -276,7 +322,7 @@ const App = () => {
                 void sip.disconnectSip();
             }
         };
-    }, [dispatch, getCallAgentWithAccountId]);
+    }, [dispatch, getCallAgentWithAccountId, getLastMessageWithUid, getZaloUser, zaloApp]);
 
     useEffect(() => {
         if (!mySip) return;

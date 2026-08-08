@@ -9,6 +9,8 @@ export async function ensureIndexes() {
 
     const col_lastMessage = db.collection('lastMessage');
     await col_lastMessage.createIndex({ chat_room_id: 1 }, { unique: true });
+    await col_lastMessage.createIndex({ recipient_id: -1 });
+    await col_lastMessage.createIndex({ sender_id: -1 });
     await col_lastMessage.createIndex({ timestamp: -1 });
 
     const col_chatRoomRole = db.collection('chatRoomRole');

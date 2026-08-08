@@ -1,7 +1,8 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
 import { AccountField, AccountInformationField } from '@src/dataStruct/account';
-import { ZaloAppField } from '@src/dataStruct/zalo';
+import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { CallInStateType, CallOutStateType } from '@src/dataStruct/call';
+import { ZaloUserField } from '@src/dataStruct/zalo/user';
 
 export interface state_props {
     isLoading: boolean;
@@ -17,6 +18,8 @@ export interface state_props {
         is: boolean;
         uid?: string;
         chatRoomId?: number;
+        zaloOa?: ZaloOaField;
+        zaloUser?: ZaloUserField;
     };
     call: {
         inState: CallInStateType;

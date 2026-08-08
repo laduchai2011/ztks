@@ -5,6 +5,9 @@ import { AppDispatch, RootState } from '@src/redux';
 import { MdCall, MdWifiCalling3 } from 'react-icons/md';
 import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
 import { set_calling } from '@src/redux/slice/App';
+import { avatarnull } from '@src/utility/string';
+import { ZaloOaField } from '@src/dataStruct/zalo';
+import { ZaloUserField } from '@src/dataStruct/zalo/user';
 
 const Call = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -12,6 +15,8 @@ const Call = () => {
     const uid: string | undefined = useSelector((state: RootState) => state.MessageV1Slice.uid);
     const callInState: CallInStateType = useSelector((state: RootState) => state.AppSlice.call.inState);
     const callOutState: CallOutStateType = useSelector((state: RootState) => state.AppSlice.call.outState);
+    const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.AppSlice.calling.zaloOa);
+    const zaloUser: ZaloUserField | undefined = useSelector((state: RootState) => state.AppSlice.calling.zaloUser);
 
     const handleOpenCall = () => {
         if (!uid) return;
@@ -26,6 +31,15 @@ const Call = () => {
         <div className={style.parent} ref={parent_element}>
             {callOutState === CallOutStateEnum.CONNECTING && <div className={style.connecting}>Đang kết nối ...</div>}
             {callOutState === CallOutStateEnum.RINGING && <div className={style.ring}>Đổ chuông</div>}
+            {callInState !== CallInStateEnum.CALL_END && (
+                <div className={style.avatarContainer}>
+                    <img src={zaloUser?.data.avatar || avatarnull} alt="Avatar" />
+                </div>
+            )}
+            {callInState !== CallInStateEnum.CALL_END && (
+                <div className={style.userName}>{zaloUser?.data.display_name}</div>
+            )}
+            {callInState === CallInStateEnum.RINGING && <div className={style.callIn}>Đang gọi đến</div>}
             {callInState === CallInStateEnum.CALL_END && (
                 <div className={style.icon1}>
                     {callOutState === CallOutStateEnum.CALL_END && (

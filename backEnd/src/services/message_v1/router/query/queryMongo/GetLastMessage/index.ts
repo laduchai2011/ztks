@@ -14,3 +14,23 @@ export async function getLastMessage(chat_room_id: number): Promise<MessageV1Fie
 
     return data.length > 0 ? data[0] : undefined;
 }
+
+export async function getLastMessageWithUid(uid: string): Promise<MessageV1Field<ZaloMessageType> | undefined> {
+    const db = getDbMonggo();
+    const col = db.collection<MessageV1Field<ZaloMessageType>>('lastMessage');
+
+    const data = await col
+        .find<MessageV1Field<ZaloMessageType>>(
+            {
+                $or: [{ recipient_id: uid }, { sender_id: uid }],
+            },
+            {
+                projection: { _id: 0 },
+            }
+        )
+        .sort({ timestamp: -1 })
+        .limit(1)
+        .toArray();
+
+    return data.length > 0 ? data[0] : undefined;
+}

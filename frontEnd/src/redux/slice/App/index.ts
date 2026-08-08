@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { state_props } from '@src/App/type';
 import { AccountField, AccountInformationField } from '@src/dataStruct/account';
-import { ZaloAppField } from '@src/dataStruct/zalo';
+import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
+import { ZaloUserField } from '@src/dataStruct/zalo/user';
 
 const initialState: state_props = {
     isLoading: false,
@@ -19,6 +20,8 @@ const initialState: state_props = {
         is: false,
         uid: undefined,
         chatRoomId: undefined,
+        zaloOa: undefined,
+        zaloUser: undefined,
     },
     call: {
         inState: CallInStateEnum.CALL_END,
@@ -51,7 +54,16 @@ const AppSlice = createSlice({
         set_zaloApp: (state, action: PayloadAction<ZaloAppField>) => {
             state.zaloApp = action.payload;
         },
-        set_calling: (state, action: PayloadAction<{ is: boolean; uid?: string; chatRoomId?: number }>) => {
+        set_calling: (
+            state,
+            action: PayloadAction<{
+                is: boolean;
+                uid?: string;
+                chatRoomId?: number;
+                zaloOa?: ZaloOaField;
+                zaloUser?: ZaloUserField;
+            }>
+        ) => {
             state.calling = action.payload;
         },
         set_callInState: (state, action: PayloadAction<CallInStateType>) => {

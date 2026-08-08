@@ -59,6 +59,11 @@ export interface ZaloOaWithIdBodyField {
     accountId: number; // to determine admin or member
 }
 
+export interface GetZaloOaWithOaIdBodyField {
+    oaId: string;
+    accountId: number; // to determine admin or member
+}
+
 export interface CheckZaloAppWithAppIdBodyField {
     appId: string;
 }

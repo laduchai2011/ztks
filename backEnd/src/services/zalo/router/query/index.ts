@@ -3,6 +3,7 @@ import authentication from '@src/auth';
 import Handle_GetZaloAppWithAccountId from './handle/GetZaloAppWithAccountId';
 import Handle_GetZaloOaListWith2Fk from './handle/GetZaloOaListWith2Fk';
 import Handle_GetZaloOaWithId from './handle/GetZaloOaWithId';
+import Handle_GetZaloOaWithOaId from './handle/GetZaloOaWithOaId';
 import Handle_GetZaloUserInfor from './handle/GetZaloUserInfor';
 import Handle_PlaywightGetZaloApp from './handle/PlaywightGetZaloApp';
 import Handle_GetZaloOaTokenWithFk from './handle/GetZaloOaTokenWithFk';
@@ -15,6 +16,7 @@ const router_query_zalo: Router = express.Router();
 const handle_getZaloAppWithAccountId = new Handle_GetZaloAppWithAccountId();
 const handle_getZaloOaListWith2Fk = new Handle_GetZaloOaListWith2Fk();
 const handle_getZaloOaWithId = new Handle_GetZaloOaWithId();
+const handle_getZaloOaWithOaId = new Handle_GetZaloOaWithOaId();
 const handle_getZaloUserInfor = new Handle_GetZaloUserInfor();
 const handle_playwightGetZaloApp = new Handle_PlaywightGetZaloApp();
 const handle_getZaloOaTokenWithFk = new Handle_GetZaloOaTokenWithFk();
@@ -41,6 +43,13 @@ router_query_zalo.post(
     authentication,
     handle_getZaloOaWithId.checkRole,
     handle_getZaloOaWithId.main
+);
+
+router_query_zalo.post(
+    '/getZaloOaWithOaId',
+    authentication,
+    handle_getZaloOaWithOaId.checkRole,
+    handle_getZaloOaWithOaId.main
 );
 
 router_query_zalo.post(

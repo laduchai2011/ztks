@@ -30,6 +30,10 @@ export const messageV1RTK = createApi({
             query: ({ chatRoomId }) => `${MESSAGEV1_API.GET_LAST_MESSAGE}?chatRoomId=${chatRoomId}`,
             keepUnusedDataFor: 0,
         }),
+        getLastMessageWithUid: builder.query<MyResponse<MessageV1Field<ZaloMessageType>>, { uid: string }>({
+            query: ({ uid }) => `${MESSAGEV1_API.GET_LAST_MESSAGE_WITH_UID}?uid=${uid}`,
+            keepUnusedDataFor: 0,
+        }),
         getMessageWithId: builder.query<MyResponse<MessageV1Field<ZaloMessageType>>, { id: string }>({
             query: ({ id }) => `${MESSAGEV1_API.GET_MESSAGE_WITH_ID}?id=${id}`,
         }),
@@ -69,6 +73,7 @@ export const {
     useLazyGetMessagesForChatScreenQuery,
     useGetLastMessageQuery,
     useLazyGetLastMessageQuery,
+    useLazyGetLastMessageWithUidQuery,
     useLazyGetMessageWithIdQuery,
     useLazyGetMessageWithMsgIdQuery,
     useLazyGetAllNewMessagesQuery,

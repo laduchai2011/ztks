@@ -76,6 +76,20 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE GetZaloOaWithOaId
+	@oaId NVARCHAR(255),
+	@accountId INT
+AS
+BEGIN
+	SELECT *
+	FROM dbo.zaloOa
+	WHERE 
+		status = 'normal' 
+		AND oaId = @oaId
+		AND accountId = @accountId
+END
+GO
+
 CREATE PROCEDURE CheckZaloAppWithAppId
     @appId NVARCHAR(255)
 AS
