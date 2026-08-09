@@ -46,6 +46,14 @@
         color: gray;
     }
 
+    > .text {
+        box-sizing: border-box;
+        padding: 5px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: gray;
+    }
+
     > .icon1 {
         box-sizing: border-box;
         padding: 10px;

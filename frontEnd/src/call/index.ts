@@ -165,17 +165,20 @@ export class MySip {
                             break;
                     }
                 });
-
-                // this._inviterIn.accept({
-                //     sessionDescriptionHandlerOptions: {
-                //         constraints: {
-                //             audio: true,
-                //             video: false,
-                //         },
-                //     },
-                // });
             },
         };
+    }
+
+    accept() {
+        if (!this._inviterIn) return;
+        this._inviterIn.accept({
+            sessionDescriptionHandlerOptions: {
+                constraints: {
+                    audio: true,
+                    video: false,
+                },
+            },
+        });
     }
 
     async connectSip() {
@@ -295,25 +298,52 @@ export class MySip {
 
     async destroyCallIn() {
         if (this.localStream) {
-            this.localStream.getTracks().forEach((track) => {
+            this.localStream.getTracks().forEach(async (track) => {
                 track.stop();
 
-                if (this._inviterIn) {
-                    this._inviterIn._bye();
-                }
+                // if (this._inviterIn) {
+                //     this._inviterIn._bye();
+                // }
             });
 
             this.localStream = undefined;
+        }
+
+        if (this._inviterIn) {
+            try {
+                if (this._inviterIn.state === SessionState.Established) {
+                    await this._inviterIn.bye();
+                } else {
+                    await this._inviterIn.reject();
+                }
+            } catch (error) {
+                console.error(error);
+            }
+
+            this._inviterIn = undefined;
         }
     }
 
     async destroyCallOut() {
         if (this.localStream) {
-            this.localStream.getTracks().forEach((track) => {
+            this.localStream.getTracks().forEach(async (track) => {
                 track.stop();
 
+                // if (this._inviterOut) {
+                //     this._inviterOut.cancel();
+                // }
                 if (this._inviterOut) {
-                    this._inviterOut.cancel();
+                    try {
+                        if (this._inviterOut.state === SessionState.Established) {
+                            await this._inviterOut.bye();
+                        } else {
+                            await this._inviterOut.cancel();
+                        }
+                    } catch (error) {
+                        console.error(error);
+                    }
+
+                    this._inviterOut = undefined;
                 }
             });
 

@@ -18,6 +18,8 @@ const initialState: state_props = {
     zaloApp: undefined,
     calling: {
         is: false,
+        isIn: undefined,
+        isCallIn: undefined,
         uid: undefined,
         chatRoomId: undefined,
         zaloOa: undefined,
@@ -39,9 +41,9 @@ const AppSlice = createSlice({
         setData_toastMessage: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
             state.toastMessage.data = action.payload;
         },
-        set_id_isNewMessage_current: (state, action: PayloadAction<number>) => {
-            state.id_isNewMessage_current = action.payload;
-        },
+        // set_id_isNewMessage_current: (state, action: PayloadAction<number>) => {
+        //     state.id_isNewMessage_current = action.payload;
+        // },
         set_account: (state, action: PayloadAction<AccountField>) => {
             state.account = action.payload;
         },
@@ -66,6 +68,12 @@ const AppSlice = createSlice({
         ) => {
             state.calling = action.payload;
         },
+        set_callingIsIn: (state, action: PayloadAction<boolean | undefined>) => {
+            state.calling.isIn = action.payload;
+        },
+        set_callingIsCallIn: (state, action: PayloadAction<boolean | undefined>) => {
+            state.calling.isCallIn = action.payload;
+        },
         set_callInState: (state, action: PayloadAction<CallInStateType>) => {
             state.call.inState = action.payload;
         },
@@ -78,12 +86,14 @@ const AppSlice = createSlice({
 export const {
     set_isLoading,
     setData_toastMessage,
-    set_id_isNewMessage_current,
+    // set_id_isNewMessage_current,
     set_account,
     set_accountInformation,
     set_myAdmin,
     set_zaloApp,
     set_calling,
+    set_callingIsIn,
+    set_callingIsCallIn,
     set_callInState,
     set_callOutState,
 } = AppSlice.actions;

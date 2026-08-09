@@ -16,6 +16,8 @@ export interface state_props {
     zaloApp?: ZaloAppField;
     calling: {
         is: boolean;
+        isIn?: boolean;
+        isCallIn?: boolean;
         uid?: string;
         chatRoomId?: number;
         zaloOa?: ZaloOaField;

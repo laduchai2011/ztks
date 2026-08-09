@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import AppRouter from '@src/router';
 import axiosInstance from '@src/api/axiosInstance';
 import { MyResponse } from '@src/dataStruct/response';
@@ -12,7 +12,7 @@ import { useLazyGetLastMessageWithUidQuery } from '@src/redux/query/messageV1RTK
 import { getSocket } from '@src/socketIo';
 import { MySip } from '@src/call';
 import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
-import { set_callOutState, set_callInState } from '@src/redux/slice/App';
+import { set_callOutState, set_callInState, set_callingIsIn } from '@src/redux/slice/App';
 import { SessionState } from 'sip.js';
 import CallDialog from './component/CallDialog';
 import { useLazyGetZaloUserQuery, useLazyGetZaloOaWithOaIdQuery } from '@src/redux/query/zaloRTK';
@@ -27,6 +27,9 @@ const App = () => {
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const myAdmin: number | undefined = useSelector((state: RootState) => state.AppSlice.myAdmin);
     const calling: { is: boolean; uid?: string } = useSelector((state: RootState) => state.AppSlice.calling);
+    const callingIsIn: boolean | undefined = useSelector((state: RootState) => state.AppSlice.calling.isIn);
+    const callingIsCallIn: boolean | undefined = useSelector((state: RootState) => state.AppSlice.calling.isCallIn);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
 
     const [getCallAgentWithAccountId] = useLazyGetCallAgentWithAccountIdQuery();
     const [getLastMessageWithUid] = useLazyGetLastMessageWithUidQuery();
@@ -239,10 +242,10 @@ const App = () => {
                 (stream: MediaStream) => {
                     console.log('Receive remote stream');
 
-                    // if (audioRef.current) {
-                    //     audioRef.current.srcObject = stream;
-                    //     audioRef.current.play().catch(console.error);
-                    // }
+                    if (audioRef.current) {
+                        audioRef.current.srcObject = stream;
+                        audioRef.current.play().catch(console.error);
+                    }
                 },
                 (state) => {
                     switch (state) {
@@ -302,6 +305,7 @@ const App = () => {
                                             zaloUser: resDataZaloUser?.data,
                                         })
                                     );
+                                    dispatch(set_callingIsIn(true));
                                     dispatch(set_callInState(CallInStateEnum.RINGING));
                                 }
                             }
@@ -322,7 +326,7 @@ const App = () => {
                 void sip.disconnectSip();
             }
         };
-    }, [dispatch, getCallAgentWithAccountId, getLastMessageWithUid, getZaloUser, zaloApp]);
+    }, [dispatch, getCallAgentWithAccountId, getLastMessageWithUid, getZaloUser, getZaloOaWithOaId, zaloApp, account]);
 
     useEffect(() => {
         if (!mySip) return;
@@ -364,16 +368,25 @@ const App = () => {
             });
         }
 
+        console.log('accept', callingIsCallIn);
+        if (callingIsCallIn) {
+            mySip.accept();
+        }
+
         if (!calling.uid) {
             mySip.destroyCallOut();
+        }
+
+        if (!callingIsIn) {
             mySip.destroyCallIn();
         }
-    }, [dispatch, mySip, calling]);
+    }, [dispatch, mySip, calling, callingIsIn, callingIsCallIn]);
 
     return (
         <div>
             <AppRouter />
             <CallDialog />
+            <audio style={{ display: 'hidden' }} ref={audioRef} />
         </div>
     );
 };
