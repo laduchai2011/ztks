@@ -1,4 +1,4 @@
 docker stop adminapp_container
 docker rm adminapp_container
 docker build -t adminapp .
-docker run -dit --name adminapp_container --network network_zalo_5kaquarium -p 3200:3200 --log-driver=json-file --log-opt max-size=10m --log-opt max-file=3 adminapp
+docker run -dit --name adminapp_container --network network_ztks -p 3200:3200 --log-driver=json-file --log-opt max-size=10m --log-opt max-file=3 adminapp
