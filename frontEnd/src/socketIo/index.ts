@@ -8,7 +8,7 @@ let socket: SocketType | null = null;
 export const getSocket = () => {
     if (!socket) {
         socket = io(SOCKET_URL || '', { path: '/socket.io/', auth: { token: getCookie('socketToken') || '' } });
-        // socket = io('wss://socketapp.5kaquarium.com', {
+        // socket = io('wss://socket.taokosao.com', {
         //     path: "/socket.io/",
         // });
 

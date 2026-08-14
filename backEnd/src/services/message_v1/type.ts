@@ -1,5 +1,5 @@
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { HookDataField } from '@src/dataStruct/zalo/hookData';
+import { HookDataField, HookCallField } from '@src/dataStruct/zalo/hookData';
 import { ChatSessionField } from '@src/dataStruct/chatSession';
 
 export interface IsPassField {

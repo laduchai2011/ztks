@@ -8,6 +8,7 @@ import {
     MessageFileSchema,
     MessageStickerSchema,
     MessageLinkSchema,
+    CallSchema,
 } from './messageType';
 import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 
@@ -21,6 +22,46 @@ const BaseEventSchema = {
     reply_account_id: z.number().int(),
     is_seen: z.boolean(),
     message_id: z.string(),
+    // timestamp: z.coerce.date(),
+    timestamp: z.preprocess((val) => {
+        if (val instanceof Date) return val;
+
+        if (typeof val === 'string') {
+            const s = val.trim();
+
+            // unix seconds
+            if (/^\d{10}$/.test(s)) return new Date(Number(s) * 1000);
+
+            // unix milliseconds
+            if (/^\d{13}$/.test(s)) return new Date(Number(s));
+
+            // ISO or normal string
+            return new Date(s);
+        }
+
+        if (typeof val === 'number') {
+            // unix ms
+            return new Date(val);
+        }
+
+        return val;
+    }, z.date()),
+};
+
+const BaseCallEventSchema = {
+    app_id: z.string(),
+    oa_id: z.string(),
+    chat_room_id: z.number().int(),
+    user_id_by_app: z.string(),
+    user_id: z.string(),
+    call_id: z.string(),
+    waiting_time: z.string(),
+    init_time: z.string(),
+    call_duration: z.string(),
+    talk_time: z.string(),
+    status_code: z.number(),
+    reply_account_id: z.number().int(),
+    is_seen: z.boolean(),
     // timestamp: z.coerce.date(),
     timestamp: z.preprocess((val) => {
         if (val instanceof Date) return val;
@@ -101,6 +142,24 @@ const MessageLinkZodSchema = z.object({
     message: MessageLinkSchema,
 });
 
+// const CallZodSchema = z.object({
+//     event_name: z.union([z.literal(Zalo_Event_Name_Enum.user_call_oa), z.literal(Zalo_Event_Name_Enum.oa_call_user)]),
+//     ...BaseCallEventSchema,
+//     ...CallSchema,
+// });
+
+const UserCallOaZodSchema = z.object({
+    event_name: z.literal(Zalo_Event_Name_Enum.user_call_oa),
+    ...BaseCallEventSchema,
+    ...CallSchema,
+});
+
+const OaCallUserZodSchema = z.object({
+    event_name: z.literal(Zalo_Event_Name_Enum.oa_call_user),
+    ...BaseCallEventSchema,
+    ...CallSchema,
+});
+
 export const MessageZodSchema = z.discriminatedUnion('event_name', [
     MessageTextZodSchema,
     MessageImageZodSchema,
@@ -109,6 +168,9 @@ export const MessageZodSchema = z.discriminatedUnion('event_name', [
     MessageFileZodSchema,
     MessageStickerZodSchema,
     MessageLinkZodSchema,
+    // CallZodSchema,
+    UserCallOaZodSchema,
+    OaCallUserZodSchema,
 ]);
 
 export type MessageSchemaType = z.infer<typeof MessageZodSchema>;
@@ -123,6 +185,70 @@ const Base1EventSchema = {
     reply_account_id: z.number().int(),
     is_seen: z.boolean(),
     message_id: z.string(),
+    // timestamp: z.coerce.date(),
+    timestamp: z.preprocess((val) => {
+        if (val instanceof Date) return val;
+
+        if (typeof val === 'string') {
+            const s = val.trim();
+
+            // unix seconds
+            if (/^\d{10}$/.test(s)) return new Date(Number(s) * 1000);
+
+            // unix milliseconds
+            if (/^\d{13}$/.test(s)) return new Date(Number(s));
+
+            // ISO or normal string
+            return new Date(s);
+        }
+
+        if (typeof val === 'number') {
+            // unix ms
+            return new Date(val);
+        }
+
+        return val;
+    }, z.date()),
+    account_id: z.number().int(),
+    created_at: z.preprocess((val) => {
+        if (val instanceof Date) return val;
+
+        if (typeof val === 'string') {
+            const s = val.trim();
+
+            // unix seconds
+            if (/^\d{10}$/.test(s)) return new Date(Number(s) * 1000);
+
+            // unix milliseconds
+            if (/^\d{13}$/.test(s)) return new Date(Number(s));
+
+            // ISO or normal string
+            return new Date(s);
+        }
+
+        if (typeof val === 'number') {
+            // unix ms
+            return new Date(val);
+        }
+
+        return val;
+    }, z.date()),
+};
+
+const BaseCall1EventSchema = {
+    app_id: z.string(),
+    oa_id: z.string(),
+    chat_room_id: z.number().int(),
+    user_id_by_app: z.string(),
+    user_id: z.string(),
+    call_id: z.string(),
+    waiting_time: z.string(),
+    init_time: z.string(),
+    call_duration: z.string(),
+    talk_time: z.string(),
+    status_code: z.number(),
+    reply_account_id: z.number().int(),
+    is_seen: z.boolean(),
     // timestamp: z.coerce.date(),
     timestamp: z.preprocess((val) => {
         if (val instanceof Date) return val;
@@ -227,6 +353,23 @@ const NewMessageLinkZodSchema = z.object({
     message: MessageLinkSchema,
 });
 
+// const NewCallZodSchema = z.object({
+//     event_name: z.union([z.literal(Zalo_Event_Name_Enum.user_call_oa), z.literal(Zalo_Event_Name_Enum.oa_call_user)]),
+//     ...BaseCall1EventSchema,
+//     ...CallSchema,
+// });
+const NewUserCallOaZodSchema = z.object({
+    event_name: z.literal(Zalo_Event_Name_Enum.user_call_oa),
+    ...BaseCall1EventSchema,
+    ...CallSchema,
+});
+
+const NewOaCallUserZodSchema = z.object({
+    event_name: z.literal(Zalo_Event_Name_Enum.oa_call_user),
+    ...BaseCall1EventSchema,
+    ...CallSchema,
+});
+
 export const NewMessageZodSchema = z.discriminatedUnion('event_name', [
     NewMessageTextZodSchema,
     NewMessageImageZodSchema,
@@ -235,6 +378,9 @@ export const NewMessageZodSchema = z.discriminatedUnion('event_name', [
     NewMessageFileZodSchema,
     NewMessageStickerZodSchema,
     NewMessageLinkZodSchema,
+    // NewCallZodSchema,
+    NewUserCallOaZodSchema,
+    NewOaCallUserZodSchema,
 ]);
 
 export type NewMessageSchemaType = z.infer<typeof NewMessageZodSchema>;

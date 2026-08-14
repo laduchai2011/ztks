@@ -159,3 +159,44 @@ export interface ResultSendToZaloField {
     error: number;
     message: string;
 }
+
+export enum HookCallTypeEnum {
+    AUDIO = 'AUDIO',
+}
+
+export type HookCallTypeType = HookCallTypeEnum.AUDIO;
+
+export interface HookCallSchema<T = HookCallTypeType> {
+    event_name: Zalo_Event_Name_Enum;
+    app_id: string;
+    oa_id: string;
+    chat_room_id: number;
+    user_id_by_app: string;
+    user_id: string;
+    call_id: string;
+    call_type: T;
+    waiting_time: string;
+    init_time: string;
+    call_duration: string;
+    talk_time: string;
+    status_code: number;
+    reply_account_id: number;
+    is_seen: boolean;
+    timestamp: Date;
+}
+
+export interface HookCallField<T = HookCallTypeType> {
+    event_name: Zalo_Event_Name_Enum;
+    app_id: string;
+    oa_id: string;
+    user_id_by_app: string;
+    user_id: string;
+    call_id: string;
+    call_type: T;
+    waiting_time: string;
+    init_time: string;
+    call_duration: string;
+    talk_time: string;
+    status_code: number;
+    timestamp: Date;
+}

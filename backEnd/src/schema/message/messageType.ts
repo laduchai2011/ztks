@@ -111,3 +111,7 @@ export const MessageLinkSchema = z.object({
         })
     ),
 });
+
+export const CallSchema = z.object({
+    call_type: z.literal('AUDIO'),
+});

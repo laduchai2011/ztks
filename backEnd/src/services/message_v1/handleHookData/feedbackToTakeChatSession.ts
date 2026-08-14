@@ -16,7 +16,7 @@ mssql_server.init();
 const serviceRedis = ServiceRedis.getInstance();
 serviceRedis.init();
 
-const timeExpireat = 60 * 1; // 1p
+const timeExpireat = 60 * 2; // 1p
 
 export async function feedbackToTakeChatSession(
     zaloApp: ZaloAppField,

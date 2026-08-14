@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { MdDelete } from 'react-icons/md';
 import { GoDotFill } from 'react-icons/go';
-import avatarnull from '@src/asset/avatar/avatarnull.png';
+import { avatarnull } from '@src/utility/string';
 import { ChatSessionField } from '@src/dataStruct/chatSession';
 import { useGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
 import { messageType_enum } from '@src/component/ToastMessage/type';
@@ -15,6 +15,7 @@ import {
     useUpdateSelectedAccountIdOfChatSessionMutation,
     useUpdateIsReayOfChatSessionMutation,
 } from '@src/redux/query/chatSessionRTK';
+import { handleSrcImage } from '@src/utility/string';
 
 const Session: FC<{ index: number; data: ChatSessionField }> = ({ index, data }) => {
     const [chatSession, setChatSession] = useState<ChatSessionField>(data);
@@ -165,7 +166,7 @@ const Session: FC<{ index: number; data: ChatSessionField }> = ({ index, data })
             </div>
             <div className={style.selectedAcount}>
                 <div>
-                    <img src={account?.avatar && account?.avatar?.length > 0 ? account?.avatar : avatarnull} alt="" />
+                    <img src={account?.avatar ? handleSrcImage(account.avatar) : avatarnull} alt="avatar" />
                 </div>
                 <div>{account?.firstName + ' ' + account?.lastName}</div>
             </div>
