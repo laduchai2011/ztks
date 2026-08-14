@@ -164,9 +164,9 @@ export enum HookCallTypeEnum {
     AUDIO = 'AUDIO',
 }
 
-export type HookCallTypeType = HookCallTypeEnum.AUDIO;
+export type ZaloCallType = HookCallTypeEnum.AUDIO;
 
-export interface HookCallSchema<T = HookCallTypeType> {
+export interface HookCallSchema<T = ZaloCallType> {
     event_name: Zalo_Event_Name_Enum;
     app_id: string;
     oa_id: string;
@@ -185,7 +185,7 @@ export interface HookCallSchema<T = HookCallTypeType> {
     timestamp: Date;
 }
 
-export interface HookCallField<T = HookCallTypeType> {
+export interface HookCallField<T = ZaloCallType> {
     event_name: Zalo_Event_Name_Enum;
     app_id: string;
     oa_id: string;
@@ -198,5 +198,5 @@ export interface HookCallField<T = HookCallTypeType> {
     call_duration: string;
     talk_time: string;
     status_code: number;
-    timestamp: Date;
+    timestamp: string;
 }

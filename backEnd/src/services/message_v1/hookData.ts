@@ -7,9 +7,10 @@ import {
     NewMessageZodSchema,
     MessageAmountInDaySchema,
     MessageAmountInDayType,
+    CallZodSchema,
     getDateKeyVN,
 } from '@src/schema/message';
-import { NewMessageV1Field, MessageAmountInDayField } from '@src/dataStruct/message_v1';
+import { NewMessageV1Field, MessageAmountInDayField, NewCallV1Field } from '@src/dataStruct/message_v1';
 import { ChatRoomRoleZodSchema, ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
 import { SocketMessageField, MessageV1Field } from '@src/dataStruct/message_v1';
 import { getDbMonggo } from '@src/connect/mongo';
@@ -38,6 +39,8 @@ import {
     MessageVideoField,
     MessageTextField,
     HookCallField,
+    HookCallSchema,
+    ZaloCallType,
 } from '@src/dataStruct/zalo/hookData';
 import { feedbackToTakeChatSession } from './handleHookData/feedbackToTakeChatSession';
 import { ChatSessionField } from '@src/dataStruct/chatSession';
@@ -47,7 +50,7 @@ import { getEnv } from '@src/mode';
 import { myEnv } from '@src/mode/type';
 import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 import handleCreateCallPermit from './handleCreateCallPermit';
-import { hookCall_getChatRoom, hookCall_feedbackToTakeChatSession } from './router/handleHookCall';
+import { hookCall_getChatRoom, hookCall_feedbackToTakeChatSession } from './handleHookCall';
 
 const prefix = getEnv() === myEnv.Dev ? 'dev' : '';
 
@@ -82,24 +85,105 @@ export function hookData() {
             console.log('Hook Data Received:');
             console.dir(data, { depth: null });
             // if (data.event_name.startsWith('user_call') || data.event_name.startsWith('oa_call')) {
+            if (data.event_name.startsWith('oa_send_template') || data.event_name.startsWith('user_send_template')) {
+                return;
+            }
             if ('call_id' in data) {
                 console.log(11111111111111);
                 const app_id = data.app_id;
                 const oa_id = data.oa_id;
-                const user_id = data.user_id;
-                let chatRoom: ChatRoomField | undefined;
+                let chatRoom: ChatRoomField | undefined = undefined;
 
                 const { isPass, zaloApp, zaloOa } = await isPass_App_Oa(app_id, oa_id);
                 if (!isPass) return;
                 if (!zaloApp) return;
                 if (!zaloOa) return;
 
+                chatRoom = await hookCall_getChatRoom(data, zaloOa);
+
                 if (!chatRoom) {
                     hookCall_feedbackToTakeChatSession(zaloApp, zaloOa, data);
                     return;
                 }
+
+                const hookCallSchema: HookCallSchema = {
+                    event_name: data.event_name,
+                    app_id: data.app_id,
+                    oa_id: oa_id,
+                    chat_room_id: chatRoom?.id || -1,
+                    user_id_by_app: data.user_id_by_app,
+                    user_id: data.user_id,
+                    call_id: data.call_id,
+                    call_type: data.call_type,
+                    waiting_time: data.waiting_time,
+                    init_time: data.init_time,
+                    call_duration: data.call_duration,
+                    talk_time: data.talk_time,
+                    status_code: data.status_code,
+                    reply_account_id: chatRoom?.accountId || -1,
+                    is_seen: false,
+                    timestamp: parseTimestamp(data.timestamp),
+                };
+
+                const parsedCall = CallZodSchema.safeParse(hookCallSchema);
+
+                if (!parsedCall.success) {
+                    console.error('Invalid call format:', parsedCall.error);
+                } else {
+                    const dbMonggo = getDbMonggo();
+                    const dataParse = parsedCall.data;
+                    const kq_message = await dbMonggo.collection<MessageSchemaType>('message').insertOne(dataParse);
+
+                    const { _id, ...doc } = dataParse as any;
+
+                    await dbMonggo
+                        .collection<MessageSchemaType>('lastMessage')
+                        .updateOne({ chat_room_id: doc.chat_room_id }, { $set: doc }, { upsert: true });
+
+                    // phuc vu realtime
+                    const allChatRoomRoles = await GetAllChatRoomRolesWithChatRoomId(chatRoom.id);
+                    if (allChatRoomRoles) {
+                        const socketMsg: SocketMessageField = {
+                            chatRoomId: doc.chat_room_id,
+                            _id: kq_message.insertedId.toString(),
+                            allChatRoomRoles: allChatRoomRoles,
+                        };
+
+                        sendStringMessage(`store_msg_success_${prefix}`, JSON.stringify(socketMsg));
+                    }
+                }
+
+                // thiết lập newMessage để xem tin nhắn mới chưa xem
+                const allChatRoomRoles = await GetAllChatRoomRolesWithChatRoomId(chatRoom.id);
+                if (allChatRoomRoles) {
+                    for (let i: number = 0; i < allChatRoomRoles.length; i++) {
+                        const newCall: NewCallV1Field<ZaloCallType> = {
+                            ...hookCallSchema,
+                            account_id: allChatRoomRoles[i].authorizedAccountId,
+                            created_at: new Date(),
+                        };
+
+                        const parsedNewMessage = NewMessageZodSchema.safeParse(newCall);
+
+                        if (!parsedNewMessage.success) {
+                            console.error('Invalid message format:', parsedNewMessage.error);
+                        } else {
+                            const dbMonggo = getDbMonggo();
+                            const dataNewMessageParse = parsedNewMessage.data;
+                            await dbMonggo
+                                .collection<NewMessageSchemaType>('newMessage')
+                                .insertOne(dataNewMessageParse);
+                        }
+                    }
+                }
+
+                //cập nhật số lượng tin nhắn trong ngày
+                const reply_account_id = chatRoom?.accountId;
+                const isOaSend = data.event_name.startsWith('oa_call');
+                if (isOaSend && reply_account_id && reply_account_id !== -1) {
+                    updateMessageAmountInDay(reply_account_id, 1);
+                }
             } else {
-                console.log(222222222222);
                 const app_id = data.app_id;
                 const oa_id = determineOaId(data);
                 const sender_id_of_user = determineSenderIdOfUser(data);

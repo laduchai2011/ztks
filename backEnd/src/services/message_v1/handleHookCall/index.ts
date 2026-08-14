@@ -4,14 +4,11 @@ import { HookCallField } from '@src/dataStruct/zalo/hookData';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { ChatRoomField } from '@src/dataStruct/chatRoom';
 import { UserTakeRoomToChatBodyField } from '@src/dataStruct/chatRoom/body';
-
 import { CacheGetChatRoomWithZaloOaIdUserIdByApp } from '@src/const/redisKey/chatRoom';
-import QueryDB_UserTakeRoomToChat from '../../handleHookData/queryDB/UserTakeRoomToChat';
+import QueryDB_UserTakeRoomToChat from '../handleHookData/queryDB/UserTakeRoomToChat';
 import { my_log } from '@src/log';
-import { WaitSessionField } from '../../type';
-import { prefix_cache_zalo_message_wait_session_with_zaloOaId_userIdByApp } from '@src/const/redisKey';
 
-import { sendMessageToUser } from '../../sendMessageToUser';
+import { sendMessageToUser } from '../sendMessageToUser';
 
 const serviceRedis = ServiceRedis.getInstance();
 serviceRedis.init();
