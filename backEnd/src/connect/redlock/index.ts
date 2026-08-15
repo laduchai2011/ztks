@@ -15,6 +15,18 @@ const redisLockClient = new Redis(baseURL_shopm, {
     },
 });
 
+redisLockClient.on('ready', () => {
+    console.log('Redis Lock client READY');
+});
+
+redisLockClient.on('close', () => {
+    console.warn('Redis Lock client CLOSED');
+});
+
+redisLockClient.on('end', () => {
+    console.warn('Redis Lock client END');
+});
+
 redisLockClient.on('connect', () => {
     console.log('Redis Lock client connected');
 });
@@ -27,13 +39,23 @@ redisLockClient.on('error', (err) => {
     console.error('Redis Lock client error:', err.message);
 });
 
+setInterval(async () => {
+    try {
+        const result = await redisLockClient.ping();
+
+        console.log('Redis:', result, 'status:', redisLockClient.status);
+    } catch (error) {
+        console.error('Redis PING ERROR:', error);
+    }
+}, 5000);
+
 // Tạo Redlock instance
 const serviceRedlock = new Redlock(
     [redisLockClient], // single Redis instance
     {
         driftFactor: 0.01,
-        retryCount: 10, // -1 = retry vô hạn
-        retryDelay: 100, // mỗi lần retry cách nhau 100ms
+        retryCount: 20, // -1 = retry vô hạn
+        retryDelay: 200, // mỗi lần retry cách nhau 100ms
         retryJitter: 200, // ngẫu nhiên thêm 0–200ms
         automaticExtensionThreshold: 500, // nếu TTL gần hết, tự gia hạn
     }

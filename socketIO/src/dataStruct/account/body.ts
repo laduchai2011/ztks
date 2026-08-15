@@ -83,3 +83,11 @@ export interface AddYourRecommendBodyField {
 export interface GetMyAccountInformationBodyField {
     accountId: number;
 }
+
+export interface LeaveAllAccountReceiveMessageBodyField {
+    accountId: number;
+}
+
+export interface LeaveAdminBodyField {
+    accountId: number;
+}

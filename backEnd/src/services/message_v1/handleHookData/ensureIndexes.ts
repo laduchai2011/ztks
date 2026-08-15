@@ -5,7 +5,24 @@ export async function ensureIndexes() {
 
     const col_message = db.collection('message');
     await col_message.createIndex({ chat_room_id: 1, timestamp: -1 });
-    await col_message.createIndex({ chat_room_id: 1, message_id: 1 }, { unique: true });
+    await col_message.createIndex(
+        { chat_room_id: 1, message_id: 1 },
+        {
+            unique: true,
+            partialFilterExpression: {
+                message_id: { $type: 'string' },
+            },
+        }
+    );
+    await col_message.createIndex(
+        { chat_room_id: 1, call_id: 1 },
+        {
+            unique: true,
+            partialFilterExpression: {
+                call_id: { $type: 'string' },
+            },
+        }
+    );
 
     const col_lastMessage = db.collection('lastMessage');
     await col_lastMessage.createIndex({ chat_room_id: 1 }, { unique: true });

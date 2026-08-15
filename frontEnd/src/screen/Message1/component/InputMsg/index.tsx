@@ -168,6 +168,7 @@ const InputMsg = () => {
         createMessageV1(createMessageV1Body)
             .then((res) => {
                 const resData = res.data;
+                console.log(111, resData);
                 if (!(resData?.isSuccess && resData.data)) {
                     dispatch(
                         setData_toastMessage({

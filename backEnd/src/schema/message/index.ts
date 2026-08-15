@@ -220,12 +220,12 @@ const OaMessageLinkZodSchema = z.object({
 const UserCallOaZodSchema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_call_oa),
     ...BaseCallEventSchema,
-    ...CallSchema,
+    ...CallSchema.shape,
 });
 const OaCallUserZodSchema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_call_user),
     ...BaseCallEventSchema,
-    ...CallSchema,
+    ...CallSchema.shape,
 });
 
 export const MessageZodSchema = z.discriminatedUnion('event_name', [
@@ -515,12 +515,12 @@ const NewOaMessageLinkZodSchema = z.object({
 const NewUserCallOaZodSchema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_call_oa),
     ...BaseCall1EventSchema,
-    ...CallSchema,
+    ...CallSchema.shape,
 });
 const NewOaCallUserZodSchema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_call_user),
     ...BaseCall1EventSchema,
-    ...CallSchema,
+    ...CallSchema.shape,
 });
 
 export const NewMessageZodSchema = z.discriminatedUnion('event_name', [
@@ -545,9 +545,6 @@ export const NewMessageZodSchema = z.discriminatedUnion('event_name', [
     // NewMessageLinkZodSchema,
     NewUserMessageLinkZodSchema,
     NewOaMessageLinkZodSchema,
-    // NewCallZodSchema,
-    NewUserCallOaZodSchema,
-    NewOaCallUserZodSchema,
 ]);
 export const NewCallZodSchema = z.discriminatedUnion('event_name', [NewUserCallOaZodSchema, NewOaCallUserZodSchema]);
 

@@ -82,14 +82,16 @@ export function hookData() {
             //     const dataParse = parsedChatRoomRole.data;
             //     await dbMonggo.collection<ChatRoomRoleSchemaType>('chatRoomRole').insertOne(dataParse);
             // }
-            console.log('Hook Data Received:');
-            console.dir(data, { depth: null });
+            // console.log('Hook Data Received:');
+            // console.dir(data, { depth: null });
             // if (data.event_name.startsWith('user_call') || data.event_name.startsWith('oa_call')) {
-            if (data.event_name.startsWith('oa_send_template') || data.event_name.startsWith('user_send_template')) {
+            if (
+                data.event_name === Zalo_Event_Name_Enum.oa_send_template ||
+                data.event_name === Zalo_Event_Name_Enum.user_send_template
+            ) {
                 return;
             }
             if ('call_id' in data) {
-                console.log(11111111111111);
                 const app_id = data.app_id;
                 const oa_id = data.oa_id;
                 let chatRoom: ChatRoomField | undefined = undefined;
@@ -133,6 +135,7 @@ export function hookData() {
                     const dbMonggo = getDbMonggo();
                     const dataParse = parsedCall.data;
                     const kq_message = await dbMonggo.collection<MessageSchemaType>('message').insertOne(dataParse);
+                    // console.log(111111, kq_message);
 
                     const { _id, ...doc } = dataParse as any;
 
