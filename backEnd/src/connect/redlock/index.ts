@@ -39,15 +39,15 @@ redisLockClient.on('error', (err) => {
     console.error('Redis Lock client error:', err.message);
 });
 
-setInterval(async () => {
-    try {
-        const result = await redisLockClient.ping();
+// setInterval(async () => {
+//     try {
+//         const result = await redisLockClient.ping();
 
-        console.log('Redis:', result, 'status:', redisLockClient.status);
-    } catch (error) {
-        console.error('Redis PING ERROR:', error);
-    }
-}, 5000);
+//         console.log('Redis:', result, 'status:', redisLockClient.status);
+//     } catch (error) {
+//         console.error('Redis PING ERROR:', error);
+//     }
+// }, 5000);
 
 // Tạo Redlock instance
 const serviceRedlock = new Redlock(

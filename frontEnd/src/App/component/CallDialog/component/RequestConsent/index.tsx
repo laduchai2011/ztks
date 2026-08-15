@@ -65,7 +65,7 @@ const RequestConsent: FC<{
     }, [isRinging, isConnecting, setIsShow, isShow]);
 
     useEffect(() => {
-        if (!chatRoomId) return;
+        if (chatRoomId === -1) return;
         getLatestChatRoomPhone({ chatRoomId: chatRoomId, accountId: -1 })
             .then((res) => {
                 const resData = res.data;

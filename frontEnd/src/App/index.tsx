@@ -11,7 +11,7 @@ import { useLazyGetCallAgentWithAccountIdQuery } from '@src/redux/query/callAgen
 import { useLazyGetLastMessageWithUidQuery } from '@src/redux/query/messageV1RTK';
 import { getSocket } from '@src/socketIo';
 import { MySip } from '@src/call';
-import { CallInStateEnum, CallInStateType, CallOutStateEnum, CallOutStateType } from '@src/dataStruct/call';
+import { CallInStateEnum, CallOutStateEnum } from '@src/dataStruct/call';
 import { set_callOutState, set_callInState, set_callingIsIn } from '@src/redux/slice/App';
 import { SessionState } from 'sip.js';
 import CallDialog from './component/CallDialog';
