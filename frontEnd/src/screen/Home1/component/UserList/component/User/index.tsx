@@ -16,12 +16,13 @@ import {
 } from '@src/redux/query/messageV1RTK';
 import { useGetZaloUserQuery } from '@src/redux/query/zaloRTK';
 import { timeAgoSmart } from '@src/utility/time';
-import { MEMBER, YOU, USER, OA, IMAGE, VIDEO, FILE, STICKER, AUDIO } from '@src/const/text';
+import { MEMBER, YOU, USER, OA, IMAGE, VIDEO, FILE, STICKER, AUDIO, OA_CALL_USER, USER_CALL_OA } from '@src/const/text';
 import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
 import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 import { handleNewMsgAmount } from './handle';
 import { getSocket } from '@src/socketIo';
 import { SocketMessageField } from '@src/dataStruct/message_v1';
+import { avatarnull } from '@src/utility/string';
 
 const User: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSchema }) => {
     const navigate = useNavigate();
@@ -121,7 +122,6 @@ const User: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSche
 
     useEffect(() => {
         if (!lastMessage) return;
-
         if (account?.id === lastMessage?.reply_account_id) {
             setMember(YOU);
         } else {
@@ -158,6 +158,10 @@ const User: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSche
                 }
                 // case Zalo_Event_Name_Enum.user_send_link: {
                 // }
+                case Zalo_Event_Name_Enum.user_call_oa: {
+                    setNote(USER_CALL_OA);
+                    break;
+                }
                 case Zalo_Event_Name_Enum.oa_send_text: {
                     setNote(lastMessage.message.text || '');
                     break;
@@ -184,6 +188,10 @@ const User: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSche
                 }
                 // case Zalo_Event_Name_Enum.user_send_link: {
                 // }
+                case Zalo_Event_Name_Enum.oa_call_user: {
+                    setNote(OA_CALL_USER);
+                    break;
+                }
                 default: {
                     break;
                 }
@@ -200,7 +208,7 @@ const User: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSche
     return (
         <div className={style.parent} onClick={() => handleGotoMessage1()}>
             <div className={style.avatarContainer}>
-                <img src={zaloUser?.data.avatar} alt="avatar" />
+                <img src={zaloUser?.data.avatar || avatarnull} alt="avatar" />
             </div>
             <div className={style.inforContainer}>
                 <div className={style.infor}>

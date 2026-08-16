@@ -19,8 +19,8 @@ import {
     useVideoMessageMutation,
 } from '@src/redux/query/messageV1RTK';
 import { CreateMessageV1BodyField, VideoMessageBodyField } from '@src/dataStruct/message_v1/body';
-import { MessageV1Field } from '@src/dataStruct/message_v1';
-import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
+import { MessageV1Field, CallV1Field } from '@src/dataStruct/message_v1';
+import { ZaloMessageType, ZaloCallType } from '@src/dataStruct/zalo/hookData';
 import { MessageImageBodyField } from '@src/dataStruct/zalo/hookData/body';
 import ReplyContainer from './component/ReplyContainer';
 import {
@@ -35,6 +35,7 @@ import { uploadAImageToZalo, uploadVideo } from '../../handle';
 import { AccountField } from '@src/dataStruct/account';
 // import { BASE_URL_API } from '@src/const/api/baseUrl';
 import { getSocket } from '@src/socketIo';
+import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 
 const InputMsg = () => {
     const navigate = useNavigate();
@@ -52,7 +53,9 @@ const InputMsg = () => {
     const id_imageInput = useId();
     const id_videoInput = useId();
     const [text, setText] = useState<string>('');
-    const [lastMessage, setLastMessage] = useState<MessageV1Field<ZaloMessageType> | undefined>(undefined);
+    const [lastMessage, setLastMessage] = useState<
+        MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType> | undefined
+    >(undefined);
     const [isPlaywrightOnline, setIsPlaywrightOnline] = useState<boolean>(false);
 
     const [createMessageV1] = useCreateMessageV1Mutation();
@@ -138,12 +141,16 @@ const InputMsg = () => {
         const isUserSend = lastMessage.event_name.startsWith('user_send');
         const isOaSend = lastMessage.event_name.startsWith('oa_send');
 
-        if (isUserSend) {
-            u_senderId = lastMessage.sender_id;
-        }
+        if ('call_id' in lastMessage) {
+            u_senderId = lastMessage.user_id;
+        } else {
+            if (isUserSend) {
+                u_senderId = lastMessage.sender_id;
+            }
 
-        if (isOaSend) {
-            u_senderId = lastMessage.recipient_id;
+            if (isOaSend) {
+                u_senderId = lastMessage.recipient_id;
+            }
         }
 
         const newMessage = repliedMessage?.message_id
@@ -168,7 +175,6 @@ const InputMsg = () => {
         createMessageV1(createMessageV1Body)
             .then((res) => {
                 const resData = res.data;
-                console.log(111, resData);
                 if (!(resData?.isSuccess && resData.data)) {
                     dispatch(
                         setData_toastMessage({
@@ -210,12 +216,16 @@ const InputMsg = () => {
             const isUserSend = lastMessage.event_name.startsWith('user_send');
             const isOaSend = lastMessage.event_name.startsWith('oa_send');
 
-            if (isUserSend) {
-                u_senderId = lastMessage.sender_id;
-            }
+            if ('call_id' in lastMessage) {
+                u_senderId = lastMessage.user_id;
+            } else {
+                if (isUserSend) {
+                    u_senderId = lastMessage.sender_id;
+                }
 
-            if (isOaSend) {
-                u_senderId = lastMessage.recipient_id;
+                if (isOaSend) {
+                    u_senderId = lastMessage.recipient_id;
+                }
             }
 
             const newMessage: MessageImageBodyField = {
@@ -305,14 +315,19 @@ const InputMsg = () => {
             const isUserSend = lastMessage.event_name.startsWith('user_send');
             const isOaSend = lastMessage.event_name.startsWith('oa_send');
 
-            if (isUserSend) {
-                oaId = lastMessage.recipient_id;
-                userId = lastMessage.sender_id;
-            }
+            if ('call_id' in lastMessage) {
+                oaId = lastMessage.oa_id;
+                userId = lastMessage.user_id;
+            } else {
+                if (isUserSend) {
+                    oaId = lastMessage.recipient_id;
+                    userId = lastMessage.sender_id;
+                }
 
-            if (isOaSend) {
-                oaId = lastMessage.sender_id;
-                userId = lastMessage.recipient_id;
+                if (isOaSend) {
+                    oaId = lastMessage.sender_id;
+                    userId = lastMessage.recipient_id;
+                }
             }
 
             const videoMessageBody: VideoMessageBodyField = {

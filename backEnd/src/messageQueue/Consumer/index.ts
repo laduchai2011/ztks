@@ -32,7 +32,10 @@ export async function consumeMessage(queue: string, callback: (messageZalo: Mess
     );
 }
 
-export async function consumeHookData(queue: string, callback: (data: HookDataField | HookCallField) => void) {
+export async function consumeHookData(
+    queue: string,
+    callback: (data: HookDataField | HookCallField) => Promise<void> | void
+) {
     const channel = await rabbit_server.createChannel();
 
     await channel.assertQueue(queue, { durable: true });
@@ -41,17 +44,25 @@ export async function consumeHookData(queue: string, callback: (data: HookDataFi
 
     channel.consume(
         queue,
-        (msg: ConsumeMessage | null) => {
+        async (msg: ConsumeMessage | null) => {
             if (!msg) {
                 console.log(msg);
                 return;
             }
 
-            const data = JSON.parse(msg.content.toString());
-            // console.log('Received:', data);
-            callback(data);
+            try {
+                const data = JSON.parse(msg.content.toString());
 
-            channel.ack(msg);
+                await callback(data);
+
+                // Chỉ ACK khi xử lý thành công
+                channel.ack(msg);
+            } catch (error) {
+                console.error('Error processing RabbitMQ message:', error);
+
+                // Xử lý lại message
+                channel.nack(msg, false, true);
+            }
         },
         { noAck: false }
     );

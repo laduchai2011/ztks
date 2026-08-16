@@ -36,9 +36,9 @@ class Handle_GetAllMembers {
             }
 
             const { id } = verify_refreshToken;
-            const allMembersBody_cp = { ...allMembersBody };
-            allMembersBody_cp.addedById = id;
-            res.locals.allMembersBody = allMembersBody_cp;
+            allMembersBody.addedById = id;
+            res.locals.allMembersBody = allMembersBody;
+            console.log(11111111, allMembersBody);
 
             next();
         } else {
@@ -50,7 +50,7 @@ class Handle_GetAllMembers {
 
     main = async (_: Request, res: Response) => {
         // const allMembersBody = res.locals.allMembersBody as AllMembersBodyField;
-        const allMembersBody = { addedById: 1 } as AllMembersBodyField;
+        const allMembersBody = res.locals.allMembersBody as AllMembersBodyField;
 
         const myResponse: MyResponse<AccountField[]> = {
             isSuccess: false,
@@ -73,6 +73,7 @@ class Handle_GetAllMembers {
         try {
             const result = await queryDB_getAllMembers.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
+                console.log(22222, result.recordset);
                 myResponse.data = result?.recordset;
                 myResponse.message = 'Lấy tất cả thành viên thành công !';
                 myResponse.isSuccess = true;

@@ -21,6 +21,7 @@ import { timeAgoSmart } from '@src/utility/time';
 import { handleNewMsgAmount } from './handle';
 import { getSocket } from '@src/socketIo';
 import { SocketMessageField } from '@src/dataStruct/message_v1';
+import { avatarnull } from '@src/utility/string';
 
 const ARoom: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSchema }) => {
     const navigate = useNavigate();
@@ -184,7 +185,7 @@ const ARoom: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSch
     return (
         <div className={style.parent} onClick={() => handleGotoMessage1()}>
             <div className={style.avatarContainer}>
-                <img src={zaloUser?.data.avatar} alt="avatar" />
+                <img src={zaloUser?.data.avatar || avatarnull} alt="avatar" />
             </div>
             <div className={style.contentContainer}>
                 <div className={style.nameContainer}>

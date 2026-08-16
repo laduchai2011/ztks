@@ -36,6 +36,7 @@ export interface Channel {
     assertQueue(queue: string, assertQueuedurable: assertQueue_durable): Promise<any>;
     consume(queue: string, onMessage: (msg: ConsumeMessage | null) => void, sendToQueuenoAck: sendToQueue_noAck): any;
     ack(msg: ConsumeMessage): void;
+    nack(msg: ConsumeMessage, allUpTo?: boolean, requeue?: boolean): void;
     sendToQueue(queue: string, content: Buffer, sendToQueuepersistent: sendToQueue_persistent): boolean;
     prefetch(number: number): void;
 }

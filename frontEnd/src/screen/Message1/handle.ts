@@ -3,6 +3,7 @@ import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { IMAGEV1_API } from '@src/const/api/imageV1';
 import { VIDEOV1_API } from '@src/const/api/videoV1';
 import { MyResponse } from '@src/dataStruct/response';
+import { DeviceEnum } from '@src/device/type';
 
 export async function uploadAImageToZalo(file: File, zaloApp: ZaloAppField, zaloOa: ZaloOaField) {
     const form = new FormData();
@@ -15,6 +16,9 @@ export async function uploadAImageToZalo(file: File, zaloApp: ZaloAppField, zalo
         method: 'POST',
         body: form,
         credentials: 'include', // ⭐ gửi cookie
+        headers: {
+            'x-device-type': DeviceEnum.WEB,
+        },
     });
 
     return res.json();

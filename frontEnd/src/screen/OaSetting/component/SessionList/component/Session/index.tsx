@@ -52,6 +52,7 @@ const Session: FC<{ index: number; data: ChatSessionField }> = ({ index, data })
     }, [dispatch, isLoading_allMembers]);
     useEffect(() => {
         const resData = data_allMembers;
+        console.log(11111, resData);
         if (resData?.isSuccess && resData?.data) {
             setAllMembers(resData.data);
         }

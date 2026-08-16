@@ -114,7 +114,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE GetZaloOaTokenWithFk
+ALTER PROCEDURE GetZaloOaTokenWithFk
     @zaloOaId INT,
 	@accountId INT
 AS
@@ -123,9 +123,18 @@ BEGIN
 
 	BEGIN TRY
         BEGIN TRANSACTION;
-		IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @accountId )
+		-- IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @accountId )
+		-- BEGIN
+		-- 	THROW 50001, N'Không phải OA của bạn .', 1;
+		-- END
+
+		DECLARE @addedById INT;
+		SELECT @addedById = addedById FROM dbo.accountInformation WHERE accountId = @accountId;
+		IF @zaloOaId IS NULL THROW 50001, N'Không tìm thấy addedById .', 1;
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @addedById )
 		BEGIN
-			THROW 50001, N'Không phải OA của bạn .', 1;
+			THROW 50002, N'Không phải OA của bạn .', 2;
 		END
 
 		SELECT * FROM dbo.zaloOaToken WHERE zaloOaId = @zaloOaId

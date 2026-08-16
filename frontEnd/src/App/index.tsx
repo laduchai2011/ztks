@@ -274,7 +274,7 @@ const App = () => {
 
                     if (!uid) return;
                     if (!zaloApp) return;
-                    if (!account) return;
+                    if (!accountInformation) return;
 
                     try {
                         const resLastMessage = await getLastMessageWithUid({ uid });
@@ -283,7 +283,7 @@ const App = () => {
                         if (resDataLastMessage?.isSuccess && resDataLastMessage.data) {
                             const resZaloOa = await getZaloOaWithOaId({
                                 oaId: resDataLastMessage.data.oa_id,
-                                accountId: account.id,
+                                accountId: accountInformation.addedById || -1,
                             });
                             const resDataZaloOa = resZaloOa.data;
                             if (resDataZaloOa?.isSuccess && resDataZaloOa.data) {

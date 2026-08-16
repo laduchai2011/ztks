@@ -120,7 +120,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE UpdateRefreshTokenOfZaloOa
+ALTER PROCEDURE UpdateRefreshTokenOfZaloOa
 	@refreshToken NVARCHAR(MAX),
 	@zaloOaId INT,
 	@accountId INT
@@ -131,10 +131,10 @@ BEGIN
 	BEGIN TRY
         BEGIN TRANSACTION;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @accountId )
-		BEGIN
-			THROW 50001, N'Không phải OA của bạn .', 1;
-		END
+		-- IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @accountId )
+		-- BEGIN
+		-- 	THROW 50001, N'Không phải OA của bạn .', 1;
+		-- END
 
 		-- UPDATE dbo.zaloOaToken WITH (ROWLOCK)
 		UPDATE dbo.zaloOaToken
@@ -142,8 +142,17 @@ BEGIN
 		WHERE zaloOaId = @zaloOaId
 		IF @@ROWCOUNT = 0
         BEGIN
-            THROW 50002, 'Cập nhật refreshToken của zaloOa không thành công.', 2;
+            THROW 50001, 'Cập nhật refreshToken của zaloOa không thành công.', 1;
         END
+
+		DECLARE @addedById INT;
+		SELECT @addedById = addedById FROM dbo.accountInformation WHERE accountId = @accountId;
+		IF @zaloOaId IS NULL THROW 50002, N'Không tìm thấy addedById .', 2;
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @addedById )
+		BEGIN
+			THROW 50003, N'Không phải OA của bạn .', 3;
+		END
 
 		SELECT * FROM dbo.zaloOaToken WHERE zaloOaId = @zaloOaId;
 
