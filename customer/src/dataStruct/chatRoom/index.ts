@@ -39,3 +39,15 @@ export interface PagedChatRoomMongoField {
     items: ChatRoomRoleSchema[];
     cursor: string | null;
 }
+
+export interface ChatRoomPhoneField {
+    id: number;
+    phone: string;
+    chatRoomId: number;
+    createTime: string;
+}
+
+export interface PagedChatRoomPhoneField {
+    items: ChatRoomPhoneField[];
+    totalCount: number;
+}

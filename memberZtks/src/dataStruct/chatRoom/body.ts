@@ -13,7 +13,9 @@ export interface GetChatRoomWithIdBodyField {
     id: number;
 }
 
-export interface GetAllMyChatRoomsBodyField {
+export interface GetMyChatRoomsBodyField {
+    page: number;
+    size: number;
     accountId: number;
 }
 
@@ -59,5 +61,21 @@ export interface ChatRoomsMongoBodyField {
 export interface ChangeChatRoomMasterBodyField {
     chatRoomId: number;
     newAccountId: number;
+    accountId: number;
+}
+
+export interface CreateChatRoomPhoneBodyField {
+    phone: string;
+    chatRoomId: number;
+    accountId: number;
+}
+
+export interface GetLatestChatRoomPhoneBodyField {
+    chatRoomId: number;
+    accountId: number;
+}
+
+export interface GetListChatRoomPhonesBodyField {
+    chatRoomId: number;
     accountId: number;
 }

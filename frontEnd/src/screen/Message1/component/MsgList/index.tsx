@@ -8,8 +8,8 @@ import {
     useLazyGetMessageWithIdQuery,
     useLazyDelAllNewMessagesQuery,
 } from '@src/redux/query/messageV1RTK';
-import { MessageV1Field } from '@src/dataStruct/message_v1';
-import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
+import { MessageV1Field, CallV1Field } from '@src/dataStruct/message_v1';
+import { ZaloMessageType, ZaloCallType } from '@src/dataStruct/zalo/hookData';
 import { getSocket } from '@src/socketIo';
 import { SocketMessageField } from '@src/dataStruct/message_v1';
 
@@ -17,7 +17,7 @@ const MsgList = () => {
     const { id } = useParams<{ id: string }>();
     const parent_element = useRef<HTMLDivElement | null>(null);
     const bottom_element = useRef<HTMLDivElement | null>(null);
-    const [messages, setMessages] = useState<MessageV1Field<ZaloMessageType>[]>([]);
+    const [messages, setMessages] = useState<(MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType>)[]>([]);
     const size = 10;
     const lockLoadMore = useRef<boolean>(true);
     const [cursor, setCursor] = useState<string | null>(null);

@@ -16,16 +16,24 @@ export interface GetMyWalletWithTypeBodyField {
     accountId: number;
 }
 
-export interface GetBalanceFluctuationsByDateBodyField {
-    walletId: number;
-    type: BalanceFluctuationType | null;
-    fromDate: string;
-    toDate: string;
-}
+// // Chuan bi bo
+// export interface GetBalanceFluctuationsByDateBodyField {
+//     walletId: number;
+//     type: BalanceFluctuationType | null;
+//     fromDate: string;
+//     toDate: string;
+// }
 
-export interface GetBalanceFluctuationLatestDayBodyField {
+// // Chuan bi bo
+// export interface GetBalanceFluctuationLatestDayBodyField {
+//     walletId: number;
+//     type: BalanceFluctuationType | null;
+// }
+
+export interface GetBalanceFluctuationsBodyField {
+    page: number;
+    size: number;
     walletId: number;
-    type: BalanceFluctuationType | null;
 }
 
 export interface PayAgentFromWalletBodyField {

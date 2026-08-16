@@ -47,3 +47,50 @@ export interface PlaywightGetZaloAppField {
     zaloApp: ZaloAppField;
     token: string;
 }
+
+export interface GenZaloOaTokenResultField {
+    access_token: string;
+    refresh_token: string;
+    expires_in: string;
+}
+
+export interface ZnsTemplateField {
+    id: number;
+    temId: string;
+    images: string;
+    dataFields: string;
+    phoneCost: number;
+    uidCost: number;
+    isDelete: boolean;
+    zaloOaId: number;
+    updateTime: string;
+    createTime: string;
+}
+
+export interface PagedZnsTemplateField {
+    items: ZnsTemplateField[];
+    totalCount: number;
+}
+
+export interface ZnsMessageField {
+    id: number;
+    type: ZnsMessageType;
+    data: string;
+    cost: number;
+    znsTemplateId: number;
+    accountId: number;
+    createTime: string;
+}
+
+export interface PagedZnsMessageField {
+    items: ZnsMessageField[];
+    totalCount: number;
+}
+
+export enum ZnsMessageEnum {
+    PHONE = 'phone',
+    UID = 'uid',
+    HASH_PHONE = 'hashPhone',
+}
+
+export type ZnsMessageType = ZnsMessageEnum.PHONE | ZnsMessageEnum.UID | ZnsMessageEnum.HASH_PHONE;

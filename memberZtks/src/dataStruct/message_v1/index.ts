@@ -1,16 +1,22 @@
-import { HookDataSchema } from '@src/dataStruct/zalo/hookData';
+import { HookDataSchema, HookCallSchema } from '@src/dataStruct/zalo/hookData';
 import { ChatRoomRoleField } from '../chatRoom';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface MessageV1Field<T> extends HookDataSchema<T> {}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface CallV1Field<T> extends HookCallSchema<T> {}
 
 export interface NewMessageV1Field<T> extends MessageV1Field<T> {
     account_id: number;
     created_at: Date;
 }
+export interface NewCallV1Field<T> extends CallV1Field<T> {
+    account_id: number;
+    created_at: Date;
+}
 
 export interface PagedMessageV1Field<T> {
-    items: MessageV1Field<T>[];
+    items: (MessageV1Field<T> | CallV1Field<T>)[];
     cursor: string | null;
 }
 

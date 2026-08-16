@@ -16,7 +16,7 @@ export interface NewCallV1Field<T> extends CallV1Field<T> {
 }
 
 export interface PagedMessageV1Field<T> {
-    items: (MessageV1Field<T> | NewCallV1Field<T>)[];
+    items: (MessageV1Field<T> | CallV1Field<T>)[];
     cursor: string | null;
 }
 

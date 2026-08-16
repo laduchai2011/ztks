@@ -6,10 +6,8 @@ export interface OrderField {
     money: number;
     isPay: boolean;
     phone: string;
-    status: string;
+    isDelete: boolean;
     chatRoomId: number;
-    zaloOaId: number;
-    accountId: number;
     updateTime: Date;
     createTime: Date;
 }
