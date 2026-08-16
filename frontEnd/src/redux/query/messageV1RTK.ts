@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { PagedMessageV1Field, MessageV1Field, NewMessageV1Field } from '@src/dataStruct/message_v1';
 import { MessageV1BodyField, CreateMessageV1BodyField, VideoMessageBodyField } from '@src/dataStruct/message_v1/body';
-import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
+import { ZaloMessageType, ZaloCallType } from '@src/dataStruct/zalo/hookData';
 import { MESSAGEV1_API } from '@src/const/api/messageV1';
 import { MyResponse } from '@src/dataStruct/response';
 import { ResultSendToZaloField } from '@src/dataStruct/zalo/hookData';
@@ -19,7 +19,10 @@ export const messageV1RTK = createApi({
     }),
     tagTypes: ['AllNewMessages'],
     endpoints: (builder) => ({
-        getMessagesForChatScreen: builder.query<MyResponse<PagedMessageV1Field<ZaloMessageType>>, MessageV1BodyField>({
+        getMessagesForChatScreen: builder.query<
+            MyResponse<PagedMessageV1Field<ZaloMessageType, ZaloCallType>>,
+            MessageV1BodyField
+        >({
             query: (body) => ({
                 url: MESSAGEV1_API.GET_MESSAGES_FOR_CHAT_SCREEN,
                 method: 'POST',

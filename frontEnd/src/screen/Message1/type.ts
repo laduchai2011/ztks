@@ -1,8 +1,8 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
 import { ChatRoomField } from '@src/dataStruct/chatRoom';
 import { ZaloOaField } from '@src/dataStruct/zalo';
-import { MessageV1Field } from '@src/dataStruct/message_v1';
-import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
+import { MessageV1Field, CallV1Field } from '@src/dataStruct/message_v1';
+import { ZaloMessageType, ZaloCallType } from '@src/dataStruct/zalo/hookData';
 
 export interface state_props {
     isLoading: boolean;
@@ -11,7 +11,7 @@ export interface state_props {
     };
     chatRoom?: ChatRoomField;
     zaloOa?: ZaloOaField;
-    repliedMessage?: MessageV1Field<ZaloMessageType>;
+    repliedMessage?: MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType>;
     changeChatRoomMasterDialog: {
         isShow: boolean;
     };

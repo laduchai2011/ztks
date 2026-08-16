@@ -10,6 +10,7 @@ import MsgAudio from './MsgAudio';
 import MsgFile from './MsgFile';
 import MsgSticker from './MsgSticker';
 import MsgLink from './MsgLink';
+import MsgCall from './MsgCall';
 import {
     ZaloMessageType,
     MessageTextField,
@@ -20,8 +21,9 @@ import {
     MessageFileField,
     MessageStickerField,
     MessageLinkField,
+    ZaloCallType,
 } from '@src/dataStruct/zalo/hookData';
-import { MessageV1Field } from '@src/dataStruct/message_v1';
+import { MessageV1Field, CallV1Field } from '@src/dataStruct/message_v1';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { ZaloUserField } from '@src/dataStruct/zalo/user';
 import { ChatRoomField } from '@src/dataStruct/chatRoom';
@@ -32,8 +34,8 @@ import { set_repliedMessage } from '@src/redux/slice/MessageV1';
 
 const UserMsg: FC<{
     msgList_element?: HTMLDivElement | null;
-    data: MessageV1Field<ZaloMessageType>;
-    messages: MessageV1Field<ZaloMessageType>[];
+    data: MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType>;
+    messages: (MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType>)[];
 }> = ({ msgList_element, data, messages }) => {
     const dispatch = useDispatch<AppDispatch>();
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
@@ -120,6 +122,10 @@ const UserMsg: FC<{
             case Zalo_Event_Name_Enum.user_send_link: {
                 const data_t = data as MessageV1Field<MessageLinkField>;
                 return <MsgLink data={data_t} />;
+            }
+            case Zalo_Event_Name_Enum.user_call_oa: {
+                const data_t = data as CallV1Field<ZaloCallType>;
+                return <MsgCall data={data_t} />;
             }
             default: {
                 return;

@@ -47,7 +47,7 @@ const InputMsg = () => {
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
-    const repliedMessage: MessageV1Field<ZaloMessageType> | undefined = useSelector(
+    const repliedMessage: MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType> | undefined = useSelector(
         (state: RootState) => state.MessageV1Slice.repliedMessage
     );
     const id_imageInput = useId();
@@ -153,40 +153,44 @@ const InputMsg = () => {
             }
         }
 
-        const newMessage = repliedMessage?.message_id
-            ? {
-                  text: txt,
-                  quote_message_id: repliedMessage.message_id,
-              }
-            : { text: txt };
+        if (repliedMessage && 'call_id' in repliedMessage) {
+            //
+        } else {
+            const newMessage = repliedMessage?.message_id
+                ? {
+                      text: txt,
+                      quote_message_id: repliedMessage.message_id,
+                  }
+                : { text: txt };
 
-        const createMessageV1Body: CreateMessageV1BodyField = {
-            zaloApp: zaloApp,
-            zaloOa: zaloOa,
-            chatRoomId: Number(id),
-            payload: {
-                recipient: {
-                    user_id: u_senderId,
+            const createMessageV1Body: CreateMessageV1BodyField = {
+                zaloApp: zaloApp,
+                zaloOa: zaloOa,
+                chatRoomId: Number(id),
+                payload: {
+                    recipient: {
+                        user_id: u_senderId,
+                    },
+                    message: newMessage,
                 },
-                message: newMessage,
-            },
-        };
+            };
 
-        createMessageV1(createMessageV1Body)
-            .then((res) => {
-                const resData = res.data;
-                if (!(resData?.isSuccess && resData.data)) {
-                    dispatch(
-                        setData_toastMessage({
-                            type: messageType_enum.ERROR,
-                            message: resData?.message ?? 'Gửi tin nhắn không thành công !',
-                        })
-                    );
-                }
-                setText('');
-                dispatch(set_repliedMessage(undefined));
-            })
-            .catch((err) => console.error(err));
+            createMessageV1(createMessageV1Body)
+                .then((res) => {
+                    const resData = res.data;
+                    if (!(resData?.isSuccess && resData.data)) {
+                        dispatch(
+                            setData_toastMessage({
+                                type: messageType_enum.ERROR,
+                                message: resData?.message ?? 'Gửi tin nhắn không thành công !',
+                            })
+                        );
+                    }
+                    setText('');
+                    dispatch(set_repliedMessage(undefined));
+                })
+                .catch((err) => console.error(err));
+        }
     };
 
     const handleImageIconClick = () => {
@@ -421,7 +425,7 @@ const InputMsg = () => {
                     <TbTransfer onClick={() => handleOpenChangeChatRoomMaster()} size={20} />
                 </div>
             </div>
-            {repliedMessage && <ReplyContainer data={repliedMessage} />}
+            {repliedMessage && !('call_id' in repliedMessage) && <ReplyContainer data={repliedMessage} />}
             <div className={style.textInput}>
                 <div>
                     <textarea

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
 import { PagedMessageV1Field } from '@src/dataStruct/message_v1';
 import { MessageV1BodyField } from '@src/dataStruct/message_v1/body';
-import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
+import { ZaloMessageType, ZaloCallType } from '@src/dataStruct/zalo/hookData';
 import { getMessagesFirst, getMessagesMore } from '../../queryMongo/GetMessageForChatScreen';
 
 class Handle_GetMessagesForChatScreen {
@@ -13,9 +13,9 @@ class Handle_GetMessagesForChatScreen {
         const chatRoomId = messageV1Body.chatRoomId;
         const limit = messageV1Body.size;
         const cursor = messageV1Body.cursor;
-        let result: PagedMessageV1Field<ZaloMessageType> | null = null;
+        let result: PagedMessageV1Field<ZaloMessageType, ZaloCallType> | null = null;
 
-        const myResponse: MyResponse<PagedMessageV1Field<ZaloMessageType>> = {
+        const myResponse: MyResponse<PagedMessageV1Field<ZaloMessageType, ZaloCallType>> = {
             isSuccess: false,
             message: 'Bắt đầu (Handle_GetChatRoomRoleWithCridAaid-main)',
         };

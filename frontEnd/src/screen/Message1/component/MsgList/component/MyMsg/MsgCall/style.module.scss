@@ -1,0 +1,9 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    @include center-of-row;
+
+    > div {
+        margin: 0 5px;
+    }
+}

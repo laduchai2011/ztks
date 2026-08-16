@@ -1,16 +1,16 @@
 import { getDbMonggo } from '@src/connect/mongo';
-import { MessageV1Field, PagedMessageV1Field } from '@src/dataStruct/message_v1';
-import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
+import { MessageV1Field, CallV1Field, PagedMessageV1Field } from '@src/dataStruct/message_v1';
+import { ZaloMessageType, ZaloCallType } from '@src/dataStruct/zalo/hookData';
 
 export async function getMessagesFirst(
     chat_room_id: number,
     limit: number
-): Promise<PagedMessageV1Field<ZaloMessageType>> {
+): Promise<PagedMessageV1Field<ZaloMessageType, ZaloCallType>> {
     const db = getDbMonggo();
-    const col = db.collection<MessageV1Field<ZaloMessageType>>('message');
+    const col = db.collection<MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType>>('message');
 
     const data = await col
-        .find<MessageV1Field<ZaloMessageType>>({ chat_room_id }, { projection: { _id: 0 } })
+        .find<MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType>>({ chat_room_id }, { projection: { _id: 0 } })
         .sort({ timestamp: -1 })
         .limit(limit)
         .toArray();
@@ -27,7 +27,7 @@ export async function getMessagesMore(
     chat_room_id: number,
     cursor: string,
     limit: number
-): Promise<PagedMessageV1Field<ZaloMessageType>> {
+): Promise<PagedMessageV1Field<ZaloMessageType, ZaloCallType>> {
     const db = getDbMonggo();
     const col = db.collection<MessageV1Field<ZaloMessageType>>('message');
 

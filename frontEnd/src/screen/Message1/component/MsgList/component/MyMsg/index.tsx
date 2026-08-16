@@ -10,6 +10,7 @@ import MsgVideo from './MsgVideo';
 import MsgAudio from './MsgAudio';
 import MsgFile from './MsgFile';
 import MsgSticker from './MsgSticker';
+import MsgCall from './MsgCall';
 import {
     ZaloMessageType,
     MessageTextField,
@@ -19,8 +20,9 @@ import {
     MessageAudioField,
     MessageFileField,
     MessageStickerField,
+    ZaloCallType,
 } from '@src/dataStruct/zalo/hookData';
-import { MessageV1Field } from '@src/dataStruct/message_v1';
+import { MessageV1Field, CallV1Field } from '@src/dataStruct/message_v1';
 import { AccountField } from '@src/dataStruct/account';
 import { ChatRoomRoleField } from '@src/dataStruct/chatRoom';
 import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
@@ -33,8 +35,8 @@ import { handleSrcImage } from '@src/utility/string';
 
 const MyMsg: FC<{
     msgList_element?: HTMLDivElement | null;
-    data: MessageV1Field<ZaloMessageType>;
-    messages: MessageV1Field<ZaloMessageType>[];
+    data: MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType>;
+    messages: (MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType>)[];
 }> = ({ msgList_element, data, messages }) => {
     const dispatch = useDispatch<AppDispatch>();
     const defaultColor = '#EBEBEB';
@@ -98,6 +100,10 @@ const MyMsg: FC<{
             case Zalo_Event_Name_Enum.oa_send_sticker: {
                 const data_t = data as MessageV1Field<MessageStickerField>;
                 return <MsgSticker data={data_t} />;
+            }
+            case Zalo_Event_Name_Enum.oa_call_user: {
+                const data_t = data as CallV1Field<ZaloCallType>;
+                return <MsgCall data={data_t} />;
             }
             default: {
                 return;

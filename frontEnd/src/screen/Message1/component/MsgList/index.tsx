@@ -152,13 +152,25 @@ const MsgList = () => {
         const eventName = item.event_name;
         const isUserSend = eventName.startsWith('user_send');
         const isOaSend = eventName.startsWith('oa_send');
+        const isUserCall = eventName.startsWith('user_call');
+        const isOaCall = eventName.startsWith('oa_call');
 
-        if (isUserSend) {
-            return <UserMsg key={index} msgList_element={parent_element.current} data={item} messages={messages} />;
-        }
+        if ('call_id' in item) {
+            if (isUserCall) {
+                return <UserMsg key={index} msgList_element={parent_element.current} data={item} messages={messages} />;
+            }
 
-        if (isOaSend) {
-            return <MyMsg key={index} msgList_element={parent_element.current} data={item} messages={messages} />;
+            if (isOaCall) {
+                return <MyMsg key={index} msgList_element={parent_element.current} data={item} messages={messages} />;
+            }
+        } else {
+            if (isUserSend) {
+                return <UserMsg key={index} msgList_element={parent_element.current} data={item} messages={messages} />;
+            }
+
+            if (isOaSend) {
+                return <MyMsg key={index} msgList_element={parent_element.current} data={item} messages={messages} />;
+            }
         }
 
         return;
