@@ -117,6 +117,7 @@ export enum route_enum {
     POST = '/post',
     REGISTER_POST = '/register_post',
     LEAVE = '/leave',
+    DASH_BOARD = '/dash_board',
 }
 export type routed_type =
     | route_enum.HOME
@@ -141,4 +142,5 @@ export type routed_type =
     | route_enum.BANK
     | route_enum.POST
     | route_enum.REGISTER_POST
-    | route_enum.LEAVE;
+    | route_enum.LEAVE
+    | route_enum.DASH_BOARD;

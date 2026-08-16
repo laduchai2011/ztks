@@ -1,0 +1,9 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    background-color: #eee;
+
+    > .main {
+        @include center-of-row;
+    }
+}

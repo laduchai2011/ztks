@@ -1,2 +1,2 @@
-tai_khoan=admin
-mat_khau=admin
+tai_khoan=admin1
+mat_khau=admin1

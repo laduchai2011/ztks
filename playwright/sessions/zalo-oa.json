@@ -15,7 +15,7 @@
       "value": "3000.SSZzejyD2DyiZwEqqGn1pJ75lh39JHN1E8Yy_zm36zbxrAxraayVtJIHhF6NGHwHCf6jkv917Py_aA6xCW.1",
       "domain": ".zalo.me",
       "path": "/",
-      "expires": 1814994749.511928,
+      "expires": 1821452091.329215,
       "httpOnly": false,
       "secure": true,
       "sameSite": "None"
@@ -25,7 +25,7 @@
       "value": "3000.SSZzejyD2DyiZwEqqGn1pJ75lh39JHN1E8Yy_zm36zbxrAxraayVtJIHhF6NGHwHCf6jkv917Py_aA6xCW.1",
       "domain": ".zalo.me",
       "path": "/",
-      "expires": 1814994749.512064,
+      "expires": 1821452091.329366,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
@@ -81,21 +81,11 @@
       "sameSite": "Lax"
     },
     {
-      "name": "_gcl_au",
-      "value": "1.1.50264783.1776281871",
-      "domain": ".zalo.me",
-      "path": "/",
-      "expires": 1784057871,
-      "httpOnly": false,
-      "secure": false,
-      "sameSite": "Lax"
-    },
-    {
       "name": "_fbp",
       "value": "fb.1.1776281871461.187299142576785899",
       "domain": ".zalo.me",
       "path": "/",
-      "expires": 1788210750,
+      "expires": 1794668091,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
@@ -151,11 +141,31 @@
       "sameSite": "None"
     },
     {
-      "name": "zoaw_sek",
-      "value": "ptnu.385059790.3.NmZ2l1zxGZ7HyB4d7tj2CHzxGZ4VUq8n7kos8dLxGZ4",
+      "name": "_gcl_au",
+      "value": "1.1.879749383.1786892090",
       "domain": ".zalo.me",
       "path": "/",
-      "expires": 1781039550.114598,
+      "expires": 1794668090,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "IDE",
+      "value": "AHWqTUlzOsm-3zUrOBKL5ihUhFi6iFsRob1_7gXNZDF4n6dBPnaMVdeRTQzn91GG",
+      "domain": ".doubleclick.net",
+      "path": "/",
+      "expires": 1821452091.237056,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "zoaw_sek",
+      "value": "KKHT.723738299.3.x8dbR9aNn5qYIUTscHV4NPaNn5sP5yHTc2mBtFCNn5q",
+      "domain": ".zalo.me",
+      "path": "/",
+      "expires": 1787496891.89182,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"
@@ -165,24 +175,14 @@
       "value": "0",
       "domain": ".zalo.me",
       "path": "/",
-      "expires": 1781039550.114715,
+      "expires": 1787496891.892032,
       "httpOnly": false,
       "secure": true,
       "sameSite": "None"
     },
     {
-      "name": "IDE",
-      "value": "AHWqTUkr2U_-vcr06Y2LHxyuUmRHwtGyGvl-giaeUV8xKyWwiMPF_rksr54pK12P",
-      "domain": ".doubleclick.net",
-      "path": "/",
-      "expires": 1814994749.497155,
-      "httpOnly": true,
-      "secure": true,
-      "sameSite": "None"
-    },
-    {
       "name": "ZPIDb2613",
-      "value": "1sps1y9oa9b7z1s1uh4vfuh96a",
+      "value": "syt93w6dkxj81rp9k673hhccd",
       "domain": "oa.zalo.me",
       "path": "/",
       "expires": -1,
@@ -192,10 +192,10 @@
     },
     {
       "name": "__asid",
-      "value": "a2caa4f728395f660629.9BF3g5ZLLOEoE38Wp+kntcye5+4TKpR0n4yG71yQFDc=",
+      "value": "26b89ed713985ac70388.AYHI131dqPj/IHnsvZzkakRRXmmq5KeU3CvoQ7uhbM0=",
       "domain": ".oa.zalo.me",
       "path": "/",
-      "expires": 1780521154.005688,
+      "expires": 1786978494.837704,
       "httpOnly": true,
       "secure": true,
       "sameSite": "Lax"
@@ -205,17 +205,17 @@
       "value": "VN",
       "domain": ".oa.zalo.me",
       "path": "/",
-      "expires": 1780521155.759534,
+      "expires": 1786978496.079664,
       "httpOnly": true,
       "secure": true,
       "sameSite": "Lax"
     },
     {
       "name": "__oam_sid",
-      "value": "a2caa4f728395f660629.9BF3g5ZLLOEoE38Wp+kntcye5+4TKpR0n4yG71yQFDc=",
+      "value": "26b89ed713985ac70388.AYHI131dqPj/IHnsvZzkakRRXmmq5KeU3CvoQ7uhbM0=",
       "domain": ".oa.zalo.me",
       "path": "/",
-      "expires": 1780521155.585147,
+      "expires": 1786978495.94703,
       "httpOnly": true,
       "secure": true,
       "sameSite": "Lax"
@@ -225,17 +225,17 @@
       "value": "GA1.2.180240569.1766475956",
       "domain": ".zalo.me",
       "path": "/",
-      "expires": 1814994755.716042,
+      "expires": 1821452096.055356,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
     },
     {
       "name": "_gid",
-      "value": "GA1.2.883486888.1780434756",
+      "value": "GA1.2.895516660.1786892096",
       "domain": ".zalo.me",
       "path": "/",
-      "expires": 1780521155,
+      "expires": 1786978496,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
@@ -245,37 +245,37 @@
       "value": "1",
       "domain": ".zalo.me",
       "path": "/",
-      "expires": 1780434815,
+      "expires": 1786892156,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
     },
     {
       "name": "zoats",
-      "value": "f4682d6ca1a2d6fd8fb2",
+      "value": "b4dddfae52e11bbe42f1",
       "domain": ".oa.zalo.me",
       "path": "/",
-      "expires": 1782508355.759447,
+      "expires": 1788965696.079543,
       "httpOnly": true,
       "secure": true,
       "sameSite": "Lax"
     },
     {
       "name": "_ga_NVN38N77J3",
-      "value": "GS2.2.s1780434755$o58$g0$t1780434755$j60$l0$h0",
+      "value": "GS2.2.s1786892096$o59$g0$t1786892096$j60$l0$h0",
       "domain": ".zalo.me",
       "path": "/",
-      "expires": 1814994755.958214,
+      "expires": 1821452096.467863,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
     },
     {
       "name": "_ga_E63JS7SPBL",
-      "value": "GS2.1.s1780434749$o58$g1$t1780434756$j53$l0$h0",
+      "value": "GS2.1.s1786892090$o59$g1$t1786892096$j54$l0$h0",
       "domain": ".zalo.me",
       "path": "/",
-      "expires": 1814994756.237158,
+      "expires": 1821452096.522409,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
@@ -291,11 +291,11 @@
         },
         {
           "name": "_gcl_ls",
-          "value": "{\"schema\":\"gcl\",\"version\":1,\"gcl_ctr\":{\"value\":{\"value\":0,\"timeouts\":0,\"errors\":0,\"eopCount\":0,\"creationTimeMs\":1776281870759},\"expires\":1784057870759}}"
+          "value": "{\"schema\":\"gcl\",\"version\":1,\"gsid_dc\":{\"value\":{\"joinId\":\"end9toI_0qujPBASCo9mk_wKlQtKaS6EVQ\",\"lastJoinedTimeMs\":1786892090391},\"expires\":1786892390391},\"gcl_ctr\":{\"value\":{\"value\":0,\"timeouts\":0,\"errors\":0,\"eopCount\":0,\"creationTimeMs\":1786892090394},\"expires\":1794668090394}}"
         },
         {
           "name": "lastExternalReferrerTime",
-          "value": "1780434749881"
+          "value": "1786892091389"
         },
         {
           "name": "topicsLastReferenceTime",

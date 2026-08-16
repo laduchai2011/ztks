@@ -225,7 +225,7 @@ async function getZaloApp(userName: string, password: string) {
 }
 
 function connectSocket(token: string) {
-    const SOCKET_URL = isProduct ? process.env.SOCKET_URL : 'http://zalo5k.local.com:1000';
+    const SOCKET_URL = isProduct ? process.env.SOCKET_URL : 'http://localhost:1000';
 
     const socket = io(SOCKET_URL || '', {
         auth: {
