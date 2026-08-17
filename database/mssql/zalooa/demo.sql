@@ -1,9 +1,9 @@
 INSERT INTO dbo.zaloApp (label, appId, appName, appSecret, status, accountId, updateTime, createTime)
-VALUES ('5k aquarium', '2474292114893114248', '5k aquarium', '7XFkowzBCeRBRGqDhUkL', 'normal', 1, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+VALUES ('5k aquarium', '2474292114893114248', '5k aquarium', '7XFkowzBCeRBRGqDhUkL', 'normal', 7, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 GO
 
 INSERT INTO dbo.zaloOa (label, oaId, oaName, oaSecret, status, zaloAppId, accountId, updateTime, createTime)
-VALUES ('5k aquarium (OA)', '2018793888801741529', '5kcacanh', 'iRf70Tagp3qpjVYuYWld', 'normal', 1, 1, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
+VALUES ('5k aquarium (OA)', '2018793888801741529', '5kcacanh', 'iRf70Tagp3qpjVYuYWld', 'normal', 1, 7, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 GO
 
 INSERT INTO dbo.zaloOaToken (refreshToken, zaloOaId)
