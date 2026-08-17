@@ -11,7 +11,7 @@ import MyLoading from './component/MyLoading';
 import MyToastMessage from './component/MyToastMessage';
 import OtpInput from './component/OtpInput';
 import { sendOtp } from '@src/otp/handle';
-import { formatPhone } from '@src/utility/string';
+import { formatPhone, handleSrcImage } from '@src/utility/string';
 import {
     setIsShow_otpDialog,
     setToken_otpDialog,
@@ -134,6 +134,9 @@ const ForgetPassword = () => {
     return (
         <div className={style.parent}>
             <div className={style.main}>
+                <div className={style.logo}>
+                    <img src={handleSrcImage('logo.jpg')} alt="logo" />
+                </div>
                 <div className={style.headerContainer}>{FORGET_PASSWORD}</div>
                 <div className={style.inputContainer}>
                     <div className={style.aInput}>

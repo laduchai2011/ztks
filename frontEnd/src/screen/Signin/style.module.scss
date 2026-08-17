@@ -18,6 +18,15 @@
             box-sizing: border-box;
             width: 100%;
 
+            > .logo {
+                @include center-of-rectangle;
+
+                > img {
+                    width: 150px;
+                    aspect-ratio: 1/1;
+                }
+            }
+
             > .headerContainer {
                 @include center-of-rectangle;
                 font-size: 1.2rem;

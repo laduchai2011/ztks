@@ -7,6 +7,7 @@ import { useSigninMutation } from '@src/redux/query/accountRTK';
 import { AccountField } from '@src/dataStruct/account';
 import axiosInstance from '@src/api/axiosInstance';
 import { MyResponse } from '@src/dataStruct/response';
+import { handleSrcImage } from '@src/utility/string';
 
 const Signin = () => {
     const navigate = useNavigate();
@@ -98,6 +99,9 @@ const Signin = () => {
             <div className={style.main}>
                 {myId === null && (
                     <div className={style.main1}>
+                        <div className={style.logo}>
+                            <img src={handleSrcImage('logo.jpg')} alt="logo" />
+                        </div>
                         <div className={style.headerContainer}>{SIGNIN}</div>
                         <div className={style.inputContainer}>
                             <div className={style.aInput}>

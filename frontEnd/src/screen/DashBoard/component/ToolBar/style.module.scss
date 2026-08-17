@@ -7,4 +7,46 @@
     bottom: 0;
     width: 150px;
     background-color: white;
+    display: flex;
+    flex-direction: column;
+
+    > .logoZtks {
+        height: 80px;
+        @include center-of-rectangle;
+
+        > img {
+            height: 60px;
+            aspect-ratio: 1/1;
+        }
+    }
+
+    > .options {
+        flex: 1;
+
+        > div {
+            @include center-of-rectangle;
+            height: 50px;
+            width: 100%;
+            cursor: default;
+            user-select: none;
+
+            &:hover {
+                background-color: rgb(231, 231, 231);
+            }
+
+            &.selected {
+                background-color: rgb(231, 231, 231);
+            }
+        }
+    }
+
+    > .avatar {
+        height: 80px;
+        @include center-of-rectangle;
+
+        > img {
+            height: 60px;
+            aspect-ratio: 1/1;
+        }
+    }
 }

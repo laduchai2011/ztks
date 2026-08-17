@@ -9,6 +9,15 @@
         width: 350px;
         height: 100vh;
 
+        > .logo {
+            @include center-of-rectangle;
+
+            > img {
+                width: 150px;
+                aspect-ratio: 1/1;
+            }
+        }
+
         > div {
             @include center-of-rectangle;
         }

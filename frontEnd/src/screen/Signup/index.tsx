@@ -14,6 +14,7 @@ import { sendOtp } from '@src/otp/handle';
 import OtpInput from './component/OtpInput';
 import { formatPhone } from '@src/utility/string';
 import { setIsShow_otpDialog, setToken_otpDialog, set_isLoading } from '@src/redux/slice/Signup';
+import { handleSrcImage } from '@src/utility/string';
 
 const Signup = () => {
     const navigate = useNavigate();
@@ -165,6 +166,9 @@ const Signup = () => {
     return (
         <div className={style.parent}>
             <div className={style.main}>
+                <div className={style.logo}>
+                    <img src={handleSrcImage('logo.jpg')} alt="logo" />
+                </div>
                 <div>
                     <h3>{SIGNUP}</h3>
                 </div>
