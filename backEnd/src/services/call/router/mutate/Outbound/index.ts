@@ -85,8 +85,6 @@ class Handle_Outbound {
                 access_token: token,
             },
         });
-
-        console.log(11111111, response);
     };
 }
 

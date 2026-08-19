@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { PagedMessageV1Field, MessageV1Field, NewMessageV1Field } from '@src/dataStruct/message_v1';
+import { PagedMessageV1Field, MessageV1Field, NewMessageV1Field, CallV1Field } from '@src/dataStruct/message_v1';
 import { MessageV1BodyField, CreateMessageV1BodyField, VideoMessageBodyField } from '@src/dataStruct/message_v1/body';
 import { ZaloMessageType, ZaloCallType } from '@src/dataStruct/zalo/hookData';
 import { MESSAGEV1_API } from '@src/const/api/messageV1';
@@ -29,7 +29,10 @@ export const messageV1RTK = createApi({
                 body,
             }),
         }),
-        getLastMessage: builder.query<MyResponse<MessageV1Field<ZaloMessageType>>, { chatRoomId: string }>({
+        getLastMessage: builder.query<
+            MyResponse<MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType>>,
+            { chatRoomId: string }
+        >({
             query: ({ chatRoomId }) => `${MESSAGEV1_API.GET_LAST_MESSAGE}?chatRoomId=${chatRoomId}`,
             keepUnusedDataFor: 0,
         }),

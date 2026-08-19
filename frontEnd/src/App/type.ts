@@ -27,4 +27,13 @@ export interface state_props {
         inState: CallInStateType;
         outState: CallOutStateType;
     };
+    callDialog: {
+        isShow: boolean;
+        uid?: string;
+        chatRoomId?: number;
+        zaloOa?: ZaloOaField;
+        zaloUser?: ZaloUserField;
+        callInState: CallInStateType;
+        callOutState: CallOutStateType;
+    };
 }

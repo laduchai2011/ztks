@@ -28,7 +28,6 @@ async function authentication_customer(req: Request, res: Response, next: NextFu
     const { refreshToken, accessToken, id } = req.cookies;
     const keyServiceRedis = `token-storeAuthToken-${id}_${dev_prefix}-customer`;
     const lockKey = `redlock-for-refresh-accessToken-${id}_${dev_prefix}-customer`;
-    // console.log(111111111, refreshToken, accessToken, id);
 
     const myResponse: MyResponse<unknown> = {
         isSuccess: false,
@@ -89,7 +88,6 @@ async function authentication_customer(req: Request, res: Response, next: NextFu
 
                 if (resultget?.isSuccess && resultget.data) {
                     storeAuthToken = JSON.parse(resultget.data.value) as StoreAuthToken;
-                    // console.log(111111111, storeAuthToken_mmsql);
                 } else {
                     myResponse.isSignin = false;
                     myResponse.message = 'Không tìm thấy thông tin phiên đăng nhập, hãy đăng nhập lại !';

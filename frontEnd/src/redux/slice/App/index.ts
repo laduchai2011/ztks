@@ -29,6 +29,15 @@ const initialState: state_props = {
         inState: CallInStateEnum.CALL_END,
         outState: CallOutStateEnum.CALL_END,
     },
+    callDialog: {
+        isShow: false,
+        uid: undefined,
+        chatRoomId: undefined,
+        zaloOa: undefined,
+        zaloUser: undefined,
+        callInState: CallInStateEnum.CALL_END,
+        callOutState: CallOutStateEnum.CALL_END,
+    },
 };
 
 const AppSlice = createSlice({
@@ -80,6 +89,27 @@ const AppSlice = createSlice({
         set_callOutState: (state, action: PayloadAction<CallOutStateType>) => {
             state.call.outState = action.payload;
         },
+        setIsShow_callDialog: (state, action: PayloadAction<boolean>) => {
+            state.callDialog.isShow = action.payload;
+        },
+        setUid_callDialog: (state, action: PayloadAction<string | undefined>) => {
+            state.callDialog.uid = action.payload;
+        },
+        setChatRoomId_callDialog: (state, action: PayloadAction<number | undefined>) => {
+            state.callDialog.chatRoomId = action.payload;
+        },
+        setZaloOa_callDialog: (state, action: PayloadAction<ZaloOaField | undefined>) => {
+            state.callDialog.zaloOa = action.payload;
+        },
+        setZaloUser_callDialog: (state, action: PayloadAction<ZaloUserField | undefined>) => {
+            state.callDialog.zaloUser = action.payload;
+        },
+        setCallInState_callDialog: (state, action: PayloadAction<CallInStateType>) => {
+            state.callDialog.callInState = action.payload;
+        },
+        setCallOutState_callDialog: (state, action: PayloadAction<CallOutStateType>) => {
+            state.callDialog.callOutState = action.payload;
+        },
     },
 });
 
@@ -96,5 +126,12 @@ export const {
     set_callingIsCallIn,
     set_callInState,
     set_callOutState,
+    setIsShow_callDialog,
+    setUid_callDialog,
+    setChatRoomId_callDialog,
+    setZaloOa_callDialog,
+    setZaloUser_callDialog,
+    setCallInState_callDialog,
+    setCallOutState_callDialog,
 } = AppSlice.actions;
 export default AppSlice.reducer;

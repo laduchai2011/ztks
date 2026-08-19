@@ -117,7 +117,6 @@ async function authenticationWeb(req: Request, res: Response, next: NextFunction
 
                 if (resultget?.isSuccess && resultget.data) {
                     storeAuthToken = JSON.parse(resultget.data.value) as StoreAuthToken;
-                    // console.log(111111111, storeAuthToken_mmsql);
                 } else {
                     myResponse.isSignin = false;
                     myResponse.message = 'Không tìm thấy thông tin phiên đăng nhập, hãy đăng nhập lại !';
@@ -291,7 +290,6 @@ async function authenticationMobile(req: Request, res: Response, next: NextFunct
 
                 if (resultget?.isSuccess && resultget.data) {
                     storeAuthToken = JSON.parse(resultget.data.value) as StoreAuthToken;
-                    // console.log(111111111, storeAuthToken_mmsql);
                 } else {
                     myResponse.isSignin = false;
                     myResponse.message = 'Không tìm thấy thông tin phiên đăng nhập, hãy đăng nhập lại !';

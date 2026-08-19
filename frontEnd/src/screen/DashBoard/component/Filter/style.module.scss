@@ -1,4 +1,33 @@
 @use 'src/utility/style/mixin.scss' as *;
 
 .parent {
+    @include center-of-row;
+    box-sizing: border-box;
+    padding: 10px;
+    width: 100%;
+
+    > div {
+        @include center-of-row;
+
+        > .searchBtn {
+            margin-left: 10px;
+            box-sizing: border-box;
+            padding: 5px;
+            border: 1px solid red;
+            color: red;
+            border-radius: 5px;
+            cursor: default;
+            user-select: none;
+
+            &:hover {
+                background-color: red;
+                color: white;
+            }
+
+            &:active {
+                background-color: white;
+                color: red;
+            }
+        }
+    }
 }

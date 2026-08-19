@@ -38,7 +38,6 @@ class Handle_GetAllMembers {
             const { id } = verify_refreshToken;
             allMembersBody.addedById = id;
             res.locals.allMembersBody = allMembersBody;
-            console.log(11111111, allMembersBody);
 
             next();
         } else {

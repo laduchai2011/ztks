@@ -245,12 +245,16 @@ const Pay = () => {
             const isUserSend = lastMessage.event_name.startsWith('user_send');
             const isOaSend = lastMessage.event_name.startsWith('oa_send');
 
-            if (isUserSend) {
-                u_senderId = lastMessage.sender_id;
-            }
+            if ('call_id' in lastMessage) {
+                u_senderId = lastMessage.user_id;
+            } else {
+                if (isUserSend) {
+                    u_senderId = lastMessage.sender_id;
+                }
 
-            if (isOaSend) {
-                u_senderId = lastMessage.recipient_id;
+                if (isOaSend) {
+                    u_senderId = lastMessage.recipient_id;
+                }
             }
 
             const createMessageV1Body: CreateMessageV1BodyField = {
@@ -268,7 +272,6 @@ const Pay = () => {
             const res_newMessage = await createMessageV1(createMessageV1Body);
             const resData_newMessage = res_newMessage.data;
             if (!(resData_newMessage?.isSuccess && resData_newMessage.data)) {
-                console.log('resData_newMessage');
                 dispatch(
                     setData_toastMessage({
                         type: messageType_enum.ERROR,

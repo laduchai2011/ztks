@@ -31,8 +31,6 @@ class HandleFormat {
         const wrapper_Element = anchorNode.parentElement;
         if (!wrapper_Element) return;
 
-        // console.log(111111111, wrapper_Element.childNodes);
-
         for (let i: number = 0; i < wrapper_Element.childNodes.length; i++) {
             const childNode = wrapper_Element.childNodes[i];
             const wrapperNode_Element = childNode.parentElement;

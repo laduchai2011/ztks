@@ -11,12 +11,22 @@ import { useLazyGetCallAgentWithAccountIdQuery } from '@src/redux/query/callAgen
 import { useLazyGetLastMessageWithUidQuery } from '@src/redux/query/messageV1RTK';
 import { getSocket } from '@src/socketIo';
 import { MySip } from '@src/call';
-import { CallInStateEnum, CallOutStateEnum } from '@src/dataStruct/call';
-import { set_callOutState, set_callInState, set_callingIsIn } from '@src/redux/slice/App';
+import { CallInStateEnum, CallOutStateEnum, CallInStateType, CallOutStateType } from '@src/dataStruct/call';
+import {
+    set_callOutState,
+    set_callInState,
+    set_callingIsIn,
+    setIsShow_callDialog,
+    setZaloOa_callDialog,
+    setZaloUser_callDialog,
+    setCallOutState_callDialog,
+    setCallInState_callDialog,
+} from '@src/redux/slice/App';
 import { SessionState } from 'sip.js';
 import CallDialog from './component/CallDialog';
 import { useLazyGetZaloUserQuery, useLazyGetZaloOaWithOaIdQuery } from '@src/redux/query/zaloRTK';
-import { ZaloAppField } from '@src/dataStruct/zalo';
+import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
+import { ZaloUserField } from '@src/dataStruct/zalo/user';
 
 const App = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -30,6 +40,24 @@ const App = () => {
     const callingIsIn: boolean | undefined = useSelector((state: RootState) => state.AppSlice.calling.isIn);
     const callingIsCallIn: boolean | undefined = useSelector((state: RootState) => state.AppSlice.calling.isCallIn);
     const audioRef = useRef<HTMLAudioElement | null>(null);
+
+    const isShow_callDialog: boolean | undefined = useSelector((state: RootState) => state.AppSlice.callDialog.isShow);
+    const uid_callDialog: string | undefined = useSelector((state: RootState) => state.AppSlice.callDialog.uid);
+    const chatRoomId_callDialog: number | undefined = useSelector(
+        (state: RootState) => state.AppSlice.callDialog.chatRoomId
+    );
+    const zaloOa_callDialog: ZaloOaField | undefined = useSelector(
+        (state: RootState) => state.AppSlice.callDialog.zaloOa
+    );
+    const zaloUser_callDialog: ZaloUserField | undefined = useSelector(
+        (state: RootState) => state.AppSlice.callDialog.zaloUser
+    );
+    const callInState_callDialog: CallInStateType = useSelector(
+        (state: RootState) => state.AppSlice.callDialog.callInState
+    );
+    const callOutState_callDialog: CallOutStateType = useSelector(
+        (state: RootState) => state.AppSlice.callDialog.callOutState
+    );
 
     const [getCallAgentWithAccountId] = useLazyGetCallAgentWithAccountIdQuery();
     const [getLastMessageWithUid] = useLazyGetLastMessageWithUidQuery();
@@ -163,60 +191,6 @@ const App = () => {
         }
     }, [dispatch, data_zaloApp]);
 
-    // useEffect(() => {
-    //     getCallAgentWithAccountId({ accountId: -1 })
-    //         .then(async (res) => {
-    //             const resData = res.data;
-    //             if (resData?.isSuccess && resData.data) {
-    //                 const mySip_ = new MySip(resData.data.agentCode, resData.data.password);
-    //                 mySip_.createUserAgent();
-    //                 mySip_.createRegisterer();
-    //                 await mySip_.connectSip();
-    //                 await mySip_.handleIncomingCall(
-    //                     (stream: MediaStream) => {
-    //                         console.log('Receive remote stream');
-
-    //                         // if (audioRef.current) {
-    //                         //     audioRef.current.srcObject = stream;
-    //                         //     audioRef.current.play().catch(console.error);
-    //                         // }
-    //                     },
-    //                     (state) => {
-    //                         switch (state) {
-    //                             case SessionState.Initial:
-    //                                 break;
-
-    //                             case SessionState.Establishing:
-    //                                 break;
-
-    //                             case SessionState.Established:
-    //                                 // setCallInState(CallInStateEnum.CALL_IN);
-    //                                 break;
-
-    //                             case SessionState.Terminating:
-    //                                 // setCallInState(CallInStateEnum.CALL_END);
-    //                                 break;
-
-    //                             case SessionState.Terminated:
-    //                                 // setCallInState(CallInStateEnum.CALL_END);
-    //                                 break;
-    //                         }
-    //                     },
-    //                     (invitation) => {
-    //                         console.log(11111111, invitation.request.from.uri);
-    //                         if (invitation) {
-    //                             // setCallInState(CallInStateEnum.RINGING);
-    //                         }
-    //                     }
-    //                 );
-    //                 setMySip(mySip_);
-    //             }
-    //         })
-    //         .catch((err) => {
-    //             console.error(err);
-    //         });
-    // }, [dispatch, getCallAgentWithAccountId]);
-
     useEffect(() => {
         let sip: MySip | null = null;
         let mounted = true;
@@ -256,15 +230,15 @@ const App = () => {
                             break;
 
                         case SessionState.Established:
-                            dispatch(set_callInState(CallInStateEnum.CALL_IN));
+                            dispatch(setCallInState_callDialog(CallInStateEnum.CALL_IN));
                             break;
 
                         case SessionState.Terminating:
-                            dispatch(set_callInState(CallInStateEnum.CALL_END));
+                            dispatch(setCallInState_callDialog(CallInStateEnum.CALL_END));
                             break;
 
                         case SessionState.Terminated:
-                            dispatch(set_callInState(CallInStateEnum.CALL_END));
+                            dispatch(setCallInState_callDialog(CallInStateEnum.CALL_END));
                             break;
                     }
                 },
@@ -296,17 +270,10 @@ const App = () => {
                                 const resDataZaloUser = resZaloUser.data;
 
                                 if (invitation) {
-                                    dispatch(
-                                        set_calling({
-                                            is: true,
-                                            uid: undefined,
-                                            chatRoomId: undefined,
-                                            zaloOa: resDataZaloOa.data,
-                                            zaloUser: resDataZaloUser?.data,
-                                        })
-                                    );
-                                    dispatch(set_callingIsIn(true));
-                                    dispatch(set_callInState(CallInStateEnum.RINGING));
+                                    dispatch(setIsShow_callDialog(true));
+                                    dispatch(setZaloOa_callDialog(resDataZaloOa.data));
+                                    dispatch(setZaloUser_callDialog(resDataZaloUser?.data));
+                                    dispatch(setCallInState_callDialog(CallInStateEnum.RINGING));
                                 }
                             }
                         }
@@ -326,61 +293,116 @@ const App = () => {
                 void sip.disconnectSip();
             }
         };
-    }, [dispatch, getCallAgentWithAccountId, getLastMessageWithUid, getZaloUser, getZaloOaWithOaId, zaloApp, account]);
+    }, [
+        dispatch,
+        getCallAgentWithAccountId,
+        getLastMessageWithUid,
+        getZaloUser,
+        getZaloOaWithOaId,
+        zaloApp,
+        accountInformation,
+    ]);
+
+    // useEffect(() => {
+    //     if (!mySip) return;
+
+    //     if (calling.is && calling.uid) {
+    //         let isTimeout = true;
+    //         dispatch(set_callOutState(CallOutStateEnum.CONNECTING));
+    //         setTimeout(() => {
+    //             if (!isTimeout) return;
+    //             dispatch(set_callOutState(CallOutStateEnum.CALL_END));
+    //             mySip.destroyCallOut();
+    //             mySip.destroyCallIn();
+    //         }, 6000);
+    //         mySip.callUid(`99${calling.uid}`, false, (state) => {
+    //             // console.log('callUid state', state);
+    //             isTimeout = false;
+    //             switch (state) {
+    //                 case SessionState.Initial:
+    //                     // console.log('callUid state Initial', CallOutStateEnum.CONNECTING);
+    //                     // dispatch(set_callOutState(CallOutStateEnum.CONNECTING));
+    //                     break;
+
+    //                 case SessionState.Establishing:
+    //                     dispatch(set_callOutState(CallOutStateEnum.RINGING));
+    //                     break;
+
+    //                 case SessionState.Established:
+    //                     dispatch(set_callOutState(CallOutStateEnum.CALL_IN));
+    //                     break;
+
+    //                 case SessionState.Terminating:
+    //                     dispatch(set_callOutState(CallOutStateEnum.CALL_END));
+    //                     break;
+
+    //                 case SessionState.Terminated:
+    //                     dispatch(set_callOutState(CallOutStateEnum.CALL_END));
+    //                     break;
+    //             }
+    //         });
+    //     }
+
+    //     console.log('accept', callingIsCallIn);
+    //     if (callingIsCallIn) {
+    //         mySip.accept();
+    //     }
+
+    //     if (!calling.uid) {
+    //         mySip.destroyCallOut();
+    //     }
+
+    //     if (!callingIsIn) {
+    //         mySip.destroyCallIn();
+    //     }
+    // }, [dispatch, mySip, calling, callingIsIn, callingIsCallIn]);
 
     useEffect(() => {
         if (!mySip) return;
 
-        if (calling.is && calling.uid) {
-            let isTimeout = true;
-            dispatch(set_callOutState(CallOutStateEnum.CONNECTING));
-            setTimeout(() => {
-                if (!isTimeout) return;
-                dispatch(set_callOutState(CallOutStateEnum.CALL_END));
-                mySip.destroyCallOut();
-                mySip.destroyCallIn();
-            }, 6000);
-            mySip.callUid(`99${calling.uid}`, false, (state) => {
-                // console.log('callUid state', state);
-                isTimeout = false;
-                switch (state) {
-                    case SessionState.Initial:
-                        // console.log('callUid state Initial', CallOutStateEnum.CONNECTING);
-                        // dispatch(set_callOutState(CallOutStateEnum.CONNECTING));
-                        break;
+        if (isShow_callDialog) {
+            if (uid_callDialog && callOutState_callDialog === CallOutStateEnum.CONNECTING) {
+                let isTimeout = true;
+                dispatch(setCallOutState_callDialog(CallOutStateEnum.CONNECTING));
+                setTimeout(() => {
+                    if (!isTimeout) return;
+                    dispatch(setCallOutState_callDialog(CallOutStateEnum.CALL_END));
+                    mySip.destroyCallOut();
+                    mySip.destroyCallIn();
+                }, 6000);
+                mySip.callUid(`99${uid_callDialog}`, false, (state) => {
+                    // console.log('callUid state', state);
+                    isTimeout = false;
+                    switch (state) {
+                        case SessionState.Initial:
+                            // console.log('callUid state Initial', CallOutStateEnum.CONNECTING);
+                            // dispatch(set_callOutState(CallOutStateEnum.CONNECTING));
+                            break;
 
-                    case SessionState.Establishing:
-                        dispatch(set_callOutState(CallOutStateEnum.RINGING));
-                        break;
+                        case SessionState.Establishing:
+                            dispatch(setCallOutState_callDialog(CallOutStateEnum.RINGING));
+                            break;
 
-                    case SessionState.Established:
-                        dispatch(set_callOutState(CallOutStateEnum.CALL_IN));
-                        break;
+                        case SessionState.Established:
+                            dispatch(setCallOutState_callDialog(CallOutStateEnum.CALL_IN));
+                            break;
 
-                    case SessionState.Terminating:
-                        dispatch(set_callOutState(CallOutStateEnum.CALL_END));
-                        break;
+                        case SessionState.Terminating:
+                            dispatch(setCallOutState_callDialog(CallOutStateEnum.CALL_END));
+                            break;
 
-                    case SessionState.Terminated:
-                        dispatch(set_callOutState(CallOutStateEnum.CALL_END));
-                        break;
-                }
-            });
+                        case SessionState.Terminated:
+                            dispatch(setCallOutState_callDialog(CallOutStateEnum.CALL_END));
+                            break;
+                    }
+                });
+            }
         }
 
-        console.log('accept', callingIsCallIn);
-        if (callingIsCallIn) {
-            mySip.accept();
-        }
-
-        if (!calling.uid) {
+        if (callOutState_callDialog === CallOutStateEnum.CALL_END) {
             mySip.destroyCallOut();
         }
-
-        if (!callingIsIn) {
-            mySip.destroyCallIn();
-        }
-    }, [dispatch, mySip, calling, callingIsIn, callingIsCallIn]);
+    }, [dispatch, mySip, isShow_callDialog, uid_callDialog, callOutState_callDialog]);
 
     return (
         <div>

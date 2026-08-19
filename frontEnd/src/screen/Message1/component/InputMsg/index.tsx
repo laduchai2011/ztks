@@ -35,7 +35,7 @@ import { uploadAImageToZalo, uploadVideo } from '../../handle';
 import { AccountField } from '@src/dataStruct/account';
 // import { BASE_URL_API } from '@src/const/api/baseUrl';
 import { getSocket } from '@src/socketIo';
-import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
+// import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 
 const InputMsg = () => {
     const navigate = useNavigate();
@@ -371,7 +371,24 @@ const InputMsg = () => {
 
     const handleOpenCall = () => {
         if (!id) return;
-        dispatch(set_calling({ is: true, uid: undefined, chatRoomId: Number(id) }));
+        if (!lastMessage) return;
+
+        let u_senderId: string = '';
+        const isUserSend = lastMessage.event_name.startsWith('user_send');
+        const isOaSend = lastMessage.event_name.startsWith('oa_send');
+
+        if ('call_id' in lastMessage) {
+            u_senderId = lastMessage.user_id;
+        } else {
+            if (isUserSend) {
+                u_senderId = lastMessage.sender_id;
+            }
+
+            if (isOaSend) {
+                u_senderId = lastMessage.recipient_id;
+            }
+        }
+        dispatch(set_calling({ is: true, uid: u_senderId, chatRoomId: Number(id) }));
     };
 
     const handleGoToOrder = () => {

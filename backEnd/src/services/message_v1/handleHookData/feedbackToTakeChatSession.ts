@@ -167,7 +167,6 @@ export async function feedbackToTakeChatSession(
 }
 
 async function getChatSession(code: string, zaloOa: ZaloOaField): Promise<ChatSessionField | undefined> {
-    // console.log(11111111, zaloOa);
     const userTakeSessionToChatBody: UserTakeSessionToChatBodyField = {
         code: code,
         zaloOaId: zaloOa.id,

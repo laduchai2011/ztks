@@ -138,7 +138,7 @@ AS
         agentCode AS id,
         NULL AS contact,
         1 AS max_contacts,
-        'no' AS remove_existing
+        'yes' AS remove_existing
     FROM callAgent
     WHERE isDelete=0
     UNION ALL

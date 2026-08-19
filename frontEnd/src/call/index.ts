@@ -15,6 +15,8 @@ export class MySip {
     private readonly _maxReconnectDelay = 30000; // 30s
     private _stopped = false;
 
+    private _inviterOutStateChange?: (state: SessionState) => void;
+
     constructor(agentCode: string, agentPassword: string) {
         this._agentCode = agentCode;
         this._agentPassword = agentPassword;
@@ -240,8 +242,59 @@ export class MySip {
                 video: isVideo ? isVideo : false,
             });
 
-            this._inviterOut.stateChange.addListener(async (state) => {
+            // this._inviterOut.stateChange.addListener(async (state) => {
+            //     onStateChange?.(state);
+            //     switch (state) {
+            //         case SessionState.Initial:
+            //             console.log('Khởi tạo');
+            //             break;
+
+            //         case SessionState.Establishing:
+            //             console.log('Đang đổ chuông...');
+            //             break;
+
+            //         case SessionState.Established: {
+            //             console.log('Đã kết nối');
+
+            //             const pc = (this._inviterOut?.sessionDescriptionHandler as any)
+            //                 .peerConnection as RTCPeerConnection;
+
+            //             const remoteStream = new MediaStream();
+
+            //             pc.getReceivers().forEach((receiver) => {
+            //                 if (receiver.track) {
+            //                     remoteStream.addTrack(receiver.track);
+            //                 }
+            //             });
+
+            //             const audio = new Audio();
+
+            //             audio.srcObject = remoteStream;
+
+            //             await audio.play();
+            //             break;
+            //         }
+
+            //         case SessionState.Terminating:
+            //             console.log('Đang kết thúc');
+            //             break;
+
+            //         case SessionState.Terminated:
+            //             console.log('Cuộc gọi đã kết thúc');
+            //             if (this.localStream) {
+            //                 this.localStream.getTracks().forEach((track) => {
+            //                     track.stop();
+            //                 });
+
+            //                 this.localStream = undefined;
+            //             }
+            //             break;
+            //     }
+            // });
+
+            this._inviterOutStateChange = async (state: SessionState) => {
                 onStateChange?.(state);
+
                 switch (state) {
                     case SessionState.Initial:
                         console.log('Khởi tạo');
@@ -266,7 +319,6 @@ export class MySip {
                         });
 
                         const audio = new Audio();
-
                         audio.srcObject = remoteStream;
 
                         await audio.play();
@@ -279,16 +331,11 @@ export class MySip {
 
                     case SessionState.Terminated:
                         console.log('Cuộc gọi đã kết thúc');
-                        if (this.localStream) {
-                            this.localStream.getTracks().forEach((track) => {
-                                track.stop();
-                            });
-
-                            this.localStream = undefined;
-                        }
                         break;
                 }
-            });
+            };
+
+            this._inviterOut.stateChange.addListener(this._inviterOutStateChange);
 
             await this._inviterOut.invite();
         } catch (error) {
@@ -325,29 +372,31 @@ export class MySip {
     }
 
     async destroyCallOut() {
+        if (this._inviterOut && this._inviterOutStateChange) {
+            this._inviterOut.stateChange.removeListener(this._inviterOutStateChange);
+
+            this._inviterOutStateChange = undefined;
+        }
+
+        // 1. Dừng microphone
         if (this.localStream) {
-            this.localStream.getTracks().forEach(async (track) => {
-                track.stop();
-
-                // if (this._inviterOut) {
-                //     this._inviterOut.cancel();
-                // }
-                if (this._inviterOut) {
-                    try {
-                        if (this._inviterOut.state === SessionState.Established) {
-                            await this._inviterOut.bye();
-                        } else {
-                            await this._inviterOut.cancel();
-                        }
-                    } catch (error) {
-                        console.error(error);
-                    }
-
-                    this._inviterOut = undefined;
-                }
-            });
-
+            this.localStream.getTracks().forEach((track) => track.stop());
             this.localStream = undefined;
+        }
+
+        // 2. Kết thúc cuộc gọi
+        if (this._inviterOut) {
+            try {
+                if (this._inviterOut.state === SessionState.Established) {
+                    await this._inviterOut.bye();
+                } else {
+                    await this._inviterOut.cancel();
+                }
+            } catch (error) {
+                console.error(error);
+            }
+
+            this._inviterOut = undefined;
         }
     }
 

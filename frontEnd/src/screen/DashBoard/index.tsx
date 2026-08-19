@@ -13,6 +13,9 @@ const DashBoard = () => {
                     <Filter />
                     <Overview />
                 </div>
+                <div className={style.main2}>
+                    <Filter />
+                </div>
             </div>
             <div>
                 {/* <MyToastMessage />
