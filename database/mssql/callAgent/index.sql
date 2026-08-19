@@ -132,7 +132,7 @@ AS
     WHERE isDelete=0;
 GO
 
-CREATE VIEW ps_aors
+ALTER VIEW ps_aors
 AS
     SELECT
         agentCode AS id,

@@ -1,25 +1,38 @@
 import { FC, memo, useEffect, useRef, useState } from 'react';
 import style from './style.module.scss';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '@src/redux';
+import { useSelector } from 'react-redux';
+import { RootState } from '@src/redux';
 import { TiTick } from 'react-icons/ti';
 import { IoClose } from 'react-icons/io5';
-import { CallTypeEnum, CallTypeType, CallInStateEnum, CallInStateType } from '@src/dataStruct/call';
+import {
+    CallTypeEnum,
+    CallTypeType,
+    CallInStateType,
+    CallOutStateType,
+    CallInStateEnum,
+    CallOutStateEnum,
+} from '@src/dataStruct/call';
 import { useLazyCheckConsentQuery } from '@src/redux/query/callRTK';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 
 const Infor: FC<{
-    isRinging: boolean;
-    callInState: CallInStateType;
     setIsRequestConsent: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ isRinging, callInState, setIsRequestConsent }) => {
-    const dispatch = useDispatch<AppDispatch>();
+}> = ({ setIsRequestConsent }) => {
+    // const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
 
+    const callInState_callDialog: CallInStateType = useSelector(
+        (state: RootState) => state.AppSlice.callDialog.callInState
+    );
+    const callOutState_callDialog: CallOutStateType = useSelector(
+        (state: RootState) => state.AppSlice.callDialog.callOutState
+    );
+
     const [selectedCallType, setSelectedCallType] = useState<CallTypeType>(CallTypeEnum.AUDIO);
     const [expriedTime, setExpriedTime] = useState<string>('');
+    const [isRinging, setIsRinging] = useState<boolean>(false);
 
     const [checkConsent] = useLazyCheckConsentQuery();
 
@@ -44,6 +57,17 @@ const Infor: FC<{
             })
             .catch((err) => console.error('checkConsent err', err));
     }, [checkConsent, zaloApp, zaloOa]);
+
+    useEffect(() => {
+        if (
+            callInState_callDialog === CallInStateEnum.RINGING ||
+            callOutState_callDialog === CallOutStateEnum.RINGING
+        ) {
+            setIsRinging(true);
+        } else {
+            setIsRinging(false);
+        }
+    }, [callInState_callDialog, callOutState_callDialog]);
 
     const handleOpenRequestConsent = () => {
         setIsRequestConsent(true);

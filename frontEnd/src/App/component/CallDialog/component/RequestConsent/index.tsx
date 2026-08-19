@@ -5,7 +5,15 @@ import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { CLOSE, SEND } from '@src/const/text';
-import { CallTypeEnum, CallTypeType, RequestConsentField } from '@src/dataStruct/call';
+import {
+    CallTypeEnum,
+    CallTypeType,
+    CallInStateEnum,
+    CallOutStateEnum,
+    CallInStateType,
+    CallOutStateType,
+    RequestConsentField,
+} from '@src/dataStruct/call';
 import { useRequestConsentMutation } from '@src/redux/query/callRTK';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { useLazyGetLatestChatRoomPhoneQuery, useCreateChatRoomPhoneMutation } from '@src/redux/query/chatRoomRTK';
@@ -14,12 +22,10 @@ import { set_isLoading, setData_toastMessage } from '@src/redux/slice/App';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const RequestConsent: FC<{
-    isConnecting: boolean;
-    isRinging: boolean;
     isShow: boolean;
     setIsShow: React.Dispatch<React.SetStateAction<boolean>>;
     chatRoomId: number;
-}> = ({ isConnecting, isRinging, isShow, setIsShow, chatRoomId }) => {
+}> = ({ isShow, setIsShow, chatRoomId }) => {
     const dispatch = useDispatch<AppDispatch>();
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
@@ -29,6 +35,13 @@ const RequestConsent: FC<{
     const [selectedCallType, setSelectedCallType] = useState<CallTypeType>(CallTypeEnum.AUDIO);
     const [phone, setPhone] = useState<string>('');
     const [resultRequestConsentResult, setResultRequestConsentResult] = useState<RequestConsentField | null>(null);
+
+    const callInState_callDialog: CallInStateType = useSelector(
+        (state: RootState) => state.AppSlice.callDialog.callInState
+    );
+    const callOutState_callDialog: CallOutStateType = useSelector(
+        (state: RootState) => state.AppSlice.callDialog.callOutState
+    );
 
     const [requestConsent] = useRequestConsentMutation();
     const [getLatestChatRoomPhone] = useLazyGetLatestChatRoomPhoneQuery();
@@ -57,12 +70,15 @@ const RequestConsent: FC<{
     }, [isShowOptions]);
 
     useEffect(() => {
-        if (isRinging || isConnecting) {
+        if (
+            callInState_callDialog !== CallInStateEnum.CALL_END ||
+            callOutState_callDialog !== CallOutStateEnum.CALL_END
+        ) {
             setIsShow(false);
         } else {
             setIsShow(isShow);
         }
-    }, [isRinging, isConnecting, setIsShow, isShow]);
+    }, [isShow, setIsShow, callInState_callDialog, callOutState_callDialog]);
 
     useEffect(() => {
         if (chatRoomId === -1) return;

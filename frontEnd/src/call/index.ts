@@ -164,6 +164,10 @@ export class MySip {
                                 this.localStream = undefined;
                             }
 
+                            if (this._inviterIn === invitation) {
+                                this._inviterIn = undefined;
+                            }
+
                             break;
                     }
                 });
@@ -360,6 +364,8 @@ export class MySip {
             try {
                 if (this._inviterIn.state === SessionState.Established) {
                     await this._inviterIn.bye();
+                } else if (this._inviterIn.state === SessionState.Establishing) {
+                    this._inviterIn.reject();
                 } else {
                     await this._inviterIn.reject();
                 }
@@ -389,6 +395,8 @@ export class MySip {
             try {
                 if (this._inviterOut.state === SessionState.Established) {
                     await this._inviterOut.bye();
+                } else if (this._inviterOut.state === SessionState.Establishing) {
+                    this._inviterOut.cancel();
                 } else {
                     await this._inviterOut.cancel();
                 }

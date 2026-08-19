@@ -4,29 +4,37 @@ import axiosInstance from '@src/api/axiosInstance';
 import { MyResponse } from '@src/dataStruct/response';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
-import { set_account, set_accountInformation, set_myAdmin, set_zaloApp, set_calling } from '@src/redux/slice/App';
+import { set_account, set_accountInformation, set_myAdmin, set_zaloApp } from '@src/redux/slice/App';
 import { AccountField, AccountInformationField } from '@src/dataStruct/account';
 import { useGetZaloAppWithAccountIdQuery } from '@src/redux/query/zaloRTK';
 import { useLazyGetCallAgentWithAccountIdQuery } from '@src/redux/query/callAgentRTK';
 import { useLazyGetLastMessageWithUidQuery } from '@src/redux/query/messageV1RTK';
 import { getSocket } from '@src/socketIo';
 import { MySip } from '@src/call';
-import { CallInStateEnum, CallOutStateEnum, CallInStateType, CallOutStateType } from '@src/dataStruct/call';
 import {
-    set_callOutState,
-    set_callInState,
-    set_callingIsIn,
+    CallInStateEnum,
+    CallOutStateEnum,
+    CallInStateType,
+    CallOutStateType,
+    CallInCmdType,
+    CallOutCmdType,
+    CallInCmdEnum,
+    CallOutCmdEnum,
+} from '@src/dataStruct/call';
+import {
     setIsShow_callDialog,
     setZaloOa_callDialog,
     setZaloUser_callDialog,
+    setCallInCmdType_callDialog,
+    setCallOutCmdType_callDialog,
     setCallOutState_callDialog,
     setCallInState_callDialog,
 } from '@src/redux/slice/App';
 import { SessionState } from 'sip.js';
 import CallDialog from './component/CallDialog';
 import { useLazyGetZaloUserQuery, useLazyGetZaloOaWithOaIdQuery } from '@src/redux/query/zaloRTK';
-import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { ZaloUserField } from '@src/dataStruct/zalo/user';
+import { ZaloAppField } from '@src/dataStruct/zalo';
+// import { ZaloUserField } from '@src/dataStruct/zalo/user';
 
 const App = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -36,21 +44,24 @@ const App = () => {
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const myAdmin: number | undefined = useSelector((state: RootState) => state.AppSlice.myAdmin);
-    const calling: { is: boolean; uid?: string } = useSelector((state: RootState) => state.AppSlice.calling);
-    const callingIsIn: boolean | undefined = useSelector((state: RootState) => state.AppSlice.calling.isIn);
-    const callingIsCallIn: boolean | undefined = useSelector((state: RootState) => state.AppSlice.calling.isCallIn);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
     const isShow_callDialog: boolean | undefined = useSelector((state: RootState) => state.AppSlice.callDialog.isShow);
     const uid_callDialog: string | undefined = useSelector((state: RootState) => state.AppSlice.callDialog.uid);
-    const chatRoomId_callDialog: number | undefined = useSelector(
-        (state: RootState) => state.AppSlice.callDialog.chatRoomId
+    // const chatRoomId_callDialog: number | undefined = useSelector(
+    //     (state: RootState) => state.AppSlice.callDialog.chatRoomId
+    // );
+    // const zaloOa_callDialog: ZaloOaField | undefined = useSelector(
+    //     (state: RootState) => state.AppSlice.callDialog.zaloOa
+    // );
+    // const zaloUser_callDialog: ZaloUserField | undefined = useSelector(
+    //     (state: RootState) => state.AppSlice.callDialog.zaloUser
+    // );
+    const callInCmdType_callDialog: CallInCmdType = useSelector(
+        (state: RootState) => state.AppSlice.callDialog.callInCmdType
     );
-    const zaloOa_callDialog: ZaloOaField | undefined = useSelector(
-        (state: RootState) => state.AppSlice.callDialog.zaloOa
-    );
-    const zaloUser_callDialog: ZaloUserField | undefined = useSelector(
-        (state: RootState) => state.AppSlice.callDialog.zaloUser
+    const callOutCmdType_callDialog: CallOutCmdType = useSelector(
+        (state: RootState) => state.AppSlice.callDialog.callOutCmdType
     );
     const callInState_callDialog: CallInStateType = useSelector(
         (state: RootState) => state.AppSlice.callDialog.callInState
@@ -303,65 +314,28 @@ const App = () => {
         accountInformation,
     ]);
 
-    // useEffect(() => {
-    //     if (!mySip) return;
+    useEffect(() => {
+        if (!mySip) return;
 
-    //     if (calling.is && calling.uid) {
-    //         let isTimeout = true;
-    //         dispatch(set_callOutState(CallOutStateEnum.CONNECTING));
-    //         setTimeout(() => {
-    //             if (!isTimeout) return;
-    //             dispatch(set_callOutState(CallOutStateEnum.CALL_END));
-    //             mySip.destroyCallOut();
-    //             mySip.destroyCallIn();
-    //         }, 6000);
-    //         mySip.callUid(`99${calling.uid}`, false, (state) => {
-    //             // console.log('callUid state', state);
-    //             isTimeout = false;
-    //             switch (state) {
-    //                 case SessionState.Initial:
-    //                     // console.log('callUid state Initial', CallOutStateEnum.CONNECTING);
-    //                     // dispatch(set_callOutState(CallOutStateEnum.CONNECTING));
-    //                     break;
+        if (callInCmdType_callDialog === CallInCmdEnum.ACCEPT) {
+            mySip.accept();
+        }
 
-    //                 case SessionState.Establishing:
-    //                     dispatch(set_callOutState(CallOutStateEnum.RINGING));
-    //                     break;
-
-    //                 case SessionState.Established:
-    //                     dispatch(set_callOutState(CallOutStateEnum.CALL_IN));
-    //                     break;
-
-    //                 case SessionState.Terminating:
-    //                     dispatch(set_callOutState(CallOutStateEnum.CALL_END));
-    //                     break;
-
-    //                 case SessionState.Terminated:
-    //                     dispatch(set_callOutState(CallOutStateEnum.CALL_END));
-    //                     break;
-    //             }
-    //         });
-    //     }
-
-    //     console.log('accept', callingIsCallIn);
-    //     if (callingIsCallIn) {
-    //         mySip.accept();
-    //     }
-
-    //     if (!calling.uid) {
-    //         mySip.destroyCallOut();
-    //     }
-
-    //     if (!callingIsIn) {
-    //         mySip.destroyCallIn();
-    //     }
-    // }, [dispatch, mySip, calling, callingIsIn, callingIsCallIn]);
+        if (callInCmdType_callDialog === CallInCmdEnum.CANCEl) {
+            mySip.destroyCallIn();
+        }
+    }, [mySip, callInCmdType_callDialog]);
+    useEffect(() => {
+        if (callInState_callDialog === CallInStateEnum.CALL_END) {
+            dispatch(setCallInCmdType_callDialog(CallInCmdEnum.EMPTY));
+        }
+    }, [dispatch, callInState_callDialog]);
 
     useEffect(() => {
         if (!mySip) return;
 
         if (isShow_callDialog) {
-            if (uid_callDialog && callOutState_callDialog === CallOutStateEnum.CONNECTING) {
+            if (uid_callDialog && callOutCmdType_callDialog === CallOutCmdEnum.BEGIN) {
                 let isTimeout = true;
                 dispatch(setCallOutState_callDialog(CallOutStateEnum.CONNECTING));
                 setTimeout(() => {
@@ -399,10 +373,18 @@ const App = () => {
             }
         }
 
-        if (callOutState_callDialog === CallOutStateEnum.CALL_END) {
+        if (
+            callOutCmdType_callDialog === CallOutCmdEnum.CANCEl ||
+            callOutCmdType_callDialog === CallOutCmdEnum.FINISH
+        ) {
             mySip.destroyCallOut();
         }
-    }, [dispatch, mySip, isShow_callDialog, uid_callDialog, callOutState_callDialog]);
+    }, [dispatch, mySip, isShow_callDialog, uid_callDialog, callOutCmdType_callDialog]);
+    useEffect(() => {
+        if (callOutState_callDialog === CallOutStateEnum.CALL_END) {
+            dispatch(setCallOutCmdType_callDialog(CallOutCmdEnum.EMPTY));
+        }
+    }, [dispatch, callOutState_callDialog]);
 
     return (
         <div>

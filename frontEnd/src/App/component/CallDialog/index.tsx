@@ -22,27 +22,35 @@ import {
     CallOutStateType,
     // CallTypeEnum,
 } from '@src/dataStruct/call';
-import { set_calling } from '@src/redux/slice/App';
+import { setData_toastMessage, setIsShow_callDialog } from '@src/redux/slice/App';
+import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const CallDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
-    const isShow: boolean = useSelector((state: RootState) => state.AppSlice.calling.is);
-    const chatRoomId: number | undefined = useSelector((state: RootState) => state.AppSlice.calling.chatRoomId);
-    const inState: CallInStateType = useSelector((state: RootState) => state.AppSlice.call.inState);
-    const outState: CallOutStateType = useSelector((state: RootState) => state.AppSlice.call.outState);
+
+    const isShow_callDialog: boolean | undefined = useSelector((state: RootState) => state.AppSlice.callDialog.isShow);
+    const chatRoomId_callDialog: number | undefined = useSelector(
+        (state: RootState) => state.AppSlice.callDialog.chatRoomId
+    );
+    const callInState_callDialog: CallInStateType = useSelector(
+        (state: RootState) => state.AppSlice.callDialog.callInState
+    );
+    const callOutState_callDialog: CallOutStateType = useSelector(
+        (state: RootState) => state.AppSlice.callDialog.callOutState
+    );
 
     // const [agentCode, setAgentCode] = useState<string>('');
     // const [agentPassword, setAgentPassword] = useState<string>('taokosao201195');
     const [isRequestConsent, setIsRequestConsent] = useState<boolean>(false);
-    const [isConnecting, setIsConnecting] = useState<boolean>(false);
-    const [isRinging, setIsRinging] = useState<boolean>(false);
-    const [isCallIn, setIsCallIn] = useState<boolean>(false);
-    const [isCallOut, setIsCallOut] = useState<boolean>(false);
-    const [callInState, setCallInState] = useState<CallInStateType>(CallInStateEnum.CALL_END);
-    const [callOutState, setCallOutState] = useState<CallOutStateType>(CallOutStateEnum.CALL_END);
+    // const [isConnecting, setIsConnecting] = useState<boolean>(false);
+    // const [isRinging, setIsRinging] = useState<boolean>(false);
+    // const [isCallIn, setIsCallIn] = useState<boolean>(false);
+    // const [isCallOut, setIsCallOut] = useState<boolean>(false);
+    // const [callInState, setCallInState] = useState<CallInStateType>(CallInStateEnum.CALL_END);
+    // const [callOutState, setCallOutState] = useState<CallOutStateType>(CallOutStateEnum.CALL_END);
 
     const [checkConsent] = useLazyCheckConsentQuery();
     const [requestConsent] = useRequestConsentMutation();
@@ -53,7 +61,7 @@ const CallDialog = () => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow) {
+        if (isShow_callDialog) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -67,17 +75,20 @@ const CallDialog = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow]);
+    }, [isShow_callDialog]);
 
     useEffect(() => {
-        if (inState !== CallInStateEnum.CALL_END || outState !== CallOutStateEnum.CALL_END) {
-            setIsRinging(true);
+        if (
+            callInState_callDialog !== CallInStateEnum.CALL_END ||
+            callOutState_callDialog !== CallOutStateEnum.CALL_END
+        ) {
+            // setIsRinging(true);
             setIsRequestConsent(false);
         } else {
-            setIsRinging(false);
+            // setIsRinging(false);
         }
-        setCallInState(inState);
-    }, [inState, outState]);
+        // setCallInState(callInState_callDialog);
+    }, [callInState_callDialog, callOutState_callDialog]);
 
     const audioRef = useRef<HTMLAudioElement>(null);
     useEffect(() => {
@@ -124,7 +135,20 @@ const CallDialog = () => {
     }, []);
 
     const handleClose = () => {
-        dispatch(set_calling({ is: false, uid: undefined, chatRoomId: undefined }));
+        // dispatch(set_calling({ is: false, uid: undefined, chatRoomId: undefined }));
+        if (
+            callInState_callDialog !== CallInStateEnum.CALL_END ||
+            callOutState_callDialog !== CallOutStateEnum.CALL_END
+        ) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.WARN,
+                    message: 'Bạn không thể đóng khi đang ở trong 1 cuộc gọi !',
+                })
+            );
+            return;
+        }
+        dispatch(setIsShow_callDialog(false));
     };
 
     // const handleOpenRequestConsent = () => {
@@ -176,13 +200,11 @@ const CallDialog = () => {
                 </div>
                 <div className={style.contentContainer}>
                     <div className={style.header}>Cuộc gọi</div>
-                    <Infor isRinging={isRinging} callInState={callInState} setIsRequestConsent={setIsRequestConsent} />
+                    <Infor setIsRequestConsent={setIsRequestConsent} />
                     <RequestConsent
-                        isConnecting={isConnecting}
-                        isRinging={isRinging}
                         isShow={isRequestConsent}
                         setIsShow={setIsRequestConsent}
-                        chatRoomId={chatRoomId || -1}
+                        chatRoomId={chatRoomId_callDialog || -1}
                     />
                     <Call />
                     <audio ref={audioRef} autoPlay playsInline />

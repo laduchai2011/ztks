@@ -29,7 +29,7 @@ import {
     set_isLoading,
     setIsShow_changeChatRoomMasterDialog,
 } from '@src/redux/slice/MessageV1';
-import { set_calling } from '@src/redux/slice/App';
+import { setIsShow_callDialog, setUid_callDialog, setChatRoomId_callDialog } from '@src/redux/slice/App';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { uploadAImageToZalo, uploadVideo } from '../../handle';
 import { AccountField } from '@src/dataStruct/account';
@@ -388,7 +388,10 @@ const InputMsg = () => {
                 u_senderId = lastMessage.recipient_id;
             }
         }
-        dispatch(set_calling({ is: true, uid: u_senderId, chatRoomId: Number(id) }));
+        // dispatch(set_calling({ is: true, uid: u_senderId, chatRoomId: Number(id) }));
+        dispatch(setIsShow_callDialog(true));
+        dispatch(setUid_callDialog(u_senderId));
+        dispatch(setChatRoomId_callDialog(Number(id)));
     };
 
     const handleGoToOrder = () => {
