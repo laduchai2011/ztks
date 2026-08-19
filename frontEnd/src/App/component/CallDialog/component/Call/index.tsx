@@ -10,11 +10,14 @@ import {
     CallOutStateType,
     CallInCmdEnum,
     CallInCmdType,
+    CallOutCmdEnum,
+    CallOutCmdType,
 } from '@src/dataStruct/call';
 import {
     setCallInState_callDialog,
     setCallOutState_callDialog,
     setCallInCmdType_callDialog,
+    setCallOutCmdType_callDialog,
 } from '@src/redux/slice/App';
 import { avatarnull } from '@src/utility/string';
 // import { ZaloOaField } from '@src/dataStruct/zalo';
@@ -59,15 +62,52 @@ const Call = () => {
     };
 
     const handleOnCallOut = () => {
-        dispatch(setCallOutState_callDialog(CallOutStateEnum.CONNECTING));
+        dispatch(setCallOutCmdType_callDialog(CallOutCmdEnum.BEGIN));
     };
 
     const handleOfCallOut = () => {
-        dispatch(setCallOutState_callDialog(CallOutStateEnum.CALL_END));
+        switch (callOutState_callDialog) {
+            case CallOutStateEnum.CONNECTING: {
+                dispatch(setCallOutCmdType_callDialog(CallOutCmdEnum.CANCEl));
+                break;
+            }
+            case CallOutStateEnum.RINGING: {
+                dispatch(setCallOutCmdType_callDialog(CallOutCmdEnum.CANCEl));
+                break;
+            }
+            case CallOutStateEnum.CALL_END: {
+                //statements;
+                break;
+            }
+            case CallOutStateEnum.CALL_IN: {
+                dispatch(setCallOutCmdType_callDialog(CallOutCmdEnum.FINISH));
+                break;
+            }
+            default: {
+                //statements;
+                break;
+            }
+        }
     };
 
     const handleOfCallIn = () => {
-        dispatch(setCallInState_callDialog(CallInStateEnum.CALL_END));
+        switch (callInState_callDialog) {
+            case CallInStateEnum.RINGING: {
+                dispatch(setCallInCmdType_callDialog(CallInCmdEnum.CANCEl));
+                break;
+            }
+            case CallInStateEnum.CALL_IN: {
+                dispatch(setCallInCmdType_callDialog(CallInCmdEnum.FINISH));
+                break;
+            }
+            case CallInStateEnum.CALL_END: {
+                break;
+            }
+            default: {
+                //statements;
+                break;
+            }
+        }
     };
 
     return (

@@ -317,12 +317,34 @@ const App = () => {
     useEffect(() => {
         if (!mySip) return;
 
-        if (callInCmdType_callDialog === CallInCmdEnum.ACCEPT) {
-            mySip.accept();
-        }
+        // if (callInCmdType_callDialog === CallInCmdEnum.ACCEPT) {
+        //     mySip.accept();
+        // }
 
-        if (callInCmdType_callDialog === CallInCmdEnum.CANCEl) {
-            mySip.destroyCallIn();
+        // if (callInCmdType_callDialog === CallInCmdEnum.CANCEl) {
+        //     mySip.destroyCallIn();
+        // }
+
+        switch (callInCmdType_callDialog) {
+            case CallInCmdEnum.ACCEPT: {
+                mySip.accept();
+                break;
+            }
+            case CallInCmdEnum.CANCEl: {
+                mySip.destroyCallIn();
+                break;
+            }
+            case CallInCmdEnum.EMPTY: {
+                break;
+            }
+            case CallInCmdEnum.FINISH: {
+                mySip.destroyCallIn();
+                break;
+            }
+            default: {
+                //statements;
+                break;
+            }
         }
     }, [mySip, callInCmdType_callDialog]);
     useEffect(() => {
@@ -334,50 +356,63 @@ const App = () => {
     useEffect(() => {
         if (!mySip) return;
 
-        if (isShow_callDialog) {
-            if (uid_callDialog && callOutCmdType_callDialog === CallOutCmdEnum.BEGIN) {
-                let isTimeout = true;
-                dispatch(setCallOutState_callDialog(CallOutStateEnum.CONNECTING));
-                setTimeout(() => {
-                    if (!isTimeout) return;
-                    dispatch(setCallOutState_callDialog(CallOutStateEnum.CALL_END));
-                    mySip.destroyCallOut();
-                    mySip.destroyCallIn();
-                }, 6000);
-                mySip.callUid(`99${uid_callDialog}`, false, (state) => {
-                    // console.log('callUid state', state);
-                    isTimeout = false;
-                    switch (state) {
-                        case SessionState.Initial:
-                            // console.log('callUid state Initial', CallOutStateEnum.CONNECTING);
-                            // dispatch(set_callOutState(CallOutStateEnum.CONNECTING));
-                            break;
-
-                        case SessionState.Establishing:
-                            dispatch(setCallOutState_callDialog(CallOutStateEnum.RINGING));
-                            break;
-
-                        case SessionState.Established:
-                            dispatch(setCallOutState_callDialog(CallOutStateEnum.CALL_IN));
-                            break;
-
-                        case SessionState.Terminating:
+        switch (callOutCmdType_callDialog) {
+            case CallOutCmdEnum.BEGIN: {
+                if (isShow_callDialog) {
+                    if (uid_callDialog) {
+                        let isTimeout = true;
+                        dispatch(setCallOutState_callDialog(CallOutStateEnum.CONNECTING));
+                        setTimeout(() => {
+                            if (!isTimeout) return;
                             dispatch(setCallOutState_callDialog(CallOutStateEnum.CALL_END));
-                            break;
+                            mySip.destroyCallOut();
+                            mySip.destroyCallIn();
+                        }, 6000);
+                        mySip.callUid(`99${uid_callDialog}`, false, (state) => {
+                            // console.log('callUid state', state);
+                            isTimeout = false;
+                            switch (state) {
+                                case SessionState.Initial:
+                                    // console.log('callUid state Initial', CallOutStateEnum.CONNECTING);
+                                    // dispatch(set_callOutState(CallOutStateEnum.CONNECTING));
+                                    break;
 
-                        case SessionState.Terminated:
-                            dispatch(setCallOutState_callDialog(CallOutStateEnum.CALL_END));
-                            break;
+                                case SessionState.Establishing:
+                                    dispatch(setCallOutState_callDialog(CallOutStateEnum.RINGING));
+                                    break;
+
+                                case SessionState.Established:
+                                    dispatch(setCallOutState_callDialog(CallOutStateEnum.CALL_IN));
+                                    break;
+
+                                case SessionState.Terminating:
+                                    dispatch(setCallOutState_callDialog(CallOutStateEnum.CALL_END));
+                                    break;
+
+                                case SessionState.Terminated:
+                                    dispatch(setCallOutState_callDialog(CallOutStateEnum.CALL_END));
+                                    break;
+                            }
+                        });
                     }
-                });
+                }
+                break;
             }
-        }
-
-        if (
-            callOutCmdType_callDialog === CallOutCmdEnum.CANCEl ||
-            callOutCmdType_callDialog === CallOutCmdEnum.FINISH
-        ) {
-            mySip.destroyCallOut();
+            case CallOutCmdEnum.CANCEl: {
+                mySip.destroyCallOut();
+                break;
+            }
+            case CallOutCmdEnum.EMPTY: {
+                break;
+            }
+            case CallOutCmdEnum.FINISH: {
+                mySip.destroyCallOut();
+                break;
+            }
+            default: {
+                //statements;
+                break;
+            }
         }
     }, [dispatch, mySip, isShow_callDialog, uid_callDialog, callOutCmdType_callDialog]);
     useEffect(() => {
