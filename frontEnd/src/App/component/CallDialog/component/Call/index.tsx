@@ -2,7 +2,7 @@ import { memo, useEffect, useRef, useState } from 'react';
 import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
-import { MdCall, MdWifiCalling3 } from 'react-icons/md';
+import { MdCall } from 'react-icons/md';
 import {
     CallInStateEnum,
     CallInStateType,
@@ -38,7 +38,7 @@ const Call = () => {
         if (callInState_callDialog === CallInStateEnum.CALL_IN) {
             setText('');
             intervalTime = setInterval(() => {
-                setTime((pre) => pre + 1);
+                setTime((pre) => pre + 1000);
             }, 1000);
         }
 
@@ -46,6 +46,19 @@ const Call = () => {
             clearInterval(intervalTime);
         }
     }, [callInState_callDialog]);
+
+    useEffect(() => {
+        let intervalTime: any;
+        if (callOutState_callDialog === CallOutStateEnum.CALL_IN) {
+            intervalTime = setInterval(() => {
+                setTime((pre) => pre + 1000);
+            }, 1000);
+        }
+
+        if (callOutState_callDialog === CallOutStateEnum.CALL_END) {
+            clearInterval(intervalTime);
+        }
+    }, [callOutState_callDialog]);
 
     const handleAccept = () => {
         if (callInState_callDialog === CallInStateEnum.RINGING) {
@@ -120,7 +133,10 @@ const Call = () => {
             )}
             {callInState_callDialog === CallInStateEnum.RINGING && <div className={style.callIn}>Đang gọi đến</div>}
             {text.length > 0 && <div className={style.text}>{text}</div>}
-            {callInState_callDialog === CallInStateEnum.CALL_IN && <div className={style.text}>{time}</div>}
+            {(callInState_callDialog === CallInStateEnum.CALL_IN ||
+                callOutState_callDialog === CallOutStateEnum.CALL_IN) && (
+                <div className={style.text}>{formatDuration(time)}</div>
+            )}
             {callInState_callDialog === CallInStateEnum.CALL_END && (
                 <div className={style.icon1}>
                     {callOutState_callDialog === CallOutStateEnum.CALL_END && (
