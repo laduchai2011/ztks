@@ -10,7 +10,7 @@ import ReplyMember from './component/ReplyMember';
 import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import ChangeChatRoomMasterDialog from './component/ChangeChatRoomMasterDialog';
-// import CallDialog from './component/CallDialog';
+
 import { useGetChatRoomsWithIdQuery } from '@src/redux/query/chatRoomRTK';
 import { useGetZaloOaWithIdQuery } from '@src/redux/query/zaloRTK';
 import { useLazyGetLastMessageQuery } from '@src/redux/query/messageV1RTK';
@@ -156,12 +156,16 @@ const Message1 = () => {
                     const isUserSend = eventName.startsWith('user_send');
                     const isOaSend = eventName.startsWith('oa_send');
 
-                    if (isUserSend) {
-                        dispatch(set_uid(lastMessage.sender_id));
-                    }
+                    if ('call_id' in lastMessage) {
+                        dispatch(set_uid(lastMessage.user_id));
+                    } else {
+                        if (isUserSend) {
+                            dispatch(set_uid(lastMessage.sender_id));
+                        }
 
-                    if (isOaSend) {
-                        dispatch(set_uid(lastMessage.recipient_id));
+                        if (isOaSend) {
+                            dispatch(set_uid(lastMessage.recipient_id));
+                        }
                     }
                 }
             })
@@ -180,7 +184,6 @@ const Message1 = () => {
                 <MyToastMessage />
                 <MyLoading />
                 <ChangeChatRoomMasterDialog />
-                {/* <CallDialog /> */}
             </div>
         </div>
     );

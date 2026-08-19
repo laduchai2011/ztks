@@ -335,6 +335,13 @@ export class MySip {
 
                     case SessionState.Terminated:
                         console.log('Cuộc gọi đã kết thúc');
+                        if (this.localStream) {
+                            this.localStream.getTracks().forEach(async (track) => {
+                                track.stop();
+                            });
+
+                            this.localStream = undefined;
+                        }
                         break;
                 }
             };
@@ -378,12 +385,6 @@ export class MySip {
     }
 
     async destroyCallOut() {
-        if (this._inviterOut && this._inviterOutStateChange) {
-            this._inviterOut.stateChange.removeListener(this._inviterOutStateChange);
-
-            this._inviterOutStateChange = undefined;
-        }
-
         // 1. Dừng microphone
         if (this.localStream) {
             this.localStream.getTracks().forEach((track) => track.stop());
@@ -399,6 +400,12 @@ export class MySip {
                     this._inviterOut.cancel();
                 } else {
                     await this._inviterOut.cancel();
+                }
+
+                if (this._inviterOut && this._inviterOutStateChange) {
+                    this._inviterOut.stateChange.removeListener(this._inviterOutStateChange);
+
+                    this._inviterOutStateChange = undefined;
                 }
             } catch (error) {
                 console.error(error);

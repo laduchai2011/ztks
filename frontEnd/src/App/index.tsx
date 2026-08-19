@@ -202,6 +202,7 @@ const App = () => {
         }
     }, [dispatch, data_zaloApp]);
 
+    // connect call-center
     useEffect(() => {
         let sip: MySip | null = null;
         let mounted = true;
@@ -223,77 +224,6 @@ const App = () => {
 
             await sip.connectSip();
 
-            await sip.handleIncomingCall(
-                (stream: MediaStream) => {
-                    console.log('Receive remote stream');
-
-                    if (audioRef.current) {
-                        audioRef.current.srcObject = stream;
-                        audioRef.current.play().catch(console.error);
-                    }
-                },
-                (state) => {
-                    switch (state) {
-                        case SessionState.Initial:
-                            break;
-
-                        case SessionState.Establishing:
-                            break;
-
-                        case SessionState.Established:
-                            dispatch(setCallInState_callDialog(CallInStateEnum.CALL_IN));
-                            break;
-
-                        case SessionState.Terminating:
-                            dispatch(setCallInState_callDialog(CallInStateEnum.CALL_END));
-                            break;
-
-                        case SessionState.Terminated:
-                            dispatch(setCallInState_callDialog(CallInStateEnum.CALL_END));
-                            break;
-                    }
-                },
-                async (invitation) => {
-                    const uid = invitation.request.from.uri.user;
-                    // console.log('Incoming call from uid:', uid);
-
-                    if (!uid) return;
-                    if (!zaloApp) return;
-                    if (!accountInformation) return;
-
-                    try {
-                        const resLastMessage = await getLastMessageWithUid({ uid });
-                        const resDataLastMessage = resLastMessage.data;
-
-                        if (resDataLastMessage?.isSuccess && resDataLastMessage.data) {
-                            const resZaloOa = await getZaloOaWithOaId({
-                                oaId: resDataLastMessage.data.oa_id,
-                                accountId: accountInformation.addedById || -1,
-                            });
-                            const resDataZaloOa = resZaloOa.data;
-                            if (resDataZaloOa?.isSuccess && resDataZaloOa.data) {
-                                const resZaloUser = await getZaloUser({
-                                    zaloApp: zaloApp,
-                                    zaloOa: resDataZaloOa.data,
-                                    userIdByApp: resDataLastMessage.data.user_id_by_app,
-                                });
-
-                                const resDataZaloUser = resZaloUser.data;
-
-                                if (invitation) {
-                                    dispatch(setIsShow_callDialog(true));
-                                    dispatch(setZaloOa_callDialog(resDataZaloOa.data));
-                                    dispatch(setZaloUser_callDialog(resDataZaloUser?.data));
-                                    dispatch(setCallInState_callDialog(CallInStateEnum.RINGING));
-                                }
-                            }
-                        }
-                    } catch (error) {
-                        console.error('Error fetching Zalo user:', error);
-                    }
-                }
-            );
-
             setMySip(sip);
         })();
 
@@ -304,26 +234,83 @@ const App = () => {
                 void sip.disconnectSip();
             }
         };
-    }, [
-        dispatch,
-        getCallAgentWithAccountId,
-        getLastMessageWithUid,
-        getZaloUser,
-        getZaloOaWithOaId,
-        zaloApp,
-        accountInformation,
-    ]);
+    }, [dispatch, getCallAgentWithAccountId]);
 
     useEffect(() => {
         if (!mySip) return;
+        mySip.handleIncomingCall(
+            (stream: MediaStream) => {
+                console.log('Receive remote stream');
 
-        // if (callInCmdType_callDialog === CallInCmdEnum.ACCEPT) {
-        //     mySip.accept();
-        // }
+                if (audioRef.current) {
+                    audioRef.current.srcObject = stream;
+                    audioRef.current.play().catch(console.error);
+                }
+            },
+            (state) => {
+                switch (state) {
+                    case SessionState.Initial:
+                        break;
 
-        // if (callInCmdType_callDialog === CallInCmdEnum.CANCEl) {
-        //     mySip.destroyCallIn();
-        // }
+                    case SessionState.Establishing:
+                        break;
+
+                    case SessionState.Established:
+                        dispatch(setCallInState_callDialog(CallInStateEnum.CALL_IN));
+                        break;
+
+                    case SessionState.Terminating:
+                        dispatch(setCallInState_callDialog(CallInStateEnum.CALL_END));
+                        break;
+
+                    case SessionState.Terminated:
+                        dispatch(setCallInState_callDialog(CallInStateEnum.CALL_END));
+                        break;
+                }
+            },
+            async (invitation) => {
+                const uid = invitation.request.from.uri.user;
+                // console.log('Incoming call from uid:', uid);
+
+                if (!uid) return;
+                if (!zaloApp) return;
+                if (!accountInformation) return;
+
+                try {
+                    const resLastMessage = await getLastMessageWithUid({ uid });
+                    const resDataLastMessage = resLastMessage.data;
+
+                    if (resDataLastMessage?.isSuccess && resDataLastMessage.data) {
+                        const resZaloOa = await getZaloOaWithOaId({
+                            oaId: resDataLastMessage.data.oa_id,
+                            accountId: accountInformation.addedById || -1,
+                        });
+                        const resDataZaloOa = resZaloOa.data;
+                        if (resDataZaloOa?.isSuccess && resDataZaloOa.data) {
+                            const resZaloUser = await getZaloUser({
+                                zaloApp: zaloApp,
+                                zaloOa: resDataZaloOa.data,
+                                userIdByApp: resDataLastMessage.data.user_id_by_app,
+                            });
+
+                            const resDataZaloUser = resZaloUser.data;
+
+                            if (invitation) {
+                                dispatch(setIsShow_callDialog(true));
+                                dispatch(setZaloOa_callDialog(resDataZaloOa.data));
+                                dispatch(setZaloUser_callDialog(resDataZaloUser?.data));
+                                dispatch(setCallInState_callDialog(CallInStateEnum.RINGING));
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error fetching Zalo user:', error);
+                }
+            }
+        );
+    }, [dispatch, mySip, zaloApp, accountInformation, getLastMessageWithUid, getZaloOaWithOaId, getZaloUser]);
+    useEffect(() => {
+        if (!mySip) return;
 
         switch (callInCmdType_callDialog) {
             case CallInCmdEnum.ACCEPT: {
@@ -366,7 +353,6 @@ const App = () => {
                             if (!isTimeout) return;
                             dispatch(setCallOutState_callDialog(CallOutStateEnum.CALL_END));
                             mySip.destroyCallOut();
-                            mySip.destroyCallIn();
                         }, 6000);
                         mySip.callUid(`99${uid_callDialog}`, false, (state) => {
                             // console.log('callUid state', state);

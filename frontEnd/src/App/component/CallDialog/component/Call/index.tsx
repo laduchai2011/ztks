@@ -9,19 +9,13 @@ import {
     CallOutStateEnum,
     CallOutStateType,
     CallInCmdEnum,
-    CallInCmdType,
     CallOutCmdEnum,
-    CallOutCmdType,
 } from '@src/dataStruct/call';
-import {
-    setCallInState_callDialog,
-    setCallOutState_callDialog,
-    setCallInCmdType_callDialog,
-    setCallOutCmdType_callDialog,
-} from '@src/redux/slice/App';
+import { setCallInCmdType_callDialog, setCallOutCmdType_callDialog } from '@src/redux/slice/App';
 import { avatarnull } from '@src/utility/string';
 // import { ZaloOaField } from '@src/dataStruct/zalo';
 import { ZaloUserField } from '@src/dataStruct/zalo/user';
+import { formatDuration } from '@src/utility/string';
 
 const Call = () => {
     const dispatch = useDispatch<AppDispatch>();

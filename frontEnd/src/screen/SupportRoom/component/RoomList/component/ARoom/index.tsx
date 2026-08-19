@@ -5,8 +5,8 @@ import { RootState } from '@src/redux';
 import { useNavigate } from 'react-router-dom';
 import { route_enum } from '@src/router/type';
 import { ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
-import { MessageV1Field, NewMessageV1Field } from '@src/dataStruct/message_v1';
-import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
+import { MessageV1Field, NewMessageV1Field, CallV1Field } from '@src/dataStruct/message_v1';
+import { ZaloMessageType, ZaloCallType } from '@src/dataStruct/zalo/hookData';
 import { ZaloOaField, ZaloAppField } from '@src/dataStruct/zalo';
 import { ZaloUserField } from '@src/dataStruct/zalo/user';
 import { AccountField } from '@src/dataStruct/account';
@@ -30,7 +30,9 @@ const ARoom: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSch
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.SupportRoomSlice.selectedOa);
     const chatRoomRole: ChatRoomRoleSchema = chatRoomRoleSchema;
-    const [lastMessage, setLastMessage] = useState<MessageV1Field<ZaloMessageType> | undefined>(undefined);
+    const [lastMessage, setLastMessage] = useState<
+        MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType> | undefined
+    >(undefined);
     const [zaloUser, setZaloUser] = useState<ZaloUserField | undefined>(undefined);
     const [accountWId, setAccountWId] = useState<AccountField | undefined>(undefined);
     const [newMessage, setNewMessage] = useState<NewMessageV1Field<ZaloMessageType>[]>([]);
