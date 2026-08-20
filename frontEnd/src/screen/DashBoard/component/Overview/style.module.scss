@@ -1,42 +1,44 @@
 @use 'src/utility/style/mixin.scss' as *;
 
 .parent {
-    @include center-of-row;
-    justify-content: space-around;
+    > div:nth-child(1) {
+        @include center-of-row;
+        justify-content: space-around;
 
-    > div {
-        width: calc(100% / 4);
-        border: 1px solid gray;
-        border-radius: 10px;
-        box-sizing: border-box;
-        padding: 10px;
-
-        > .title {
-            font-weight: 600;
-            font-size: 1.05rem;
+        > div {
+            width: calc(100% / 4);
+            border: 1px solid gray;
+            border-radius: 10px;
             box-sizing: border-box;
-            padding: 5px;
-            @include center-of-rectangle;
-            width: 100%;
-        }
+            padding: 10px;
 
-        > .number {
-            @include center-of-row;
-            justify-content: space-around;
-            box-sizing: border-box;
-            padding: 5px;
-
-            > div:nth-child(1) {
-                font-size: 1.3rem;
-                font-weight: 400;
+            > .title {
+                font-weight: 600;
+                font-size: 1.05rem;
+                box-sizing: border-box;
+                padding: 5px;
+                @include center-of-rectangle;
+                width: 100%;
             }
 
-            > div:nth-child(2) {
+            > .number {
                 @include center-of-row;
-                color: gray;
+                justify-content: space-around;
+                box-sizing: border-box;
+                padding: 5px;
 
-                > div {
-                    margin: 0 3px;
+                > div:nth-child(1) {
+                    font-size: 1.3rem;
+                    font-weight: 400;
+                }
+
+                > div:nth-child(2) {
+                    @include center-of-row;
+                    color: gray;
+
+                    > div {
+                        margin: 0 3px;
+                    }
                 }
             }
         }
