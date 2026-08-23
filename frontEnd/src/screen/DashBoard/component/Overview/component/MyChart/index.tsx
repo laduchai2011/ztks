@@ -70,16 +70,38 @@ const MyChart = () => {
             categories,
         },
 
+        // yaxis: [
+        //     {
+        //         title: {
+        //             text: 'Doanh số',
+        //         },
+        //     },
+        //     {
+        //         opposite: true,
+        //         title: {
+        //             text: 'Số lượng đơn',
+        //         },
+        //     },
+        // ],
+
         yaxis: [
             {
+                seriesName: ['Doanh số', 'Doanh số TB'],
                 title: {
                     text: 'Doanh số',
                 },
+                labels: {
+                    formatter: (value) => value.toLocaleString('vi-VN'),
+                },
             },
             {
+                seriesName: ['Số lượng đơn', 'Số lượng đơn TB'],
                 opposite: true,
                 title: {
                     text: 'Số lượng đơn',
+                },
+                labels: {
+                    formatter: (value) => Math.round(value).toString(),
                 },
             },
         ],
@@ -127,28 +149,32 @@ const MyChart = () => {
         {
             name: 'Doanh số',
             data: data,
+            yAxisIndex: 0,
         },
         {
             name: 'Doanh số TB',
             data: datatb,
+            yAxisIndex: 0,
         },
         {
             name: 'Số lượng đơn',
             data: data1,
+            yAxisIndex: 1,
         },
         {
             name: 'Số lượng đơn TB',
             data: data1tb,
+            yAxisIndex: 1,
         },
     ];
 
     return (
         <div>
             {/* Chart chính */}
-            <Chart options={mainOptions} series={series} type="line" height={350} />
+            <Chart options={mainOptions} series={series} type="line" height={400} />
 
             {/* Brush */}
-            <Chart options={brushOptions} series={series} type="area" height={120} />
+            <Chart options={brushOptions} series={series} type="area" height={150} />
         </div>
     );
 };

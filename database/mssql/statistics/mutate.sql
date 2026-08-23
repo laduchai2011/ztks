@@ -1,0 +1,96 @@
+﻿CREATE PROCEDURE CreateStatistics
+	@sales DECIMAL(20,2),
+	@zaloOaId INT,
+	@accountId INT,
+	@ofDay DATETIMEOFFSET(7)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+	BEGIN TRANSACTION;
+
+		DECLARE @newStatisticsId INT;
+
+		INSERT INTO dbo.[statistics] (sales, averageSales, orderAmount, averageOrderAmount, mostMoneyOfOrder, zaloOaId, accountId, ofDay, createTime)
+        VALUES (@sales, @sales, 1, 1, @sales, @zaloOaId, @accountId, @ofDay, SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50001, 'Tạo doanh số không thành công.', 1;
+        END		
+
+		SET @newStatisticsId = SCOPE_IDENTITY();
+
+		SELECT * FROM dbo.[statistics] WHERE id = @newStatisticsId
+
+	COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END
+GO
+
+CREATE PROCEDURE UpdateStatistics
+	@sales DECIMAL(20,2),
+	@zaloOaId INT,
+	@accountId INT,
+	@ofDay DATETIMEOFFSET(7)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+	BEGIN TRANSACTION;
+
+		DECLARE @currentSales DECIMAL(20,2);
+
+		SELECT @currentSales = sales
+		FROM dbo.[statistics] WITH (UPDLOCK, ROWLOCK)
+		WHERE accountId = @accountId AND ofDay = @ofDay;
+
+		IF @currentSales IS NULL
+		BEGIN
+			ROLLBACK;
+			THROW 50001, 'Không tìm thấy statistics.', 1;
+		END;
+
+		UPDATE dbo.[statistics]
+		SET
+			sales = @currentSales + @sales,
+
+			orderAmount = orderAmount + 1,
+
+			averageSales =
+				CAST(@currentSales + @sales AS DECIMAL(20,2))
+				/ NULLIF(orderAmount + 1, 0),
+
+			averageOrderAmount =
+				CAST(orderAmount + 1 AS FLOAT) / NULLIF(2, 0),
+
+			mostMoneyOfOrder =
+				CASE
+					WHEN @currentSales > mostMoneyOfOrder
+						THEN @currentSales
+					ELSE mostMoneyOfOrder
+				END
+		WHERE accountId = @accountId AND ofDay = @ofDay
+		IF @@ROWCOUNT = 0
+		BEGIN
+			ROLLBACK;
+			THROW 50002, 'Cập nhật doanh số không thành công.', 2;
+		END;
+
+		SELECT * FROM dbo.[statistics] WHERE accountId = @accountId AND ofDay = @ofDay
+
+	COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END
+GO

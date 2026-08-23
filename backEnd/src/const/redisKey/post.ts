@@ -15,7 +15,7 @@ const isProduct = process.env.NODE_ENV === 'production';
 const prefix_cache_getPosts = {
     key: {
         main: isProduct ? 'cache_get_posts' : 'cache_get_posts_dev',
-        cache_keys: 'cache_get_posts_cache_keys',
+        cache_keys: isProduct ? 'cache_get_posts_cache_keys' : 'cache_get_posts_cache_keys_dev',
     },
     time: 60 * 5, // 5p
 };
@@ -23,7 +23,7 @@ const prefix_cache_getPosts = {
 const prefix_cache_getRegisterPosts = {
     key: {
         main: isProduct ? 'cache_get_registerPosts' : 'cache_get_registerPosts_dev',
-        cache_keys: 'cache_get_registerPosts_cache_keys',
+        cache_keys: isProduct ? 'cache_get_registerPosts_cache_keys' : 'cache_get_registerPosts_cache_keys_dev',
     },
     time: 60 * 5, // 5p
 };
