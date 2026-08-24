@@ -84,6 +84,10 @@ export class RabbitMQ {
     async close(): Promise<void> {
         if (this.connection) {
             await this.connection.close();
+            this.publishChannel = null;
+            this.consumerChannels.clear();
+            this.connection = undefined as any;
+            this.initPromise = null;
             my_log.withYellow('RabbitMQ connection closed.');
         }
     }
