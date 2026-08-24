@@ -2,9 +2,9 @@ import { rabbit_server } from '@src/connect';
 import { MessageZaloField } from '../type';
 import { VideoMessageBodyField } from '../../dataStruct/message_v1/body';
 
-rabbit_server.init();
-
 export async function sendMessage(queue: string, messageZalo: MessageZaloField) {
+    await rabbit_server.init();
+
     const channel = await rabbit_server.getPublishChannel();
 
     await channel.assertQueue(queue, { durable: true });
@@ -12,6 +12,8 @@ export async function sendMessage(queue: string, messageZalo: MessageZaloField) 
 }
 
 export async function sendHookData(queue: string, hookData: any) {
+    await rabbit_server.init();
+
     const channel = await rabbit_server.getPublishChannel();
 
     await channel.assertQueue(queue, { durable: true });
@@ -19,6 +21,8 @@ export async function sendHookData(queue: string, hookData: any) {
 }
 
 export async function sendStringMessage(queue: string, msg: string) {
+    await rabbit_server.init();
+
     const channel = await rabbit_server.getPublishChannel();
 
     await channel.assertQueue(queue, { durable: true });
@@ -26,6 +30,8 @@ export async function sendStringMessage(queue: string, msg: string) {
 }
 
 export async function sendVideoMessage(queue: string, videoMessageBody: VideoMessageBodyField) {
+    await rabbit_server.init();
+
     const channel = await rabbit_server.getPublishChannel();
 
     await channel.assertQueue(queue, { durable: true });

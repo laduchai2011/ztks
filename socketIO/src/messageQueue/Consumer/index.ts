@@ -5,9 +5,9 @@ import { MessageZaloField } from '../type';
 import { HookDataField, HookCallField } from '@src/dataStruct/zalo/hookData';
 import { VideoMessageBodyField } from '../../dataStruct/message_v1/body';
 
-rabbit_server.init();
-
 export async function consumeMessage(queue: string, callback: (messageZalo: MessageZaloField) => void) {
+    await rabbit_server.init();
+
     const channel = await rabbit_server.getConsumerChannel(queue);
 
     await channel.assertQueue(queue, { durable: true });
@@ -36,6 +36,8 @@ export async function consumeHookData(
     queue: string,
     callback: (data: HookDataField | HookCallField) => Promise<void> | void
 ) {
+    await rabbit_server.init();
+
     const channel = await rabbit_server.getConsumerChannel(queue);
 
     await channel.assertQueue(queue, { durable: true });
@@ -69,6 +71,8 @@ export async function consumeHookData(
 }
 
 export async function consumeStringMessage(queue: string, callback: (msg: string) => void) {
+    await rabbit_server.init();
+
     const channel = await rabbit_server.getConsumerChannel(queue);
 
     await channel.assertQueue(queue, { durable: true });
@@ -92,6 +96,8 @@ export async function consumeStringMessage(queue: string, callback: (msg: string
 }
 
 export async function consumeVideoMessage(queue: string, callback: (videoMessageBody: VideoMessageBodyField) => void) {
+    await rabbit_server.init();
+
     const channel = await rabbit_server.getConsumerChannel(queue);
 
     await channel.assertQueue(queue, { durable: true });

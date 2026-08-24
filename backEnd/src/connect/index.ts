@@ -16,8 +16,6 @@ const mssql_server = MSSQL_Server.getInstance();
 const redis_server = REDIS_Server.getInstance();
 const rabbit_server = RabbitMQ.getInstance();
 
-rabbit_server.init();
-
 const shutdown = async (signal: string) => {
     try {
         console.log(`Received ${signal}. Closing Redis...`);
