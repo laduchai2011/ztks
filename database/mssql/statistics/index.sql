@@ -11,7 +11,7 @@ CREATE TABLE [statistics] (
 	ofDay DATETIMEOFFSET(7) NOT NULL,
     createTime DATETIMEOFFSET(7) NOT NULL,
 
-	CONSTRAINT UQ_statistics_accountId_ofDay UNIQUE (accountId, ofDay),
+	CONSTRAINT UQ_statistics_accountId_zaloOaId_ofDay UNIQUE (accountId, zaloOaId, ofDay),
 
 	CONSTRAINT FK_statistics_ZaloOaId FOREIGN KEY (zaloOaId) REFERENCES zaloOa(id),
 	CONSTRAINT FK_statistics_AccountId FOREIGN KEY (accountId) REFERENCES account(id)

@@ -49,7 +49,7 @@ BEGIN
 
 		SELECT @currentSales = sales
 		FROM dbo.[statistics] WITH (UPDLOCK, ROWLOCK)
-		WHERE accountId = @accountId AND ofDay = @ofDay;
+		WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofDay = @ofDay;
 
 		IF @currentSales IS NULL
 		BEGIN
@@ -76,14 +76,14 @@ BEGIN
 						THEN @currentSales
 					ELSE mostMoneyOfOrder
 				END
-		WHERE accountId = @accountId AND ofDay = @ofDay
+		WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofDay = @ofDay;
 		IF @@ROWCOUNT = 0
 		BEGIN
 			ROLLBACK;
 			THROW 50002, 'Cập nhật doanh số không thành công.', 2;
 		END;
 
-		SELECT * FROM dbo.[statistics] WHERE accountId = @accountId AND ofDay = @ofDay
+		SELECT * FROM dbo.[statistics] WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofDay = @ofDay;
 
 	COMMIT TRANSACTION;
 	END TRY

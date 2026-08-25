@@ -143,6 +143,13 @@ app.use(`${apiString}/hello`, (req, res) => {
         const service_post = (await import('@src/services/post')).default;
         app.use(`${prefix}/service_post`, service_post);
     }
+
+    if (services.includes('statistics')) {
+        // const service_statistics = (await import('./services/statistics')).default;
+        // app.use(`${prefix}/service_statistics`, service_statistics);
+        const handleStatistics = (await import('./services/statistics/queue')).handleStatistics;
+        handleStatistics();
+    }
 })();
 
 app.listen(port, () => {
