@@ -1,7 +1,13 @@
 import { consumeStringMessage } from '@src/messageQueue/Consumer';
-import { AddSalesBodyField } from '@src/dataStruct/statistics/body';
+import {
+    AddSalesBodyField,
+    GetStatisticsOfDayBodyField,
+    CreateStatisticsBodyField,
+    UpdateStatisticsBodyField,
+} from '@src/dataStruct/statistics/body';
 import { getEnv } from '@src/mode';
 import { myEnv } from '@src/mode/type';
+import { getStatisticsOfDay } from './handle/GetStatisticsOfDay';
 import { createStatistics } from './handle/CreateStatistics';
 import { updateStatistics } from './handle/UpdateStatistics';
 
@@ -9,8 +15,37 @@ const prefix = getEnv() === myEnv.Dev ? '_dev' : '';
 
 function handleStatistics() {
     consumeStringMessage(`statistics${prefix}`, async (msg) => {
-        const addSalesBody = JSON.parse(msg) as AddSalesBodyField;
+        const _msg = JSON.parse(msg) as AddSalesBodyField;
+        const addSalesBody: AddSalesBodyField = { ..._msg, ofDay: new Date(_msg.ofDay) };
         console.log('consumeStringMessage', addSalesBody);
+
+        const getStatisticsOfDayBody: GetStatisticsOfDayBodyField = {
+            ofDay: addSalesBody.ofDay,
+            zaloOaId: addSalesBody.zaloOaId,
+            accountId: addSalesBody.accountId,
+        };
+
+        const r_get = await getStatisticsOfDay(getStatisticsOfDayBody);
+        console.log('getStatisticsOfDay', r_get);
+        if (r_get) {
+            const updateStatisticsBody: UpdateStatisticsBodyField = {
+                sales: addSalesBody.sales,
+                zaloOaId: addSalesBody.zaloOaId,
+                accountId: addSalesBody.accountId,
+                ofDay: addSalesBody.ofDay,
+            };
+
+            updateStatistics(updateStatisticsBody);
+        } else {
+            const createStatisticsBody: CreateStatisticsBodyField = {
+                sales: addSalesBody.sales,
+                zaloOaId: addSalesBody.zaloOaId,
+                accountId: addSalesBody.accountId,
+                ofDay: addSalesBody.ofDay,
+            };
+
+            createStatistics(createStatisticsBody);
+        }
     });
 }
 

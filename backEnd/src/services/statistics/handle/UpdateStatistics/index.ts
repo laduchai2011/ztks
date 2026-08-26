@@ -12,21 +12,21 @@ export async function updateStatistics(body: UpdateStatisticsBodyField) {
     if (connection_pool) {
         mutateDB.set_connection_pool(connection_pool);
     } else {
-        console.error('Statistics -> handle -> UpdateStatistics', 'Kết nối cơ sở dữ liệu không thành công !');
+        console.error('Statistics -> handle -> updateStatistics', 'Kết nối cơ sở dữ liệu không thành công !');
         return;
     }
 
     try {
         const result = await mutateDB.run();
         if (result?.recordset.length && result?.recordset.length > 0) {
-            console.log('Statistics -> handle -> UpdateStatistics', 'Cập nhật doanh số thành công !');
+            console.log('Statistics -> handle -> updateStatistics', 'Cập nhật doanh số thành công !');
             return;
         } else {
-            console.error('Statistics -> handle -> UpdateStatistics', 'Cập nhật doanh số thất bại !');
+            console.error('Statistics -> handle -> updateStatistics', 'Cập nhật doanh số thất bại !');
             return;
         }
     } catch (error) {
-        console.error('Statistics -> handle -> UpdateStatistics', error);
+        console.error('Statistics -> handle -> updateStatistics', error);
         return;
     }
 }

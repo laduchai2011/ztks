@@ -128,7 +128,6 @@ class Handle_UpdateOrder {
             const result = await mutateDB.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
                 const addSalesBody = result.recordsets[1][0];
-                console.log('addSalesBody', addSalesBody);
                 sendStringMessage(`statistics${prefix}`, JSON.stringify(addSalesBody));
                 const rData = result.recordset[0];
                 myResponse.message = 'Cập nhật đơn hàng thành công !';

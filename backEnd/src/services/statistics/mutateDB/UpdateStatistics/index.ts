@@ -24,7 +24,7 @@ class MutateDB_UpdateStatistics {
                     .input('sales', sql.Decimal(20, 2), this._updateStatisticsBody.sales)
                     .input('zaloOaId', sql.Int, this._updateStatisticsBody.zaloOaId)
                     .input('accountId', sql.Int, this._updateStatisticsBody.accountId)
-                    .input('ofDay', sql.DateTimeOffset, this._updateStatisticsBody.ofDay)
+                    .input('ofDay', sql.DateTimeOffset(7), this._updateStatisticsBody.ofDay)
                     .execute('UpdateStatistics');
 
                 return result;

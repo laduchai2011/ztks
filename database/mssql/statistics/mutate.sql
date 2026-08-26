@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE CreateStatistics
+﻿ALTER PROCEDURE CreateStatistics
 	@sales DECIMAL(20,2),
 	@zaloOaId INT,
 	@accountId INT,

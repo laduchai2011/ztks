@@ -26,8 +26,8 @@ BEGIN
 	END CATCH
 END
 
-CREATE PROCEDURE GetStatisticsOfDay
-    @ofDay DATETIMEOFFSET(7) = NULL,
+ALTER PROCEDURE GetStatisticsOfDay
+    @ofDay DATETIMEOFFSET(7),
 	@zaloOaId INT,
 	@accountId INT
 AS
