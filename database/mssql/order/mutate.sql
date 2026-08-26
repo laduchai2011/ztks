@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE CreateOrder
+﻿ALTER PROCEDURE CreateOrder
 	@uuid NVARCHAR(255),
 	@label NVARCHAR(255),
 	@content NVARCHAR(MAX),
@@ -34,7 +34,22 @@ BEGIN
 
 		SET @newOrderId = SCOPE_IDENTITY();
 
+		DECLARE @adminAccountId INT;
+		DECLARE @zaloOaId INT;
+		DECLARE @createTimeOfOrder DATETIMEOFFSET(7);
+
+		SELECT @adminAccountId = addedById FROM dbo.accountInformation WHERE accountId = @accountId
+		IF @chatRoomId IS NULL THROW 50004, N'Không tìm thấy adminAccountId .', 4;
+
+		SELECT @zaloOaId = id FROM dbo.zaloOa WHERE accountId = @adminAccountId
+		IF @zaloOaId IS NULL THROW 50005, N'Không tìm thấy zaloOaId .', 5;
+
+		SELECT @createTimeOfOrder = CONVERT(VARCHAR(10), createTime, 23) FROM dbo.[order] WHERE id = @newOrderId;
+		IF @createTimeOfOrder IS NULL THROW 50006, N'Không tìm thấy createTimeOfOrder .', 6;
+
 		SELECT * FROM dbo.[order] WHERE id = @newOrderId;
+
+		SELECT 0 AS sales, @zaloOaId AS zaloOaId, @adminAccountId AS accountId, @createTimeOfOrder as ofDay;
 
 		COMMIT TRANSACTION;
 	END TRY

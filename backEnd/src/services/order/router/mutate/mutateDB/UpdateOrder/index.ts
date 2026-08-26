@@ -1,10 +1,10 @@
 import sql from 'mssql';
 import { OrderField } from '@src/dataStruct/order';
 import { UpdateOrderBodyField } from '@src/dataStruct/order/body';
-import { AddSalesBodyField } from '@src/dataStruct/statistics/body';
+import { UpdateStatisticsWithOldOrderBodyField } from '@src/dataStruct/statistics/body';
 
 type UpdateOrderResult = {
-    recordsets: [OrderField[], AddSalesBodyField[]];
+    recordsets: [OrderField[], UpdateStatisticsWithOldOrderBodyField[]];
     recordset: OrderField[];
 };
 

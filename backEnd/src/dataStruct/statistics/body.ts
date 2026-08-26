@@ -1,4 +1,5 @@
 export interface AddSalesBodyField {
+    isNew: boolean;
     sales: number;
     zaloOaId: number;
     accountId: number;
@@ -18,7 +19,14 @@ export interface CreateStatisticsBodyField {
     ofDay: Date;
 }
 
-export interface UpdateStatisticsBodyField {
+export interface UpdateStatisticsWithNewOrderBodyField {
+    sales: number;
+    zaloOaId: number;
+    accountId: number;
+    ofDay: Date;
+}
+
+export interface UpdateStatisticsWithOldOrderBodyField {
     sales: number;
     zaloOaId: number;
     accountId: number;

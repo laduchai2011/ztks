@@ -33,7 +33,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE UpdateStatistics
+CREATE PROCEDURE UpdateStatisticsWithNewOrder
 	@sales DECIMAL(20,2),
 	@zaloOaId INT,
 	@accountId INT,
@@ -69,6 +69,63 @@ BEGIN
 
 			averageOrderAmount =
 				CAST(orderAmount + 1 AS FLOAT) / NULLIF(2, 0),
+
+			mostMoneyOfOrder =
+				CASE
+					WHEN @currentSales > mostMoneyOfOrder
+						THEN @currentSales
+					ELSE mostMoneyOfOrder
+				END
+		WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofDay = @ofDay;
+		IF @@ROWCOUNT = 0
+		BEGIN
+			ROLLBACK;
+			THROW 50002, 'Cập nhật doanh số không thành công.', 2;
+		END;
+
+		SELECT * FROM dbo.[statistics] WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofDay = @ofDay;
+
+	COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END
+GO
+
+CREATE PROCEDURE UpdateStatisticsWithOldOrder
+	@sales DECIMAL(20,2),
+	@zaloOaId INT,
+	@accountId INT,
+	@ofDay DATETIMEOFFSET(7)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+	BEGIN TRANSACTION;
+
+		DECLARE @currentSales DECIMAL(20,2);
+
+		SELECT @currentSales = sales
+		FROM dbo.[statistics] WITH (UPDLOCK, ROWLOCK)
+		WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofDay = @ofDay;
+
+		IF @currentSales IS NULL
+		BEGIN
+			ROLLBACK;
+			THROW 50001, 'Không tìm thấy statistics.', 1;
+		END;
+
+		UPDATE dbo.[statistics]
+		SET
+			sales = @currentSales + @sales,
+
+			averageSales =
+				CAST(@currentSales + @sales AS DECIMAL(20,2))
+				/ NULLIF(orderAmount + 1, 0),
 
 			mostMoneyOfOrder =
 				CASE

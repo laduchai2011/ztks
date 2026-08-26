@@ -3,13 +3,15 @@ import {
     AddSalesBodyField,
     GetStatisticsOfDayBodyField,
     CreateStatisticsBodyField,
-    UpdateStatisticsBodyField,
+    UpdateStatisticsWithNewOrderBodyField,
+    UpdateStatisticsWithOldOrderBodyField,
 } from '@src/dataStruct/statistics/body';
 import { getEnv } from '@src/mode';
 import { myEnv } from '@src/mode/type';
 import { getStatisticsOfDay } from './handle/GetStatisticsOfDay';
 import { createStatistics } from './handle/CreateStatistics';
-import { updateStatistics } from './handle/UpdateStatistics';
+import { updateStatisticsWithNewOrder } from './handle/UpdateStatisticsWithNewOrder';
+import { updateStatisticsWithOldOrder } from './handle/UpdateStatisticsWithOldOrder';
 
 const prefix = getEnv() === myEnv.Dev ? '_dev' : '';
 
@@ -28,14 +30,25 @@ function handleStatistics() {
         const r_get = await getStatisticsOfDay(getStatisticsOfDayBody);
         console.log('getStatisticsOfDay', r_get);
         if (r_get) {
-            const updateStatisticsBody: UpdateStatisticsBodyField = {
-                sales: addSalesBody.sales,
-                zaloOaId: addSalesBody.zaloOaId,
-                accountId: addSalesBody.accountId,
-                ofDay: addSalesBody.ofDay,
-            };
+            if (addSalesBody.isNew) {
+                const updateStatisticsWithNewOrderBody: UpdateStatisticsWithNewOrderBodyField = {
+                    sales: addSalesBody.sales,
+                    zaloOaId: addSalesBody.zaloOaId,
+                    accountId: addSalesBody.accountId,
+                    ofDay: addSalesBody.ofDay,
+                };
 
-            updateStatistics(updateStatisticsBody);
+                updateStatisticsWithNewOrder(updateStatisticsWithNewOrderBody);
+            } else {
+                const updateStatisticsWithOldOrderBody: UpdateStatisticsWithOldOrderBodyField = {
+                    sales: addSalesBody.sales,
+                    zaloOaId: addSalesBody.zaloOaId,
+                    accountId: addSalesBody.accountId,
+                    ofDay: addSalesBody.ofDay,
+                };
+
+                updateStatisticsWithOldOrder(updateStatisticsWithOldOrderBody);
+            }
         } else {
             const createStatisticsBody: CreateStatisticsBodyField = {
                 sales: addSalesBody.sales,

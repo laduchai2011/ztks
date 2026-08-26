@@ -1,6 +1,12 @@
 import sql from 'mssql';
 import { OrderField } from '@src/dataStruct/order';
 import { CreateOrderBodyField } from '@src/dataStruct/order/body';
+import { UpdateStatisticsWithNewOrderBodyField } from '@src/dataStruct/statistics/body';
+
+type CreateOrderResult = {
+    recordsets: [OrderField[], UpdateStatisticsWithNewOrderBodyField[]];
+    recordset: OrderField[];
+};
 
 class MutateDB_CreateOrder {
     private _connectionPool: sql.ConnectionPool | undefined;
@@ -16,7 +22,7 @@ class MutateDB_CreateOrder {
         this._createOrderBody = createOrderBody;
     }
 
-    async run(): Promise<sql.IProcedureResult<OrderField> | undefined> {
+    async run(): Promise<CreateOrderResult | undefined> {
         if (this._connectionPool !== undefined && this._createOrderBody !== undefined) {
             try {
                 const result = await this._connectionPool
@@ -30,7 +36,7 @@ class MutateDB_CreateOrder {
                     .input('accountId', sql.Int, this._createOrderBody.accountId)
                     .execute('CreateOrder');
 
-                return result;
+                return result as unknown as CreateOrderResult;
             } catch (error) {
                 console.error(error);
             }
