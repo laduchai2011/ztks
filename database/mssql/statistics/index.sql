@@ -4,7 +4,6 @@ CREATE TABLE [statistics] (
 	averageSales DECIMAL(20,2) NOT NULL, 
 	orderAmount INT NOT NULL,
 	averageOrderAmount FLOAT NOT NULL, 
-	mostMoneyOfOrder DECIMAL(20,2) NOT NULL, 
 	isDelete BIT NOT NULL DEFAULT 0,
 	zaloOaId INT NOT NULL,
 	accountId INT NOT NULL,

@@ -12,8 +12,8 @@ BEGIN
 
 		DECLARE @newStatisticsId INT;
 
-		INSERT INTO dbo.[statistics] (sales, averageSales, orderAmount, averageOrderAmount, mostMoneyOfOrder, zaloOaId, accountId, ofDay, createTime)
-        VALUES (@sales, @sales, 1, 1, @sales, @zaloOaId, @accountId, @ofDay, SYSDATETIMEOFFSET());
+		INSERT INTO dbo.[statistics] (sales, averageSales, orderAmount, averageOrderAmount, zaloOaId, accountId, ofDay, createTime)
+        VALUES (@sales, @sales, 1, 1, @zaloOaId, @accountId, @ofDay, SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50001, 'Tạo doanh số không thành công.', 1;
@@ -33,7 +33,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE UpdateStatisticsWithNewOrder
+ALTER PROCEDURE UpdateStatisticsWithNewOrder
 	@sales DECIMAL(20,2),
 	@zaloOaId INT,
 	@accountId INT,
@@ -68,14 +68,8 @@ BEGIN
 				/ NULLIF(orderAmount + 1, 0),
 
 			averageOrderAmount =
-				CAST(orderAmount + 1 AS FLOAT) / NULLIF(2, 0),
+				CAST(orderAmount + 1 AS FLOAT) / NULLIF(2, 0)
 
-			mostMoneyOfOrder =
-				CASE
-					WHEN @currentSales > mostMoneyOfOrder
-						THEN @currentSales
-					ELSE mostMoneyOfOrder
-				END
 		WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofDay = @ofDay;
 		IF @@ROWCOUNT = 0
 		BEGIN
@@ -95,7 +89,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE UpdateStatisticsWithOldOrder
+ALTER PROCEDURE UpdateStatisticsWithOldOrder
 	@sales DECIMAL(20,2),
 	@zaloOaId INT,
 	@accountId INT,
@@ -125,14 +119,8 @@ BEGIN
 
 			averageSales =
 				CAST(@currentSales + @sales AS DECIMAL(20,2))
-				/ NULLIF(orderAmount + 1, 0),
+				/ NULLIF(orderAmount, 0)
 
-			mostMoneyOfOrder =
-				CASE
-					WHEN @currentSales > mostMoneyOfOrder
-						THEN @currentSales
-					ELSE mostMoneyOfOrder
-				END
 		WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofDay = @ofDay;
 		IF @@ROWCOUNT = 0
 		BEGIN

@@ -161,7 +161,7 @@ class Handle_CreateOrder {
         try {
             const result = await mutateDB.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
-                const addSalesBody: AddSalesBodyField = { ...result.recordsets[1][0], isNew: false };
+                const addSalesBody: AddSalesBodyField = { ...result.recordsets[1][0], isNew: true };
                 sendStringMessage(`statistics${prefix}`, JSON.stringify(addSalesBody));
                 const rdata = result.recordset[0];
                 // produceTask<OrderField>('addOrder-to-provider', data);

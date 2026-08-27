@@ -28,7 +28,7 @@ function handleStatistics() {
         };
 
         const r_get = await getStatisticsOfDay(getStatisticsOfDayBody);
-        console.log('getStatisticsOfDay', r_get);
+
         if (r_get) {
             if (addSalesBody.isNew) {
                 const updateStatisticsWithNewOrderBody: UpdateStatisticsWithNewOrderBodyField = {

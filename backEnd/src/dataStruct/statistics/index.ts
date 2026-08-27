@@ -11,3 +11,8 @@ export interface StatisticsField {
     ofDay: Date;
     createTime: Date;
 }
+
+export interface PagedStatisticsField {
+    items: StatisticsField[];
+    totalCount: number;
+}

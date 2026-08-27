@@ -145,8 +145,8 @@ app.use(`${apiString}/hello`, (req, res) => {
     }
 
     if (services.includes('statistics')) {
-        // const service_statistics = (await import('./services/statistics')).default;
-        // app.use(`${prefix}/service_statistics`, service_statistics);
+        const service_statistics = (await import('./services/statistics')).default;
+        app.use(`${prefix}/service_statistics`, service_statistics);
         const handleStatistics = (await import('./services/statistics/queue')).handleStatistics;
         handleStatistics();
     }

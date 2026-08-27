@@ -1,6 +1,6 @@
 ﻿ALTER PROCEDURE GetStatistics
-	@fromDate DATETIMEOFFSET(7) = NULL,
-    @toDate DATETIMEOFFSET(7) = NULL,
+	@fromDate DATETIMEOFFSET(7),
+    @toDate DATETIMEOFFSET(7),
 	@zaloOaId INT,
 	@accountId INT
 AS

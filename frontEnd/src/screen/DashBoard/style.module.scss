@@ -8,13 +8,13 @@
 
         > .main1 {
             margin-left: 200px;
-            width: 65%;
+            width: 70%;
             background-color: white;
         }
 
         > .main2 {
             margin-left: 50px;
-            width: 25%;
+            flex: 1;
             background-color: white;
         }
     }

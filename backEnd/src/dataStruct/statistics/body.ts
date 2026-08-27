@@ -6,6 +6,13 @@ export interface AddSalesBodyField {
     ofDay: Date;
 }
 
+export interface GetStatisticsBodyField {
+    fromDate: Date;
+    toDate: Date;
+    zaloOaId: number;
+    accountId: number;
+}
+
 export interface GetStatisticsOfDayBodyField {
     ofDay: Date;
     zaloOaId: number;
