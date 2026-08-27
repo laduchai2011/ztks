@@ -3,7 +3,6 @@ import AppReducer from '@src/redux/slice/App';
 import Home1Reducer from '@src/redux/slice/Home1';
 import MessageV1Reducer from '@src/redux/slice/MessageV1';
 import ManageMembersReducer from '@src/redux/slice/ManageMembers';
-// import MemberReceiveMessageReducer from '@src/redux/slice/MemberReceiveMessage';
 import OaReducer from '@src/redux/slice/Oa';
 import OaSettingReducer from '@src/redux/slice/OaSetting';
 import SupportRoomReducer from '@src/redux/slice/SupportRoom';
@@ -22,6 +21,7 @@ import BankReducer from '@src/redux/slice/Bank';
 import PostReducer from '@src/redux/slice/Post';
 import RegisterPostReducer from '@src/redux/slice/RegisterPost';
 import LeaveReducer from '@src/redux/slice/Leave';
+import DashBoardReducer from '@src/screen/DashBoard';
 import { accountRTK } from './query/accountRTK';
 import { callRTK } from './query/callRTK';
 import { callAgentRTK } from './query/callAgentRTK';
@@ -36,6 +36,7 @@ import { walletRTK } from './query/walletRTK';
 import { voucherRTK } from './query/voucherRTK';
 import { bankRTK } from './query/bankRTK';
 import { postRTK } from './query/postRTK';
+import { statisticsRTK } from './query/statisticsRTK';
 
 export const store = configureStore({
     reducer: {
@@ -44,7 +45,6 @@ export const store = configureStore({
         Home1Slice: Home1Reducer,
         MessageV1Slice: MessageV1Reducer,
         ManageMembersSlice: ManageMembersReducer,
-        // MemberReceiveMessageSlice: MemberReceiveMessageReducer,
         OaSlice: OaReducer,
         OaSettingSlice: OaSettingReducer,
         SupportRoomSlice: SupportRoomReducer,
@@ -63,6 +63,7 @@ export const store = configureStore({
         PostSlice: PostReducer,
         RegisterPostSlice: RegisterPostReducer,
         LeaveSlice: LeaveReducer,
+        DashBoardSlice: DashBoardReducer,
         [accountRTK.reducerPath]: accountRTK.reducer,
         [callRTK.reducerPath]: callRTK.reducer,
         [callAgentRTK.reducerPath]: callAgentRTK.reducer,
@@ -77,6 +78,7 @@ export const store = configureStore({
         [voucherRTK.reducerPath]: voucherRTK.reducer,
         [bankRTK.reducerPath]: bankRTK.reducer,
         [postRTK.reducerPath]: postRTK.reducer,
+        [statisticsRTK.reducerPath]: statisticsRTK.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
@@ -93,7 +95,8 @@ export const store = configureStore({
             walletRTK.middleware,
             voucherRTK.middleware,
             bankRTK.middleware,
-            postRTK.middleware
+            postRTK.middleware,
+            statisticsRTK.middleware
         ),
 });
 

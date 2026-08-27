@@ -19,12 +19,14 @@ const OaList = () => {
     );
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.Home1Slice.selectedOa);
+
     const list_element = useRef<HTMLDivElement | null>(null);
     const [isShow, setIsShow] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1);
     const size: number = 5;
     const [zaloOaList, setZaloOaList] = useState<ZaloOaField[]>([]);
     const [total, setTotal] = useState<number>(0);
+
     const [getZaloOaListWith2Fk] = useLazyGetZaloOaListWith2FkQuery();
 
     useEffect(() => {
