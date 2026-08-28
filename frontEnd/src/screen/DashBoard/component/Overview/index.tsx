@@ -1,46 +1,34 @@
 import { memo } from 'react';
 import style from './style.module.scss';
+import { useSelector } from 'react-redux';
+import { RootState } from '@src/redux';
 import { formatMoney, formatNumber } from '@src/utility/string';
-import { FaLongArrowAltDown, FaLongArrowAltUp } from 'react-icons/fa';
 import MyChart from './component/MyChart';
+import { StatisticsTotalField } from '@src/dataStruct/statistics';
 
 const Overview = () => {
+    const statisticsTotal: StatisticsTotalField = useSelector(
+        (state: RootState) => state.DashBoardSlice.statisticsTotal
+    );
+
     return (
         <div className={style.parent}>
             <div>
                 <div>
                     <div className={style.title}>Tổng doanh số</div>
                     <div className={style.number}>
-                        <div>{formatMoney(10000000)}</div>
+                        <div>{formatMoney(statisticsTotal.sales)}</div>
                         <div>
-                            <div>
-                                <FaLongArrowAltDown color="red" />
-                            </div>
-                            <div>{formatMoney(10000000)}</div>
+                            <div>{formatMoney(statisticsTotal.averageSales)}</div>
                         </div>
                     </div>
                 </div>
                 <div>
                     <div className={style.title}>Tổng đơn hàng</div>
                     <div className={style.number}>
-                        <div>{formatNumber(1000)}</div>
+                        <div>{formatNumber(statisticsTotal.orderAmount)}</div>
                         <div>
-                            <div>
-                                <FaLongArrowAltDown color="red" />
-                            </div>
-                            <div>{formatNumber(1000)}</div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div className={style.title}>Đơn hàng cao nhất</div>
-                    <div className={style.number}>
-                        <div>{formatMoney(10000000)}</div>
-                        <div>
-                            <div>
-                                <FaLongArrowAltDown color="red" />
-                            </div>
-                            <div>{formatMoney(10000000)}</div>
+                            <div>{formatNumber(statisticsTotal.averageOrderAmount)}</div>
                         </div>
                     </div>
                 </div>

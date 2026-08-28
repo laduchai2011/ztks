@@ -21,7 +21,7 @@ import BankReducer from '@src/redux/slice/Bank';
 import PostReducer from '@src/redux/slice/Post';
 import RegisterPostReducer from '@src/redux/slice/RegisterPost';
 import LeaveReducer from '@src/redux/slice/Leave';
-import DashBoardReducer from '@src/screen/DashBoard';
+import DashBoardReducer from '@src/redux/slice/DashBoard';
 import { accountRTK } from './query/accountRTK';
 import { callRTK } from './query/callRTK';
 import { callAgentRTK } from './query/callAgentRTK';

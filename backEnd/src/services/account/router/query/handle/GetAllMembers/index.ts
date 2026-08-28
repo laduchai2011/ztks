@@ -72,7 +72,6 @@ class Handle_GetAllMembers {
         try {
             const result = await queryDB_getAllMembers.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
-                console.log(22222, result.recordset);
                 myResponse.data = result?.recordset;
                 myResponse.message = 'Lấy tất cả thành viên thành công !';
                 myResponse.isSuccess = true;

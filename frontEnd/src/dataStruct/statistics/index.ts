@@ -16,3 +16,11 @@ export interface PagedStatisticsField {
     items: StatisticsField[];
     totalCount: number;
 }
+
+export interface StatisticsTotalField {
+    sales: number;
+    averageSales: number;
+    orderAmount: number;
+    averageOrderAmount: number;
+    ofDay: string;
+}

@@ -8,10 +8,15 @@
 
     > div {
         @include center-of-row;
-        justify-content: space-between;
+        justify-content: flex-end;
         width: 100%;
+        position: relative;
 
         > div:nth-child(1) {
+            position: absolute;
+            top: 0px;
+            left: 0;
+
             > .selected {
                 @include center-of-row;
                 height: 100%;

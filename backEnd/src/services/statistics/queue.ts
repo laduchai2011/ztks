@@ -19,7 +19,6 @@ function handleStatistics() {
     consumeStringMessage(`statistics${prefix}`, async (msg) => {
         const _msg = JSON.parse(msg) as AddSalesBodyField;
         const addSalesBody: AddSalesBodyField = { ..._msg, ofDay: new Date(_msg.ofDay) };
-        console.log('consumeStringMessage', addSalesBody);
 
         const getStatisticsOfDayBody: GetStatisticsOfDayBodyField = {
             ofDay: addSalesBody.ofDay,

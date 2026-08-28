@@ -11,12 +11,19 @@ import { SEARCH } from '@src/const/text';
 import { useLazyGetStatisticsQuery } from '@src/redux/query/statisticsRTK';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { setData_toastMessage, set_isLoading, set_selectedOa } from '@src/redux/slice/DashBoard';
+import {
+    setData_toastMessage,
+    set_isLoading,
+    set_selectedOa,
+    set_statisticsTotal,
+    set_statistics,
+} from '@src/redux/slice/DashBoard';
 import { useLazyGetZaloOaListWith2FkQuery } from '@src/redux/query/zaloRTK';
 import { OA_KEY } from '@src/const/key';
 import { getCookie, setCookie } from '@src/utility/cookie';
 import { SEE_MORE } from '@src/const/text';
 import { messageType_enum } from '@src/component/ToastMessage/type';
+import { StatisticsField } from '@src/dataStruct/statistics';
 
 const Filter = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -24,7 +31,7 @@ const Filter = () => {
         (state: RootState) => state.AppSlice.accountInformation
     );
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
-    const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.Home1Slice.selectedOa);
+    const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.DashBoardSlice.selectedOa);
 
     const list_element = useRef<HTMLDivElement | null>(null);
     const [fromDate, setFromDate] = useState<Dayjs | null>(dayjs());
@@ -34,15 +41,16 @@ const Filter = () => {
     const size: number = 5;
     const [zaloOaList, setZaloOaList] = useState<ZaloOaField[]>([]);
     const [total, setTotal] = useState<number>(0);
+    const [statistics, setStatistics] = useState<StatisticsField[]>([]);
 
     const [getStatistics] = useLazyGetStatisticsQuery();
     const [getZaloOaListWith2Fk] = useLazyGetZaloOaListWith2FkQuery();
 
-    useEffect(() => {
-        if (fromDate) {
-            console.log('dashboard filter', fromDate.format('YYYY-MM-DD'));
-        }
-    }, [fromDate]);
+    // useEffect(() => {
+    //     if (fromDate) {
+    //         console.log('dashboard filter', fromDate.format('YYYY-MM-DD'));
+    //     }
+    // }, [fromDate]);
 
     useEffect(() => {
         if (!accountInformation || !zaloApp) return;
@@ -70,7 +78,7 @@ const Filter = () => {
                 dispatch(
                     setData_toastMessage({
                         type: messageType_enum.ERROR,
-                        message: 'Lấy danh sách zalo-oa KHÔNG thành công !',
+                        message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
@@ -78,6 +86,97 @@ const Filter = () => {
                 dispatch(set_isLoading(false));
             });
     }, [dispatch, accountInformation, getZaloOaListWith2Fk, page, zaloApp]);
+
+    useEffect(() => {
+        const selected_oa_cookie = getCookie(OA_KEY.SELECTED_OA);
+        if (!selected_oa_cookie) return;
+        const selected_oa_js = JSON.parse(selected_oa_cookie) as ZaloOaField;
+        let isExist: boolean = false;
+
+        for (let i: number = 0; i < zaloOaList.length; i++) {
+            if (zaloOaList[i].id === selected_oa_js.id) {
+                isExist = true;
+                break;
+            }
+        }
+
+        if (isExist) {
+            dispatch(set_selectedOa(selected_oa_js));
+        }
+    }, [dispatch, zaloOaList]);
+
+    useEffect(() => {
+        if (!list_element.current) return;
+        const listElement = list_element.current;
+
+        if (isShowOa) {
+            listElement.classList.add(style.show);
+        } else {
+            listElement.classList.remove(style.show);
+        }
+    }, [isShowOa]);
+
+    const handleSearch = () => {
+        if (!selectedOa) return;
+        if (!accountInformation) return;
+        if (!fromDate) return;
+        if (!toDate) return;
+
+        getStatistics({
+            fromDate: new Date(fromDate.format('YYYY-MM-DD')).toString(),
+            toDate: new Date(toDate.format('YYYY-MM-DD')).toString(),
+            zaloOaId: selectedOa.id,
+            accountId: accountInformation.addedById || -1,
+        })
+            .then((res) => {
+                const resData = res.data;
+                if (resData?.isSuccess && resData.data) {
+                    setStatistics(resData.data);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                dispatch(
+                    setData_toastMessage({
+                        type: messageType_enum.ERROR,
+                        message: 'Đã có lỗi xảy ra !',
+                    })
+                );
+            });
+    };
+
+    useEffect(() => {
+        if (!statistics) return;
+
+        dispatch(set_statistics(statistics));
+
+        let sales: number = 0;
+        let averageSales: number = 0;
+        let orderAmount: number = 0;
+        let averageOrderAmount: number = 0;
+        let ofDay: string = '';
+        for (let i: number = 0; i < statistics.length; i++) {
+            sales = sales + statistics[i].sales;
+
+            orderAmount = orderAmount + statistics[i].orderAmount;
+            // averageOrderAmount = averageOrderAmount + statistics[i].averageOrderAmount;
+
+            ofDay = statistics[i].ofDay.toString();
+        }
+
+        averageSales = sales / orderAmount;
+        averageOrderAmount = orderAmount / 2;
+
+        dispatch(
+            set_statisticsTotal({
+                sales: sales,
+                averageSales: averageSales,
+                orderAmount: orderAmount,
+                averageOrderAmount: averageOrderAmount,
+                ofDay: ofDay,
+            })
+        );
+    }, [dispatch, statistics]);
 
     const handleShowDown = () => {
         setIsShowOa(true);
@@ -141,7 +240,9 @@ const Filter = () => {
                             }}
                         />
                     </LocalizationProvider>
-                    <div className={style.searchBtn}>{SEARCH}</div>
+                    <div className={style.searchBtn} onClick={() => handleSearch()}>
+                        {SEARCH}
+                    </div>
                 </div>
             </div>
         </div>

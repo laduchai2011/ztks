@@ -41,7 +41,7 @@ const DashBoard = () => {
                     <Filter />
                     <Overview />
                 </div>
-                <div className={style.main2}>1</div>
+                {/* <div className={style.main2}>1</div> */}
             </div>
             <div>
                 <MyToastMessage />

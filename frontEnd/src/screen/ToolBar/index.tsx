@@ -1,15 +1,26 @@
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@src/redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@src/redux';
 import { avatarnull } from '@src/utility/string';
+import { handleSrcImage } from '@src/utility/string';
+import { AccountField } from '@src/dataStruct/account';
 
 const ToolBar = () => {
+    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
+
+    const [avatarUrl, setAvatarUrl] = useState<string>(avatarnull);
+
+    useEffect(() => {
+        const avatarUrl_ = account?.avatar ? handleSrcImage(account.avatar) : avatarnull;
+        setAvatarUrl(avatarUrl_);
+    }, [account]);
+
     return (
         <div className={style.parent}>
             <div className={style.logoZtks}>
-                <img src={avatarnull} alt="logoZtks" />
+                <img src={handleSrcImage('logo.jpg')} alt="logoZtks" />
             </div>
             <div className={style.options}>
                 <div className={style.selected}>Dash board</div>
@@ -17,7 +28,7 @@ const ToolBar = () => {
                 <div>Hỗ trợ</div>
             </div>
             <div className={style.avatar}>
-                <img src={avatarnull} alt="logoZtks" />
+                <img src={avatarUrl} alt="logoZtks" />
             </div>
         </div>
     );

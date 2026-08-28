@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { PagedStatisticsField } from '@src/dataStruct/statistics';
+import { StatisticsField } from '@src/dataStruct/statistics';
 import { GetStatisticsBodyField } from '@src/dataStruct/statistics/body';
 import { STATISTICS_API } from '@src/const/api/statistics';
 import { MyResponse } from '@src/dataStruct/response';
@@ -17,7 +17,7 @@ export const statisticsRTK = createApi({
     }),
     tagTypes: ['Voucer'],
     endpoints: (builder) => ({
-        getStatistics: builder.query<MyResponse<PagedStatisticsField>, GetStatisticsBodyField>({
+        getStatistics: builder.query<MyResponse<StatisticsField[]>, GetStatisticsBodyField>({
             query: (body) => ({
                 url: STATISTICS_API.GET_STATISTICS,
                 method: 'POST',

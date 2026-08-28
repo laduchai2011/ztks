@@ -1,7 +1,7 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { StatisticsField, PagedStatisticsField } from '@src/dataStruct/statistics';
+import { StatisticsField } from '@src/dataStruct/statistics';
 import { GetStatisticsBodyField } from '@src/dataStruct/statistics/body';
 import QueryDB_GetStatistics from '../../queryDB/GetStatistics';
 
@@ -15,9 +15,9 @@ class Handle_GetStatistics {
     main = async (req: Request<any, any, GetStatisticsBodyField>, res: Response) => {
         const getStatisticsBody = req.body;
 
-        const myResponse: MyResponse<PagedStatisticsField> = {
+        const myResponse: MyResponse<StatisticsField[]> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_GetPosts-main)',
+            message: 'Bắt đầu (Handle_GetStatistics-main)',
         };
 
         const queryDB = new QueryDB_GetStatistics();
@@ -34,11 +34,8 @@ class Handle_GetStatistics {
 
         try {
             const result = await queryDB.run();
-            if (result?.recordset) {
-                const rows: StatisticsField[] = result.recordset;
-                const paged: PagedStatisticsField = { items: rows, totalCount: result.recordsets[1][0].totalCount };
-
-                myResponse.data = paged;
+            if (result?.recordset.length && result?.recordset.length > 0) {
+                myResponse.data = result.recordset;
                 myResponse.message = 'Lấy thống kê thành công !';
                 myResponse.isSuccess = true;
                 res.status(200).json(myResponse);

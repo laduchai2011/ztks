@@ -7,8 +7,8 @@ export interface AddSalesBodyField {
 }
 
 export interface GetStatisticsBodyField {
-    fromDate: Date;
-    toDate: Date;
+    fromDate: string;
+    toDate: string;
     zaloOaId: number;
     accountId: number;
 }
