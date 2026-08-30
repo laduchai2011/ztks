@@ -40,9 +40,9 @@ class Handle_CustomerSignout {
             };
 
             // Xóa cookie
-            res.clearCookie('id', cookieOptions);
-            res.clearCookie('accessToken', cookieOptions);
-            res.clearCookie('refreshToken', cookieOptions);
+            res.clearCookie('c_id', cookieOptions);
+            res.clearCookie('c_accessToken', cookieOptions);
+            res.clearCookie('c_refreshToken', cookieOptions);
 
             myResponse.message = 'Đăng xuất thành công và cookie đã được xóa.';
             myResponse.isSuccess = true;

@@ -20,7 +20,7 @@ if (process.env.NODE_ENV !== 'development') {
 const sameSite = process.env.NODE_ENV === 'development' ? 'lax' : 'none';
 // const sameSite = 'none';
 const isProduct = process.env.NODE_ENV === 'production';
-const cookieDomain = isProduct ? '.taokosao.com' : 'ztks.local.com';
+const cookieDomain = isProduct ? '.taokosao.com' : 'localhost';
 
 const timeExpireat = 60 * 60 * 24 * 30 * 12; // 1 year
 
@@ -117,14 +117,14 @@ async function authentication_customer(req: Request, res: Response, next: NextFu
                     const new_accessToken = generateAccessToken(myJwtPayload, signOptions);
                     storeAuthToken.accessToken = new_accessToken;
 
-                    res.cookie('id', id, {
+                    res.cookie('c_id', id, {
                         httpOnly: true,
                         secure: secure_cookie,
                         sameSite: sameSite,
                         expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
                         // signed: true
                         domain: cookieDomain,
-                    }).cookie('accessToken', new_accessToken, {
+                    }).cookie('c_accessToken', new_accessToken, {
                         httpOnly: true,
                         secure: secure_cookie,
                         sameSite: sameSite,

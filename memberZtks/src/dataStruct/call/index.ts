@@ -6,18 +6,35 @@ export enum CallTypeEnum {
 
 export type CallTypeType = CallTypeEnum.AUDIO | CallTypeEnum.VIDEO | CallTypeEnum.AUDIO_AND_VIDEO;
 
+export enum CallInCmdEnum {
+    EMPTY = 'empty',
+    ACCEPT = 'accept',
+    CANCEl = 'cancel',
+    FINISH = 'finish',
+}
+
+export type CallInCmdType = CallInCmdEnum.ACCEPT | CallInCmdEnum.CANCEl | CallInCmdEnum.FINISH | CallInCmdEnum.EMPTY;
+
+export enum CallOutCmdEnum {
+    EMPTY = 'empty',
+    BEGIN = 'begin',
+    CANCEl = 'cancel',
+    FINISH = 'finish',
+}
+
+export type CallOutCmdType =
+    | CallOutCmdEnum.BEGIN
+    | CallOutCmdEnum.CANCEl
+    | CallOutCmdEnum.FINISH
+    | CallOutCmdEnum.EMPTY;
+
 export enum CallInStateEnum {
     RINGING = 'ringing',
-    CONNECTING = 'connecting',
     CALL_IN = 'call_in',
     CALL_END = 'call_end',
 }
 
-export type CallInStateType =
-    | CallInStateEnum.RINGING
-    | CallInStateEnum.CONNECTING
-    | CallInStateEnum.CALL_IN
-    | CallInStateEnum.CALL_END;
+export type CallInStateType = CallInStateEnum.RINGING | CallInStateEnum.CALL_IN | CallInStateEnum.CALL_END;
 
 export enum CallOutStateEnum {
     RINGING = 'ringing',

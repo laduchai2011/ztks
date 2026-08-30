@@ -31,6 +31,7 @@ import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 import { timeAgoSmart } from '@src/utility/time';
 import { useGetZaloUserQuery } from '@src/redux/query/zaloRTK';
 import { set_repliedMessage } from '@src/redux/slice/MessageV1';
+import { avatarnull } from '@src/utility/string';
 
 const UserMsg: FC<{
     msgList_element?: HTMLDivElement | null;
@@ -139,7 +140,9 @@ const UserMsg: FC<{
 
     return (
         <div className={style.parent}>
-            <div className={style.avatarContainer}>{isAvatar && <img src={zaloUser?.data.avatar} alt="avatar" />}</div>
+            <div className={style.avatarContainer}>
+                {isAvatar && <img src={zaloUser?.data.avatar || avatarnull} alt="avatar" />}
+            </div>
             <div className={style.msgContainer}>
                 {isAvatar && <div className={style.name}>{zaloUser?.data.display_name}</div>}
                 <div>{msg()}</div>

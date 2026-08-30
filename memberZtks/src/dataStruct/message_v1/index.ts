@@ -15,8 +15,8 @@ export interface NewCallV1Field<T> extends CallV1Field<T> {
     created_at: Date;
 }
 
-export interface PagedMessageV1Field<T> {
-    items: (MessageV1Field<T> | CallV1Field<T>)[];
+export interface PagedMessageV1Field<T, K> {
+    items: (MessageV1Field<T> | CallV1Field<K>)[];
     cursor: string | null;
 }
 

@@ -40,7 +40,7 @@ const getLocalIp = () => {
 };
 
 const PORT = 3002;
-const HOST = getLocalIp();
+const HOST = '0.0.0.0';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -111,7 +111,7 @@ const rollup_dev = isDev && [
                 customResolver,
             }),
             serve({
-                open: true, // Tự động mở trình duyệt
+                open: false, // Tự động mở trình duyệt
                 contentBase: 'dist', // Thư mục chứa file được phục vụ
                 host: HOST,
                 port: PORT, // Cổng chạy server
@@ -126,6 +126,8 @@ const rollup_dev = isDev && [
                 preventAssignment: true, // Cần thiết cho Rollup 3+
                 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
                 'process.env.API_URL': JSON.stringify(process.env.API_URL || ''),
+                'process.env.SOCKET_URL': JSON.stringify(process.env.SOCKET_URL || ''),
+                'process.env.ZALO_REDIRECT_URI': JSON.stringify(process.env.ZALO_REDIRECT_URI || ''),
             }),
             // html({
             //     fileName: 'index.html',
@@ -171,6 +173,7 @@ const rollup_prod = isProd && [
                 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
                 'process.env.API_URL': JSON.stringify(process.env.API_URL || ''),
                 'process.env.SOCKET_URL': JSON.stringify(process.env.SOCKET_URL || ''),
+                'process.env.ZALO_REDIRECT_URI': JSON.stringify(process.env.ZALO_REDIRECT_URI || ''),
             }),
             resolve({
                 browser: true, // Quan trọng: để build cho browser
@@ -230,7 +233,15 @@ let rollup_final;
 switch (process.env.NODE_ENV) {
     case 'development':
         setTimeout(() => {
-            console.log(`🚀 (rollup) Dev server running at: http://${HOST}:${PORT}`);
+            const localIp = getLocalIp();
+
+            console.log(`🚀 Localhost : http://localhost:${PORT}`);
+            console.log(`🚀 127.0.0.1 : http://127.0.0.1:${PORT}`);
+
+            if (localIp) {
+                console.log(`🚀 LAN       : http://${localIp}:${PORT}`);
+            }
+
             console.log(process.env.NODE_ENV !== 'production', process.env.NODE_ENV);
         }, [5000]);
         rollup_final = rollup_dev;

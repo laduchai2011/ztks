@@ -7,7 +7,7 @@ import { HexColorPicker } from 'react-colorful';
 import { AccountField } from '@src/dataStruct/account';
 import { ChatRoomRoleField } from '@src/dataStruct/chatRoom';
 import { UpdateSetupChatRoomRoleBodyField } from '@src/dataStruct/chatRoom/body';
-import avatarnull from '@src/asset/avatar/avatarnull.png';
+import { avatarnull } from '@src/utility/string';
 import { useGetChatRoomRoleWithCridAaidQuery, useUpdateSetupChatRoomRoleMutation } from '@src/redux/query/chatRoomRTK';
 import { setData_toastMessage, set_isLoading } from '@src/redux/slice/MessageV1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
@@ -24,6 +24,7 @@ const Added: FC<{ index: number; data: AccountField }> = ({ index, data }) => {
     const [isSend, setIsSend] = useState<boolean>(false);
     const [color, setColor] = useState<string>(defaultColor);
     const [chatRoomRole, setChatRoomRole] = useState<ChatRoomRoleField | undefined>(undefined);
+    const [avatarUrl, setAvatarUrl] = useState<string>(avatarnull);
 
     const [updateSetupChatRoomRole] = useUpdateSetupChatRoomRoleMutation();
 
@@ -81,6 +82,11 @@ const Added: FC<{ index: number; data: AccountField }> = ({ index, data }) => {
         }
     }, [chatRoomRole]);
 
+    useEffect(() => {
+        const avatarUrl_ = data.avatar ? handleSrcImage(data.avatar) : avatarnull;
+        setAvatarUrl(avatarUrl_);
+    }, [data.avatar]);
+
     const handleUpdate = () => {
         if (!chatRoomRole) return;
         if (chatRoomRole.isRead === isRead && chatRoomRole.isSend === isSend && chatRoomRole.backGroundColor === color)
@@ -117,8 +123,6 @@ const Added: FC<{ index: number; data: AccountField }> = ({ index, data }) => {
             .catch((err) => console.error(err))
             .finally(() => dispatch(set_isLoading(false)));
     };
-
-    const avatarUrl = data.avatar ? handleSrcImage(data.avatar) : avatarnull;
 
     return (
         <div className={style.parent}>

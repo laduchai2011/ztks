@@ -24,8 +24,8 @@ const ToolBar = () => {
             </div>
             <div className={style.options}>
                 <div className={style.selected}>Dash board</div>
-                <div>Phản hồi</div>
-                <div>Hỗ trợ</div>
+                {/* <div>Phản hồi</div>
+                <div>Hỗ trợ</div> */}
             </div>
             <div className={style.avatar}>
                 <img src={avatarUrl} alt="logoZtks" />

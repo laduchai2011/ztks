@@ -114,7 +114,7 @@ class Handle_Signin {
 
                     await serviceRedis.setData<StoreAuthToken>(keyServiceRedis, storeAuthToken, timeExpireat);
 
-                    res.cookie('id', id, {
+                    res.cookie('c_id', id, {
                         httpOnly: true,
                         secure: secure_cookie,
                         sameSite: sameSite,
@@ -122,14 +122,14 @@ class Handle_Signin {
                         // signed: true
                         domain: cookieDomain,
                     })
-                        .cookie('accessToken', accessToken, {
+                        .cookie('c_accessToken', accessToken, {
                             httpOnly: true,
                             secure: secure_cookie,
                             sameSite: sameSite,
                             expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
                             domain: cookieDomain,
                         })
-                        .cookie('refreshToken', refreshToken, {
+                        .cookie('c_refreshToken', refreshToken, {
                             httpOnly: true,
                             secure: secure_cookie,
                             sameSite: sameSite,
