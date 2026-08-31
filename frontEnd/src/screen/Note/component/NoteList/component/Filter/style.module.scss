@@ -34,14 +34,17 @@
 
         > .searchContainer {
             @include center-of-row;
+            box-shadow: 0 0 15px rgba(107, 107, 107, 0.15);
+            border-radius: 15px;
+            background-color: rgb(241, 241, 241);
+            box-sizing: border-box;
+            padding: 5px;
 
             > input {
-                box-sizing: border-box;
-                padding: 3px;
                 border: none;
                 outline: none;
-                border-bottom: 1px solid gray;
                 width: 120px;
+                background-color: rgb(241, 241, 241);
             }
 
             > svg {

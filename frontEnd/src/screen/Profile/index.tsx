@@ -94,42 +94,60 @@ const Profile = () => {
                 <div className={style.header}>{PROFILE}</div>
                 <div className={style.list}>
                     <Infor />
-                    <div className={style.option} onClick={() => goToOa()}>
-                        {OA}
-                    </div>
-                    {isAdmin && (
-                        <div className={style.option} onClick={() => goToMember()}>
-                            {MEMBER}
+                    <div className={style.options}>
+                        <div className={style.optionGroup}>
+                            <div className={style.optionGroupName}>Zalo</div>
+                            <div className={style.option} onClick={() => goToOa()}>
+                                {OA}
+                            </div>
                         </div>
-                    )}
-                    {isAdmin && (
-                        <div className={style.option} onClick={() => goToManageAgents()}>
-                            {MANAGE_AGENT}
+                        {isAdmin && (
+                            <div className={style.optionGroup}>
+                                <div className={style.optionGroupName}>Quản lý thành viên</div>
+                                <div className={style.option} onClick={() => goToMember()}>
+                                    {MEMBER}
+                                </div>
+
+                                <div className={style.option} onClick={() => goToManageAgents()}>
+                                    {MANAGE_AGENT}
+                                </div>
+
+                                <div className={style.option} onClick={() => goToAccountReceiveMessage()}>
+                                    {ACCOUNT_RECEIVE_MESSAGE}
+                                </div>
+                            </div>
+                        )}
+                        <div className={style.optionGroup}>
+                            <div className={style.optionGroupName}>Tiền</div>
+                            <div className={style.option} onClick={() => goToWallet()}>
+                                {WALLET}
+                            </div>
+                            <div className={style.option} onClick={() => goToBank()}>
+                                {BANK}
+                            </div>
                         </div>
-                    )}
-                    {isAdmin && (
-                        <div className={style.option} onClick={() => goToAccountReceiveMessage()}>
-                            {ACCOUNT_RECEIVE_MESSAGE}
+                        {isAdmin && (
+                            <div className={style.optionGroup}>
+                                <div className={style.optionGroupName}>Đăng tin</div>
+                                <div className={style.option} onClick={() => goToPost()}>
+                                    {POST}
+                                </div>
+                            </div>
+                        )}
+                        {!isAdmin && (
+                            <div className={style.optionGroup}>
+                                <div className={style.optionGroupName}>{LEAVE}</div>
+                                <div className={style.option} onClick={() => goToLeave()}>
+                                    {LEAVE}
+                                </div>
+                            </div>
+                        )}
+                        <div className={style.optionGroup}>
+                            <div className={style.optionGroupName}>Mở rộng</div>
+                            <div className={style.option} onClick={() => goToSignout()}>
+                                {SIGNOUT}
+                            </div>
                         </div>
-                    )}
-                    <div className={style.option} onClick={() => goToWallet()}>
-                        {WALLET}
-                    </div>
-                    <div className={style.option} onClick={() => goToBank()}>
-                        {BANK}
-                    </div>
-                    {isAdmin && (
-                        <div className={style.option} onClick={() => goToPost()}>
-                            {POST}
-                        </div>
-                    )}
-                    {!isAdmin && (
-                        <div className={style.option} onClick={() => goToLeave()}>
-                            {LEAVE}
-                        </div>
-                    )}
-                    <div className={style.option} onClick={() => goToSignout()}>
-                        {SIGNOUT}
                     </div>
                 </div>
                 <div className={style.headerTab}>

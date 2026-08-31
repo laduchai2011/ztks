@@ -2,9 +2,11 @@
 
 .parent {
     box-sizing: border-box;
-    padding: 10px 5px;
-    margin: 0 5px;
-    border-top: 1px solid blue;
+    padding: 5px;
+    margin: 10px 5px;
+    box-shadow: 0 0 15px rgba(107, 107, 107, 0.15);
+    border-radius: 15px;
+    background-color: rgb(241, 241, 241);
 
     > div {
         box-sizing: border-box;
