@@ -9,6 +9,7 @@ import Selected from './component/Selected';
 import List from './component/List';
 import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
+import { IoChevronBack } from 'react-icons/io5';
 import { route_enum } from '@src/router/type';
 import { setData_toastMessage } from '@src/redux/slice/AccountReceiveMessage';
 
@@ -29,10 +30,17 @@ const AccountReceiveMessage = () => {
         };
     }, [dispatch]);
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>{ACCOUNT_RECEIVE_MESSAGE}</div>
+                <div className={style.header}>
+                    <div>{ACCOUNT_RECEIVE_MESSAGE}</div>
+                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                </div>
                 <OaList />
                 <Selected />
                 <List />

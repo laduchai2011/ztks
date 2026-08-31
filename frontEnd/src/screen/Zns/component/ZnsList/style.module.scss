@@ -13,6 +13,10 @@
         > .oneZnsTemplate {
             box-sizing: border-box;
             padding: 10px;
+            margin: 10px 0;
+            box-shadow: 0 0 25px rgba(201, 201, 201, 0.15);
+            border-radius: 10px;
+            background-color: rgb(241, 241, 241);
 
             > img {
                 width: 100%;

@@ -145,9 +145,11 @@
                 cursor: pointer;
                 user-select: none;
                 border: 1px solid greenyellow;
+                color: white;
 
                 &:active {
                     background-color: white;
+                    color: rgb(153, 255, 0);
                 }
             }
         }

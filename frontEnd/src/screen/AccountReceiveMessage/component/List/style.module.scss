@@ -3,8 +3,8 @@
 .parent {
     width: 100%;
     flex: 1;
-    overflow-y: scroll;
-    @include small-scroll-yy(3px);
+    overflow-y: auto;
+    @include small-scroll-yy(1px);
 
     > .header {
         box-sizing: border-box;

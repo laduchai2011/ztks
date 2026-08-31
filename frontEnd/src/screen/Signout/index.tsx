@@ -7,6 +7,7 @@ import { LoadProps, LineCircleLoadProps } from '@src/component/Loading/type';
 import { LOAD_COMPONENTS_CONST } from '@src/component/Loading/const';
 import { useSignoutMutation } from '@src/redux/query/accountRTK';
 import { route_enum } from '@src/router/type';
+import { handleSrcImage } from '@src/utility/string';
 
 const Signout = () => {
     const navigate = useNavigate();
@@ -81,17 +82,29 @@ const Signout = () => {
                 <Loading className={style.loadding} load={load} />
             </div>
             <div className={style.main}>
-                {myId !== null && (
-                    <div className={style.btnSignout} onClick={() => handleSignout()}>
-                        {SIGNOUT}
+                <div>
+                    <div>
+                        <img src={handleSrcImage('logo.jpg')} alt="logo" />
                     </div>
-                )}
-                {myId === null && (
-                    <div className={style.btnSignin} onClick={() => goToSignin()}>
-                        {SIGNIN}
+                    <div>
+                        <img
+                            src="https://media.tenor.com/cvXdKcHF6-wAAAAM/%E3%81%95%E3%82%88%E3%81%AA%E3%82%89-%E3%83%90%E3%82%A4%E3%83%90%E3%82%A4.gif"
+                            alt=""
+                        />
                     </div>
-                )}
-                {note.length > 0 && <div className={style.note}>{note}</div>}
+                    <div className={style.text}>Quay lại sớm nhé</div>
+                    {myId !== null && (
+                        <div className={style.btnSignout} onClick={() => handleSignout()}>
+                            {SIGNOUT}
+                        </div>
+                    )}
+                    {myId === null && (
+                        <div className={style.btnSignin} onClick={() => goToSignin()}>
+                            {SIGNIN}
+                        </div>
+                    )}
+                    {note.length > 0 && <div className={style.note}>{note}</div>}
+                </div>
             </div>
         </div>
     );

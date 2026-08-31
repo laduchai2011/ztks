@@ -8,6 +8,7 @@ import MemberListDialog from './component/MemberListDialog';
 import AgentPayDialog from './component/AgentPayDialog';
 import CreateService from './component/CreateService';
 import ServiceList from './component/ServiceList';
+import { IoChevronBack } from 'react-icons/io5';
 import { route_enum } from '@src/router/type';
 
 const ManageAgent = () => {
@@ -20,10 +21,17 @@ const ManageAgent = () => {
         }
     }, [navigate, myId]);
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>{MANAGE_AGENT}</div>
+                <div className={style.header}>
+                    <div>{MANAGE_AGENT}</div>
+                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                </div>
                 <CreateService />
                 <ServiceList />
             </div>

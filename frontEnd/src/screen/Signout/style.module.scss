@@ -37,29 +37,48 @@
         height: 100vh;
         @include center-of-rectangle;
 
-        > .btnSignout {
-            box-sizing: border-box;
-            padding: 10px;
-            border-radius: 15px;
-            background-color: red;
-            color: white;
-            cursor: pointer;
-            user-select: none;
-        }
+        > div {
+            > .text {
+                text-align: center;
+                color: blue;
+                margin: 20px 0;
+            }
 
-        > .btnSignin {
-            box-sizing: border-box;
-            padding: 10px;
-            border-radius: 15px;
-            background-color: blue;
-            color: white;
-            cursor: pointer;
-            user-select: none;
-        }
+            > .btnSignout {
+                box-sizing: border-box;
+                padding: 10px;
+                border-radius: 15px;
+                background-color: red;
+                color: white;
+                cursor: pointer;
+                user-select: none;
+                text-align: center;
 
-        > .note {
-            color: red;
-            margin-top: 30px;
+                &:hover {
+                    background-color: white;
+                    color: red;
+                }
+
+                &:active {
+                    background-color: red;
+                    color: white;
+                }
+            }
+
+            > .btnSignin {
+                box-sizing: border-box;
+                padding: 10px;
+                border-radius: 15px;
+                background-color: blue;
+                color: white;
+                cursor: pointer;
+                user-select: none;
+            }
+
+            > .note {
+                color: red;
+                margin-top: 30px;
+            }
         }
     }
 }

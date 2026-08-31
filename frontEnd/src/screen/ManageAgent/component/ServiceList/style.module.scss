@@ -3,8 +3,8 @@
 .parent {
     width: 100%;
     flex: 1;
-    overflow-y: scroll;
-    @include small-scroll-yy(3px);
+    overflow-y: auto;
+    @include small-scroll-yy(1px);
 
     > .search {
         @include center-of-row;
@@ -14,12 +14,13 @@
             @include center-of-row;
             box-sizing: border-box;
             padding: 5px;
-            border-radius: 10px;
+            border-radius: 15px;
             background-color: rgb(233, 233, 233);
 
             > input {
                 border: none;
                 outline: none;
+                background-color: rgb(233, 233, 233);
                 font-size: 1.05rem;
             }
 
