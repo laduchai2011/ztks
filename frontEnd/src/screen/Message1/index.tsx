@@ -10,7 +10,7 @@ import ReplyMember from './component/ReplyMember';
 import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import ChangeChatRoomMasterDialog from './component/ChangeChatRoomMasterDialog';
-
+import { IoChevronBack } from 'react-icons/io5';
 import { useGetChatRoomsWithIdQuery } from '@src/redux/query/chatRoomRTK';
 import { useGetZaloOaWithIdQuery } from '@src/redux/query/zaloRTK';
 import { useLazyGetLastMessageQuery } from '@src/redux/query/messageV1RTK';
@@ -172,10 +172,17 @@ const Message1 = () => {
             .catch((err) => console.error(err));
     }, [dispatch, getLastMessage, id]);
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>{MESSAGE}</div>
+                <div className={style.header}>
+                    <div>{MESSAGE}</div>
+                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                </div>
                 <ReplyMember />
                 <MsgList />
                 <InputMsg />

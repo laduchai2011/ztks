@@ -12,6 +12,7 @@ import { avatarnull } from '@src/utility/string';
 import { useLazyGetMembersQuery } from '@src/redux/query/accountRTK';
 import { useChangeChatRoomMasterMutation } from '@src/redux/query/chatRoomRTK';
 import { AccountField, AccountInformationField } from '@src/dataStruct/account';
+import { handleSrcImage } from '@src/utility/string';
 
 const ChangeChatRoomMasterDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -174,9 +175,11 @@ const ChangeChatRoomMasterDialog = () => {
             return;
         }
 
+        const avatarUrl_ = item.avatar ? handleSrcImage(item.avatar) : avatarnull;
+
         return (
             <div className={style.one} key={item.id}>
-                <img src={item.avatar ?? avatarnull} alt="" />
+                <img src={avatarUrl_} alt="" />
                 <div>{item.firstName + ' ' + item.lastName}</div>
                 <input checked={isSelected} onChange={(e) => handleSelected(e, item)} type="checkbox" />
             </div>

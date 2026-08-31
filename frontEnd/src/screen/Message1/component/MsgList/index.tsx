@@ -18,7 +18,7 @@ const MsgList = () => {
     const parent_element = useRef<HTMLDivElement | null>(null);
     const bottom_element = useRef<HTMLDivElement | null>(null);
     const [messages, setMessages] = useState<(MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType>)[]>([]);
-    const size = 10;
+    const size = 20;
     const lockLoadMore = useRef<boolean>(true);
     const [cursor, setCursor] = useState<string | null>(null);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
