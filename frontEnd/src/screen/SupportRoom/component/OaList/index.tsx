@@ -127,7 +127,11 @@ const OaList = () => {
             </div>
             <div className={style.list} ref={list_element}>
                 <div>{list_oa}</div>
-                <div>{zaloOaList.length < total && <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>}</div>
+                {zaloOaList.length < total && (
+                    <div>
+                        <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>
+                    </div>
+                )}
             </div>
         </div>
     );

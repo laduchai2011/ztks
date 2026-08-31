@@ -37,19 +37,19 @@ const isProduct = process.env.NODE_ENV === 'production';
 //           password: '201195laducHai',
 //       };
 
-// const redis_config: my_interface['redis']['config'] = isProduct
-//     ? {
-//           host: process.env.REDIS_SERVER_HOST,
-//           port: Number(process.env.REDIS_SERVER_PORT),
-//           username: process.env.REDIS_SERVER_USERNAME,
-//           password: process.env.REDIS_SERVER_PASSWORD,
-//       }
-//     : {
-//           host: '103.249.200.80',
-//           port: 6379,
-//           username: 'zalo5k',
-//           password: 'hai20111995',
-//       };
+const redis_config: my_interface['redis']['config'] = isProduct
+    ? {
+          host: process.env.REDIS_SERVER_HOST,
+          port: Number(process.env.REDIS_SERVER_PORT),
+          username: process.env.REDIS_SERVER_USERNAME,
+          password: process.env.REDIS_SERVER_PASSWORD,
+      }
+    : {
+          host: '103.38.236.182',
+          port: 6379,
+          username: 'ztks',
+          password: 'hai20111995',
+      };
 
 const rabbitmq_config: my_interface['rabbitmq']['config'] = isProduct
     ? {
@@ -65,4 +65,4 @@ const rabbitmq_config: my_interface['rabbitmq']['config'] = isProduct
           password: 'admin123',
       };
 
-export { rabbitmq_config };
+export { rabbitmq_config, redis_config };

@@ -6,8 +6,11 @@ import { AppDispatch, RootState } from '@src/redux';
 import { avatarnull } from '@src/utility/string';
 import { handleSrcImage } from '@src/utility/string';
 import { AccountField } from '@src/dataStruct/account';
+import { route_enum } from '@src/router/type';
 
 const ToolBar = () => {
+    const navigate = useNavigate();
+
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
 
     const [avatarUrl, setAvatarUrl] = useState<string>(avatarnull);
@@ -16,6 +19,10 @@ const ToolBar = () => {
         const avatarUrl_ = account?.avatar ? handleSrcImage(account.avatar) : avatarnull;
         setAvatarUrl(avatarUrl_);
     }, [account]);
+
+    const handleGoToProfile = () => {
+        navigate(route_enum.PROFILE);
+    };
 
     return (
         <div className={style.parent}>
@@ -28,7 +35,7 @@ const ToolBar = () => {
                 <div>Hỗ trợ</div> */}
             </div>
             <div className={style.avatar}>
-                <img src={avatarUrl} alt="logoZtks" />
+                <img onClick={() => handleGoToProfile()} src={avatarUrl} alt="logoZtks" />
             </div>
         </div>
     );

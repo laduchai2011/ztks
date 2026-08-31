@@ -40,39 +40,39 @@ const MyChart = () => {
         setOfDayArray(_ofDayArray);
     }, [statistics, averageSales, averageOrderAmounts]);
 
-    // const data = [
-    //     3000, 4000, 3500, 5000, 4900, 6000, 7000, 9100, 8000, 7500, 8500, 9500, 10000, 11000, 10500, 12000, 13000,
-    //     12500, 14000, 15000,
-    // ];
-    // const data1 = [35, 35, 35, 55, 48, 69, 20, 95, 90, 22, 60, 88, 150, 100, 115, 121, 139, 123, 130, 155];
-    // const datatb = [
-    //     6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900,
-    //     6900, 6900,
-    // ];
-    // const data1tb = [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30];
+    const data = [
+        3000, 4000, 3500, 5000, 4900, 6000, 7000, 9100, 8000, 7500, 8500, 9500, 10000, 11000, 10500, 12000, 13000,
+        12500, 14000, 15000,
+    ];
+    const data1 = [35, 35, 35, 55, 48, 69, 20, 95, 90, 22, 60, 88, 150, 100, 115, 121, 139, 123, 130, 155];
+    const datatb = [
+        6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900, 6900,
+        6900, 6900,
+    ];
+    const data1tb = [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30];
 
-    // const categories = [
-    //     '01/08',
-    //     '02/08',
-    //     '03/08',
-    //     '04/08',
-    //     '05/08',
-    //     '06/08',
-    //     '07/08',
-    //     '08/08',
-    //     '09/08',
-    //     '10/08',
-    //     '11/08',
-    //     '12/08',
-    //     '13/08',
-    //     '14/08',
-    //     '15/08',
-    //     '16/08',
-    //     '17/08',
-    //     '18/08',
-    //     '19/08',
-    //     '20/08',
-    // ];
+    const categories = [
+        '01/08',
+        '02/08',
+        '03/08',
+        '04/08',
+        '05/08',
+        '06/08',
+        '07/08',
+        '08/08',
+        '09/08',
+        '10/08',
+        '11/08',
+        '12/08',
+        '13/08',
+        '14/08',
+        '15/08',
+        '16/08',
+        '17/08',
+        '18/08',
+        '19/08',
+        '20/08',
+    ];
 
     const mainOptions: ApexOptions = {
         chart: {
@@ -104,7 +104,7 @@ const MyChart = () => {
         },
 
         xaxis: {
-            categories: ofDayArray,
+            categories: categories,
         },
 
         // yaxis: [
@@ -162,7 +162,7 @@ const MyChart = () => {
         },
 
         xaxis: {
-            categories: ofDayArray,
+            categories: categories,
         },
 
         stroke: {
@@ -182,25 +182,48 @@ const MyChart = () => {
         },
     };
 
+    // const series = [
+    //     {
+    //         name: 'Doanh số',
+    //         data: sales,
+    //         yAxisIndex: 0,
+    //     },
+    //     {
+    //         name: 'Doanh số TB',
+    //         data: averageSalesArray,
+    //         yAxisIndex: 0,
+    //     },
+    //     {
+    //         name: 'Số lượng đơn',
+    //         data: orderAmounts,
+    //         yAxisIndex: 1,
+    //     },
+    //     {
+    //         name: 'Số lượng đơn TB',
+    //         data: averageOrderAmountsArray,
+    //         yAxisIndex: 1,
+    //     },
+    // ];
+
     const series = [
         {
             name: 'Doanh số',
-            data: sales,
+            data: data,
             yAxisIndex: 0,
         },
         {
             name: 'Doanh số TB',
-            data: averageSalesArray,
+            data: datatb,
             yAxisIndex: 0,
         },
         {
             name: 'Số lượng đơn',
-            data: orderAmounts,
+            data: data1,
             yAxisIndex: 1,
         },
         {
             name: 'Số lượng đơn TB',
-            data: averageOrderAmountsArray,
+            data: data1tb,
             yAxisIndex: 1,
         },
     ];

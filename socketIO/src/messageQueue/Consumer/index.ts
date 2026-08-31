@@ -12,7 +12,7 @@ export async function consumeMessage(queue: string, callback: (messageZalo: Mess
 
     await channel.assertQueue(queue, { durable: true });
 
-    channel.prefetch(10);
+    channel.prefetch(1);
 
     channel.consume(
         queue,
@@ -42,7 +42,7 @@ export async function consumeHookData(
 
     await channel.assertQueue(queue, { durable: true });
 
-    channel.prefetch(10);
+    channel.prefetch(1);
 
     channel.consume(
         queue,
@@ -70,24 +70,24 @@ export async function consumeHookData(
     );
 }
 
-export async function consumeStringMessage(queue: string, callback: (msg: string) => void) {
+export async function consumeStringMessage(queue: string, callback: (msg: string) => Promise<void> | void) {
     await rabbit_server.init();
 
     const channel = await rabbit_server.getConsumerChannel(queue);
 
     await channel.assertQueue(queue, { durable: true });
 
-    channel.prefetch(10);
+    channel.prefetch(1);
 
     channel.consume(
         queue,
-        (msg: ConsumeMessage | null) => {
+        async (msg: ConsumeMessage | null) => {
             if (!msg) {
                 console.log(msg);
                 return;
             }
 
-            callback(msg.content.toString());
+            await callback(msg.content.toString());
 
             channel.ack(msg);
         },
@@ -102,7 +102,7 @@ export async function consumeVideoMessage(queue: string, callback: (videoMessage
 
     await channel.assertQueue(queue, { durable: true });
 
-    channel.prefetch(10);
+    channel.prefetch(1);
 
     channel.consume(
         queue,

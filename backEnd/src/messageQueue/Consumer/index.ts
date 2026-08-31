@@ -12,7 +12,7 @@ export async function consumeMessage(queue: string, callback: (messageZalo: Mess
 
     await channel.assertQueue(queue, { durable: true });
 
-    channel.prefetch(10);
+    channel.prefetch(1);
 
     channel.consume(
         queue,
@@ -42,7 +42,7 @@ export async function consumeHookData(
 
     await channel.assertQueue(queue, { durable: true });
 
-    channel.prefetch(10);
+    channel.prefetch(1);
 
     channel.consume(
         queue,
@@ -77,7 +77,7 @@ export async function consumeStringMessage(queue: string, callback: (msg: string
 
     await channel.assertQueue(queue, { durable: true });
 
-    channel.prefetch(10);
+    channel.prefetch(1);
 
     channel.consume(
         queue,
@@ -102,7 +102,7 @@ export async function consumeVideoMessage(queue: string, callback: (videoMessage
 
     await channel.assertQueue(queue, { durable: true });
 
-    channel.prefetch(10);
+    channel.prefetch(1);
 
     channel.consume(
         queue,

@@ -3,13 +3,15 @@
 .parent {
     height: 35px;
     background-color: rgb(233, 233, 233);
+    box-shadow: 0 5px 15px -4px rgba(0, 0, 0, 0.25);
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
     z-index: 1;
 
     > .selected {
         @include center-of-row;
         height: 100%;
         box-sizing: border-box;
-        border-bottom: 1px solid gray;
 
         > div {
             @include center-of-rectangle;
@@ -33,7 +35,9 @@
         max-height: 0;
         overflow-y: scroll;
         @include small-scroll-y;
-        transition: max-height 0.3s linear;
+        transition: max-height 0.5s linear;
+        border-radius: 15px;
+        overflow: hidden;
 
         &.show {
             max-height: 300px;
@@ -43,7 +47,6 @@
             > div {
                 height: 35px;
                 box-sizing: border-box;
-                border-bottom: 1px solid gray;
                 background-color: rgb(235, 234, 234);
                 @include center-of-rectangle;
                 cursor: pointer;
@@ -60,6 +63,7 @@
             padding: 10px;
             @include center-of-rectangle;
             height: 40px;
+            background-color: rgb(235, 234, 234);
 
             > div {
                 user-select: none;

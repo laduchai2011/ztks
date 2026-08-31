@@ -17,18 +17,26 @@ const Overview = () => {
                 <div>
                     <div className={style.title}>Tổng doanh số</div>
                     <div className={style.number}>
-                        <div>{formatMoney(statisticsTotal.sales)}</div>
+                        {/* <div>{formatMoney(statisticsTotal.sales)}</div>
                         <div>
                             <div>{formatMoney(statisticsTotal.averageSales)}</div>
+                        </div> */}
+                        <div>{formatMoney(10000000)}</div>
+                        <div>
+                            <div>{formatMoney(3000000)}</div>
                         </div>
                     </div>
                 </div>
                 <div>
                     <div className={style.title}>Tổng đơn hàng</div>
                     <div className={style.number}>
-                        <div>{formatNumber(statisticsTotal.orderAmount)}</div>
+                        {/* <div>{formatNumber(statisticsTotal.orderAmount)}</div>
                         <div>
                             <div>{formatNumber(statisticsTotal.averageOrderAmount)}</div>
+                        </div> */}
+                        <div>{formatNumber(100)}</div>
+                        <div>
+                            <div>{formatNumber(50)}</div>
                         </div>
                     </div>
                 </div>

@@ -3,22 +3,35 @@
 .parent {
     width: 100%;
     box-sizing: border-box;
-    border-top: 1px solid gray;
     @include center-of-row;
     background-color: white;
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.15);
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
 
     > div {
         width: calc(100% / 6);
-        height: 50px;
+        aspect-ratio: 1/1;
         @include center-of-rectangle;
         cursor: pointer;
+        border-radius: 50%;
+        transition:
+            transform 1s linear,
+            background-color 1.5s linear,
+            color 1.5s linear;
 
         &:hover {
             background-color: rgb(231, 231, 231);
+
+            > svg {
+                scale: 1.1;
+            }
         }
 
         &.selected {
-            background-color: rgb(184, 184, 184);
+            background-color: black;
+            color: white;
+            transform: translateY(-10px);
         }
 
         > svg {
