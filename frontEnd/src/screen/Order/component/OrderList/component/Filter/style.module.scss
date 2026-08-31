@@ -10,7 +10,8 @@
         box-sizing: border-box;
         padding: 5px;
         @include center-of-row;
-        border: 1px solid gray;
+        box-shadow: 0 0 25px rgba(48, 48, 48, 0.15);
+        border-radius: 10px;
 
         > select {
             border: none;
@@ -108,7 +109,13 @@
 
         > input {
             width: 35%;
+            box-sizing: border-box;
+            padding: 5px;
             outline: none;
+            border: none;
+            outline: none;
+            box-shadow: 0 0 15px rgba(48, 48, 48, 0.15);
+            border-radius: 5px;
         }
     }
 
@@ -120,11 +127,15 @@
 
         > div {
             box-sizing: border-box;
-            border: 1px solid gray;
+            background-color: rgb(236, 236, 236);
             padding: 5px 10px;
             border-radius: 5px;
             cursor: pointer;
             user-select: none;
+
+            &:hover {
+                background-color: rgb(228, 227, 227);
+            }
 
             &:active {
                 background-color: gray;

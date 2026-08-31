@@ -39,6 +39,27 @@ const Filter: FC<{ handleGetOrders: (ordersFilterBody: OrdersFilterBodyField) =>
         }
     }, [chatRoomId]);
 
+    useEffect(() => {
+        switch (selectedOption) {
+            case SelectFilterEnum.ChatRoomId: {
+                setChatRoomId1(selectedValue.trim());
+                break;
+            }
+            case SelectFilterEnum.OrderUuid: {
+                setOrderUuid(selectedValue.trim());
+                break;
+            }
+            case SelectFilterEnum.PhoneNumber: {
+                setPhoneNumber(selectedValue.trim());
+                break;
+            }
+            default: {
+                //statements;
+                break;
+            }
+        }
+    }, [selectedOption, selectedValue]);
+
     const handleSelected = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = e.target.value as SelectFilterType;
         setSelectedOption(value);
