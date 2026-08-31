@@ -24,13 +24,16 @@
         border-radius: 10px;
         cursor: default;
         user-select: none;
+        color: white;
 
         &:hover {
             background-color: white;
+            color: rgb(64, 255, 47);
         }
 
         &:active {
             background-color: rgb(64, 255, 47);
+            color: white;
         }
     }
 }

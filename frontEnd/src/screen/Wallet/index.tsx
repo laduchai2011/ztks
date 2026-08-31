@@ -12,6 +12,7 @@ import Overview from './component/Overview';
 import CurrentAgent from './component/CurrentAgent';
 import AddRecommend from './component/AddRecommend';
 import TakeMoneyDialog from './component/TakeMoneyDialog';
+import { IoChevronBack } from 'react-icons/io5';
 import { useLazyGetMyWalletWithTypeQuery } from '@src/redux/query/walletRTK';
 import { AccountField } from '@src/dataStruct/account';
 import { WalletField, WalletType, WalletEnum } from '@src/dataStruct/wallet';
@@ -68,14 +69,17 @@ const Wallet = () => {
             });
     }, [getMyWalletWithType, account, selectedType]);
 
-    useEffect(() => {
-        // console.log('selectedWallet', selectedWallet);
-    }, [selectedWallet]);
+    const handleBack = () => {
+        navigate(-1);
+    };
 
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>{WALLET}</div>
+                <div className={style.header}>
+                    <div>{WALLET}</div>
+                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                </div>
                 <div className={style.contentContainer}>
                     <div className={style.types}>
                         <div
