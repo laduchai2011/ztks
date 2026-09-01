@@ -9,6 +9,7 @@ import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import TakeTokenDialog from './component/TakeTokenDialog';
 import CreateZaloOaDialog from './component/CreateZaloOaDialog';
+import { IoChevronBack } from 'react-icons/io5';
 import { OA_LIST } from '@src/const/text';
 import { route_enum } from '@src/router/type';
 import { setData_toastMessage } from '@src/redux/slice/Oa';
@@ -35,10 +36,17 @@ const Oa = () => {
         };
     }, [dispatch]);
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>{OA_LIST}</div>
+                <div className={style.header}>
+                    <div>{OA_LIST}</div>
+                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                </div>
                 <div>
                     <OaApp />
                 </div>

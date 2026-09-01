@@ -10,6 +10,7 @@ import { select_enum } from '@src/router/type';
 import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import UserList from './component/UserList';
+import { IoChevronBack } from 'react-icons/io5';
 import { route_enum } from '@src/router/type';
 import { setData_toastMessage } from '@src/redux/slice/Home1';
 
@@ -35,10 +36,17 @@ const Home1 = () => {
         };
     }, [dispatch]);
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>{HOME}</div>
+                <div className={style.header}>
+                    <div>{HOME}</div>
+                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                </div>
                 <OaList />
                 <UserList />
                 <div className={style.headerTab}>

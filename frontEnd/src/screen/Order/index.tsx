@@ -14,6 +14,7 @@ import { select_enum } from '@src/router/type';
 import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import Header from '../Header';
+import { IoChevronBack } from 'react-icons/io5';
 import { setData_toastMessage } from '@src/redux/slice/Order';
 import { route_enum } from '@src/router/type';
 
@@ -37,10 +38,17 @@ const Order = () => {
         );
     }, [dispatch]);
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>{ORDER}</div>
+                <div className={style.header}>
+                    <div>{ORDER}</div>
+                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                </div>
                 <CreateOrder />
                 <OrderList />
                 <div className={style.headerTab}>

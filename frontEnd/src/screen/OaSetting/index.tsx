@@ -13,6 +13,7 @@ import DialogLoading from './component/DialogLoading';
 import TakeTokenDialog from './component/TakeTokenDialog';
 import EditZaloOa from './component/EditZaloOa';
 import CreateZaloTrunkDialog from './component/CreateZaloTrunkDialog';
+import { IoChevronBack } from 'react-icons/io5';
 import { route_enum } from '@src/router/type';
 import { setData_toastMessage } from '@src/redux/slice/Order';
 
@@ -38,10 +39,17 @@ const OaSetting = () => {
         };
     }, [dispatch]);
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>{OA_SETTING}</div>
+                <div className={style.header}>
+                    <div>{OA_SETTING}</div>
+                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                </div>
                 <div>
                     <MyOa />
                 </div>

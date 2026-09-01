@@ -12,6 +12,7 @@ import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import EditTemplateDialog from './component/EditTemplateDialog';
 import SendTemplateDialog from './component/SendTemplateDialog';
+import { IoChevronBack } from 'react-icons/io5';
 import { setData_toastMessage, clear_newZnsTemplates } from '@src/redux/slice/Zns';
 
 const Zns = () => {
@@ -32,10 +33,17 @@ const Zns = () => {
         };
     }, [dispatch]);
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>ZNS</div>
+                <div className={style.header}>
+                    <div>ZNS</div>
+                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                </div>
                 <OaList />
                 <CreateTemplate />
                 <ZnsList />

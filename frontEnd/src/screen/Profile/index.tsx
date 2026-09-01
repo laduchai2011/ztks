@@ -20,6 +20,7 @@ import MyToastMessage from './component/MyToastMessage';
 import Header from '../Header';
 import Infor from './component/Infor';
 import EditInforDialog from './component/EditInforDialog';
+import { IoChevronBack } from 'react-icons/io5';
 import { select_enum, route_enum } from '@src/router/type';
 import { AccountInformationField, accountType_enum } from '@src/dataStruct/account';
 import { setData_toastMessage } from '@src/redux/slice/Profile';
@@ -88,10 +89,17 @@ const Profile = () => {
         navigate(route_enum.SIGNOUT);
     };
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>{PROFILE}</div>
+                <div className={style.header}>
+                    <div>{PROFILE}</div>
+                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                </div>
                 <div className={style.list}>
                     <Infor />
                     <div className={style.options}>

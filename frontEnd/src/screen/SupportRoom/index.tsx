@@ -5,6 +5,7 @@ import { SUPPORT_ROOM } from '@src/const/text';
 import Header from '../Header';
 import OaList from './component/OaList';
 import RoomList from './component/RoomList';
+import { IoChevronBack } from 'react-icons/io5';
 import { select_enum } from '@src/router/type';
 import { route_enum } from '@src/router/type';
 
@@ -18,10 +19,17 @@ const SupportRoom = () => {
         }
     }, [navigate, myId]);
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>{SUPPORT_ROOM}</div>
+                <div className={style.header}>
+                    <div>{SUPPORT_ROOM}</div>
+                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                </div>
                 <OaList />
                 <RoomList />
                 <div className={style.headerTab}>

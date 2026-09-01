@@ -11,6 +11,7 @@ import CreateNote from './component/CreateNote';
 import NoteList from './component/NoteList';
 import EditNote from './component/EditNote';
 import DeleteNoteDialog from './component/DeleteNoteDialog';
+import { IoChevronBack } from 'react-icons/io5';
 import { select_enum } from '@src/router/type';
 import { setData_toastMessage, clear_newNotes } from '@src/redux/slice/Note';
 import { route_enum } from '@src/router/type';
@@ -33,10 +34,17 @@ const Note = () => {
         };
     }, [dispatch]);
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>{NOTE}</div>
+                <div className={style.header}>
+                    <div>{NOTE}</div>
+                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                </div>
                 <CreateNote />
                 <NoteList />
                 <div className={style.headerTab}>
