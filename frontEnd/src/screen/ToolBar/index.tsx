@@ -20,6 +20,10 @@ const ToolBar = () => {
         setAvatarUrl(avatarUrl_);
     }, [account]);
 
+    const handleGoToHome = () => {
+        navigate(route_enum.HOME);
+    };
+
     const handleGoToProfile = () => {
         navigate(route_enum.PROFILE);
     };
@@ -27,7 +31,7 @@ const ToolBar = () => {
     return (
         <div className={style.parent}>
             <div className={style.logoZtks}>
-                <img src={handleSrcImage('logo.jpg')} alt="logoZtks" />
+                <img src={handleSrcImage('logo.jpg')} onClick={() => handleGoToHome()} alt="logoZtks" />
             </div>
             <div className={style.options}>
                 <div className={style.selected}>Dash board</div>

@@ -8,6 +8,7 @@ import MyLoading from './component/MyLoading';
 import ToolBar from '@src/screen/ToolBar';
 import Filter from './component/Filter';
 import Overview from './component/Overview';
+import MemberRank from './component/MemberRank';
 import { route_enum } from '@src/router/type';
 import { setData_toastMessage } from '@src/redux/slice/DashBoard';
 
@@ -40,6 +41,7 @@ const DashBoard = () => {
                 <div className={style.main1}>
                     <Filter />
                     <Overview />
+                    <MemberRank />
                 </div>
                 {/* <div className={style.main2}>1</div> */}
             </div>

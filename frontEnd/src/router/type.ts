@@ -19,6 +19,7 @@ import {
     POST,
     REGISTER_POST,
     LEAVE,
+    STATISTICS,
 } from '@src/const/text';
 
 const _HOME = HOME;
@@ -42,6 +43,7 @@ const _BANK = BANK;
 const _POST = POST;
 const _REGISTER_POST = REGISTER_POST;
 const _LEAVE = LEAVE;
+const _STATISTICS = STATISTICS;
 
 export enum select_enum {
     HOME = _HOME,
@@ -67,6 +69,7 @@ export enum select_enum {
     POST = _POST,
     REGISTER_POST = _REGISTER_POST,
     LEAVE = _LEAVE,
+    STATISTICS = _STATISTICS,
 }
 export type selected_type =
     | select_enum.HOME
@@ -91,7 +94,8 @@ export type selected_type =
     | select_enum.BANK
     | select_enum.POST
     | select_enum.REGISTER_POST
-    | select_enum.LEAVE;
+    | select_enum.LEAVE
+    | select_enum.STATISTICS;
 
 export enum route_enum {
     HOME = '/',
@@ -118,6 +122,7 @@ export enum route_enum {
     REGISTER_POST = '/register_post',
     LEAVE = '/leave',
     DASH_BOARD = '/dash_board',
+    STATISTICS = '/statistics',
 }
 export type routed_type =
     | route_enum.HOME
@@ -143,4 +148,5 @@ export type routed_type =
     | route_enum.POST
     | route_enum.REGISTER_POST
     | route_enum.LEAVE
-    | route_enum.DASH_BOARD;
+    | route_enum.DASH_BOARD
+    | route_enum.STATISTICS;

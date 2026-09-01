@@ -86,3 +86,4 @@ export const EDIT_REGISTER_POST = 'Chỉnh sửa đăng ký bài đăng';
 export const CHANGE_CHAT_ROOM_MASTER = 'Thay đổi chủ phòng hội thoại';
 export const LEAVE = 'Rời đi';
 export const CREATE_TEMPLATE = 'Tạo mẫu';
+export const STATISTICS = 'Thống kê';

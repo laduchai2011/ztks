@@ -16,6 +16,8 @@ CREATE TABLE [order] (
 GO
 CREATE NONCLUSTERED INDEX idx_chatRoom_id ON [order](chatRoomId);
 GO
+CREATE NONCLUSTERED INDEX idx_isPay ON [order](isPay);
+GO
 CREATE NONCLUSTERED INDEX idx_phone ON [order](phone);
 GO
 

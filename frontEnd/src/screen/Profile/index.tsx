@@ -14,6 +14,7 @@ import {
     BANK,
     POST,
     LEAVE,
+    STATISTICS,
 } from '@src/const/text';
 import MyLoading from './component/MyLoading';
 import MyToastMessage from './component/MyToastMessage';
@@ -85,6 +86,10 @@ const Profile = () => {
         navigate(route_enum.LEAVE);
     };
 
+    const goToDashboard = () => {
+        navigate(route_enum.DASH_BOARD);
+    };
+
     const goToSignout = () => {
         navigate(route_enum.SIGNOUT);
     };
@@ -150,6 +155,12 @@ const Profile = () => {
                                 </div>
                             </div>
                         )}
+                        <div className={style.optionGroup}>
+                            <div className={style.optionGroupName}>Thống kê</div>
+                            <div className={style.option} onClick={() => goToDashboard()}>
+                                Dash board
+                            </div>
+                        </div>
                         <div className={style.optionGroup}>
                             <div className={style.optionGroupName}>Mở rộng</div>
                             <div className={style.option} onClick={() => goToSignout()}>

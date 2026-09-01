@@ -1,10 +1,7 @@
 export interface StatisticsField {
     id: number;
     sales: number;
-    averageSales: number;
     orderAmount: number;
-    averageOrderAmount: number;
-    mostMoneyOfOrder: number;
     isDelete: boolean;
     zaloOaId: number;
     accountId: number;
@@ -15,4 +12,12 @@ export interface StatisticsField {
 export interface PagedStatisticsField {
     items: StatisticsField[];
     totalCount: number;
+}
+
+export interface StatisticsTotalField {
+    sales: number;
+    averageSales: number;
+    orderAmount: number;
+    averageOrderAmount: number;
+    ofDay: string;
 }

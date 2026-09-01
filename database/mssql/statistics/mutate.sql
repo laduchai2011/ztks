@@ -12,8 +12,8 @@ BEGIN
 
 		DECLARE @newStatisticsId INT;
 
-		INSERT INTO dbo.[statistics] (sales, averageSales, orderAmount, averageOrderAmount, zaloOaId, accountId, ofDay, createTime)
-        VALUES (@sales, @sales, 1, 1, @zaloOaId, @accountId, @ofDay, SYSDATETIMEOFFSET());
+		INSERT INTO dbo.[statistics] (sales, orderAmount, zaloOaId, accountId, ofDay, createTime)
+        VALUES (@sales, 1, @zaloOaId, @accountId, @ofDay, SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50001, 'Tạo doanh số không thành công.', 1;
@@ -58,18 +58,8 @@ BEGIN
 		END;
 
 		UPDATE dbo.[statistics]
-		SET
-			sales = @currentSales + @sales,
-
-			orderAmount = orderAmount + 1,
-
-			averageSales =
-				CAST(@currentSales + @sales AS DECIMAL(20,2))
-				/ NULLIF(orderAmount + 1, 0),
-
-			averageOrderAmount =
-				CAST(orderAmount + 1 AS FLOAT) / NULLIF(2, 0)
-
+		SET sales = @currentSales + @sales,
+			orderAmount = orderAmount + 1
 		WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofDay = @ofDay;
 		IF @@ROWCOUNT = 0
 		BEGIN
@@ -114,13 +104,7 @@ BEGIN
 		END;
 
 		UPDATE dbo.[statistics]
-		SET
-			sales = @currentSales + @sales,
-
-			averageSales =
-				CAST(@currentSales + @sales AS DECIMAL(20,2))
-				/ NULLIF(orderAmount, 0)
-
+		SET sales = @currentSales + @sales
 		WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofDay = @ofDay;
 		IF @@ROWCOUNT = 0
 		BEGIN
