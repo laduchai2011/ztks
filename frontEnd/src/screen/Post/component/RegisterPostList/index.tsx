@@ -20,7 +20,7 @@ const RegisterPostList = () => {
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
 
     const [isShow, setIsShow] = useState<boolean>(false);
-    const size = 3;
+    const size = 1;
     const [selectedRegisterPost, setSelectedRegisterPost] = useState<RegisterPostField | undefined>(undefined);
     const [registerPosts, setRegisterPosts] = useState<RegisterPostField[]>([]);
     const [hasMore, setHasMore] = useState<boolean>(false);

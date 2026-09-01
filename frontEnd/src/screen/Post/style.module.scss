@@ -20,13 +20,17 @@
         > .header {
             box-sizing: border-box;
             padding: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-bottom: 1px solid gray;
+            @include center-of-row;
+            justify-content: space-between;
+            background-color: #27a4f2;
             position: sticky;
             top: 0;
-            background-color: #27a4f2;
-            color: white;
+
+            > div {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: white;
+            }
         }
     }
 }

@@ -12,6 +12,7 @@ import RegisterPostList from './component/RegisterPostList';
 import CreatePost from './component/CreatePost';
 import EditPostDialog from './component/EditPostDialog';
 import PostList from './component/PostList';
+import { IoChevronBack } from 'react-icons/io5';
 
 const Post = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -31,10 +32,17 @@ const Post = () => {
         };
     }, [dispatch]);
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>{POST}</div>
+                <div className={style.header}>
+                    <div>{POST}</div>
+                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                </div>
                 <RegisterPostList />
                 <CreatePost />
                 <PostList />

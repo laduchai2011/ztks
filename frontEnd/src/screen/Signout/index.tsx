@@ -76,6 +76,10 @@ const Signout = () => {
         infor: lineCircleLoad,
     };
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.overlay} ref={overlay_element}>
@@ -92,7 +96,10 @@ const Signout = () => {
                             alt=""
                         />
                     </div>
-                    <div className={style.text}>Quay lại sớm nhé</div>
+                    <div className={style.text}>Quay lại sớm nhé !!!</div>
+                    <div className={style.backBtn} onClick={() => handleBack()}>
+                        Quay lại
+                    </div>
                     {myId !== null && (
                         <div className={style.btnSignout} onClick={() => handleSignout()}>
                             {SIGNOUT}

@@ -13,6 +13,7 @@ import Filter from './component/Filter';
 import RegisterPostList from './component/RegisterPostList';
 import EditRegisterPostDialog from './component/EditRegisterPostDialog';
 import DeleteRegisterPostDialog from './component/DeleteRegisterPostDialog';
+import { IoChevronBack } from 'react-icons/io5';
 
 const RegisterPost = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -32,10 +33,17 @@ const RegisterPost = () => {
         };
     }, [dispatch]);
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>{REGISTER_POST}</div>
+                <div className={style.header}>
+                    <div>{REGISTER_POST}</div>
+                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                </div>
                 <CreateRegisterPost />
                 <Filter />
                 <RegisterPostList />
