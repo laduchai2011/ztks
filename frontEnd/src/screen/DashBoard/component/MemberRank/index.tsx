@@ -4,21 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { route_enum } from '@src/router/type';
+import OneMember from './component/OneMember';
 import { setData_toastMessage } from '@src/redux/slice/DashBoard';
-import { avatarnull } from '@src/utility/string';
 
 const MemberRank = () => {
     const [memberList, setMemberList] = useState<string[]>(['', '', '', '']);
 
     const list_member = memberList.map((item, index) => {
-        return (
-            <div className={style.aRow}>
-                <div>anh</div>
-                <div>ten</div>
-                <div>doanh so</div>
-                <div>da thanh toan</div>
-            </div>
-        );
+        return <OneMember key={index} />;
     });
 
     return (

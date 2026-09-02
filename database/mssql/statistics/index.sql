@@ -8,7 +8,6 @@ CREATE TABLE [statistics] (
 	ofDay DATETIMEOFFSET(7) NOT NULL,
     createTime DATETIMEOFFSET(7) NOT NULL,
 
-	CONSTRAINT UQ_statistics_accountId_zaloOaId_ofDay UNIQUE (zaloOaId, ofDay),
 	CONSTRAINT UQ_statistics_accountId_zaloOaId_ofDay UNIQUE (accountId, zaloOaId, ofDay),
 
 	CONSTRAINT FK_statistics_ZaloOaId FOREIGN KEY (zaloOaId) REFERENCES zaloOa(id),
@@ -16,4 +15,10 @@ CREATE TABLE [statistics] (
 );
 GO
 CREATE NONCLUSTERED INDEX idx_accountId ON [statistics](accountId);
+GO
+CREATE INDEX idx_accountId_ofDay ON [statistics](accountId, ofDay);
+GO
+CREATE INDEX idx_zaloOaId_ofDay ON [statistics](zaloOaId, ofDay);
+GO
+CREATE INDEX idx_sales ON [statistics](sales);
 GO

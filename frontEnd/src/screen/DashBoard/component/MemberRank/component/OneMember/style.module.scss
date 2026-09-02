@@ -1,0 +1,107 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    margin: 5px 0;
+    border-radius: 15px;
+
+    &:hover {
+        background-color: rgb(236, 236, 236);
+    }
+
+    > .infor {
+        @include center-of-row;
+        height: 60px;
+
+        > div {
+            @include center-of-rectangle;
+        }
+
+        > .index {
+            height: 100%;
+            width: 50px;
+        }
+
+        > .avatar {
+            height: 100%;
+            width: 60px;
+            @include center-of-rectangle;
+
+            > img {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+            }
+        }
+
+        > .name {
+            height: 100%;
+            width: 300px;
+            font-weight: 500;
+        }
+
+        > .sales {
+            height: 100%;
+            flex: 1;
+            color: rgb(0, 185, 0);
+        }
+
+        > .orderAmount {
+            height: 100%;
+            width: 100px;
+            color: rgb(255, 0, 242);
+        }
+
+        > .orderListText {
+            height: 100%;
+            width: 150px;
+            color: blue;
+            user-select: none;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    > .orderList {
+        width: 100%;
+        max-width: 500px;
+        overflow-y: auto;
+
+        > div:nth-child(1) {
+            width: 100%;
+            @include center-of-row;
+            box-sizing: border-box;
+            padding: 5px;
+
+            > div {
+                @include center-of-rectangle;
+            }
+
+            > .index {
+                width: 50px;
+            }
+
+            > .header {
+                width: 300px;
+            }
+
+            > .content {
+                flex: 1;
+            }
+
+            > .phone {
+                width: 100px;
+            }
+
+            > .money {
+                width: 200px;
+            }
+
+            > .pay {
+                width: 50px;
+            }
+        }
+    }
+}

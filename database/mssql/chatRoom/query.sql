@@ -109,3 +109,11 @@ BEGIN
     SELECT * FROM dbo.chatRoomPhone WHERE chatRoomId = @chatRoomId
 END
 GO
+
+CREATE PROCEDURE GetAllChatRoomMasterMembers
+	@chatRoomId INT
+AS
+BEGIN
+	SELECT * FROM dbo.chatRoomMasterMembers WHERE chatRoomId = @chatRoomId
+END;
+GO

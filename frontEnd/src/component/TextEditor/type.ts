@@ -8,10 +8,12 @@ export enum format_enum {
     CENTER = 'CENTER', // NOT USE
     UNORDERED_LIST = 'UNORDERED_LIST',
     ORDERED_LIST = 'ORDERED_LIST',
+    FONT_SIZE = 'FONT_SIZE',
+    FORMAT_BLOCK = 'FORMAT_BLOCK',
 }
 
 export type format_type =
-    | typeof format_enum.BOLD
+    | format_enum.BOLD
     | format_enum.ITALIC
     | format_enum.UNDER_LINE
     | format_enum.STRIKE_THROUGH
@@ -19,12 +21,15 @@ export type format_type =
     | format_enum.RIGHT
     | format_enum.CENTER
     | format_enum.UNORDERED_LIST
-    | format_enum.ORDERED_LIST;
+    | format_enum.ORDERED_LIST
+    | format_enum.FONT_SIZE
+    | format_enum.FORMAT_BLOCK;
 
 export interface Style_Options {
     isLeft?: boolean;
     isCenter?: boolean;
     isRight?: boolean;
+    fontSize?: string;
 }
 export interface HandleFormat_Options {
     editor_element: HTMLDivElement | null;

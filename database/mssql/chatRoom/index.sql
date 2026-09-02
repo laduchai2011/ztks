@@ -50,3 +50,16 @@ CREATE TABLE chatRoomPhone (
 GO
 CREATE NONCLUSTERED INDEX idx_chatRoom_id ON chatRoomPhone(chatRoomId);
 GO
+
+CREATE TABLE chatRoomMasterMembers (
+    id INT PRIMARY KEY IDENTITY(1,1),
+	chatRoomId INT NOT NULL,
+	accountId INT NOT NULL,
+    createTime DATETIMEOFFSET(7) NOT NULL,
+    
+	CONSTRAINT FK_chatRoomMasterMembers_ChatRoom FOREIGN KEY (chatRoomId) REFERENCES chatRoom(id),
+    CONSTRAINT FK_chatRoomMasterMembers_Account FOREIGN KEY (accountId) REFERENCES account(id)
+)
+GO
+CREATE NONCLUSTERED INDEX idx_chatRoom_id ON chatRoomMasterMembers(chatRoomId);
+GO

@@ -1,8 +1,8 @@
 ﻿ALTER PROCEDURE GetStatistics
 	@fromDate DATETIMEOFFSET(7),
     @toDate DATETIMEOFFSET(7),
-	@zaloOaId INT,
-	@accountId INT
+	@zaloOaId INT = NULL,
+	@accountId INT = NULL
 AS
 BEGIN
 	SET NOCOUNT ON;

@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE CreateChatRoom
+﻿ALTER PROCEDURE CreateChatRoom
 	@userIdByApp NVARCHAR(255),
 	@zaloOaId INT,
 	@accountId INT
@@ -24,6 +24,13 @@ BEGIN
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50002, 'Tạo chatRoomRole không thành công.', 2;
+        END
+
+		INSERT INTO dbo.chatRoomMasterMembers (chatRoomId, accountId, createTime)
+        VALUES (@newChatRoomId, @accountId, SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50003, 'Tạo chatRoomMasterMembers không thành công.', 3;
         END
 
 		SELECT * FROM dbo.chatRoom WHERE id = @newChatRoomId;

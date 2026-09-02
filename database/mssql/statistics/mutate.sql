@@ -53,7 +53,6 @@ BEGIN
 
 		IF @currentSales IS NULL
 		BEGIN
-			ROLLBACK;
 			THROW 50001, 'Không tìm thấy statistics.', 1;
 		END;
 
@@ -63,7 +62,6 @@ BEGIN
 		WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofDay = @ofDay;
 		IF @@ROWCOUNT = 0
 		BEGIN
-			ROLLBACK;
 			THROW 50002, 'Cập nhật doanh số không thành công.', 2;
 		END;
 
@@ -99,7 +97,6 @@ BEGIN
 
 		IF @currentSales IS NULL
 		BEGIN
-			ROLLBACK;
 			THROW 50001, 'Không tìm thấy statistics.', 1;
 		END;
 
@@ -108,7 +105,6 @@ BEGIN
 		WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofDay = @ofDay;
 		IF @@ROWCOUNT = 0
 		BEGIN
-			ROLLBACK;
 			THROW 50002, 'Cập nhật doanh số không thành công.', 2;
 		END;
 
