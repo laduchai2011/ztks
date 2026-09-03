@@ -114,7 +114,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetZaloOaTokenWithFk
+CREATE PROCEDURE GetZaloOaTokenWithFk
     @zaloOaId INT,
 	@accountId INT
 AS

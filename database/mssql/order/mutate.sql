@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE CreateOrder
+﻿CREATE PROCEDURE CreateOrder
 	@uuid NVARCHAR(255),
 	@label NVARCHAR(255),
 	@content NVARCHAR(MAX),
@@ -34,22 +34,7 @@ BEGIN
 
 		SET @newOrderId = SCOPE_IDENTITY();
 
-		DECLARE @adminAccountId INT;
-		DECLARE @zaloOaId INT;
-		DECLARE @createTimeOfOrder DATETIMEOFFSET(7);
-
-		SELECT @adminAccountId = addedById FROM dbo.accountInformation WHERE accountId = @accountId
-		IF @chatRoomId IS NULL THROW 50004, N'Không tìm thấy adminAccountId .', 4;
-
-		SELECT @zaloOaId = id FROM dbo.zaloOa WHERE accountId = @adminAccountId
-		IF @zaloOaId IS NULL THROW 50005, N'Không tìm thấy zaloOaId .', 5;
-
-		SELECT @createTimeOfOrder = CONVERT(VARCHAR(10), createTime, 23) FROM dbo.[order] WHERE id = @newOrderId;
-		IF @createTimeOfOrder IS NULL THROW 50006, N'Không tìm thấy createTimeOfOrder .', 6;
-
 		SELECT * FROM dbo.[order] WHERE id = @newOrderId;
-
-		SELECT 0 AS sales, @zaloOaId AS zaloOaId, @adminAccountId AS accountId, @createTimeOfOrder as ofDay;
 
 		COMMIT TRANSACTION;
 	END TRY
@@ -61,7 +46,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE UpdateOrder
+CREATE PROCEDURE UpdateOrder
 	@id INT,
 	@label NVARCHAR(255),
 	@content NVARCHAR(MAX),
@@ -106,34 +91,15 @@ BEGIN
 			END
 		END
 
-		DECLARE @oldMoney DECIMAL(20,2);
-		SELECT @oldMoney = money FROM dbo.[order] WHERE id = @id
-		IF @chatRoomId IS NULL THROW 50005, N'Không tìm thấy order .', 5;
-
-		DECLARE @adminAccountId INT;
-		DECLARE @zaloOaId INT;
-		DECLARE @createTimeOfOrder DATETIMEOFFSET(7);
-
-		SELECT @adminAccountId = addedById FROM dbo.accountInformation WHERE accountId = @accountId
-		IF @chatRoomId IS NULL THROW 50006, N'Không tìm thấy adminAccountId .', 6;
-
-		SELECT @zaloOaId = id FROM dbo.zaloOa WHERE accountId = @adminAccountId
-		IF @zaloOaId IS NULL THROW 50007, N'Không tìm thấy zaloOaId .', 7;
-
-		SELECT @createTimeOfOrder = CONVERT(VARCHAR(10), createTime, 23) FROM dbo.[order] WHERE id = @id;
-		IF @createTimeOfOrder IS NULL THROW 50008, N'Không tìm thấy createTimeOfOrder .', 8;
-
         UPDATE dbo.[order]
 		SET label = @label, content = @content, money = @money, phone = @phone, updateTime = SYSDATETIMEOFFSET()
 		WHERE id = @id AND isPay = 0
 		IF @@ROWCOUNT = 0
         BEGIN
-            THROW 50009, 'Cập nhật đơn hàng không thành công.', 9;
+            THROW 50005, 'Cập nhật đơn hàng không thành công.', 5;
         END
 
 		SELECT * FROM dbo.[order] WHERE id = @id;
-
-		SELECT @money - @oldMoney AS sales, @zaloOaId AS zaloOaId, @adminAccountId AS accountId, @createTimeOfOrder as ofDay;
 
 		COMMIT TRANSACTION;
 	END TRY

@@ -4,6 +4,7 @@ import { MessageZaloField } from '../type';
 // import { MessageInput } from '@src/schema/message';
 import { HookDataField, HookCallField } from '@src/dataStruct/zalo/hookData';
 import { VideoMessageBodyField } from '../../dataStruct/message_v1/body';
+import { UpdateStatisticsBodyField } from '@src/dataStruct/statistics/body';
 
 export async function consumeMessage(queue: string, callback: (messageZalo: MessageZaloField) => void) {
     await rabbit_server.init();
@@ -70,7 +71,7 @@ export async function consumeHookData(
     );
 }
 
-export async function consumeStringMessage(queue: string, callback: (msg: string) => Promise<void> | void) {
+export async function consumeStringMessage(queue: string, callback: (msg: string) => void) {
     await rabbit_server.init();
 
     const channel = await rabbit_server.getConsumerChannel(queue);
@@ -81,13 +82,13 @@ export async function consumeStringMessage(queue: string, callback: (msg: string
 
     channel.consume(
         queue,
-        async (msg: ConsumeMessage | null) => {
+        (msg: ConsumeMessage | null) => {
             if (!msg) {
                 console.log(msg);
                 return;
             }
 
-            await callback(msg.content.toString());
+            callback(msg.content.toString());
 
             channel.ack(msg);
         },
@@ -115,6 +116,48 @@ export async function consumeVideoMessage(queue: string, callback: (videoMessage
             callback(JSON.parse(msg.content.toString()));
 
             channel.ack(msg);
+        },
+        { noAck: false }
+    );
+}
+
+export async function consumeStatistics(
+    queue: string,
+    callback: (statistics: UpdateStatisticsBodyField) => Promise<boolean>
+) {
+    await rabbit_server.init();
+
+    const channel = await rabbit_server.getConsumerChannel(queue);
+
+    await channel.assertQueue(queue, { durable: true });
+
+    channel.prefetch(1);
+
+    channel.consume(
+        queue,
+        async (msg: ConsumeMessage | null) => {
+            if (!msg) {
+                console.log(msg);
+                return;
+            }
+
+            try {
+                const data = JSON.parse(msg.content.toString());
+
+                const isSuccessful = await callback(data);
+
+                // Chỉ ACK khi xử lý thành công
+                if (isSuccessful) {
+                    channel.ack(msg);
+                } else {
+                    channel.nack(msg, false, true);
+                }
+            } catch (error) {
+                console.error('Error processing RabbitMQ message:', error);
+
+                // Xử lý lại message
+                channel.nack(msg, false, true);
+            }
         },
         { noAck: false }
     );

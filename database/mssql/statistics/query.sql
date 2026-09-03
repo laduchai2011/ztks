@@ -1,4 +1,5 @@
-﻿ALTER PROCEDURE GetStatistics
+﻿-- BO
+CREATE PROCEDURE GetStatistics
 	@fromDate DATETIMEOFFSET(7),
     @toDate DATETIMEOFFSET(7),
 	@zaloOaId INT = NULL,
@@ -26,7 +27,8 @@ BEGIN
 	END CATCH
 END
 
-ALTER PROCEDURE GetStatisticsOfDay
+-- BO
+CREATE PROCEDURE GetStatisticsOfDay
     @ofDay DATETIMEOFFSET(7),
 	@zaloOaId INT,
 	@accountId INT

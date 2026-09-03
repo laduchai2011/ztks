@@ -3,6 +3,7 @@
 .parent {
     margin: 5px 0;
     border-radius: 15px;
+    width: 100%;
 
     &:hover {
         background-color: rgb(236, 236, 236);
@@ -11,6 +12,7 @@
     > .infor {
         @include center-of-row;
         height: 60px;
+        width: 100%;
 
         > div {
             @include center-of-rectangle;
@@ -66,10 +68,15 @@
 
     > .orderList {
         width: 100%;
-        max-width: 500px;
+        max-height: 0;
         overflow-y: auto;
+        transition: max-height 0.3s ease-in-out;
 
-        > div:nth-child(1) {
+        &.show {
+            max-height: 500px;
+        }
+
+        > .oneOrder {
             width: 100%;
             @include center-of-row;
             box-sizing: border-box;
@@ -92,7 +99,7 @@
             }
 
             > .phone {
-                width: 100px;
+                width: 200px;
             }
 
             > .money {
@@ -100,7 +107,23 @@
             }
 
             > .pay {
-                width: 50px;
+                width: 100px;
+            }
+        }
+
+        > .seeMoreContainer {
+            @include center-of-rectangle;
+            box-sizing: border-box;
+            padding: 10px;
+
+            > div {
+                color: blue;
+                user-select: none;
+                cursor: pointer;
+
+                &:hover {
+                    text-decoration: underline;
+                }
             }
         }
     }

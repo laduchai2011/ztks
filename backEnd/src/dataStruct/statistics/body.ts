@@ -26,6 +26,13 @@ export interface CreateStatisticsBodyField {
     ofDay: Date;
 }
 
+export interface UpdateStatisticsBodyField {
+    sales: number;
+    zaloOaId: number;
+    accountId: number;
+    ofDay: Date;
+}
+
 export interface UpdateStatisticsWithNewOrderBodyField {
     sales: number;
     zaloOaId: number;

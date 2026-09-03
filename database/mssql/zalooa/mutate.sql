@@ -26,6 +26,29 @@ BEGIN
             THROW 50002, 'Tạo zaloOa không thành công.', 2;
         END
 
+		INSERT INTO dbo.[statisticsOa] (sales, orderAmount, zaloOaId, ofDay, createTime)
+        VALUES (0, 0, @newZaloOaId, CAST(GETDATE() AS DATE), SYSDATETIMEOFFSET());
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50003, 'Tạo statisticsOa không thành công.', 3;
+        END
+
+		INSERT INTO dbo.statisticsMemberInOneMonth (sales, orderAmount, flag, ofMonth, zaloOaId, accountId, createTime)
+		SELECT
+			0 AS sales,
+			0 AS orderAmount,
+			'new' AS flag,
+			DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1) AS ofMonth,
+			z.id AS zaloOaId,
+			@accountId AS accountId,
+			SYSDATETIMEOFFSET() AS createTime
+		FROM dbo.zaloOa z
+		WHERE z.accountId = @accountId;
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50004, 'Tạo statisticsMemberInOneMonth không thành công.', 4;
+        END	
+
 		SET @newZaloOaId = SCOPE_IDENTITY();
 
 		SELECT * FROM dbo.zaloOa WHERE id = @newZaloOaId;
@@ -120,7 +143,7 @@ BEGIN
 END;
 GO
 
-ALTER PROCEDURE UpdateRefreshTokenOfZaloOa
+CREATE PROCEDURE UpdateRefreshTokenOfZaloOa
 	@refreshToken NVARCHAR(MAX),
 	@zaloOaId INT,
 	@accountId INT

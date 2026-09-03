@@ -82,7 +82,7 @@ GO
 DELETE FROM account WHERE id = 2
 GO
 
-EXEC Signup N'admin1', N'admin1', N'0789860857', N'Admin', N'1';
+EXEC Signup N'admin1', N'admin1', N'0789860855', N'Admin', N'1';
 
 CREATE PROCEDURE EditInforAccount
 	@id INT,
@@ -185,6 +185,22 @@ BEGIN
 		BEGIN
 			THROW 50002, N'Thành viên thêm vào không được là 1 tài khoản admin .', 2;
 		END
+
+		INSERT INTO dbo.statisticsMemberInOneMonth (sales, orderAmount, flag, ofMonth, zaloOaId, accountId, createTime)
+		SELECT
+			0 AS sales,
+			0 AS orderAmount,
+			'new' AS flag,
+			DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1) AS ofMonth,
+			z.id AS zaloOaId,
+			@accountId AS accountId,
+			SYSDATETIMEOFFSET() AS createTime
+		FROM dbo.zaloOa z
+		WHERE z.accountId = @addedById;
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50003, 'Tạo statisticsMemberInOneMonth không thành công.', 3;
+        END	
 
 		-- thử UPDATE trước
 		UPDATE dbo.accountInformation
@@ -301,6 +317,14 @@ BEGIN
 		BEGIN
 			THROW 50004, N'Bạn không thể rời đi khi vẫn tồn tại phòng hội thoại .', 4;
 		END
+
+		UPDATE dbo.statisticsMemberInOneMonth
+		SET flag = 'old'
+		WHERE accountId = @accountId 
+		IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50005, 'Cập nhật statisticsMemberInOneMonth không thành công.', 5;
+        END
 
 		UPDATE dbo.accountInformation
 		SET addedById = NULL

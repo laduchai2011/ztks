@@ -1,6 +1,7 @@
 import { rabbit_server } from '@src/connect';
 import { MessageZaloField } from '../type';
 import { VideoMessageBodyField } from '../../dataStruct/message_v1/body';
+import { UpdateStatisticsBodyField } from '@src/dataStruct/statistics/body';
 
 export async function sendMessage(queue: string, messageZalo: MessageZaloField) {
     await rabbit_server.init();
@@ -36,4 +37,13 @@ export async function sendVideoMessage(queue: string, videoMessageBody: VideoMes
 
     await channel.assertQueue(queue, { durable: true });
     channel.sendToQueue(queue, Buffer.from(JSON.stringify(videoMessageBody)), { persistent: true });
+}
+
+export async function sendStatistics(queue: string, statistics: UpdateStatisticsBodyField) {
+    await rabbit_server.init();
+
+    const channel = await rabbit_server.getPublishChannel();
+
+    await channel.assertQueue(queue, { durable: true });
+    channel.sendToQueue(queue, Buffer.from(JSON.stringify(statistics)), { persistent: true });
 }
