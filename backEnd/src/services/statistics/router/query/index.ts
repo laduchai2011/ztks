@@ -7,6 +7,6 @@ const router_query_statistics: Router = express.Router();
 
 const handle_getStatisticsOa = new Handle_GetStatisticsOa();
 
-router_query_statistics.post('/getStatistics', handle_getStatisticsOa.main);
+router_query_statistics.post('/getStatisticsOa', handle_getStatisticsOa.main);
 
 export default router_query_statistics;

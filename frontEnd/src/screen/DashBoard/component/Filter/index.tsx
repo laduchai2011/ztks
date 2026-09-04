@@ -17,7 +17,6 @@ import { OA_KEY } from '@src/const/key';
 import { getCookie, setCookie } from '@src/utility/cookie';
 import { SEE_MORE } from '@src/const/text';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { StatisticsOaField } from '@src/dataStruct/statistics';
 
 const Filter = () => {
     const dispatch = useDispatch<AppDispatch>();
