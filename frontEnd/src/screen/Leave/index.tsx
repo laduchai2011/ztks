@@ -10,6 +10,7 @@ import LeaveAllChatSession from './component/LeaveAllChatSession';
 import LeaveAllAccountReceiveMessage from './component/LeaveAllAccountReceiveMessage';
 import LeaveAllChatRoom from './component/LeaveAllChatRoom';
 import LeaveAdmin from './component/LeaveAdmin';
+import { IoChevronBack } from 'react-icons/io5';
 import { setData_toastMessage } from '@src/redux/slice/Leave';
 import { route_enum } from '@src/router/type';
 
@@ -33,10 +34,17 @@ const Leave = () => {
         );
     }, [dispatch]);
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>{LEAVE}</div>
+                <div className={style.header}>
+                    <div>{LEAVE}</div>
+                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                </div>
                 <LeaveAllChatSession />
                 <LeaveAllAccountReceiveMessage />
                 <LeaveAllChatRoom />

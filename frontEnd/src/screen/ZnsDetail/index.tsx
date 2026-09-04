@@ -9,6 +9,7 @@ import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import OverView from './component/OverView';
 import ZnsMessageList from './component/ZnsMessageList';
+import { IoChevronBack } from 'react-icons/io5';
 
 const ZnsDetail = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -27,10 +28,17 @@ const ZnsDetail = () => {
         };
     }, [dispatch]);
 
+    const handleBack = () => {
+        navigate(-1);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <div className={style.header}>ZNS chi tiết</div>
+                <div className={style.header}>
+                    <div>ZNS chi tiết</div>
+                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                </div>
                 <OverView />
                 <ZnsMessageList />
             </div>

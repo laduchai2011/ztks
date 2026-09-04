@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE PayOrder
+﻿CREATE PROCEDURE PayOrder
 	@walletId INT,
 	@addedAmount DECIMAL(20,2),
 	@orderId INT,

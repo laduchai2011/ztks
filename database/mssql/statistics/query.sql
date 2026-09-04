@@ -1,7 +1,7 @@
 ﻿CREATE PROCEDURE GetStatisticsOa
 	@fromDate DATE,
     @toDate DATE,
-	@zaloOaId INT = NULL
+	@zaloOaId INT
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -24,6 +24,7 @@ BEGIN
 		THROW;
 	END CATCH
 END
+GO
 
 CREATE PROCEDURE GetStatisticsMemberInOneMonth
     @ofMonth DATE,
@@ -33,3 +34,4 @@ AS
 BEGIN
 	SELECT * FROM dbo.[statistics] WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofMonth = @ofMonth;
 END
+GO
