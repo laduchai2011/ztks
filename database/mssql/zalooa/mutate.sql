@@ -18,13 +18,13 @@ BEGIN
 		END
 
 		DECLARE @newZaloOaId INT;
-
         INSERT INTO dbo.zaloOa (label, oaId, oaName, oaSecret, status, zaloAppId, accountId, updateTime, createTime)
         VALUES (@label, @oaId, @oaName, @oaSecret, 'normal', @zaloAppId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50002, 'Tạo zaloOa không thành công.', 2;
         END
+		SET @newZaloOaId = SCOPE_IDENTITY();
 
 		INSERT INTO dbo.[statisticsOa] (sales, orderAmount, zaloOaId, ofDay, createTime)
         VALUES (0, 0, @newZaloOaId, CAST(GETDATE() AS DATE), SYSDATETIMEOFFSET());
@@ -34,16 +34,7 @@ BEGIN
         END
 
 		INSERT INTO dbo.statisticsMemberInOneMonth (sales, orderAmount, flag, ofMonth, zaloOaId, accountId, createTime)
-		SELECT
-			0 AS sales,
-			0 AS orderAmount,
-			'new' AS flag,
-			DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1) AS ofMonth,
-			z.id AS zaloOaId,
-			@accountId AS accountId,
-			SYSDATETIMEOFFSET() AS createTime
-		FROM dbo.zaloOa z
-		WHERE z.accountId = @accountId;
+		VALUES (0, 0, 'new', DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1), @newZaloOaId, @accountId, SYSDATETIMEOFFSET());
 		IF @@ROWCOUNT = 0
         BEGIN
             THROW 50004, 'Tạo statisticsMemberInOneMonth không thành công.', 4;

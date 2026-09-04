@@ -142,7 +142,7 @@ export async function consumeStatistics(
             }
 
             try {
-                const data = JSON.parse(msg.content.toString());
+                const data = JSON.parse(msg.content.toString()) as UpdateStatisticsBodyField;
 
                 const isSuccessful = await callback(data);
 

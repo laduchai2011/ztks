@@ -218,5 +218,3 @@ BEGIN
 	END CATCH
 END
 GO
-
-delete dbo.agentPay

@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { StatisticsField } from '@src/dataStruct/statistics';
-import { GetStatisticsBodyField } from '@src/dataStruct/statistics/body';
+import { StatisticsOaField } from '@src/dataStruct/statistics';
+import { GetStatisticsOaBodyField } from '@src/dataStruct/statistics/body';
 import { STATISTICS_API } from '@src/const/api/statistics';
 import { MyResponse } from '@src/dataStruct/response';
 import { DeviceEnum } from '@src/device/type';
@@ -15,11 +15,11 @@ export const statisticsRTK = createApi({
             return headers;
         },
     }),
-    tagTypes: ['Voucer'],
+    tagTypes: [],
     endpoints: (builder) => ({
-        getStatistics: builder.query<MyResponse<StatisticsField[]>, GetStatisticsBodyField>({
+        getStatisticsOa: builder.query<MyResponse<StatisticsOaField[]>, GetStatisticsOaBodyField>({
             query: (body) => ({
-                url: STATISTICS_API.GET_STATISTICS,
+                url: STATISTICS_API.GET_STATISTICS_OA,
                 method: 'POST',
                 body,
             }),
@@ -27,4 +27,4 @@ export const statisticsRTK = createApi({
     }),
 });
 
-export const { useLazyGetStatisticsQuery } = statisticsRTK;
+export const { useLazyGetStatisticsOaQuery } = statisticsRTK;

@@ -88,5 +88,3 @@ BEGIN
 	END CATCH
 END;
 GO
-
-delete dbo.cacheRedis

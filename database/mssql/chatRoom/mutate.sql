@@ -44,13 +44,6 @@ BEGIN
 END;
 GO
 
-DELETE FROM dbo.chatRoomRole 
-GO
-DELETE FROM dbo.[order] where chatRoomId = 1
-GO
-DELETE FROM dbo.chatRoom where id = 1
-GO
-
 CREATE PROCEDURE UpdateSetupChatRoomRole
 	@id INT,
 	@backGroundColor NVARCHAR(255),

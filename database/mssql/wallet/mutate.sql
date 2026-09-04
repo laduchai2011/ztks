@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE PayOrder
+﻿ALTER PROCEDURE PayOrder
 	@walletId INT,
 	@addedAmount DECIMAL(20,2),
 	@orderId INT,
@@ -83,8 +83,9 @@ BEGIN
 		END
 
 		-- trừ tiền phí dịch vụ 1%
+		DECLARE @updateTime DATETIMEOFFSET(7) = SYSDATETIMEOFFSET();
 		UPDATE dbo.wallet
-		SET amount = amount - (@addedAmount + COALESCE(@money_voucher, 0)) * 0.01, updateTime = SYSDATETIMEOFFSET()
+		SET amount = amount - (@addedAmount + COALESCE(@money_voucher, 0)) * 0.01, updateTime = @updateTime
 		WHERE id = @walletId
 		IF @@ROWCOUNT = 0
 		BEGIN
@@ -96,8 +97,20 @@ BEGIN
 		BEGIN
 			THROW 50011, 'Cập nhật biến động số dư khấu trừ phí không thành công.', 11;
 		END
+
+		DECLARE @chatRoomId INT;
+		SELECT @chatRoomId = chatRoomId FROM dbo.[order] WHERE id = @orderId;
+		IF @chatRoomId IS NULL THROW 50012, N'Không tìm thấy chatRoomId trong đơn hàng .', 12;
+
+		DECLARE @zaloOaId INT;
+		DECLARE @accountId INT;
+		SELECT @zaloOaId = zaloOaId, @accountId = accountId FROM dbo.chatRoom WHERE id = @chatRoomId;
+		IF @zaloOaId IS NULL THROW 50013, N'Không tìm thấy @zaloOaId trong đơn hàng .', 13;
+		IF @accountId IS NULL THROW 50014, N'Không tìm thấy @accountId trong đơn hàng .', 14;
 		
 		SELECT * FROM dbo.[order] WHERE id = @orderId;
+
+		SELECT @addedAmount as sales, @zaloOaId as zaloOaId, @accountId as accountId, @updateTime as ofDay;
 
 		COMMIT TRANSACTION;
 	END TRY
@@ -463,6 +476,3 @@ BEGIN
 	END CATCH
 END
 GO
-
-
-DELETE FROM dbo.requireTakeMoney;

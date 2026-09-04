@@ -9,7 +9,7 @@ CREATE TABLE wallet (
 	CONSTRAINT UQ_wallet_accountId_type UNIQUE (accountId, type),
     CONSTRAINT FK_wallet_Account FOREIGN KEY (accountId) REFERENCES account(id),
 
-	CONSTRAINT checkType_wallet CHECK (type IN ('1', '2'))
+	CONSTRAINT type_wallet CHECK (type IN ('1', '2'))
 );
 GO
 CREATE NONCLUSTERED INDEX idx_account_id ON wallet(accountId);

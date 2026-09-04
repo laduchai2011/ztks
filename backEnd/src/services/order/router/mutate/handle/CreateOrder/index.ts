@@ -10,12 +10,6 @@ import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateOrder from '../../mutateDB/CreateOrder';
 import { CacheGetChatRoomWithId } from '@src/const/redisKey/chatRoom';
 import { getRefreshToken } from '@src/device/getDevice';
-import { sendStringMessage } from '@src/messageQueue/Producer';
-import { getEnv } from '@src/mode';
-import { myEnv } from '@src/mode/type';
-import { AddSalesBodyField } from '@src/dataStruct/statistics/body';
-
-const prefix = getEnv() === myEnv.Dev ? '_dev' : '';
 
 class Handle_CreateOrder {
     private _mssql_server = mssql_server;
@@ -161,8 +155,6 @@ class Handle_CreateOrder {
         try {
             const result = await mutateDB.run();
             if (result?.recordset.length && result?.recordset.length > 0) {
-                const addSalesBody: AddSalesBodyField = { ...result.recordsets[1][0], isNew: true };
-                sendStringMessage(`statistics${prefix}`, JSON.stringify(addSalesBody));
                 const rdata = result.recordset[0];
                 // produceTask<OrderField>('addOrder-to-provider', data);
                 myResponse.message = 'Tạo đơn hàng thành công !';

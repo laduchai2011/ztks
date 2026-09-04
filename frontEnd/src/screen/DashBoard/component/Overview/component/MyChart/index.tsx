@@ -3,13 +3,11 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux';
 import Chart from 'react-apexcharts';
 import type { ApexOptions } from 'apexcharts';
-import { StatisticsField } from '@src/dataStruct/statistics';
+import { StatisticsOaField } from '@src/dataStruct/statistics';
 
 const MyChart = () => {
-    const statistics: StatisticsField[] = useSelector((state: RootState) => state.DashBoardSlice.statistics);
-    const averageSales: number = useSelector((state: RootState) => state.DashBoardSlice.statisticsTotal.averageSales);
-    const averageOrderAmounts: number = useSelector(
-        (state: RootState) => state.DashBoardSlice.statisticsTotal.averageOrderAmount
+    const statisticsOaArray: StatisticsOaField[] = useSelector(
+        (state: RootState) => state.DashBoardSlice.statisticsOaArray
     );
 
     const [sales, setSales] = useState<number[]>([]);
@@ -24,21 +22,22 @@ const MyChart = () => {
         const _orderAmounts: number[] = [];
         const _averageOrderAmountsArray: number[] = [];
         const _ofDayArray: string[] = [];
+        const length = statisticsOaArray.length;
 
-        for (let i: number = 0; i < statistics.length; i++) {
-            _sales.push(statistics[i].sales);
-            _averageSalesArray.push(averageSales);
-            _orderAmounts.push(statistics[i].orderAmount);
-            _averageOrderAmountsArray.push(averageOrderAmounts);
-            _ofDayArray.push(statistics[i].ofDay.toString().split('T')[0]);
+        for (let i: number = 0; i < length; i++) {
+            _sales.push(statisticsOaArray[i].sales);
+            _orderAmounts.push(statisticsOaArray[i].orderAmount);
+            _averageSalesArray.push(statisticsOaArray[i].sales / statisticsOaArray[i].orderAmount);
+            _averageOrderAmountsArray.push(statisticsOaArray[i].orderAmount / 2);
+            _ofDayArray.push(statisticsOaArray[i].ofDay.toString().split('T')[0]);
         }
 
         setSales(_sales);
-        setAverageSalesArray(_averageSalesArray);
         setOrderAmounts(_orderAmounts);
+        setAverageSalesArray(_averageSalesArray);
         setAverageOrderAmountsArray(_averageOrderAmountsArray);
         setOfDayArray(_ofDayArray);
-    }, [statistics, averageSales, averageOrderAmounts]);
+    }, [statisticsOaArray]);
 
     // const data = [
     //     3000, 4000, 3500, 5000, 4900, 6000, 7000, 9100, 8000, 7500, 8500, 9500, 10000, 11000, 10500, 12000, 13000,

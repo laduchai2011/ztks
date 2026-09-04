@@ -1,9 +1,7 @@
-﻿-- BO
-CREATE PROCEDURE GetStatistics
-	@fromDate DATETIMEOFFSET(7),
-    @toDate DATETIMEOFFSET(7),
-	@zaloOaId INT = NULL,
-	@accountId INT = NULL
+﻿CREATE PROCEDURE GetStatisticsOa
+	@fromDate DATE,
+    @toDate DATE,
+	@zaloOaId INT = NULL
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -12,10 +10,10 @@ BEGIN
 	BEGIN TRANSACTION;
 
 		SELECT *
-		FROM dbo.[statistics]
+		FROM dbo.[statisticsOa]
 		WHERE ofDay >= CAST(@fromDate AS DATETIMEOFFSET)
 		  AND ofDay < DATEADD(DAY, 1, CAST(@toDate AS DATETIMEOFFSET))
-		  AND zaloOaId = @zaloOaId AND accountId = @accountId
+		  AND zaloOaId = @zaloOaId
 		ORDER BY ofDay;
 
 	COMMIT TRANSACTION;
@@ -27,12 +25,11 @@ BEGIN
 	END CATCH
 END
 
--- BO
-CREATE PROCEDURE GetStatisticsOfDay
-    @ofDay DATETIMEOFFSET(7),
+CREATE PROCEDURE GetStatisticsMemberInOneMonth
+    @ofMonth DATE,
 	@zaloOaId INT,
 	@accountId INT
 AS
 BEGIN
-	SELECT * FROM dbo.[statistics] WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofDay = @ofDay;
+	SELECT * FROM dbo.[statistics] WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofMonth = @ofMonth;
 END

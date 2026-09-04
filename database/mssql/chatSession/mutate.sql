@@ -1,7 +1,4 @@
-﻿DELETE FROM dbo.chatSession
-GO
-
-CREATE PROCEDURE CreateChatSession
+﻿CREATE PROCEDURE CreateChatSession
 	@label NVARCHAR(255),
 	@code NVARCHAR(255),
 	@isReady BIT,

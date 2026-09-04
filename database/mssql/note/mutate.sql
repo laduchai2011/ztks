@@ -127,9 +127,3 @@ BEGIN
 	END CATCH
 END;
 GO
-
-
-delete dbo.isNewMessage
-go
-delete dbo.myCustomer
-go

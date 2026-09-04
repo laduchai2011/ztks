@@ -79,11 +79,6 @@ BEGIN
 END;
 GO
 
-DELETE FROM account WHERE id = 2
-GO
-
-EXEC Signup N'admin1', N'admin1', N'0789860855', N'Admin', N'1';
-
 CREATE PROCEDURE EditInforAccount
 	@id INT,
 	@firstName NVARCHAR(20),

@@ -8,22 +8,16 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { SEARCH } from '@src/const/text';
-import { useLazyGetStatisticsQuery } from '@src/redux/query/statisticsRTK';
+import { useLazyGetStatisticsOaQuery } from '@src/redux/query/statisticsRTK';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import {
-    setData_toastMessage,
-    set_isLoading,
-    set_selectedOa,
-    set_statisticsTotal,
-    set_statistics,
-} from '@src/redux/slice/DashBoard';
+import { setData_toastMessage, set_isLoading, set_selectedOa, set_statisticsOaArray } from '@src/redux/slice/DashBoard';
 import { useLazyGetZaloOaListWith2FkQuery } from '@src/redux/query/zaloRTK';
 import { OA_KEY } from '@src/const/key';
 import { getCookie, setCookie } from '@src/utility/cookie';
 import { SEE_MORE } from '@src/const/text';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { StatisticsField } from '@src/dataStruct/statistics';
+import { StatisticsOaField } from '@src/dataStruct/statistics';
 
 const Filter = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -41,9 +35,9 @@ const Filter = () => {
     const size: number = 5;
     const [zaloOaList, setZaloOaList] = useState<ZaloOaField[]>([]);
     const [total, setTotal] = useState<number>(0);
-    const [statistics, setStatistics] = useState<StatisticsField[]>([]);
+    // const [statisticsOaArray, setStatisticsOaArray] = useState<StatisticsOaField[]>([]);
 
-    const [getStatistics] = useLazyGetStatisticsQuery();
+    const [getStatisticsOa] = useLazyGetStatisticsOaQuery();
     const [getZaloOaListWith2Fk] = useLazyGetZaloOaListWith2FkQuery();
 
     // useEffect(() => {
@@ -122,16 +116,16 @@ const Filter = () => {
         if (!fromDate) return;
         if (!toDate) return;
 
-        getStatistics({
+        getStatisticsOa({
             fromDate: new Date(fromDate.format('YYYY-MM-DD')).toString(),
             toDate: new Date(toDate.format('YYYY-MM-DD')).toString(),
             zaloOaId: selectedOa.id,
-            accountId: accountInformation.addedById || -1,
         })
             .then((res) => {
                 const resData = res.data;
                 if (resData?.isSuccess && resData.data) {
-                    setStatistics(resData.data);
+                    // setStatisticsOaArray(resData.data);
+                    dispatch(set_statisticsOaArray(resData.data));
                 }
             })
             .catch((err) => {
@@ -145,38 +139,28 @@ const Filter = () => {
             });
     };
 
-    useEffect(() => {
-        if (!statistics) return;
+    // useEffect(() => {
+    //     if (!statisticsOaArray) return;
 
-        dispatch(set_statistics(statistics));
+    //     dispatch(set_statisticsOaArray(statisticsOaArray));
 
-        let sales: number = 0;
-        let averageSales: number = 0;
-        let orderAmount: number = 0;
-        let averageOrderAmount: number = 0;
-        let ofDay: string = '';
-        for (let i: number = 0; i < statistics.length; i++) {
-            sales = sales + statistics[i].sales;
+    //     let sales: number = 0;
+    //     let averageSales: number = 0;
+    //     let orderAmount: number = 0;
+    //     let averageOrderAmount: number = 0;
+    //     let ofDay: string = '';
+    //     for (let i: number = 0; i < statisticsOaArray.length; i++) {
+    //         sales = sales + statisticsOaArray[i].sales;
 
-            orderAmount = orderAmount + statistics[i].orderAmount;
-            // averageOrderAmount = averageOrderAmount + statistics[i].averageOrderAmount;
+    //         orderAmount = orderAmount + statisticsOaArray[i].orderAmount;
+    //         // averageOrderAmount = averageOrderAmount + statisticsOaArray[i].averageOrderAmount;
 
-            ofDay = statistics[i].ofDay.toString();
-        }
+    //         ofDay = statisticsOaArray[i].ofDay.toString();
+    //     }
 
-        averageSales = sales / orderAmount;
-        averageOrderAmount = orderAmount / 2;
-
-        dispatch(
-            set_statisticsTotal({
-                sales: sales,
-                averageSales: averageSales,
-                orderAmount: orderAmount,
-                averageOrderAmount: averageOrderAmount,
-                ofDay: ofDay,
-            })
-        );
-    }, [dispatch, statistics]);
+    //     averageSales = sales / orderAmount;
+    //     averageOrderAmount = orderAmount / 2;
+    // }, [dispatch, statisticsOaArray]);
 
     const handleShowDown = () => {
         setIsShowOa(true);

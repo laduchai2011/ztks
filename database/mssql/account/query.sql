@@ -218,9 +218,3 @@ BEGIN
 	SELECT * FROM dbo.recommend WHERE accountId = @accountId
 END
 GO
-
-EXEC dbo.GetNotReplyAccounts
-    @page = 1,
-    @size = 10,
-    @chatRoomId = 24,
-    @accountId = 1;

@@ -1,11 +1,4 @@
-﻿DELETE FROM dbo.zaloOaToken
-GO
-DELETE FROM dbo.zaloOa
-GO
-DELETE FROM dbo.zaloApp
-GO
-
-CREATE PROCEDURE GetZaloAppWithAccountId
+﻿CREATE PROCEDURE GetZaloAppWithAccountId
     @accountId INT
 AS
 BEGIN

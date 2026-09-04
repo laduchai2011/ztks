@@ -1,9 +1,9 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { StatisticsField } from '@src/dataStruct/statistics';
-import { GetStatisticsBodyField } from '@src/dataStruct/statistics/body';
-import QueryDB_GetStatistics from '../../queryDB/GetStatistics';
+import { StatisticsOaField } from '@src/dataStruct/statistics';
+import { GetStatisticsOaBodyField } from '@src/dataStruct/statistics/body';
+import QueryDB_GetStatisticsOa from '../../queryDB/GetStatisticsOa';
 
 class Handle_GetStatistics {
     private _mssql_server = mssql_server;
@@ -12,16 +12,16 @@ class Handle_GetStatistics {
         this._mssql_server.init();
     }
 
-    main = async (req: Request<any, any, GetStatisticsBodyField>, res: Response) => {
-        const getStatisticsBody = req.body;
+    main = async (req: Request<any, any, GetStatisticsOaBodyField>, res: Response) => {
+        const getStatisticsOaBody = req.body;
 
-        const myResponse: MyResponse<StatisticsField[]> = {
+        const myResponse: MyResponse<StatisticsOaField[]> = {
             isSuccess: false,
-            message: 'Bắt đầu (Handle_GetStatistics-main)',
+            message: 'Bắt đầu (Handle_GetStatisticsOa-main)',
         };
 
-        const queryDB = new QueryDB_GetStatistics();
-        queryDB.setGetStatisticsBody(getStatisticsBody);
+        const queryDB = new QueryDB_GetStatisticsOa();
+        queryDB.setGetStatisticsOaBody(getStatisticsOaBody);
 
         const connection_pool = this._mssql_server.get_connectionPool();
         if (connection_pool) {

@@ -1,41 +1,18 @@
-export interface AddSalesBodyField {
-    isNew: boolean;
+export interface GetStatisticsOaBodyField {
+    fromDate: Date;
+    toDate: Date;
+    zaloOaId: number;
+}
+
+export interface UpdateStatisticsBodyField {
     sales: number;
     zaloOaId: number;
     accountId: number;
     ofDay: Date;
 }
 
-export interface GetStatisticsBodyField {
-    fromDate: string;
-    toDate: string;
+export interface GetStatisticsMemberInOneMonthBodyField {
+    ofMonth: Date;
     zaloOaId: number;
     accountId: number;
-}
-
-export interface GetStatisticsOfDayBodyField {
-    ofDay: Date;
-    zaloOaId: number;
-    accountId: number;
-}
-
-export interface CreateStatisticsBodyField {
-    sales: number;
-    zaloOaId: number;
-    accountId: number;
-    ofDay: Date;
-}
-
-export interface UpdateStatisticsWithNewOrderBodyField {
-    sales: number;
-    zaloOaId: number;
-    accountId: number;
-    ofDay: Date;
-}
-
-export interface UpdateStatisticsWithOldOrderBodyField {
-    sales: number;
-    zaloOaId: number;
-    accountId: number;
-    ofDay: Date;
 }

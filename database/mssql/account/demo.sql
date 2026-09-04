@@ -1,46 +1,10 @@
-INSERT INTO
-    account (
-        userName,
-        password,
-        phone,
-        firstName,
-        lastName,
-        avatar,
-        status,
-        updateTime,
-        createTime
-    )
-VALUES
-    (
-        'admin',
-        'admin',
-        '0789860855',
-        'admin',
-        'admin',
-        NULL,
-        'normal',
-        TODATETIMEOFFSET(SYSUTCDATETIME(), -5),
-        TODATETIMEOFFSET(SYSUTCDATETIME(), -5)
-    );
+DELETE FROM account WHERE id = 2
+GO
 
+EXEC Signup N'admin1', N'admin1', N'0789860855', N'Admin', N'1';
 
-INSERT INTO
-    accountInformation (
-        addedById,
-        accountType,
-        accountId
-    )
-VALUES
-    (
-        1,
-        'admin',
-        1
-    );
-
-
-DELETE FROM dbo.accountInformation
-WHERE accountId = 3;
-go
-DELETE FROM dbo.account
-WHERE id = 3;
-go
+EXEC dbo.GetNotReplyAccounts
+    @page = 1,
+    @size = 10,
+    @chatRoomId = 24,
+    @accountId = 1;
