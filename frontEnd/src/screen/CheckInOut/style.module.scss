@@ -1,0 +1,42 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    background-color: #eee;
+    @include center-of-column;
+    z-index: 0;
+
+    > .main {
+        background-color: white;
+        width: 350px;
+        height: 100vh;
+        // height: 500px;
+        display: flex;
+        flex-direction: column;
+
+        @include responsive(sm) {
+            width: 100%;
+        }
+
+        > .header {
+            box-sizing: border-box;
+            padding: 10px;
+            @include center-of-row;
+            justify-content: space-between;
+            background-color: #27a4f2;
+            position: sticky;
+            top: 0;
+            z-index: 1000000;
+
+            > div {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: white;
+            }
+        }
+
+        > .headerTab {
+            position: sticky;
+            bottom: 0;
+        }
+    }
+}

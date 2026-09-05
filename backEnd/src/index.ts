@@ -150,6 +150,16 @@ app.use(`${apiString}/hello`, (req, res) => {
         const handleStatistics = (await import('./services/statistics/queue')).handleStatistics;
         handleStatistics();
     }
+
+    if (services.includes('post')) {
+        const service_post = (await import('@src/services/post')).default;
+        app.use(`${prefix}/service_post`, service_post);
+    }
+
+    if (services.includes('checkInOut')) {
+        const service_checkInOut = (await import('@src/services/checkInOut')).default;
+        app.use(`${prefix}/service_checkInOut`, service_checkInOut);
+    }
 })();
 
 app.listen(port, () => {

@@ -20,6 +20,7 @@ import {
     REGISTER_POST,
     LEAVE,
     STATISTICS,
+    CHECK_IN_OUT,
 } from '@src/const/text';
 
 const _HOME = HOME;
@@ -44,6 +45,7 @@ const _POST = POST;
 const _REGISTER_POST = REGISTER_POST;
 const _LEAVE = LEAVE;
 const _STATISTICS = STATISTICS;
+const _CHECK_IN_OUT = CHECK_IN_OUT;
 
 export enum select_enum {
     HOME = _HOME,
@@ -70,6 +72,7 @@ export enum select_enum {
     REGISTER_POST = _REGISTER_POST,
     LEAVE = _LEAVE,
     STATISTICS = _STATISTICS,
+    CHECK_IN_OUT = _CHECK_IN_OUT,
 }
 export type selected_type =
     | select_enum.HOME
@@ -95,7 +98,8 @@ export type selected_type =
     | select_enum.POST
     | select_enum.REGISTER_POST
     | select_enum.LEAVE
-    | select_enum.STATISTICS;
+    | select_enum.STATISTICS
+    | select_enum.CHECK_IN_OUT;
 
 export enum route_enum {
     HOME = '/',
@@ -123,6 +127,7 @@ export enum route_enum {
     LEAVE = '/leave',
     DASH_BOARD = '/dash_board',
     STATISTICS = '/statistics',
+    CHECK_IN_OUT = '/check_in_out',
 }
 export type routed_type =
     | route_enum.HOME
@@ -149,4 +154,5 @@ export type routed_type =
     | route_enum.REGISTER_POST
     | route_enum.LEAVE
     | route_enum.DASH_BOARD
-    | route_enum.STATISTICS;
+    | route_enum.STATISTICS
+    | route_enum.CHECK_IN_OUT;

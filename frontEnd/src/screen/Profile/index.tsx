@@ -14,7 +14,7 @@ import {
     BANK,
     POST,
     LEAVE,
-    STATISTICS,
+    CHECK_IN_OUT,
 } from '@src/const/text';
 import MyLoading from './component/MyLoading';
 import MyToastMessage from './component/MyToastMessage';
@@ -90,6 +90,10 @@ const Profile = () => {
         navigate(route_enum.DASH_BOARD);
     };
 
+    const goToCheckInOut = () => {
+        navigate(route_enum.CHECK_IN_OUT);
+    };
+
     const goToSignout = () => {
         navigate(route_enum.SIGNOUT);
     };
@@ -163,6 +167,9 @@ const Profile = () => {
                         </div>
                         <div className={style.optionGroup}>
                             <div className={style.optionGroupName}>Mở rộng</div>
+                            <div className={style.option} onClick={() => goToCheckInOut()}>
+                                {CHECK_IN_OUT}
+                            </div>
                             <div className={style.option} onClick={() => goToSignout()}>
                                 {SIGNOUT}
                             </div>

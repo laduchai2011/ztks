@@ -22,6 +22,7 @@ import PostReducer from '@src/redux/slice/Post';
 import RegisterPostReducer from '@src/redux/slice/RegisterPost';
 import LeaveReducer from '@src/redux/slice/Leave';
 import DashBoardReducer from '@src/redux/slice/DashBoard';
+import CheckInOutReducer from '@src/redux/slice/CheckInOut';
 import { accountRTK } from './query/accountRTK';
 import { callRTK } from './query/callRTK';
 import { callAgentRTK } from './query/callAgentRTK';
@@ -37,6 +38,7 @@ import { voucherRTK } from './query/voucherRTK';
 import { bankRTK } from './query/bankRTK';
 import { postRTK } from './query/postRTK';
 import { statisticsRTK } from './query/statisticsRTK';
+import { checkInOutRTK } from './query/checkInOutRTK';
 
 export const store = configureStore({
     reducer: {
@@ -64,6 +66,7 @@ export const store = configureStore({
         RegisterPostSlice: RegisterPostReducer,
         LeaveSlice: LeaveReducer,
         DashBoardSlice: DashBoardReducer,
+        CheckInOutSlice: CheckInOutReducer,
         [accountRTK.reducerPath]: accountRTK.reducer,
         [callRTK.reducerPath]: callRTK.reducer,
         [callAgentRTK.reducerPath]: callAgentRTK.reducer,
@@ -79,6 +82,7 @@ export const store = configureStore({
         [bankRTK.reducerPath]: bankRTK.reducer,
         [postRTK.reducerPath]: postRTK.reducer,
         [statisticsRTK.reducerPath]: statisticsRTK.reducer,
+        [checkInOutRTK.reducerPath]: checkInOutRTK.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
@@ -96,7 +100,8 @@ export const store = configureStore({
             voucherRTK.middleware,
             bankRTK.middleware,
             postRTK.middleware,
-            statisticsRTK.middleware
+            statisticsRTK.middleware,
+            checkInOutRTK.middleware
         ),
 });
 

@@ -23,6 +23,7 @@ import Post from '@src/screen/Post';
 import RegisterPost from '@src/screen/RegisterPost';
 import Leave from '@src/screen/Leave';
 import DashBoard from '@src/screen/DashBoard';
+import CheckInOut from '@src/screen/CheckInOut';
 import { route_enum } from './type';
 
 const router = createBrowserRouter(
@@ -50,6 +51,7 @@ const router = createBrowserRouter(
         { path: route_enum.REGISTER_POST, element: <RegisterPost /> },
         { path: route_enum.LEAVE, element: <Leave /> },
         { path: route_enum.DASH_BOARD, element: <DashBoard /> },
+        { path: route_enum.CHECK_IN_OUT, element: <CheckInOut /> },
         { path: '*', element: <NotFoundPage /> }, // Trang 404
     ],
     {
