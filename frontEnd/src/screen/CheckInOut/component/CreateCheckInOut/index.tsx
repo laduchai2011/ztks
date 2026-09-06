@@ -27,6 +27,8 @@ const CreateCheckInOut = () => {
 
     const [note, setNote] = useState('');
     const [checkType, setCheckType] = useState<CheckInOutType | null>(null);
+    const [image, setImage] = useState<File | null>(null);
+    const [preview, setPreview] = useState<string | null>(null);
 
     useEffect(() => {
         if (!checkTypes_element.current) return;
@@ -35,13 +37,13 @@ const CreateCheckInOut = () => {
 
         switch (checkType) {
             case CheckInOutEnum.IN: {
-                checkTypeElements[0].classList.add('selected');
-                checkTypeElements[1].classList.remove('selected');
+                checkTypeElements[0].classList.add(style.selected);
+                checkTypeElements[1].classList.remove(style.selected);
                 break;
             }
             case CheckInOutEnum.OUT: {
-                checkTypeElements[0].classList.remove('selected');
-                checkTypeElements[1].classList.add('selected');
+                checkTypeElements[0].classList.remove(style.selected);
+                checkTypeElements[1].classList.add(style.selected);
                 break;
             }
             default: {
@@ -84,15 +86,33 @@ const CreateCheckInOut = () => {
         setCheckType(type);
     };
 
+    useEffect(() => {
+        if (!image) return;
+        const objectUrl = URL.createObjectURL(image);
+        setPreview(objectUrl);
+
+        return () => {
+            URL.revokeObjectURL(objectUrl);
+            setPreview(null);
+        };
+    }, [image]);
     const handleClickImageIcon = () => {
         image_element.current?.click();
     };
     const handleCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
 
-        if (!file) return;
+        if (!file) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Đã có lỗi xảy ra',
+                })
+            );
+            return;
+        }
 
-        console.log(file);
+        setImage(file);
     };
 
     // const handleClickVideoIcon = () => {};
@@ -160,8 +180,8 @@ const CreateCheckInOut = () => {
                     <input type="file" ref={image_element} accept="image/*" capture="user" onChange={handleCapture} />
                     {/* <PiVideoFill onClick={() => handleClickVideoIcon()} size={25} color="red" /> */}
                 </div>
-                <div>
-                    <div></div>
+                <div className={style.preview}>
+                    <div className={style.previewImage}>{preview && <img src={preview} alt="previewImage" />}</div>
                     <div></div>
                 </div>
                 <div>
