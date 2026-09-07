@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { CheckInOutField } from '@src/dataStruct/checkInOut';
-import { CreateCheckInOutBodyField } from '@src/dataStruct/checkInOut/body';
+import { CreateCheckInOutBodyField, GetMyCheckInOutsBodyField } from '@src/dataStruct/checkInOut/body';
 import { CHECK_IN_OUT_API } from '@src/const/api/checkInOut';
 import { MyResponse } from '@src/dataStruct/response';
 import { DeviceEnum } from '@src/device/type';
@@ -17,14 +17,13 @@ export const checkInOutRTK = createApi({
     }),
     tagTypes: [],
     endpoints: (builder) => ({
-        // getCallAgentWithAccountId: builder.query<MyResponse<CallAgentField>, GetCallAgentWithAccountIdBodyField>({
-        //     query: (body) => ({
-        //         url: CALL_AGENT_API.GET_CALL_AGENT_WITH_ACCOUNT_ID,
-        //         method: 'POST',
-        //         body,
-        //     }),
-        // }),
-
+        getCheckInOuts: builder.query<MyResponse<CheckInOutField[]>, GetMyCheckInOutsBodyField>({
+            query: (body) => ({
+                url: CHECK_IN_OUT_API.GET_MY_CHECK_IN_OUTS,
+                method: 'POST',
+                body,
+            }),
+        }),
         createCheckInOut: builder.mutation<MyResponse<CheckInOutField>, CreateCheckInOutBodyField>({
             query: (body) => ({
                 url: CHECK_IN_OUT_API.CREATE_CHECK_IN_OUT,
@@ -35,4 +34,4 @@ export const checkInOutRTK = createApi({
     }),
 });
 
-export const { useCreateCheckInOutMutation } = checkInOutRTK;
+export const { useLazyGetCheckInOutsQuery, useCreateCheckInOutMutation } = checkInOutRTK;

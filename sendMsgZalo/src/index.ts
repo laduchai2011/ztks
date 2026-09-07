@@ -1,183 +1,137 @@
-import { chromium, Browser } from "playwright";
-import fs from "fs/promises";
+import { chromium, Page } from "playwright";
+import path from "path";
+import { promises as fs } from "fs";
 
-const BASE_URL =
-  "https://trangvangvietnam.com/categories/25960/ac-quy-nha-cung-cap-ac-quy.html";
+const rootDir = path.resolve(__dirname, "..");
+const SESSION_PATH = path.join(rootDir, "sessions", "zalo.json");
+const CONTENT_PATH = path.join(rootDir, "content.txt");
 
-async function getTotalPages(): Promise<number> {
-  console.log("🔎 Bước 1: Lấy tổng số trang...");
-
-  const browser = await chromium.launch({
-    headless: false,
-  });
-
+async function sendZaloMessage(
+  page: Page,
+  phone: string,
+  message: string,
+): Promise<boolean> {
   try {
-    const page = await browser.newPage();
+    // =========================
+    // BƯỚC 1: TÌM SỐ ĐIỆN THOẠI
+    // =========================
 
-    await page.goto(`${BASE_URL}?page=1`, {
-      waitUntil: "domcontentloaded",
-      timeout: 60_000,
+    const searchInput = page.locator("#contact-search-input");
+
+    await searchInput.waitFor({
+      state: "visible",
+      timeout: 10_000,
     });
 
-    // Đợi trang load
-    await page.waitForTimeout(15000);
+    await searchInput.click();
+    await searchInput.fill("");
+    await searchInput.fill(phone);
 
-    // Lấy tất cả link phân trang
-    const totalPages = await page.locator("#paging a").evaluateAll((links) => {
-      const pages = links
-        .map((link) => {
-          const href = link.getAttribute("href") || "";
-          const match = href.match(/[?&]page=(\d+)/);
+    await page.waitForTimeout(3000);
 
-          return match ? Number(match[1]) : null;
-        })
-        .filter((page): page is number => page !== null);
+    // =========================
+    // BƯỚC 2: TÌM NGƯỜI DÙNG
+    // =========================
 
-      return Math.max(...pages);
-    });
+    const userItem = page
+      .locator(".conv-item")
+      .filter({
+        has: page.locator(".txt-highlight", {
+          hasText: phone,
+        }),
+      })
+      .first();
 
-    // const maxPage = Math.max(...totalPages);
+    // Kiểm tra thay vì waitFor 10 giây
+    const count = await userItem.count();
 
-    console.log("📄 Các trang tìm được:", totalPages);
-    // console.log("✅ Tổng số trang:", maxPage);
-
-    // return maxPage;
-    return totalPages;
-  } finally {
-    await browser.close();
-    console.log("🔴 Đã đóng browser lấy tổng số trang");
-  }
-}
-
-async function crawlPage(pageNumber: number): Promise<string[]> {
-  let browser: Browser | null = null;
-
-  try {
-    console.log(`\n========================================`);
-    console.log(`🚀 Đang crawl trang ${pageNumber}`);
-    console.log(`========================================`);
-
-    // Mỗi trang mở một browser mới
-    browser = await chromium.launch({
-      headless: false,
-    });
-
-    const page = await browser.newPage();
-
-    const url = `${BASE_URL}?page=${pageNumber}`;
-
-    console.log(`🌐 URL: ${url}`);
-
-    await page.goto(url, {
-      waitUntil: "domcontentloaded",
-      timeout: 60_000,
-    });
-
-    await page.waitForTimeout(15000);
-
-    // Lấy toàn bộ text của trang
-    const bodyText = await page.locator("body").innerText();
-
-    // Tìm số điện thoại Việt Nam
-    const phoneRegex = /(?:0|\+84)(?:3|5|7|8|9)\d{8}/g;
-
-    const matches = bodyText.match(phoneRegex) || [];
-
-    // Chuẩn hóa số điện thoại
-    const phones = matches.map((phone) => {
-      return phone.replace(/\s+/g, "").replace(/[.-]/g, "");
-    });
-
-    // Loại trùng
-    const uniquePhones = [...new Set(phones)];
-
-    console.log(
-      `📱 Trang ${pageNumber}: tìm được ${uniquePhones.length} số điện thoại`,
-    );
-
-    for (const phone of uniquePhones) {
-      console.log(`   📞 ${phone}`);
+    if (count === 0) {
+      console.log(`❌ ${phone}: Không tìm thấy người dùng`);
+      return false;
     }
 
-    return uniquePhones;
+    console.log(`✅ Tìm thấy người dùng: ${phone}`);
+
+    await userItem.click();
+
+    await page.waitForTimeout(1000);
+
+    // =========================
+    // BƯỚC 3: NHẮN TIN
+    // =========================
+
+    const input = page.locator("#richInput");
+
+    await input.waitFor({
+      state: "visible",
+      timeout: 10_000,
+    });
+
+    await input.click();
+
+    await page.keyboard.insertText(message);
+
+    await page.waitForTimeout(3000);
+
+    await page.keyboard.press("Enter");
+
+    // console.log(`📨 Đã gửi tin nhắn: ${phone}`);
+
+    return true;
   } catch (error) {
-    console.error(`❌ Lỗi khi crawl trang ${pageNumber}:`, error);
-
-    return [];
-  } finally {
-    // Quan trọng: luôn đóng browser
-    if (browser) {
-      await browser.close();
-
-      console.log(`🔴 Đã đóng browser trang ${pageNumber}`);
-    }
+    console.log(`⚠️ Lỗi với ${phone}:`, error);
+    return false;
   }
 }
 
 async function main() {
-  // ==========================================
-  // BƯỚC 1
-  // ==========================================
+  const browser = await chromium.launch({
+    headless: false,
+  });
 
-  const totalPages = await getTotalPages();
+  const context = await browser.newContext({
+    storageState: SESSION_PATH,
+    userAgent:
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    viewport: { width: 1280, height: 800 },
+  });
 
-  console.log(`\n📚 Tổng cộng: ${totalPages} trang`);
+  const page = await context.newPage();
 
-  // ==========================================
-  // BƯỚC 2
-  // ==========================================
+  await page.goto("https://chat.zalo.me/", {
+    waitUntil: "domcontentloaded",
+  });
 
-  const allPhones = new Set<string>();
+  // Đăng nhập Zalo thủ công nếu chưa có session
 
-  for (let page = 1; page <= totalPages; page++) {
-    const phones = await crawlPage(page);
+  await page.waitForTimeout(15000);
+  await context.storageState({ path: SESSION_PATH });
 
-    for (const phone of phones) {
-      allPhones.add(phone);
+  const content = await fs.readFile(CONTENT_PATH, "utf8");
+
+  const phonetxt = await fs.readFile("phones.txt", "utf-8");
+
+  const phones = phonetxt
+    .split(/\r?\n/)
+    .map((phone) => phone.trim())
+    .filter((phone) => phone.length > 0);
+
+  const phoneStop = "0919031379";
+  const indexStop = phones.indexOf(phoneStop);
+  const len = phones.length;
+
+  for (let i = 0; i <= len; i++) {
+    console.log(i, len);
+    if (i >= indexStop) {
+      const phone = phones[i];
+      const randomNumber = Math.floor(Math.random() * 98) + 3;
+      const waitTime = randomNumber * 1000;
+      await page.waitForTimeout(waitTime);
+      await sendZaloMessage(page, phone, content);
     }
-
-    await savePhonesToFile(phones);
-
-    console.log(`📊 Tổng số điện thoại sau trang ${page}: ${allPhones.size}`);
-
-    // Có thể nghỉ giữa các trang
-    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
 
-  // ==========================================
-  // KẾT QUẢ
-  // ==========================================
-
-  console.log("\n========================================");
-  console.log("🎉 HOÀN THÀNH");
-  console.log("========================================");
-
-  console.log(`📄 Tổng số trang: ${totalPages}`);
-
-  console.log(`📱 Tổng số điện thoại: ${allPhones.size}`);
-
-  console.log("\nDanh sách:");
-
-  for (const phone of allPhones) {
-    console.log(phone);
-  }
+  // Không đóng browser để kiểm tra
 }
 
-main().catch((error) => {
-  console.error("🔥 Fatal error:", error);
-  process.exit(1);
-});
-
-const OUTPUT_FILE = "./phones.txt";
-async function savePhonesToFile(phones: string[]) {
-  if (phones.length === 0) {
-    return;
-  }
-
-  // Mỗi số một dòng
-  const content = phones.join("\n") + "\n";
-
-  await fs.appendFile(OUTPUT_FILE, content, "utf8");
-
-  console.log(`💾 Đã ghi ${phones.length} số vào ${OUTPUT_FILE}`);
-}
+main().catch(console.error);

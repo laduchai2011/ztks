@@ -2,7 +2,7 @@ import { chromium, Browser } from "playwright";
 import fs from "fs/promises";
 
 const BASE_URL =
-  "https://trangvangvietnam.com/categories/25960/ac-quy-nha-cung-cap-ac-quy.html";
+  "https://trangvangvietnam.com/categories/486298/pallet-go-san-xuat-va-cung-cap.html";
 
 async function getTotalPages(): Promise<number> {
   console.log("🔎 Bước 1: Lấy tổng số trang...");
@@ -20,7 +20,7 @@ async function getTotalPages(): Promise<number> {
     });
 
     // Đợi trang load
-    await page.waitForTimeout(15000);
+    await page.waitForTimeout(30000);
 
     // Lấy tất cả link phân trang
     const totalPages = await page.locator("#paging a").evaluateAll((links) => {
@@ -73,7 +73,7 @@ async function crawlPage(pageNumber: number): Promise<string[]> {
       timeout: 60_000,
     });
 
-    await page.waitForTimeout(15000);
+    await page.waitForTimeout(30000);
 
     // Lấy toàn bộ text của trang
     const bodyText = await page.locator("body").innerText();
@@ -168,7 +168,7 @@ main().catch((error) => {
   process.exit(1);
 });
 
-const OUTPUT_FILE = "./phones.txt";
+const OUTPUT_FILE = "./phones2.txt";
 async function savePhonesToFile(phones: string[]) {
   if (phones.length === 0) {
     return;

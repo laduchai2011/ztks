@@ -1,0 +1,65 @@
+🚀 **ZTKS – QUẢN LÝ ZALO OA, CSKH VÀ CHỐT ĐƠN TRÊN MỘT NỀN TẢNG**
+
+Bạn đang vận hành nhiều Zalo OA, có đội ngũ CSKH/Telesale và gặp tình trạng tin nhắn bị bỏ sót, nhân viên xử lý chồng chéo, gọi điện tốn chi phí hoặc phải sử dụng quá nhiều công cụ cùng lúc?
+
+**ZTKS** được xây dựng để tập trung toàn bộ quy trình **CSKH → tư vấn → gọi điện → lên đơn → thanh toán → chăm sóc sau bán** ngay trên một hệ thống.
+
+💬 **Live Chat đa Zalo OA**
+
+* Gom tin nhắn từ nhiều Zalo OA về một dashboard.
+* Đồng bộ hội thoại theo thời gian thực.
+* Phân chia phòng chat cho từng nhân viên.
+* Hạn chế bỏ sót khách hàng và tránh nhân viên tư vấn trùng nhau.
+
+📞 **Zalo VoIP Call**
+
+* Gọi thoại/video trực tiếp từ trình duyệt đến Zalo của khách hàng.
+* Không cần chuyển qua nhiều ứng dụng.
+* Quản lý lịch sử và trạng thái cuộc gọi.
+* Tối ưu chi phí so với hình thức gọi truyền thống.
+
+📩 **Tự động hóa ZNS**
+
+* Gửi thông báo đơn hàng, lịch hẹn, OTP, chăm sóc khách hàng...
+* Hỗ trợ gửi theo SĐT hoặc Zalo UID.
+* Cho phép sử dụng các tham số động như tên khách hàng, mã đơn, giá trị đơn hàng, ngày giờ...
+* Theo dõi trạng thái và chi phí gửi.
+
+🛒 **Tạo đơn ngay trong cuộc hội thoại**
+Nhân viên có thể vừa tư vấn vừa tạo đơn ngay trong phòng chat, theo dõi trạng thái thanh toán và hạn chế việc khách hàng bị rơi khỏi quy trình bán hàng.
+
+👥 **CRM & quản lý khách hàng**
+
+* Lưu lịch sử trao đổi và ghi chú khách hàng.
+* Đính kèm tài liệu/hình ảnh.
+* Hỗ trợ bàn giao khách hàng giữa các nhân viên.
+* Tra cứu lại thông tin nhanh chóng.
+
+👨‍💼 **Quản lý đội ngũ CSKH**
+
+* Phân quyền Admin / Quản lý / Nhân viên.
+* Phân công nhân viên theo từng OA.
+* Kiểm soát hạn mức gửi tin.
+* Có thể mở rộng đội ngũ từ vài nhân viên đến quy mô lớn.
+
+💰 **Ví tiền & nạp tiền VietQR tự động**
+
+* Quản lý số dư dịch vụ.
+* Nạp tiền qua VietQR.
+* Tự động đối soát giao dịch.
+* Theo dõi lịch sử sử dụng và chi phí.
+
+🔐 **Bảo mật & tích hợp**
+ZTKS sử dụng kết nối Zalo Official Account Open API, hỗ trợ OAuth, Webhook và cơ chế tự động làm mới Access Token.
+
+🎯 **Phù hợp với:**
+• Shop online
+• Đội Telesale
+• Bộ phận CSKH
+• Doanh nghiệp có nhiều Zalo OA
+• Chuỗi cửa hàng
+• Agency vận hành Zalo cho khách hàng
+
+💡 Thay vì phải mở nhiều tài khoản, nhiều phần mềm và nhiều công cụ riêng lẻ, ZTKS hướng tới việc đưa toàn bộ quy trình vận hành Zalo về **một nơi duy nhất**.
+
+👉 **Dùng thử miễn phí tại:** [https://taokosao.com], hoặc liên hệ: 0789860854

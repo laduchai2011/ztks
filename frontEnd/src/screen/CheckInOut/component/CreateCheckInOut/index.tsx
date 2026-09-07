@@ -1,21 +1,25 @@
 import { memo, useEffect, useState, useRef } from 'react';
 import style from './style.module.scss';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@src/redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@src/redux';
 import { IoCloseOutline } from 'react-icons/io5';
 import { CREATE_CHECK_IN_OUT } from '@src/const/text';
 import { CheckInOutType, CheckInOutEnum } from '@src/dataStruct/checkInOut';
 import { CreateCheckInOutBodyField } from '@src/dataStruct/checkInOut/body';
-import { setData_toastMessage, set_isLoading } from '@src/redux/slice/CheckInOut';
+import { setData_toastMessage, set_isLoading, setAddData_checkInOuts } from '@src/redux/slice/CheckInOut';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { useCreateCheckInOutMutation } from '@src/redux/query/checkInOutRTK';
 import { FaImage } from 'react-icons/fa';
 // import { PiVideoFill } from 'react-icons/pi';
+import { uploadImage } from '../../handle';
+import { AccountField } from '@src/dataStruct/account';
 
 const CreateCheckInOut = () => {
     const dispatch = useDispatch<AppDispatch>();
     const image_element = useRef<HTMLInputElement>(null);
     const checkTypes_element = useRef<HTMLDivElement>(null);
+
+    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
 
     const [createCheckInOut] = useCreateCheckInOutMutation();
 
@@ -117,39 +121,83 @@ const CreateCheckInOut = () => {
 
     // const handleClickVideoIcon = () => {};
 
-    const handleCreate = () => {
-        // const createNoteBody: CreateNoteBodyField = {
-        //     note: content,
-        //     chatRoomId: Number(idInput_t),
-        //     accountId: -1,
-        // };
-        // dispatch(set_isLoading(true));
-        // createNote(createNoteBody)
-        //     .then((res) => {
-        //         const resData = res.data;
-        //         if (resData?.isSuccess && resData.data) {
-        //             dispatch(setData_addNewNote(resData.data));
-        //             dispatch(
-        //                 setData_toastMessage({ type: messageType_enum.SUCCESS, message: 'Tạo ghi chú thành công !' })
-        //             );
-        //         } else {
-        //             dispatch(
-        //                 setData_toastMessage({
-        //                     type: messageType_enum.ERROR,
-        //                     message: resData?.message ?? 'Tạo ghi chú không thành công !',
-        //                 })
-        //             );
-        //         }
-        //     })
-        //     .catch((err) => {
-        //         dispatch(
-        //             setData_toastMessage({ type: messageType_enum.ERROR, message: 'Tạo ghi chú không thành công !' })
-        //         );
-        //         console.error(err);
-        //     })
-        //     .finally(() => {
-        //         dispatch(set_isLoading(false));
-        //     });
+    const handleCreate = async () => {
+        if (!account) return;
+
+        if (!checkType) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Vui lòng chọn loại check in/out',
+                })
+            );
+            return;
+        }
+
+        if (!image) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Chưa có hình ảnh',
+                })
+            );
+            return;
+        }
+
+        dispatch(set_isLoading(true));
+        const resData_image = await uploadImage(image, account.id.toString());
+        if (!resData_image) {
+            dispatch(
+                setData_toastMessage({
+                    type: messageType_enum.ERROR,
+                    message: 'Đăng tải hình ảnh thất bại !',
+                })
+            );
+            return;
+        }
+        dispatch(
+            setData_toastMessage({
+                type: messageType_enum.SUCCESS,
+                message: 'Đăng tải hình ảnh thành công !',
+            })
+        );
+
+        const fileName = resData_image.fileName;
+
+        const createNoteBody: CreateCheckInOutBodyField = {
+            type: checkType,
+            note: note.trim(),
+            image: fileName,
+            video: null,
+            accountId: -1,
+        };
+
+        createCheckInOut(createNoteBody)
+            .then((res) => {
+                const resData = res.data;
+                if (resData?.isSuccess && resData.data) {
+                    dispatch(setAddData_checkInOuts(resData.data));
+                    dispatch(
+                        setData_toastMessage({ type: messageType_enum.SUCCESS, message: 'Tạo ghi chú thành công !' })
+                    );
+                } else {
+                    dispatch(
+                        setData_toastMessage({
+                            type: messageType_enum.ERROR,
+                            message: resData?.message ?? 'Tạo ghi chú không thành công !',
+                        })
+                    );
+                }
+            })
+            .catch((err) => {
+                dispatch(
+                    setData_toastMessage({ type: messageType_enum.ERROR, message: 'Tạo ghi chú không thành công !' })
+                );
+                console.error(err);
+            })
+            .finally(() => {
+                dispatch(set_isLoading(false));
+            });
     };
 
     return (

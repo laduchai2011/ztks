@@ -10,7 +10,7 @@ CREATE TABLE checkInOut (
 
 	CONSTRAINT FK_checkInOut_Account FOREIGN KEY (accountId) REFERENCES account(id),
 
-	CONSTRAINT type_wallet CHECK (type IN ('in', 'out'))
+	CONSTRAINT type_checkInOut CHECK (type IN ('in', 'out'))
 )
 GO
 CREATE NONCLUSTERED INDEX idx_accountId_createTime ON checkInOut(accountId, createTime);
