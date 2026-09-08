@@ -20,7 +20,9 @@ import {
     REGISTER_POST,
     LEAVE,
     STATISTICS,
+    DASH_BOARD,
     CHECK_IN_OUT,
+    CHECK_IN_OUT_MANAGER,
 } from '@src/const/text';
 
 const _HOME = HOME;
@@ -45,7 +47,9 @@ const _POST = POST;
 const _REGISTER_POST = REGISTER_POST;
 const _LEAVE = LEAVE;
 const _STATISTICS = STATISTICS;
+const _DASH_BOARD = DASH_BOARD;
 const _CHECK_IN_OUT = CHECK_IN_OUT;
+const _CHECK_IN_OUT_MANAGER = CHECK_IN_OUT_MANAGER;
 
 export enum select_enum {
     HOME = _HOME,
@@ -72,7 +76,9 @@ export enum select_enum {
     REGISTER_POST = _REGISTER_POST,
     LEAVE = _LEAVE,
     STATISTICS = _STATISTICS,
+    DASH_BOARD = _DASH_BOARD,
     CHECK_IN_OUT = _CHECK_IN_OUT,
+    CHECK_IN_OUT_MANAGER = _CHECK_IN_OUT_MANAGER,
 }
 export type selected_type =
     | select_enum.HOME
@@ -99,7 +105,9 @@ export type selected_type =
     | select_enum.REGISTER_POST
     | select_enum.LEAVE
     | select_enum.STATISTICS
-    | select_enum.CHECK_IN_OUT;
+    | select_enum.DASH_BOARD
+    | select_enum.CHECK_IN_OUT
+    | select_enum.CHECK_IN_OUT_MANAGER;
 
 export enum route_enum {
     HOME = '/',
@@ -128,6 +136,7 @@ export enum route_enum {
     DASH_BOARD = '/dash_board',
     STATISTICS = '/statistics',
     CHECK_IN_OUT = '/check_in_out',
+    CHECK_IN_OUT_MANAGER = '/check_in_out_manager',
 }
 export type routed_type =
     | route_enum.HOME
@@ -155,4 +164,5 @@ export type routed_type =
     | route_enum.LEAVE
     | route_enum.DASH_BOARD
     | route_enum.STATISTICS
-    | route_enum.CHECK_IN_OUT;
+    | route_enum.CHECK_IN_OUT
+    | route_enum.CHECK_IN_OUT_MANAGER;

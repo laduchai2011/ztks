@@ -11,6 +11,7 @@ import Overview from './component/Overview';
 import MemberRank from './component/MemberRank';
 import { route_enum } from '@src/router/type';
 import { setData_toastMessage } from '@src/redux/slice/DashBoard';
+import { select_enum } from '@src/router/type';
 
 const DashBoard = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -37,11 +38,13 @@ const DashBoard = () => {
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <ToolBar />
+                <ToolBar selected={select_enum.DASH_BOARD} />
                 <div className={style.main1}>
-                    <Filter />
-                    <Overview />
-                    <MemberRank />
+                    <div>
+                        <Filter />
+                        <Overview />
+                        <MemberRank />
+                    </div>
                 </div>
                 {/* <div className={style.main2}>1</div> */}
             </div>

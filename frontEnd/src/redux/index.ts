@@ -23,6 +23,7 @@ import RegisterPostReducer from '@src/redux/slice/RegisterPost';
 import LeaveReducer from '@src/redux/slice/Leave';
 import DashBoardReducer from '@src/redux/slice/DashBoard';
 import CheckInOutReducer from '@src/redux/slice/CheckInOut';
+import CheckInOutManagerReducer from '@src/redux/slice/CheckInOutManager';
 import { accountRTK } from './query/accountRTK';
 import { callRTK } from './query/callRTK';
 import { callAgentRTK } from './query/callAgentRTK';
@@ -67,6 +68,7 @@ export const store = configureStore({
         LeaveSlice: LeaveReducer,
         DashBoardSlice: DashBoardReducer,
         CheckInOutSlice: CheckInOutReducer,
+        CheckInOutManagerSlice: CheckInOutManagerReducer,
         [accountRTK.reducerPath]: accountRTK.reducer,
         [callRTK.reducerPath]: callRTK.reducer,
         [callAgentRTK.reducerPath]: callAgentRTK.reducer,

@@ -87,5 +87,7 @@ export const CHANGE_CHAT_ROOM_MASTER = 'Thay đổi chủ phòng hội thoại';
 export const LEAVE = 'Rời đi';
 export const CREATE_TEMPLATE = 'Tạo mẫu';
 export const STATISTICS = 'Thống kê';
+export const DASH_BOARD = 'DASH_BOARD';
 export const CHECK_IN_OUT = 'Check In/Out';
+export const CHECK_IN_OUT_MANAGER = 'Quản lý check In/Out';
 export const CREATE_CHECK_IN_OUT = 'Tạo check In/Out';
