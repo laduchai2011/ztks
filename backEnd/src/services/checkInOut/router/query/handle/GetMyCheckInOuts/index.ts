@@ -1,7 +1,7 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { CheckInOutField } from '@src/dataStruct/checkInOut';
+import { CheckInOutWithDateField } from '@src/dataStruct/checkInOut';
 import { GetMyCheckInOutsBodyField } from '@src/dataStruct/checkInOut/body';
 import QueryDB_GetMyCheckInOuts from '../../queryDB/GetMyCheckInOuts';
 
@@ -15,7 +15,7 @@ class Handle_GetMyCheckInOuts {
     main = async (req: Request<any, any, GetMyCheckInOutsBodyField>, res: Response) => {
         const getMyCheckInOutsBody = req.body;
 
-        const myResponse: MyResponse<CheckInOutField[]> = {
+        const myResponse: MyResponse<CheckInOutWithDateField[]> = {
             isSuccess: false,
             message: 'Bắt đầu (Handle_GetMyCheckInOuts-main)',
         };

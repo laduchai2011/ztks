@@ -79,13 +79,20 @@ async function crawlPage(pageNumber: number): Promise<string[]> {
     const bodyText = await page.locator("body").innerText();
 
     // Tìm số điện thoại Việt Nam
-    const phoneRegex = /(?:0|\+84)(?:3|5|7|8|9)\d{8}/g;
+    const phoneRegex = /(?:0|\+84)(?:[\s.-]*)(?:3|5|7|8|9)(?:[\s.-]*\d){8}/g;
 
     const matches = bodyText.match(phoneRegex) || [];
 
-    // Chuẩn hóa số điện thoại
     const phones = matches.map((phone) => {
-      return phone.replace(/\s+/g, "").replace(/[.-]/g, "");
+      // Xóa toàn bộ khoảng trắng, dấu . và -
+      let normalized = phone.replace(/[\s.-]/g, "");
+
+      // +84908254005 -> 0908254005
+      if (normalized.startsWith("+84")) {
+        normalized = "0" + normalized.slice(3);
+      }
+
+      return normalized;
     });
 
     // Loại trùng

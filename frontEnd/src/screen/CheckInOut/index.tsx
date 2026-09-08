@@ -6,6 +6,7 @@ import { AppDispatch } from '@src/redux';
 import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import CreateCheckInOut from './component/CreateCheckInOut';
+import CheckList from './component/CheckList';
 import { IoChevronBack } from 'react-icons/io5';
 import { route_enum } from '@src/router/type';
 import { setData_toastMessage } from '@src/redux/slice/DashBoard';
@@ -44,6 +45,7 @@ const CheckInOut = () => {
                     <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
                 </div>
                 <CreateCheckInOut />
+                <CheckList />
             </div>
             <div>
                 <MyToastMessage />

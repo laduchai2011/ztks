@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { CheckInOutField } from '@src/dataStruct/checkInOut';
+import { CheckInOutField, CheckInOutWithDateField } from '@src/dataStruct/checkInOut';
 import { CreateCheckInOutBodyField, GetMyCheckInOutsBodyField } from '@src/dataStruct/checkInOut/body';
 import { CHECK_IN_OUT_API } from '@src/const/api/checkInOut';
 import { MyResponse } from '@src/dataStruct/response';
@@ -17,7 +17,7 @@ export const checkInOutRTK = createApi({
     }),
     tagTypes: [],
     endpoints: (builder) => ({
-        getCheckInOuts: builder.query<MyResponse<CheckInOutField[]>, GetMyCheckInOutsBodyField>({
+        getCheckInOuts: builder.query<MyResponse<CheckInOutWithDateField[]>, GetMyCheckInOutsBodyField>({
             query: (body) => ({
                 url: CHECK_IN_OUT_API.GET_MY_CHECK_IN_OUTS,
                 method: 'POST',
