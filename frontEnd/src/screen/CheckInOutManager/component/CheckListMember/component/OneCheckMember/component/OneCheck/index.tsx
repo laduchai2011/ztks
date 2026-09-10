@@ -89,7 +89,7 @@ const OneCheck: FC<{ data: CheckInOutField }> = ({ data }) => {
             content: content.trim(),
             isPass: isInspect,
             checkInOutId: data.id,
-            accountId: account.id,
+            accountId: -1,
         };
 
         dispatch(set_isLoading(true));

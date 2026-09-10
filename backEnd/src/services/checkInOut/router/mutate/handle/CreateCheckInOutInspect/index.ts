@@ -45,7 +45,7 @@ class Handle_CreateCheckInOutInspect {
 
             const { id } = verify_refreshToken;
             createCheckInOutInspect.accountId = id;
-            res.locals.createCheckInOut = createCheckInOutInspect;
+            res.locals.createCheckInOutInspect = createCheckInOutInspect;
 
             next();
         } else {
@@ -56,7 +56,7 @@ class Handle_CreateCheckInOutInspect {
     };
 
     main = async (_: Request, res: Response) => {
-        const createCheckInOut = res.locals.createCheckInOutInspect as CreateCheckInOutInspectBodyField;
+        const createCheckInOutInspect = res.locals.createCheckInOutInspect as CreateCheckInOutInspectBodyField;
 
         const myResponse: MyResponse<CheckInOutInspectField> = {
             isSuccess: false,
@@ -64,7 +64,7 @@ class Handle_CreateCheckInOutInspect {
         };
 
         const mutateDB = new MutateDB_CreateCheckInOutInspect();
-        mutateDB.setCreateCheckInOutInspectBody(createCheckInOut);
+        mutateDB.setCreateCheckInOutInspectBody(createCheckInOutInspect);
 
         const connection_pool = this._mssql_server.get_connectionPool();
         if (connection_pool) {
