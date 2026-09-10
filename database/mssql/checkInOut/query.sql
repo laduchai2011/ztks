@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE GetMyCheckInOuts
+﻿ALTER PROCEDURE GetMyCheckInOuts
     @fromDate DATE,
 	@toDate DATE,
     @accountId INT
@@ -14,7 +14,20 @@ BEGIN
 
     -- Nếu account chưa có dữ liệu
     IF @firstDate IS NULL
-        RETURN;
+        --RETURN;
+	BEGIN
+		SELECT
+			CAST(NULL AS DATE) AS [date],
+			CAST(NULL AS INT) AS id,
+			CAST(NULL AS NVARCHAR(255)) AS type,
+			CAST(NULL AS NVARCHAR(255)) AS note,
+			CAST(NULL AS NVARCHAR(255)) AS image,
+			CAST(NULL AS NVARCHAR(255)) AS video,
+			CAST(NULL AS DATETIMEOFFSET(7)) AS createTime
+		WHERE 1 = 0;
+
+		RETURN;
+	END;
 
     -- Không cho toDate nhỏ hơn ngày đầu tiên
     IF @toDate < @firstDate
@@ -38,6 +51,8 @@ BEGIN
         c.note,
         c.image,
         c.video,
+		c.isDelete,
+		@accountId as accountId,
         c.createTime
     FROM Dates d
     LEFT JOIN checkInOut c
@@ -55,5 +70,38 @@ BEGIN
         d.[date] DESC,
         c.createTime
     OPTION (MAXRECURSION 0);
+END
+GO
+
+ALTER PROCEDURE GetCheckInOutsWithDate
+	@type NVARCHAR(255),
+	@date DATE,
+    @accountId INT
+AS
+BEGIN
+	 SELECT
+		id,
+		type,
+		note,
+		image,
+		video,
+		isDelete,
+		accountId,
+		createTime
+	FROM dbo.checkInOut
+	WHERE accountId = @accountId
+		AND type = @type
+		AND isDelete = 0
+		AND createTime >= CAST(@date AS DATETIMEOFFSET)
+		AND createTime < DATEADD(DAY, 1, CAST(@date AS DATETIMEOFFSET))
+	ORDER BY createTime ASC;
+END
+GO
+
+CREATE PROCEDURE GetCheckInOutInspect
+    @checkInOutId INT
+AS
+BEGIN
+	 SELECT * FROM dbo.checkInOutInspect WHERE checkInOutId = @checkInOutId
 END
 GO

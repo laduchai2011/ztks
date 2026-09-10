@@ -1,6 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { CheckInOutField, CheckInOutWithDateField } from '@src/dataStruct/checkInOut';
-import { CreateCheckInOutBodyField, GetMyCheckInOutsBodyField } from '@src/dataStruct/checkInOut/body';
+import {
+    CreateCheckInOutBodyField,
+    GetMyCheckInOutsBodyField,
+    GetCheckInOutsWithDateBodyField,
+} from '@src/dataStruct/checkInOut/body';
 import { CHECK_IN_OUT_API } from '@src/const/api/checkInOut';
 import { MyResponse } from '@src/dataStruct/response';
 import { DeviceEnum } from '@src/device/type';
@@ -24,6 +28,13 @@ export const checkInOutRTK = createApi({
                 body,
             }),
         }),
+        getCheckInOutsWithDate: builder.query<MyResponse<CheckInOutField[]>, GetCheckInOutsWithDateBodyField>({
+            query: (body) => ({
+                url: CHECK_IN_OUT_API.GET_CHECK_IN_OUTS_WITH_DATE,
+                method: 'POST',
+                body,
+            }),
+        }),
         createCheckInOut: builder.mutation<MyResponse<CheckInOutField>, CreateCheckInOutBodyField>({
             query: (body) => ({
                 url: CHECK_IN_OUT_API.CREATE_CHECK_IN_OUT,
@@ -34,4 +45,5 @@ export const checkInOutRTK = createApi({
     }),
 });
 
-export const { useLazyGetCheckInOutsQuery, useCreateCheckInOutMutation } = checkInOutRTK;
+export const { useLazyGetCheckInOutsQuery, useLazyGetCheckInOutsWithDateQuery, useCreateCheckInOutMutation } =
+    checkInOutRTK;

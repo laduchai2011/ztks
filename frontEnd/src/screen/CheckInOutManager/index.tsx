@@ -6,7 +6,7 @@ import { AppDispatch } from '@src/redux';
 import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import ToolBar from '@src/screen/ToolBar';
-import CheckList from './component/CheckList';
+import CheckListMember from './component/CheckListMember';
 import { route_enum } from '@src/router/type';
 import { setData_toastMessage } from '@src/redux/slice/DashBoard';
 import { select_enum } from '@src/router/type';
@@ -40,7 +40,7 @@ const CheckInOutManager = () => {
                 <div className={style.main1}>
                     <div>
                         <div className={style.header}>Danh sách điểm danh</div>
-                        <CheckList />
+                        <CheckListMember />
                     </div>
                 </div>
                 {/* <div className={style.main2}>1</div> */}

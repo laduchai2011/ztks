@@ -113,11 +113,11 @@ const CheckList = () => {
     };
 
     const list_check = groupedCheckInOuts?.map((group) => (
-        <div key={group.date} className={style.checkGroup}>
+        <div className={style.checkGroup} key={group.date}>
             <div className={style.header}>{group.date}</div>
 
             {group.items.map((item) => (
-                <div key={item.id} className={style.check}>
+                <div className={style.check} key={item.id}>
                     <div>
                         <div className={handleCheckColor(item.type)}>{item.type}</div>
                         <div>{item.note}</div>

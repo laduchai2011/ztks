@@ -23,10 +23,9 @@ const List = () => {
     const accountReceiveMessage: AccountReceiveMessageField | undefined = useSelector(
         (state: RootState) => state.AccountReceiveMessageSlice.accountReceiveMessage
     );
+
     const [allMembers, setAllMembers] = useState<AccountField[]>([]);
-    // const [accountReceiveMessage, setAccountReceiveMessage] = useState<AccountReceiveMessageField | undefined>(
-    //     undefined
-    // );
+
     const [createAccountReceiveMessage] = useCreateAccountReceiveMessageMutation();
 
     const {

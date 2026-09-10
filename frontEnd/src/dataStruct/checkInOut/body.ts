@@ -13,3 +13,9 @@ export interface GetMyCheckInOutsBodyField {
     toDate: string;
     accountId: number;
 }
+
+export interface GetCheckInOutsWithDateBodyField {
+    type: CheckInOutType;
+    date: string;
+    accountId: number;
+}
