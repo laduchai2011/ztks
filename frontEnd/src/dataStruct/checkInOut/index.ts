@@ -27,3 +27,14 @@ export interface CheckInOutWithDateField {
     date: string;
     createTime: string;
 }
+
+export interface CheckInOutInspectField {
+    id: number;
+    content: string;
+    isPass: boolean;
+    isDelete: boolean;
+    checkInOutId: number;
+    accountId: number;
+    updateTime: string;
+    createTime: string;
+}

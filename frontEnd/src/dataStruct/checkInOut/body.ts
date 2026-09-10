@@ -19,3 +19,14 @@ export interface GetCheckInOutsWithDateBodyField {
     date: string;
     accountId: number;
 }
+
+export interface CreateCheckInOutInspectBodyField {
+    content: string;
+    isPass: boolean;
+    checkInOutId: number;
+    accountId: number;
+}
+
+export interface GetCheckInOutInspectWithFkBodyField {
+    checkInOutId: number;
+}

@@ -1,4 +1,4 @@
-﻿ALTER PROCEDURE GetMyCheckInOuts
+﻿CREATE PROCEDURE GetMyCheckInOuts
     @fromDate DATE,
 	@toDate DATE,
     @accountId INT
@@ -73,7 +73,7 @@ BEGIN
 END
 GO
 
-ALTER PROCEDURE GetCheckInOutsWithDate
+CREATE PROCEDURE GetCheckInOutsWithDate
 	@type NVARCHAR(255),
 	@date DATE,
     @accountId INT
@@ -98,10 +98,10 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE GetCheckInOutInspect
+CREATE PROCEDURE GetCheckInOutInspectWithFk
     @checkInOutId INT
 AS
 BEGIN
-	 SELECT * FROM dbo.checkInOutInspect WHERE checkInOutId = @checkInOutId
+	 SELECT * FROM dbo.checkInOutInspect WHERE checkInOutId = @checkInOutId AND isDelete = 0;
 END
 GO

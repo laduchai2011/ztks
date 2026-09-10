@@ -68,31 +68,6 @@ const OneCheckMember: FC<{ index: number; account: AccountField; day: string }> 
     }, [getCheckInOutsWithDate, account.id, day]);
 
     const list_check = checkInOut.map((item, index) => {
-        // <div className={style.checkGroup} key={index}>
-        //     <div className={style.check}>
-        //         <div>
-        //             <div>{item.type}</div>
-        //             <div>{item.note}</div>
-        //         </div>
-        //         <div>
-        //             <img src={handleSrcImage(item.image || '')} alt="" />
-        //         </div>
-        //     </div>
-        //     <div className={style.inspect}>
-        //         <div>
-        //             <div>
-        //                 <input placeholder="Ghi chú" />
-        //             </div>
-        //             <div>
-        //                 <div>Duyệt</div>
-        //                 <div>Không duyệt</div>
-        //             </div>
-        //             <div>
-        //                 <div>Đồng ý</div>
-        //             </div>
-        //         </div>
-        //     </div>
-        // </div>
         return <OneCheck key={index} data={item} />;
     });
 

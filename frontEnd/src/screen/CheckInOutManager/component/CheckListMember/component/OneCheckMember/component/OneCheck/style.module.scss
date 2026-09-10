@@ -32,13 +32,24 @@
                 object-fit: contain;
             }
         }
+
+        > div:nth-child(3) {
+            width: 100%;
+            @include center-of-row;
+            justify-content: flex-end;
+
+            > div {
+                color: gray;
+                font-style: italic;
+            }
+        }
     }
 
     > .inspect {
         @include center-of-rectangle;
         width: 30%;
 
-        > div {
+        > .createInspect {
             width: 60%;
 
             > div:nth-child(1) {
@@ -75,7 +86,7 @@
                     }
 
                     &.selected {
-                        background-color: rgb(216, 216, 216);
+                        background-color: rgb(177, 177, 177);
                     }
                 }
             }
@@ -104,6 +115,29 @@
                         color: white;
                     }
                 }
+            }
+        }
+
+        > .getInspect {
+            > div {
+                box-sizing: border-box;
+                padding: 10px;
+                @include center-of-rectangle;
+            }
+
+            > div:nth-child(1) {
+                height: 80px;
+                aspect-ratio: 1/1;
+                border-radius: 50%;
+            }
+
+            > div:nth-child(2) {
+                font-size: 1.1rem;
+                font-weight: 600px;
+            }
+
+            > div:nth-child(3) {
+                font-style: italic;
             }
         }
     }

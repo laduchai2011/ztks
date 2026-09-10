@@ -21,7 +21,7 @@ CREATE TABLE checkInOutInspect (
 	 content NVARCHAR(255) NOT NULL,
 	 isPass BIT NOT NULL DEFAULT 0,
 	 isDelete BIT NOT NULL DEFAULT 0,
-	 checkInOutId INT NOT NULL,
+	 checkInOutId INT NOT NULL UNIQUE,
 	 accountId INT NOT NULL,
 	 updateTime DATETIMEOFFSET(7) NOT NULL,
 	 createTime DATETIMEOFFSET(7) NOT NULL,
@@ -30,5 +30,3 @@ CREATE TABLE checkInOutInspect (
 	 CONSTRAINT FK_checkInOutInspect_Account FOREIGN KEY (accountId) REFERENCES account(id)
 )
 Go
-CREATE NONCLUSTERED INDEX idx_accountId_createTime ON checkInOutInspect(accountId, createTime);
-GO

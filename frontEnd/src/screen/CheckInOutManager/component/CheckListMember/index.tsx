@@ -131,11 +131,11 @@ const CheckListMember = () => {
         setPage((prev) => prev + 1);
     };
 
-    const list_check = days.map((day) => (
-        <div className={style.checkGroup} key={day}>
+    const list_check = days.map((day, index1) => (
+        <div className={style.checkGroup} key={index1}>
             <div className={style.header}>{day}</div>
-            {allMembers.map((item, index) => (
-                <OneCheckMember index={index} account={item} day={day} />
+            {allMembers.map((item, index2) => (
+                <OneCheckMember key={index2} index={index2} account={item} day={day} />
             ))}
         </div>
     ));

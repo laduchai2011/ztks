@@ -1,9 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { CheckInOutField, CheckInOutWithDateField } from '@src/dataStruct/checkInOut';
+import { CheckInOutField, CheckInOutWithDateField, CheckInOutInspectField } from '@src/dataStruct/checkInOut';
 import {
     CreateCheckInOutBodyField,
     GetMyCheckInOutsBodyField,
     GetCheckInOutsWithDateBodyField,
+    GetCheckInOutInspectWithFkBodyField,
+    CreateCheckInOutInspectBodyField,
 } from '@src/dataStruct/checkInOut/body';
 import { CHECK_IN_OUT_API } from '@src/const/api/checkInOut';
 import { MyResponse } from '@src/dataStruct/response';
@@ -35,6 +37,16 @@ export const checkInOutRTK = createApi({
                 body,
             }),
         }),
+        getCheckInOutInspectWithFk: builder.query<
+            MyResponse<CheckInOutInspectField>,
+            GetCheckInOutInspectWithFkBodyField
+        >({
+            query: (body) => ({
+                url: CHECK_IN_OUT_API.GET_CHECK_IN_OUT_INSPECT_WITH_FK,
+                method: 'POST',
+                body,
+            }),
+        }),
         createCheckInOut: builder.mutation<MyResponse<CheckInOutField>, CreateCheckInOutBodyField>({
             query: (body) => ({
                 url: CHECK_IN_OUT_API.CREATE_CHECK_IN_OUT,
@@ -42,8 +54,22 @@ export const checkInOutRTK = createApi({
                 body,
             }),
         }),
+        createCheckInOutInspect: builder.mutation<MyResponse<CheckInOutInspectField>, CreateCheckInOutInspectBodyField>(
+            {
+                query: (body) => ({
+                    url: CHECK_IN_OUT_API.CREATE_CHECK_IN_OUT_INSPECT,
+                    method: 'POST',
+                    body,
+                }),
+            }
+        ),
     }),
 });
 
-export const { useLazyGetCheckInOutsQuery, useLazyGetCheckInOutsWithDateQuery, useCreateCheckInOutMutation } =
-    checkInOutRTK;
+export const {
+    useLazyGetCheckInOutsQuery,
+    useLazyGetCheckInOutsWithDateQuery,
+    useLazyGetCheckInOutInspectWithFkQuery,
+    useCreateCheckInOutMutation,
+    useCreateCheckInOutInspectMutation,
+} = checkInOutRTK;
