@@ -1,0 +1,190 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 5px;
+    border-radius: 15px;
+
+    &:hover {
+        background-color: rgb(238, 237, 237);
+    }
+
+    > div:nth-child(1) {
+        width: 100%;
+        @include center-of-row;
+
+        > div {
+            text-align: center;
+        }
+
+        > .index {
+            width: 50px;
+        }
+
+        > .avatar {
+            @include center-of-rectangle;
+            width: 60px;
+
+            > img {
+                width: 100%;
+                aspect-ratio: 1/1;
+                border-radius: 50%;
+            }
+        }
+
+        > .name {
+            width: 250px;
+        }
+
+        > .note {
+            flex: 1;
+        }
+
+        > .in {
+            width: 100px;
+        }
+
+        > .out {
+            width: 100px;
+        }
+
+        > .inspect {
+            width: 200px;
+        }
+
+        > .inspectUser {
+            flex: 1;
+        }
+
+        > .seeImage {
+            width: 100px;
+            color: blue;
+            user-select: none;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    > div:nth-child(2) {
+        max-height: 0;
+        overflow-y: auto;
+        @include small-scroll-yy(1px);
+        transition: max-height 0.3s linear;
+
+        &.show {
+            max-height: 500px;
+        }
+
+        // > .checkGroup {
+        //     @include center-of-row;
+        //     margin: 10px 0;
+
+        //     > .check {
+        //         width: 70%;
+
+        //         > div:nth-child(1) {
+        //             @include center-of-row;
+        //             box-sizing: border-box;
+        //             padding: 10px;
+
+        //             > div:nth-child(1) {
+        //                 width: 20%;
+        //                 text-align: center;
+        //             }
+
+        //             > div:nth-child(1) {
+        //                 width: 80%;
+        //                 text-align: center;
+        //             }
+        //         }
+
+        //         > div:nth-child(2) {
+        //             width: 100%;
+
+        //             > img {
+        //                 width: 100%;
+        //                 height: 200px;
+        //                 object-fit: contain;
+        //             }
+        //         }
+        //     }
+
+        //     > .inspect {
+        //         @include center-of-rectangle;
+        //         width: 30%;
+
+        //         > div {
+        //             width: 60%;
+
+        //             > div:nth-child(1) {
+        //                 box-sizing: border-box;
+        //                 padding: 10px;
+
+        //                 > input {
+        //                     width: 100%;
+        //                     box-sizing: border-box;
+        //                     padding: 5px;
+        //                     border-radius: 10px;
+        //                     border: none;
+        //                     outline: none;
+        //                 }
+        //             }
+
+        //             > div:nth-child(2) {
+        //                 @include center-of-row;
+        //                 box-sizing: border-box;
+        //                 padding: 10px;
+
+        //                 > div {
+        //                     text-align: center;
+        //                     width: 50%;
+        //                     background-color: rgb(230, 230, 230);
+        //                     border-radius: 15px;
+        //                     user-select: none;
+        //                     cursor: default;
+        //                     box-sizing: border-box;
+        //                     padding: 5px 10px;
+
+        //                     &:hover {
+        //                         background-color: rgb(216, 216, 216);
+        //                     }
+
+        //                     &.selected {
+        //                         background-color: rgb(216, 216, 216);
+        //                     }
+        //                 }
+        //             }
+
+        //             > div:nth-child(3) {
+        //                 box-sizing: border-box;
+        //                 padding: 10px;
+        //                 @include center-of-rectangle;
+
+        //                 > div {
+        //                     width: max-content;
+        //                     background-color: rgb(255, 96, 170);
+        //                     box-sizing: border-box;
+        //                     padding: 5px 10px;
+        //                     border-radius: 10px;
+        //                     user-select: none;
+        //                     cursor: pointer;
+
+        //                     &:hover {
+        //                         background-color: white;
+        //                         color: rgb(255, 96, 170);
+        //                     }
+
+        //                     &:active {
+        //                         background-color: rgb(255, 96, 170);
+        //                         color: white;
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+    }
+}

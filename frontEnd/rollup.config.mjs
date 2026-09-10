@@ -54,6 +54,8 @@ const customResolver = resolve({
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.css', '.pcss', '.scss', '.png'],
 });
 
+let cache;
+
 const rollup_dev = isDev && [
     {
         input: 'src/index.tsx',
@@ -74,6 +76,9 @@ const rollup_dev = isDev && [
                 sourcemap: true,
             },
         ],
+
+        cache,
+
         plugins: [
             // polyfillNode(),
             resolve({

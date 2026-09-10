@@ -8,7 +8,7 @@ import { route_enum } from '@src/router/type';
 import { select_enum } from '@src/router/type';
 import { useGetAllMembersQuery } from '@src/redux/query/accountRTK';
 import { useLazyGetCheckInOutsQuery } from '@src/redux/query/checkInOutRTK';
-import OneCheck from './component/OneCheck';
+import OneCheckMember from './component/OneCheckMember';
 import { AccountField } from '@src/dataStruct/account';
 import { GetMyCheckInOutsBodyField } from '@src/dataStruct/checkInOut/body';
 import { CheckInOutWithDateField } from '@src/dataStruct/checkInOut';
@@ -135,7 +135,7 @@ const CheckListMember = () => {
         <div className={style.checkGroup} key={day}>
             <div className={style.header}>{day}</div>
             {allMembers.map((item, index) => (
-                <OneCheck index={index} account={item} day={day} />
+                <OneCheckMember index={index} account={item} day={day} />
             ))}
         </div>
     ));
