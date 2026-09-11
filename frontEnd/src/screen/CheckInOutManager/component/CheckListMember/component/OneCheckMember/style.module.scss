@@ -9,6 +9,14 @@
         background-color: rgb(238, 237, 237);
     }
 
+    &.pass {
+        background-color: rgb(231, 255, 194);
+    }
+
+    &.notPass {
+        background-color: rgb(255, 202, 202);
+    }
+
     > div:nth-child(1) {
         width: 100%;
         @include center-of-row;
@@ -54,9 +62,23 @@
 
         > .inspectUser {
             flex: 1;
+            @include center-of-rectangle;
+
+            > .inspectAccounts {
+                width: max-content;
+
+                > .inspectAccount {
+                    width: max-content;
+                    box-sizing: border-box;
+                    padding: 10px;
+                    margin: 10px;
+                    border-radius: 10px;
+                    background-color: rgb(245, 245, 245);
+                }
+            }
         }
 
-        > .seeImage {
+        > .seeCheck {
             width: 100px;
             color: blue;
             user-select: none;

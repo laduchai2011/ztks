@@ -5,7 +5,7 @@ import { AppDispatch, RootState } from '@src/redux';
 import { handleSrcImage, avatarnull } from '@src/utility/string';
 import { timeAgoSmart } from '@src/utility/time';
 import { AccountField } from '@src/dataStruct/account';
-import { CheckInOutField, CheckInOutInspectField } from '@src/dataStruct/checkInOut';
+import { CheckInOutField, CheckInOutInspectField, CheckInOutEnum } from '@src/dataStruct/checkInOut';
 import { CreateCheckInOutInspectBodyField } from '@src/dataStruct/checkInOut/body';
 import {
     useLazyGetCheckInOutInspectWithFkQuery,
@@ -33,7 +33,6 @@ const OneCheck: FC<{ data: CheckInOutField }> = ({ data }) => {
         getCheckInOutInspectWithFk({ checkInOutId: data.id })
             .then((res) => {
                 const resData = res.data;
-                console.log('getCheckInOutInspectWithFk', resData);
                 if (resData?.isSuccess && resData.data) {
                     setCheckInOutInspect(resData.data);
                 }
@@ -126,12 +125,41 @@ const OneCheck: FC<{ data: CheckInOutField }> = ({ data }) => {
             .finally(() => dispatch(set_isLoading(false)));
     };
 
+    const handleCheckTypeColor = () => {
+        switch (data.type) {
+            case CheckInOutEnum.IN:
+                return style.inColor;
+
+            case CheckInOutEnum.OUT:
+                return style.outColor;
+
+            default:
+                return '';
+        }
+    };
+
+    const handleInspectColor = () => {
+        if (!checkInOutInspect) {
+            return '';
+        }
+        switch (checkInOutInspect.isPass) {
+            case true:
+                return style.pass;
+
+            case false:
+                return style.notPass;
+
+            default:
+                return '';
+        }
+    };
+
     return (
-        <div className={style.parent}>
+        <div className={`${style.parent} ${handleInspectColor()}`}>
             <div className={style.check}>
                 <div>
-                    <div>{data.type}</div>
-                    <div>{data.note}</div>
+                    <div className={handleCheckTypeColor()}>{data.type}</div>
+                    <div className={handleCheckTypeColor()}>{data.note}</div>
                 </div>
                 <div>
                     <img src={handleSrcImage(data.image || '')} alt="" />
@@ -174,7 +202,7 @@ const OneCheck: FC<{ data: CheckInOutField }> = ({ data }) => {
                             <div>{checkInOutInspect.isPass ? 'Duyệt' : 'Không duyệt'}</div>
                         </div>
                         <div>
-                            <div>{checkInOutInspect.content}</div>{' '}
+                            <div>{checkInOutInspect.content}</div>
                         </div>
                     </div>
                 )}
