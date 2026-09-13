@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: postgresql_container
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    environment:
+      POSTGRES_DB: app_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 2011Hai
+
+    ports:
+      - "5432:5432"
+
+    networks:
+      - network_ztks
+
+    volumes:
+      - /var/docker_mount/postgres_data:/var/lib/postgresql
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d app_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+networks:
+  network_ztks:
+    external: true

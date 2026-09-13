@@ -1,4 +1,5 @@
 import { config as mssql_config } from './mssql';
+import { config as postgresql_config } from './postgresql';
 import { config as redis_config } from './redis';
 import { config as rabbitmq_config } from './rabbitmq';
 import { config as mongo_config } from './mongo';
@@ -8,6 +9,10 @@ import { infor as video_infor } from './video';
 
 interface mssql_interface {
     config?: mssql_config;
+}
+
+interface postgresql_interface {
+    config?: postgresql_config;
 }
 
 interface redis_interface {
@@ -43,6 +48,7 @@ interface video_interface {
 
 interface my_interface {
     mssql: mssql_interface;
+    postgresql: postgresql_interface;
     redis: redis_interface;
     rabbitmq: rabbitmq_interface;
     mongo: mongo_interface;
