@@ -34,6 +34,7 @@ BEGIN
 END;
 $$;
 
+-- DROP FUNCTION update_value_cache_redis(VARCHAR, TEXT);
 CREATE OR REPLACE FUNCTION update_value_cache_redis (
     p_key VARCHAR(255),
     p_value TEXT
@@ -42,8 +43,8 @@ RETURNS TABLE (
     id UUID,
     key VARCHAR(255),
     value TEXT,
-    updateTime TIMESTAMPTZ,
-    createTime TIMESTAMPTZ
+    update_time TIMESTAMPTZ,
+    create_time TIMESTAMPTZ
 )
 LANGUAGE plpgsql
 AS $$
@@ -52,20 +53,20 @@ DECLARE
 BEGIN
     SELECT cr.id
     INTO v_cache_redis_id
-    FROM cacheRedis AS cr
+    FROM cache_redis AS cr
     WHERE cr.key = p_key;
 
     IF v_cache_redis_id IS NULL THEN
-        RAISE EXCEPTION 'CacheRedis không tồn tại.'
+        RAISE EXCEPTION 'cache_redis không tồn tại.'
             USING ERRCODE = 'P0001';
     END IF;
 
-    UPDATE cacheRedis
+    UPDATE cache_redis
     SET value = p_value
     WHERE id = v_cache_redis_id;
 
     IF NOT FOUND THEN
-        RAISE EXCEPTION 'Cập nhật cacheRedis không thành công.'
+        RAISE EXCEPTION 'Cập nhật cache_redis không thành công.'
             USING ERRCODE = 'P0002';
     END IF;
 
@@ -74,24 +75,24 @@ BEGIN
         cr.id,
         cr.key,
         cr.value,
-        cr.updateTime,
-        cr.createTime
-    FROM cacheRedis AS cr
+        cr.update_time,
+        cr.create_time
+    FROM cache_redis AS cr
     WHERE cr.id = v_cache_redis_id;
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION delete_cache_redis_with_key(
+CREATE OR REPLACE FUNCTION delete_cache_redis_with_key (
     p_key VARCHAR(255)
 )
 RETURNS BOOLEAN
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    v_deleted_count UUID;
+    v_deleted_count INT;
 BEGIN
-    DELETE FROM cacheRedis
-    WHERE "key" = p_key;
+    DELETE FROM cache_redis
+    WHERE key = p_key;
 
     GET DIAGNOSTICS v_deleted_count = ROW_COUNT;
 

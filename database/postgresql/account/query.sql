@@ -7,7 +7,8 @@ LANGUAGE sql
 AS $$
     SELECT *
     FROM account
-    WHERE user_name = p_user_name
+    WHERE is_delete = FALSE
+	  AND user_name = p_user_name
       AND password = p_password;
 $$;
 
@@ -20,7 +21,7 @@ LANGUAGE sql
 AS $$
     SELECT *
     FROM account
-    WHERE status = 'normal'
+    WHERE is_delete = FALSE
       AND user_name = p_user_name
       AND phone = p_phone;
 $$;

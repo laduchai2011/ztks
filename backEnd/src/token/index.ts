@@ -14,6 +14,11 @@ export interface MyJwtPayload {
     role?: string;
 }
 
+export interface My_Jwt_Payload_Field {
+    id: string;
+    role?: string;
+}
+
 type CleanPayload = Omit<MyJwtPayload & Partial<JwtPayload>, 'exp' | 'iat' | 'nbf'>;
 
 type TokenState = MyJwtPayload | 'expired' | 'invalid';
@@ -47,6 +52,28 @@ export function generateRefreshToken(payload: MyJwtPayload, signOptions: SignOpt
     return jwt.sign(cleanPayload as object, REFRESH_TOKEN_SECRET as Secret, cp_signOptions);
 }
 export function generateSocketToken(payload: MyJwtPayload, signOptions: SignOptions): string {
+    const cp_signOptions = { ...signOptions };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { exp, iat, nbf, ...cleanPayload }: CleanPayload = payload as CleanPayload;
+    cp_signOptions.algorithm = 'HS256';
+    return jwt.sign(cleanPayload as object, SOCKET_TOKEN_SECRET as Secret, cp_signOptions);
+}
+
+export function generate_access_token(payload: My_Jwt_Payload_Field, signOptions: SignOptions): string {
+    const cp_signOptions = { ...signOptions };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { exp, iat, nbf, ...cleanPayload }: CleanPayload = payload as CleanPayload;
+    cp_signOptions.algorithm = 'HS256';
+    return jwt.sign(cleanPayload as object, ACCESS_TOKEN_SECRET as Secret, cp_signOptions);
+}
+export function generate_refresh_token(payload: My_Jwt_Payload_Field, signOptions: SignOptions): string {
+    const cp_signOptions = { ...signOptions };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { exp, iat, nbf, ...cleanPayload }: CleanPayload = payload as CleanPayload;
+    cp_signOptions.algorithm = 'HS256';
+    return jwt.sign(cleanPayload as object, REFRESH_TOKEN_SECRET as Secret, cp_signOptions);
+}
+export function generate_socket_token(payload: My_Jwt_Payload_Field, signOptions: SignOptions): string {
     const cp_signOptions = { ...signOptions };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { exp, iat, nbf, ...cleanPayload }: CleanPayload = payload as CleanPayload;

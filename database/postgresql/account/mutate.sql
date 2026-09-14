@@ -1,4 +1,11 @@
-﻿CREATE OR REPLACE FUNCTION signup (
+﻿DROP FUNCTION IF EXISTS signup(
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    VARCHAR,
+    VARCHAR
+);
+CREATE OR REPLACE FUNCTION signup (
     p_user_name   VARCHAR(100),
     p_password   VARCHAR(100),
     p_phone      VARCHAR(15),
@@ -12,8 +19,8 @@ RETURNS TABLE (
     phone VARCHAR(15),
     first_name VARCHAR(20),
     last_name VARCHAR(20),
-    avatar TEXT,
-    status VARCHAR,
+    avatar VARCHAR(255),
+    is_delete BOOLEAN,
     update_time TIMESTAMPTZ,
     create_time TIMESTAMPTZ
 )
@@ -33,7 +40,6 @@ BEGIN
         first_name,
         last_name,
         avatar,
-        status,
         update_time,
         create_time
     )
@@ -44,7 +50,6 @@ BEGIN
         p_first_name,
         p_last_name,
         NULL,
-        'normal',
         NOW(),
         NOW()
     )
@@ -94,7 +99,6 @@ BEGIN
         NOW()
     );
 
-
     -- 5. Tạo callAgent
     v_agent_code := gen_random_uuid()::TEXT;
     v_password2 := gen_random_uuid()::TEXT;
@@ -108,7 +112,6 @@ BEGIN
             USING ERRCODE = 'P0001';
     END IF;
 
-
     INSERT INTO call_agent (
         agent_code,
         password,
@@ -120,7 +123,6 @@ BEGIN
         v_new_account_id
     );
 
-
     -- 6. Trả account vừa tạo
     RETURN QUERY
     SELECT
@@ -131,7 +133,7 @@ BEGIN
         a.first_name,
         a.last_name,
         a.avatar,
-        a.status,
+        a.is_delete,
         a.update_time,
         a.create_time
     FROM account a
