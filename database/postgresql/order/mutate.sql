@@ -1,156 +1,255 @@
-﻿CREATE PROCEDURE CreateOrder
-	@uuid NVARCHAR(255),
-	@label NVARCHAR(255),
-	@content NVARCHAR(MAX),
-	@money DECIMAL(20,2),
-	@phone NVARCHAR(255),
-	@chatRoomId INT,
-	@accountId INT
-AS
+﻿CREATE OR REPLACE FUNCTION create_order (
+    p_uuid VARCHAR(255),
+    p_label VARCHAR(255),
+    p_content TEXT,
+    p_money NUMERIC(20,2),
+    p_phone VARCHAR(255),
+    p_chat_room_id UUID,
+    p_account_id UUID
+)
+RETURNS TABLE (
+    id UUID,
+    uuid VARCHAR(255),
+    label VARCHAR(255),
+    content TEXT,
+    money NUMERIC(20,2),
+    is_pay BOOLEAN,
+    phone VARCHAR(255),
+    is_delete BOOLEAN,
+    chat_room_id UUID,
+    update_time TIMESTAMPTZ,
+    create_time TIMESTAMPTZ
+)
+LANGUAGE plpgsql
+AS $$
 BEGIN
-	SET NOCOUNT ON;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
-		
-		IF NOT EXISTS ( SELECT 1 FROM dbo.chatRoom WHERE id = @chatRoomId AND accountId = @accountId )
-		BEGIN
-			THROW 50001, N'ChatRoom không tồn tại .', 1;
-		END
+    IF NOT EXISTS (
+        SELECT 1
+        FROM chat_room
+        WHERE id = p_chat_room_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION 'ChatRoom không tồn tại .'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-		IF EXISTS ( SELECT 1 FROM dbo.chatRoom WHERE id = @chatRoomId AND status = 'delete' )
-		BEGIN
-			THROW 50002, N'ChatRoom đã bị xóa .', 2;
-		END
+    IF EXISTS (
+        SELECT 1
+        FROM chat_room
+        WHERE id = p_chat_room_id
+          AND status = 'delete'
+    ) THEN
+        RAISE EXCEPTION 'ChatRoom đã bị xóa .'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-		DECLARE @newOrderId INT;
+    INSERT INTO orderr (
+        uuid,
+        label,
+        content,
+        money,
+        is_pay,
+        phone,
+        is_delete,
+        chat_room_id,
+        update_time,
+        create_time
+    )
+    VALUES (
+        p_uuid,
+        p_label,
+        p_content,
+        p_money,
+        FALSE,
+        p_phone,
+        FALSE,
+        p_chat_room_id,
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP
+    )
+    RETURNING
+        orderr.id,
+        orderr.uuid,
+        orderr.label,
+        orderr.content,
+        orderr.money,
+        orderr.is_pay,
+        orderr.phone,
+        orderr.is_delete,
+        orderr.chat_room_id,
+        orderr.update_time,
+        orderr.create_time
+    INTO
+        id,
+        uuid,
+        label,
+        content,
+        money,
+        is_pay,
+        phone,
+        is_delete,
+        chat_room_id,
+        update_time,
+        create_time;
 
-        INSERT INTO dbo.[order] (uuid, label, content, money, isPay, phone, isDelete, chatRoomId, updateTime, createTime)
-        VALUES (@uuid, @label, @content, @money, 0, @phone, 0, @chatRoomId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-		BEGIN
-			THROW 50003, N'Thêm dữ liệu không thành công .', 3;
-		END
+    RETURN NEXT;
 
-		SET @newOrderId = SCOPE_IDENTITY();
-
-		SELECT * FROM dbo.[order] WHERE id = @newOrderId;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
 END;
-GO
+$$;
 
-CREATE PROCEDURE UpdateOrder
-	@id INT,
-	@label NVARCHAR(255),
-	@content NVARCHAR(MAX),
-	@money DECIMAL(20,2),
-	@phone NVARCHAR(255),
-	@accountId INT
-AS
+CREATE OR REPLACE FUNCTION update_order (
+    p_id UUID,
+    p_label VARCHAR(255),
+    p_content TEXT,
+    p_money DECIMAL(20,2),
+    p_phone VARCHAR(255),
+    p_account_id UUID
+)
+RETURNS SETOF orderr
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_chat_room_id UUID;
+    v_phone_voucher UUID;
 BEGIN
-	SET NOCOUNT ON;
+    -- Lấy chatRoomId
+    SELECT o.chat_room_id
+    INTO v_chat_room_id
+    FROM orderr o
+    WHERE o.id = p_id;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    IF v_chat_room_id IS NULL THEN
+        RAISE EXCEPTION 'Không tìm thấy chatRoomId của order.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-		DECLARE @chatRoomId INT;
-		SELECT @chatRoomId = chatRoomId FROM dbo.[order] WHERE id = @id;
-		IF @chatRoomId IS NULL THROW 50001, N'Không tìm thấy chatRoomid của order .', 1;
+    -- Kiểm tra order đã bị xóa
+    IF EXISTS (
+        SELECT 1
+        FROM orderr
+        WHERE id = p_id
+          AND is_delete = TRUE
+    ) THEN
+        RAISE EXCEPTION 'Order này đã bị xóa.'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-		IF EXISTS ( SELECT 1 FROM dbo.[order] WHERE id = @id AND isDelete = 1 )
-		BEGIN
-			THROW 50002, N'Order này đã bị xóa .', 2;
-		END
+    -- Kiểm tra chatRoom thuộc account
+    IF NOT EXISTS (
+        SELECT 1
+        FROM chat_room
+        WHERE status = 'normal'
+          AND id = v_chat_room_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION 'ChatRoom này không phải của bạn.'
+            USING ERRCODE = 'P0003';
+    END IF;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.chatRoom WHERE status = 'normal' AND id = @chatRoomId AND accountId = @accountId )
-		BEGIN
-			THROW 50003, N'ChatRoom này không phải của bạn .', 3;
-		END
+    -- Lấy phone của voucher
+    SELECT v.phone
+    INTO v_phone_voucher
+    FROM voucher v
+    WHERE v.order_id = p_id;
 
-		DECLARE @phone_voucher INT;
-		SELECT @phone_voucher = phone FROM dbo.voucher WHERE orderId = @id;
+    -- Nếu phone voucher khác phone mới thì bỏ voucher cũ
+    IF v_phone_voucher IS NOT NULL THEN
+        IF NOT (p_phone IS NOT NULL AND v_phone_voucher = p_phone::INT) THEN
 
-		IF @phone_voucher IS NOT NULL
-		BEGIN
-			IF NOT (@phone IS NOT NULL AND @phone_voucher = @phone)
-			BEGIN
-				UPDATE dbo.voucher
-				SET orderId = NULL
-				WHERE orderId = @id
-				IF @@ROWCOUNT = 0
-				BEGIN
-					THROW 50004, 'Bỏ voucher cũ không thành công.', 4;
-				END
-			END
-		END
+            UPDATE voucher
+            SET order_id = NULL
+            WHERE order_id = p_id;
 
-        UPDATE dbo.[order]
-		SET label = @label, content = @content, money = @money, phone = @phone, updateTime = SYSDATETIMEOFFSET()
-		WHERE id = @id AND isPay = 0
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50005, 'Cập nhật đơn hàng không thành công.', 5;
-        END
+            IF NOT FOUND THEN
+                RAISE EXCEPTION 'Bỏ voucher cũ không thành công.'
+                    USING ERRCODE = 'P0004';
+            END IF;
 
-		SELECT * FROM dbo.[order] WHERE id = @id;
+        END IF;
+    END IF;
 
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    -- Update order
+    UPDATE orderr
+    SET
+        label = p_label,
+        content = p_content,
+        money = p_money,
+        phone = p_phone,
+        update_time = CURRENT_TIMESTAMP
+    WHERE id = p_id
+      AND is_pay = FALSE;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Cập nhật đơn hàng không thành công.'
+            USING ERRCODE = 'P0005';
+    END IF;
+
+    -- Trả order sau khi update
+    RETURN QUERY
+    SELECT *
+    FROM orderr
+    WHERE id = p_id;
+
 END;
-GO
+$$;
 
-CREATE PROCEDURE CreateOrderStatus
-	@type NVARCHAR(255),
-	@content NVARCHAR(255),
-    @orderId INT,
-	@accountId INT
-AS
+CREATE OR REPLACE FUNCTION create_order_status ( 
+    p_type VARCHAR(255),
+    p_content VARCHAR(255),
+    p_order_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF order_status
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_chat_room_id UUID;
+    v_new_order_status_id UUID;
 BEGIN
-	SET NOCOUNT ON;
+    -- Lấy chatRoomId của order
+    SELECT o.chat_room_id
+    INTO v_chat_room_id
+    FROM orderr o
+    WHERE o.id = p_order_id;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    IF v_chat_room_id IS NULL THEN
+        RAISE EXCEPTION 'Không tìm thấy chatRoomId của order.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-		DECLARE @chatRoomId INT;
-		SELECT @chatRoomId = chatRoomId FROM dbo.[order] WHERE id = @orderId;
-		IF @chatRoomId IS NULL THROW 50001, N'Không tìm thất chatRoomid của order .', 1;
+    -- Kiểm tra chatRoom có thuộc account hiện tại không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM chat_room
+        WHERE status = 'normal'
+          AND id = v_chat_room_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION 'ChatRoom này không phải của bạn.'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.chatRoom WHERE status = 'normal' AND id = @chatRoomId AND accountId = @accountId )
-		BEGIN
-			THROW 50002, N'ChatRoom này không phải của bạn .', 2;
-		END
-		
-		DECLARE @newOrderStatusId INT;
+    -- Insert orderStatus
+    INSERT INTO order_status (
+        type,
+        content,
+        order_id,
+        create_time
+    )
+    VALUES (
+        p_type,
+        p_content,
+        p_order_id,
+        CURRENT_TIMESTAMP
+    )
+    RETURNING id INTO v_new_order_status_id;
 
-        INSERT INTO dbo.orderStatus (type, content, orderId, createTime)
-        VALUES (@type, @content, @orderId, SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-		BEGIN
-			THROW 50003, N'Thêm trạng thái không thành công .', 3;
-		END
+    -- Trả về record vừa tạo
+    RETURN QUERY
+    SELECT *
+    FROM order_status
+    WHERE id = v_new_order_status_id;
 
-		SET @newOrderStatusId = SCOPE_IDENTITY();
-
-		SELECT * FROM dbo.orderStatus WHERE id = @newOrderStatusId;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
 END;
-GO
+$$;

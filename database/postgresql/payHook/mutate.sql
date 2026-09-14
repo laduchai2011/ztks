@@ -1,41 +1,67 @@
-﻿CREATE PROCEDURE CreatePayHook
-	@id INT,
-    @gateway varchar(255),
-    @transactionDate DATETIME,
-    @accountNumber varchar(255),
-    @subAccount varchar(255),
-	@code varchar(255),
-	@content varchar(255),
-	@transferType varchar(255),
-	@description varchar(255),
-	@transferAmount decimal(20,2),
-	@referenceCode varchar(255),
-    @accumulated decimal(20,2),
-	@agentPayId INT,
-	@orderId INT,
-	@requireTakeMoneyId INT,
-	@walletId INT
-AS
+﻿CREATE OR REPLACE FUNCTION create_pay_hook (
+    p_id UUID,
+    p_gateway VARCHAR(255),
+    p_transaction_date TIMESTAMP,
+    p_account_number VARCHAR(255),
+    p_sub_account VARCHAR(255),
+    p_code VARCHAR(255),
+    p_content VARCHAR(255),
+    p_transfer_type VARCHAR(255),
+    p_description VARCHAR(255),
+    p_transfer_amount DECIMAL(20,2),
+    p_reference_code VARCHAR(255),
+    p_accumulated DECIMAL(20,2),
+    p_agent_pay_id UUID,
+    p_order_id UUID,
+    p_require_take_money_id UUID,
+    p_wallet_id UUID
+)
+RETURNS SETOF pay_hook
+LANGUAGE plpgsql
+AS $$
 BEGIN
-	SET NOCOUNT ON;
-	BEGIN TRY
-        BEGIN TRANSACTION;
 
-        INSERT INTO dbo.payHook (id, gateway, transactionDate, accountNumber, subAccount, code, content, transferType, description, transferAmount, referenceCode, accumulated, agentPayId, orderId, requireTakeMoneyId, walletId)
-        VALUES (@id, @gateway, @transactionDate, @accountNumber, @subAccount, @code, @content, @transferType, @description, @transferAmount, @referenceCode, @accumulated, @agentPayId, @orderId, @requireTakeMoneyId, @walletId)
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50001, 'Tạo payHook không thành công .', 1;
-        END
+    INSERT INTO pay_hook (
+        id,
+        gateway,
+        transaction_date,
+        account_number,
+        sub_account,
+        code,
+        content,
+        transfer_type,
+        description,
+        transfer_amount,
+        reference_code,
+        accumulated,
+        agent_pay_id,
+        order_id,
+        require_take_money_id,
+        wallet_id
+    )
+    VALUES (
+        p_id,
+        p_gateway,
+        p_transaction_date,
+        p_account_number,
+        p_sub_account,
+        p_code,
+        p_content,
+        p_transfer_type,
+        p_description,
+        p_transfer_amount,
+        p_reference_code,
+        p_accumulated,
+        p_agent_pay_id,
+        p_order_id,
+        p_require_take_money_id,
+        p_wallet_id
+    );
 
-		SELECT * FROM dbo.payHook WHERE id = @id;
+    RETURN QUERY
+    SELECT *
+    FROM pay_hook
+    WHERE id = p_id;
 
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
 END;
-GO
+$$;

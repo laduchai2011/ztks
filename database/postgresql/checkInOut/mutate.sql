@@ -1,90 +1,119 @@
-﻿CREATE PROCEDURE CreateCheckInOut
-	@type NVARCHAR(255),
-	@note NVARCHAR(255),
-	@image NVARCHAR(255) = NULL,
-	@video NVARCHAR(255) = NULL,
-	@accountId INT
-AS
+﻿CREATE OR REPLACE FUNCTION create_check_in_out (
+    p_type VARCHAR(255),
+    p_note VARCHAR(255),
+    p_account_id UUID,
+	p_image VARCHAR(255) DEFAULT NULL,
+    p_video VARCHAR(255) DEFAULT NULL
+)
+RETURNS SETOF check_in_out
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_new_id UUID;
 BEGIN
-	SET NOCOUNT ON;
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    INSERT INTO check_in_out (
+        type,
+        note,
+        image,
+        video,
+        account_id,
+        create_time
+    )
+    VALUES (
+        p_type,
+        p_note,
+        p_image,
+        p_video,
+        p_account_id,
+        CURRENT_TIMESTAMP
+    )
+    RETURNING id INTO v_new_id;
 
-		DECLARE @newCheckInOutId INT;
+    IF v_new_id IS NULL THEN
+        RAISE EXCEPTION 'Tạo CheckInOut không thành công.';
+    END IF;
 
-        INSERT INTO dbo.checkInOut (type, note, image, video, accountId, createTime)
-        VALUES (@type, @note, @image, @video, @accountId, SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50001, 'Tạo CheckInOut không thành công.', 1;
-        END
-
-		SET @newCheckInOutId = SCOPE_IDENTITY();
-
-		SELECT * FROM dbo.checkInOut WHERE id = @newCheckInOutId;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    RETURN QUERY
+    SELECT *
+    FROM check_in_out
+    WHERE id = v_new_id;
 END;
-GO
+$$;
 
-CREATE PROCEDURE CreateCheckInOutInspect
-	@content NVARCHAR(255),
-	@isPass BIT,
-	@checkInOutId INT,
-	@accountId INT
-AS
+CREATE OR REPLACE FUNCTION create_check_in_out_inspect (
+    p_content VARCHAR(255),
+    p_is_pass BOOLEAN,
+    p_check_in_out_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF check_in_out_inspect
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_account_id_member UUID;
+    v_new_id UUID;
 BEGIN
-	SET NOCOUNT ON;
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    -- Kiểm tra tài khoản admin
+    IF NOT EXISTS (
+        SELECT 1
+        FROM account_information
+        WHERE account_id = p_account_id
+          AND account_type = 'admin'
+    ) THEN
+        RAISE EXCEPTION 'Không phải tài khoản admin.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-		IF NOT EXISTS (
-			SELECT 1
-			FROM dbo.accountInformation
-			WHERE accountId = @accountId AND accountType = 'admin'
-		)
-		BEGIN
-			THROW 50001, N'Không phải tài khoản admin .', 1;
-		END
+    -- Lấy accountId của nhân viên từ CheckInOut
+    SELECT account_id
+    INTO v_account_id_member
+    FROM check_in_out
+    WHERE id = p_check_in_out_id;
 
-		DECLARE @accountId_member INT;
-		SELECT @accountId_member = accountId FROM dbo.checkInOut WHERE id = @checkInOutId;
-		IF @accountId_member IS NULL THROW 50002, N'Không thấy tài khoản nhân viên của check in/out này .', 2;
+    IF v_account_id_member IS NULL THEN
+        RAISE EXCEPTION 'Không thấy tài khoản nhân viên của check in/out này.'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-		IF NOT EXISTS (
-			SELECT 1
-			FROM dbo.accountInformation
-			WHERE addedById = @accountId AND accountId = @accountId_member
-		)
-		BEGIN
-			THROW 50003, N'Không phải nhân viên của tài khoản này .', 3;
-		END
+    -- Kiểm tra nhân viên thuộc admin này
+    IF NOT EXISTS (
+        SELECT 1
+        FROM account_information
+        WHERE added_by_id = p_account_id
+          AND account_id = v_account_id_member
+    ) THEN
+        RAISE EXCEPTION 'Không phải nhân viên của tài khoản này.'
+            USING ERRCODE = 'P0003';
+    END IF;
 
-		DECLARE @newCheckInOutInspectId INT;
+    -- Tạo CheckInOutInspect
+    INSERT INTO check_in_out_inspect (
+        content,
+        is_pass,
+        check_in_out_id,
+        account_id,
+        update_time,
+        create_time
+    )
+    VALUES (
+        p_content,
+        p_is_pass,
+        p_check_in_out_id,
+        p_account_id,
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP
+    )
+    RETURNING id INTO v_new_id;
 
-        INSERT INTO dbo.checkInOutInspect (content, isPass, checkInOutId, accountId, updateTime, createTime)
-        VALUES (@content, @isPass, @checkInOutId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50004, 'Tạo CheckInOutInspect không thành công.', 4;
-        END
+    IF v_new_id IS NULL THEN
+        RAISE EXCEPTION 'Tạo CheckInOutInspect không thành công.'
+            USING ERRCODE = 'P0004';
+    END IF;
 
-		SET @newCheckInOutInspectId = SCOPE_IDENTITY();
-
-		SELECT * FROM dbo.checkInOutInspect WHERE id = @newCheckInOutInspectId;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    -- Trả về record vừa tạo
+    RETURN QUERY
+    SELECT *
+    FROM check_in_out_inspect
+    WHERE id = v_new_id;
 END;
-GO
+$$;

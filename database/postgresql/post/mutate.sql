@@ -1,243 +1,328 @@
-﻿CREATE PROCEDURE CreateRegisterPost
-	@name NVARCHAR(255), 
-	@type VARCHAR(255), 
-    @zaloOaId INT,
-	@accountId INT
-AS
+﻿CREATE OR REPLACE FUNCTION create_register_post (
+    p_name VARCHAR(255),
+    p_type VARCHAR(255),
+    p_zalo_oa_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF register_post
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_register_post_id UUID;
 BEGIN
-	SET NOCOUNT ON;
+    -- Kiểm tra tài khoản có phải admin không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM account_information
+        WHERE account_id = p_account_id
+          AND account_type = 'admin'
+    ) THEN
+        RAISE EXCEPTION 'Không phải tài khoản admin.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    -- Tạo register post
+    INSERT INTO register_post (
+        name,
+        type,
+        zalo_oa_id,
+        account_id,
+        create_time
+    )
+    VALUES (
+        p_name,
+        p_type,
+        p_zalo_oa_id,
+        p_account_id,
+        NOW()
+    )
+    RETURNING id INTO v_register_post_id;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.accountInformation WHERE accountId = @accountId AND accountType = 'admin' )
-		BEGIN
-			THROW 50001, N'Không phải tài khoản admin .', 1;
-		END
-
-		DECLARE @registerPostId INT;
-
-        INSERT INTO dbo.registerPost (name, type, zaloOaId, accountId, createTime)
-        VALUES (@name, @type, @zaloOaId, @accountId, SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50002, 'Tạo đăng ký bài đăng không thành công.', 2;
-        END
-
-		SET @registerPostId = SCOPE_IDENTITY();
-
-		SELECT * FROM dbo.registerPost WHERE id = @registerPostId;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    -- Trả về record vừa tạo
+    RETURN QUERY
+    SELECT *
+    FROM register_post
+    WHERE id = v_register_post_id;
 END;
-GO
+$$;
 
-CREATE PROCEDURE EditRegisterPost
-	@id INT,
-	@name NVARCHAR(255), 
-    @zaloOaId INT,
-	@accountId INT
-AS
+CREATE OR REPLACE FUNCTION edit_register_post (
+    p_id UUID,
+    p_name VARCHAR(255),
+    p_zalo_oa_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF register_post
+LANGUAGE plpgsql
+AS $$
 BEGIN
-	SET NOCOUNT ON;
+    -- Kiểm tra bài đăng có thuộc tài khoản này không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM register_post
+        WHERE account_id = p_account_id
+          AND id = p_id
+    ) THEN
+        RAISE EXCEPTION 'Đăng ký bài viết này không phải của bạn.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    -- Cập nhật
+    UPDATE register_post
+    SET
+        name = p_name,
+        zalo_oa_id = p_zalo_oa_id
+    WHERE id = p_id
+      AND is_delete = FALSE;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.registerPost WHERE accountId = @accountId AND id = @id )
-		BEGIN
-			THROW 50001, N'Đăng ký bài viết này không phải của bạn .', 1;
-		END
+    -- Tương đương @@ROWCOUNT = 0
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Cập nhật đăng ký bài viết không thành công.'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-		UPDATE dbo.registerPost
-		SET name = @name, zaloOaId = @zaloOaId
-		WHERE id = @id AND isDelete = 0
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50002, 'Cập nhật đăng ký bài viết không thành công.', 2;
-        END
-
-		SELECT * FROM dbo.registerPost WHERE id = @id;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    -- Trả về dữ liệu sau khi cập nhật
+    RETURN QUERY
+    SELECT *
+    FROM register_post
+    WHERE id = p_id;
 END;
-GO
+$$;
 
-CREATE PROCEDURE DeleteRegisterPost
-	@id INT,
-	@accountId INT
-AS
+CREATE OR REPLACE FUNCTION delete_register_post (
+    p_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF register_post
+LANGUAGE plpgsql
+AS $$
 BEGIN
-	SET NOCOUNT ON;
+    -- Kiểm tra bài đăng có thuộc tài khoản này không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM register_post
+        WHERE account_id = p_account_id
+          AND id = p_id
+    ) THEN
+        RAISE EXCEPTION 'Đăng ký bài viết này không phải của bạn.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    -- Soft delete
+    UPDATE register_post
+    SET is_delete = TRUE
+    WHERE id = p_id
+      AND is_delete = FALSE;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.registerPost WHERE accountId = @accountId AND id = @id )
-		BEGIN
-			THROW 50001, N'Đăng ký bài viết này không phải của bạn .', 1;
-		END
+    -- Tương đương @@ROWCOUNT = 0
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Xóa đăng ký bài viết không thành công.'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-		UPDATE dbo.registerPost
-		SET isDelete = 1
-		WHERE id = @id AND isDelete = 0
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50002, 'Xóa đăng ký bài viết không thành công.', 2;
-        END
-
-		SELECT * FROM dbo.registerPost WHERE id = @id;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    -- Trả về record sau khi xóa
+    RETURN QUERY
+    SELECT *
+    FROM register_post
+    WHERE id = p_id;
 END;
-GO
+$$;
 
-CREATE PROCEDURE CreatePost
-	@index INT,
-	@name NVARCHAR(255), 
-	@type VARCHAR(255),
-	@title NVARCHAR(255), 
-    @describe NVARCHAR(MAX),
-	@images NVARCHAR(MAX),
-	@isActive BIT,
-	@registerPostId INT,
-	@accountId INT
-AS
+CREATE OR REPLACE FUNCTION create_post (
+    p_index INT,
+    p_name VARCHAR(255),
+    p_type VARCHAR(255),
+    p_title VARCHAR(255),
+    p_describe TEXT,
+    p_images TEXT,
+    p_is_active BOOLEAN,
+    p_register_post_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF post
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_total_type INT;
+    v_new_post_id UUID;
 BEGIN
-	SET NOCOUNT ON;
+    -- Kiểm tra registerPost có thuộc account này không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM register_post
+        WHERE account_id = p_account_id
+          AND id = p_register_post_id
+    ) THEN
+        RAISE EXCEPTION 'Đăng ký bài viết này không phải của bạn.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    -- Kiểm tra registerPost đã bị xóa chưa
+    IF NOT EXISTS (
+        SELECT 1
+        FROM register_post
+        WHERE id = p_register_post_id
+          AND is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Đăng ký bài viết này đã bị xóa.'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.registerPost WHERE accountId = @accountId AND id = @registerPostId )
-		BEGIN
-			THROW 50001, N'Đăng ký bài viết này không phải của bạn .', 1;
-		END
+    -- Kiểm tra type của registerPost
+    IF NOT EXISTS (
+        SELECT 1
+        FROM register_post
+        WHERE id = p_register_post_id
+          AND type = p_type
+    ) THEN
+        RAISE EXCEPTION 'Gói này đã hết hạn.'
+            USING ERRCODE = 'P0003';
+    END IF;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.registerPost WHERE id = @registerPostId AND isDelete = 0 )
-		BEGIN
-			THROW 50002, N'Đăng ký bài viết này đã bị xóa .', 2;
-		END
+    -- Đếm số bài viết theo type
+    SELECT COUNT(*)
+    INTO v_total_type
+    FROM post
+    WHERE type = p_type;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.registerPost WHERE id = @registerPostId AND type = @type )
-		BEGIN
-			THROW 50003, N'Gói này đã hết hạn .', 3;
-		END
+    -- Giới hạn free
+    IF p_type = 'free' AND v_total_type > 10 THEN
+        RAISE EXCEPTION 'Số lượng bài đăng miễn phí không được quá 10.'
+            USING ERRCODE = 'P0004';
+    END IF;
 
-		DECLARE @total_type INT;
-		SELECT @total_type = COUNT(*) FROM dbo.post WHERE type = @type
-		IF @total_type IS NOT NULL
-		BEGIN
-			IF @type = 'free'
-			BEGIN
-				IF @total_type > 10
-				BEGIN
-					THROW 50004, N'Số lượng bài đăng miễn phí không được quá 10 .', 4;
-				END
-			END
-			IF @type = 'upgrade'
-			BEGIN
-				IF @total_type > 30
-				BEGIN
-					THROW 50005, N'Số lượng bài đăng miễn phí không được quá 30 .', 5;
-				END
-			END
-		END
-		
-		DECLARE @newPostId INT;
+    -- Giới hạn upgrade
+    IF p_type = 'upgrade' AND v_total_type > 30 THEN
+        RAISE EXCEPTION 'Số lượng bài đăng miễn phí không được quá 30.'
+            USING ERRCODE = 'P0005';
+    END IF;
 
-        INSERT INTO dbo.post ([index], name, type, title, describe, images, isActive, registerPostId, createTime)
-        VALUES (@index, @name, @type, @title, @describe, @images, @isActive, @registerPostId, SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50006, 'Tạo bài đăng không thành công.', 6;
-        END
+    -- Tạo post
+    INSERT INTO post (
+        index,
+        name,
+        type,
+        title,
+        describe,
+        images,
+        is_active,
+        register_post_id,
+        create_time
+    )
+    VALUES (
+        p_index,
+        p_name,
+        p_type,
+        p_title,
+        p_describe,
+        p_images,
+        p_is_active,
+        p_register_post_id,
+        NOW()
+    )
+    RETURNING id INTO v_new_post_id;
 
-		SET @newPostId = SCOPE_IDENTITY();
-
-		SELECT * FROM dbo.post WHERE id = @newPostId;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    -- Trả về post vừa tạo
+    RETURN QUERY
+    SELECT *
+    FROM post
+    WHERE id = v_new_post_id;
 END;
-GO
+$$;
 
-CREATE PROCEDURE EditPost
-	@id INT,
-	@index INT,
-	@name NVARCHAR(255),
-	@title NVARCHAR(255),
-	@describe NVARCHAR(MAX),
-	@images NVARCHAR(MAX),
-	@isActive BIT,
-	@accountId INT
-AS
+CREATE OR REPLACE FUNCTION edit_post (
+    p_id UUID,
+    p_index INT,
+    p_name VARCHAR(255),
+    p_title VARCHAR(255),
+    p_describe TEXT,
+    p_images TEXT,
+    p_is_active BOOLEAN,
+    p_account_id UUID
+)
+RETURNS SETOF post
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_register_post_id UUID;
+    v_type VARCHAR(255);
 BEGIN
-	SET NOCOUNT ON;
+    -- Lấy registerPostId và type của post
+    SELECT
+        register_post_id,
+        type
+    INTO
+        v_register_post_id,
+        v_type
+    FROM post
+    WHERE id = p_id;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    -- Không tìm thấy post / registerPostId
+    IF v_register_post_id IS NULL THEN
+        RAISE EXCEPTION 'Không tìm thấy registerPostId trong post.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-		DECLARE @registerPostId INT;
-		DECLARE @type VARCHAR(255);
-		SELECT @registerPostId = registerPostId, @type = type FROM dbo.post WHERE id = @id
-		IF @registerPostId IS NULL THROW 50001, N'Không tìm thấy registerPostId trong post .', 1;
-		IF @type IS NULL THROW 50002, N'Không tìm thấy registerPostId trong post .', 2;
+    -- Không tìm thấy type
+    IF v_type IS NULL THEN
+        RAISE EXCEPTION 'Không tìm thấy type trong post.'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.registerPost WHERE accountId = @accountId AND id = @registerPostId )
-		BEGIN
-			THROW 50003, N'Đăng ký bài viết này không phải của bạn .', 3;
-		END
+    -- Kiểm tra registerPost có thuộc account này không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM register_post
+        WHERE account_id = p_account_id
+          AND id = v_register_post_id
+    ) THEN
+        RAISE EXCEPTION 'Đăng ký bài viết này không phải của bạn.'
+            USING ERRCODE = 'P0003';
+    END IF;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.registerPost WHERE id = @registerPostId AND isDelete = 0 )
-		BEGIN
-			THROW 50004, N'Đăng ký bài viết này đã bị xóa .', 4;
-		END
+    -- Kiểm tra registerPost đã bị xóa chưa
+    IF NOT EXISTS (
+        SELECT 1
+        FROM register_post
+        WHERE id = v_register_post_id
+          AND is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Đăng ký bài viết này đã bị xóa.'
+            USING ERRCODE = 'P0004';
+    END IF;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.registerPost WHERE id = @registerPostId AND type = @type )
-		BEGIN
-			THROW 50005, N'Gói này đã hết hạn .', 5;
-		END
+    -- Kiểm tra type của registerPost
+    IF NOT EXISTS (
+        SELECT 1
+        FROM register_post
+        WHERE id = v_register_post_id
+          AND type = v_type
+    ) THEN
+        RAISE EXCEPTION 'Gói này đã hết hạn.'
+            USING ERRCODE = 'P0005';
+    END IF;
 
-		UPDATE dbo.post
-		SET [index] = @index, name = @name, title = @title, describe = @describe, images = @images, isActive = @isActive
-		WHERE id = @id
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50006, 'Chỉnh sửa bài đăng không thành công .', 6;
-        END
+    -- Update post
+    UPDATE post
+    SET
+        index = p_index,
+        name = p_name,
+        title = p_title,
+        describe = p_describe,
+        images = p_images,
+        is_active = p_is_active
+    WHERE id = p_id;
 
-		SELECT * FROM dbo.post WHERE id = @id;
+    -- Tương đương @@ROWCOUNT = 0
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Chỉnh sửa bài đăng không thành công.'
+            USING ERRCODE = 'P0006';
+    END IF;
 
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    -- Trả về post sau khi update
+    RETURN QUERY
+    SELECT *
+    FROM post
+    WHERE id = p_id;
 END;
-GO
+$$;

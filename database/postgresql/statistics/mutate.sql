@@ -1,57 +1,82 @@
-﻿CREATE PROCEDURE UpdateStatistics
-	@sales DECIMAL(20,2),
-	@zaloOaId INT,
-	@accountId INT,
-	@ofDay Date
-AS
+﻿CREATE OR REPLACE FUNCTION update_statistics (
+    p_sales DECIMAL(20,2),
+    p_zalo_oa_id UUID,
+    p_account_id UUID,
+    p_of_day DATE
+)
+RETURNS SETOF statistics_oa
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_of_month DATE;
 BEGIN
-	SET NOCOUNT ON;
+    v_of_month := DATE_TRUNC('month', p_of_day)::DATE;
 
-	BEGIN TRY
-	BEGIN TRANSACTION;
+    -- Cập nhật statisticsOa
+    UPDATE statistics_oa
+    SET
+        sales = sales + p_sales,
+        order_amount = order_amount + 1
+    WHERE zalo_oa_id = p_zalo_oa_id
+      AND of_day = p_of_day;
 
-		UPDATE dbo.[statisticsOa]
-		SET sales = sales + @sales,
-			orderAmount = orderAmount + 1
-		WHERE zaloOaId = @zaloOaId AND ofDay = @ofDay;
-		IF @@ROWCOUNT = 0
-		BEGIN
-			THROW 50001, 'Cập nhật doanh số không thành công.', 1;
-		END;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Cập nhật doanh số không thành công.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-		IF EXISTS (
-			SELECT 1
-			FROM dbo.[statisticsMemberInOneMonth]
-			WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofMonth = DATEFROMPARTS(YEAR(@ofDay), MONTH(@ofDay), 1) AND flag = 'new'
-		) 
-		BEGIN
-			UPDATE dbo.[statisticsMemberInOneMonth]
-			SET sales = sales + @sales,
-				orderAmount = orderAmount + 1
-			WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofMonth = DATEFROMPARTS(YEAR(@ofDay), MONTH(@ofDay), 1) AND flag = 'new';
-			IF @@ROWCOUNT = 0
-			BEGIN
-				THROW 50002, 'Cập nhật doanh số không thành công.', 2;
-			END;
-		END
-		ELSE
-		BEGIN
-			INSERT INTO dbo.[statisticsMemberInOneMonth](sales, orderAmount, flag, ofMonth, zaloOaId, accountId, createTime)
-			VALUES(@sales, 1, 'new', DATEFROMPARTS(YEAR(@ofDay), MONTH(@ofDay), 1), @zaloOaId, @accountId, SYSDATETIMEOFFSET());
-			IF @@ROWCOUNT = 0
-			BEGIN
-				THROW 50003, 'Thêm chatRoomRole không thành công.', 3;
-			END
-		END
+    -- Cập nhật statistics_member_in_one_month
+    IF EXISTS (
+        SELECT 1
+        FROM statistics_member_in_one_month
+        WHERE account_id = p_account_id
+          AND zalo_oa_id = p_zalo_oa_id
+          AND of_month = v_of_month
+          AND flag = 'new'
+    ) THEN
 
-		SELECT * FROM dbo.[statisticsOa] WHERE zaloOaId = @zaloOaId;
+        UPDATE statistics_member_in_one_month
+        SET
+            sales = sales + p_sales,
+            order_amount = order_amount + 1
+        WHERE account_id = p_account_id
+          AND zalo_oa_id = p_zalo_oa_id
+          AND of_month = v_of_month
+          AND flag = 'new';
 
-	COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
-END
-GO
+        IF NOT FOUND THEN
+            RAISE EXCEPTION 'Cập nhật doanh số không thành công.'
+                USING ERRCODE = 'P0002';
+        END IF;
+
+    ELSE
+
+        INSERT INTO statistics_member_in_one_month (
+            sales,
+            order_amount,
+            flag,
+            of_month,
+            zalo_oa_id,
+            account_id,
+            create_time
+        )
+        VALUES (
+            p_sales,
+            1,
+            'new',
+            v_of_month,
+            p_zalo_oa_id,
+            p_account_id,
+            CURRENT_TIMESTAMP
+        );
+
+    END IF;
+
+    -- Giữ nguyên SELECT trả về như SQL Server
+    RETURN QUERY
+    SELECT *
+    FROM statistics_oa
+    WHERE zalo_oa_id = p_zalo_oa_id;
+
+END;
+$$;

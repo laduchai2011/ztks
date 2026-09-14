@@ -1,319 +1,461 @@
-﻿CREATE PROCEDURE CreateZaloOa
-	@label NVARCHAR(255),
-	@oaId NVARCHAR(255),
-	@oaName NVARCHAR(255),
-	@oaSecret NVARCHAR(255),
-	@zaloAppId INT,
-	@accountId INT
-AS
+﻿CREATE OR REPLACE FUNCTION create_zalo_oa (
+    p_label VARCHAR(255),
+    p_oa_id VARCHAR(255),
+    p_oa_name VARCHAR(255),
+    p_oa_secret VARCHAR(255),
+    p_zalo_app_id UUID,
+    p_account_id UUID
+)
+RETURNS zalo_oa
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_new_zalo_oa_id UUID;
+    v_zalo_oa zalo_oa;
 BEGIN
-	SET NOCOUNT ON;
+    -- Kiểm tra zaloApp có thuộc account hay không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM zalo_app
+        WHERE id = p_zalo_app_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION 'Không phải zaloApp của bạn.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    -- Tạo zaloOa
+    INSERT INTO zalo_oa (
+        label,
+        oa_id,
+        oa_name,
+        oa_secret,
+        status,
+        zalo_app_id,
+        account_id,
+        update_time,
+        create_time
+    )
+    VALUES (
+        p_label,
+        p_oa_id,
+        p_oa_name,
+        p_oa_secret,
+        'normal',
+        p_zalo_app_id,
+        p_account_id,
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP
+    )
+    RETURNING id INTO v_new_zalo_oa_id;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.zaloApp WHERE id = @zaloAppId AND accountId = @accountId )
-		BEGIN
-			THROW 50001, N'Không phải zaloApp của bạn .', 1;
-		END
+    -- Tạo statisticsOa
+    INSERT INTO statistics_oa (
+        sales,
+        order_amount,
+        zalo_oa_id,
+        of_day,
+        create_time
+    )
+    VALUES (
+        0,
+        0,
+        v_new_zalo_oa_id,
+        CURRENT_DATE,
+        CURRENT_TIMESTAMP
+    );
 
-		DECLARE @newZaloOaId INT;
-        INSERT INTO dbo.zaloOa (label, oaId, oaName, oaSecret, status, zaloAppId, accountId, updateTime, createTime)
-        VALUES (@label, @oaId, @oaName, @oaSecret, 'normal', @zaloAppId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50002, 'Tạo zaloOa không thành công.', 2;
-        END
-		SET @newZaloOaId = SCOPE_IDENTITY();
+    -- Tạo statisticsMemberInOneMonth
+    INSERT INTO statistics_member_in_one_month (
+        sales,
+        order_amount,
+        flag,
+        of_month,
+        zalo_oa_id,
+        account_id,
+        create_time
+    )
+    VALUES (
+        0,
+        0,
+        'new',
+        DATE_TRUNC('month', CURRENT_DATE)::DATE,
+        v_new_zalo_oa_id,
+        p_account_id,
+        CURRENT_TIMESTAMP
+    );
 
-		INSERT INTO dbo.[statisticsOa] (sales, orderAmount, zaloOaId, ofDay, createTime)
-        VALUES (0, 0, @newZaloOaId, CAST(GETDATE() AS DATE), SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50003, 'Tạo statisticsOa không thành công.', 3;
-        END
+    -- Lấy zaloOa vừa tạo
+    SELECT *
+    INTO v_zalo_oa
+    FROM zalo_oa
+    WHERE id = v_new_zalo_oa_id;
 
-		INSERT INTO dbo.statisticsMemberInOneMonth (sales, orderAmount, flag, ofMonth, zaloOaId, accountId, createTime)
-		VALUES (0, 0, 'new', DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1), @newZaloOaId, @accountId, SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50004, 'Tạo statisticsMemberInOneMonth không thành công.', 4;
-        END	
-
-		SET @newZaloOaId = SCOPE_IDENTITY();
-
-		SELECT * FROM dbo.zaloOa WHERE id = @newZaloOaId;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    RETURN v_zalo_oa;
 END;
-GO
+$$;
 
-CREATE PROCEDURE EditZaloOa
-	@id INT, 
-	@label NVARCHAR(255),
-	@oaId NVARCHAR(255),
-	@oaName NVARCHAR(255),
-	@oaSecret NVARCHAR(255),
-	@zaloAppId INT,
-	@accountId INT
-AS
+CREATE OR REPLACE FUNCTION edit_zalo_oa (
+    p_id UUID,
+    p_label VARCHAR(255),
+    p_oa_id VARCHAR(255),
+    p_oa_name VARCHAR(255),
+    p_oa_secret VARCHAR(255),
+    p_zalo_app_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF zalo_oa
+LANGUAGE plpgsql
+AS $$
 BEGIN
-	SET NOCOUNT ON;
+    -- Kiểm tra zaloApp thuộc account
+    IF NOT EXISTS (
+        SELECT 1
+        FROM zalo_app
+        WHERE id = p_zalo_app_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION 'Không phải zaloApp của bạn.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    -- Kiểm tra zaloOa thuộc zaloApp
+    IF NOT EXISTS (
+        SELECT 1
+        FROM zalo_oa
+        WHERE id = p_id
+          AND zalo_app_id = p_zalo_app_id
+    ) THEN
+        RAISE EXCEPTION 'OA không phải của zaloApp này.'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.zaloApp WHERE id = @zaloAppId AND accountId = @accountId )
-		BEGIN
-			THROW 50001, N'Không phải zaloApp của bạn .', 1;
-		END
+    -- Update
+    UPDATE zalo_oa
+    SET
+        label = p_label,
+        oa_id = p_oa_id,
+        oa_name = p_oa_name,
+        oa_secret = p_oa_secret,
+        update_time = CURRENT_TIMESTAMP
+    WHERE id = p_id
+      AND status = 'normal';
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.zalooA WHERE id = @id AND zaloAppId = @zaloAppId )
-		BEGIN
-			THROW 50002, N'OA không phải của zaloApp này .', 2;
-		END
+    -- Kiểm tra update có thành công không
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Cập nhật zaloOa không thành công.'
+            USING ERRCODE = 'P0003';
+    END IF;
 
-		UPDATE dbo.zaloOa
-		SET label = @label, oaId = @oaId, oaName = @oaName, oaSecret = @oaSecret, updateTime = SYSDATETIMEOFFSET()
-		WHERE status = 'normal' AND id = @id
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50003, 'Cập nhật zaloOa không thành công.', 3;
-        END
-
-		SELECT * FROM dbo.zaloOa WHERE id = @id;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    -- Tương đương SELECT * FROM dbo.zaloOa WHERE id = @id
+    RETURN QUERY
+    SELECT *
+    FROM zalo_oa
+    WHERE id = p_id;
 END;
-GO
+$$;
 
-CREATE PROCEDURE CreateZaloOaToken
-	@refreshToken NVARCHAR(MAX),
-	@zaloOaId INT,
-	@accountId INT
-AS
+CREATE OR REPLACE FUNCTION create_zalo_oa_token (
+    p_refresh_token TEXT,
+    p_zalo_oa_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF chat_session
+LANGUAGE plpgsql
+AS $$
 BEGIN
-	SET NOCOUNT ON;
+    -- Kiểm tra OA có thuộc account không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM zalo_oa
+        WHERE id = p_zalo_oa_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION 'Không phải OA của bạn.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    -- Tạo token
+    INSERT INTO zalo_oa_token (
+        refresh_token,
+        zalo_oa_id
+    )
+    VALUES (
+        p_refresh_token,
+        p_zalo_oa_id
+    );
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @accountId )
-		BEGIN
-			THROW 50001, N'Không phải OA của bạn .', 1;
-		END
-
-        INSERT INTO dbo.zaloOaToken (refreshToken, zaloOaId)
-        VALUES (@refreshToken, @zaloOaId);
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50002, 'Tạo zaloOaToken không thành công.', 2;
-        END
-
-		SELECT * FROM dbo.chatSession WHERE zaloOaId = @zaloOaId;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    -- Trả về chatSession
+    RETURN QUERY
+    SELECT *
+    FROM chat_session
+    WHERE zalo_oa_id = p_zalo_oa_id;
 END;
-GO
+$$;
 
-CREATE PROCEDURE UpdateRefreshTokenOfZaloOa
-	@refreshToken NVARCHAR(MAX),
-	@zaloOaId INT,
-	@accountId INT
-AS
+CREATE OR REPLACE FUNCTION update_refresh_token_of_zalo_oa (
+    p_refresh_token TEXT,
+    p_zalo_oa_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF zalo_oa_token
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_added_by_id UUID;
 BEGIN
-	SET NOCOUNT ON;
+    -- Lấy addedById
+    SELECT ai.added_by_id
+    INTO v_added_by_id
+    FROM account_information ai
+    WHERE ai.account_id = p_account_id;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    IF v_added_by_id IS NULL THEN
+        RAISE EXCEPTION 'Không tìm thấy addedById.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-		-- IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @accountId )
-		-- BEGIN
-		-- 	THROW 50001, N'Không phải OA của bạn .', 1;
-		-- END
+    -- Kiểm tra OA có thuộc account này không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM zalo_oa zo
+        WHERE zo.id = p_zalo_oa_id
+          AND zo.account_id = v_added_by_id
+    ) THEN
+        RAISE EXCEPTION 'Không phải OA của bạn.'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-		-- UPDATE dbo.zaloOaToken WITH (ROWLOCK)
-		UPDATE dbo.zaloOaToken
-		SET refreshToken = @refreshToken
-		WHERE zaloOaId = @zaloOaId
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50001, 'Cập nhật refreshToken của zaloOa không thành công.', 1;
-        END
+    -- Update refresh token
+    UPDATE zalo_oa_token
+    SET refresh_token = p_refresh_token
+    WHERE zalo_oa_id = p_zalo_oa_id;
 
-		DECLARE @addedById INT;
-		SELECT @addedById = addedById FROM dbo.accountInformation WHERE accountId = @accountId;
-		IF @zaloOaId IS NULL THROW 50002, N'Không tìm thấy addedById .', 2;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Cập nhật refreshToken của zaloOa không thành công.'
+            USING ERRCODE = 'P0003';
+    END IF;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @addedById )
-		BEGIN
-			THROW 50003, N'Không phải OA của bạn .', 3;
-		END
-
-		SELECT * FROM dbo.zaloOaToken WHERE zaloOaId = @zaloOaId;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    -- Trả về token sau khi update
+    RETURN QUERY
+    SELECT *
+    FROM zalo_oa_token
+    WHERE zalo_oa_id = p_zalo_oa_id;
 END;
-GO
+$$;
 
-CREATE PROCEDURE CreateZnsTemplate
-	@temId NVARCHAR(255),
-	@images NVARCHAR(MAX),
-	@dataFields NVARCHAR(MAX),
-	@phoneCost DECIMAL(20,2),
-	@uidCost DECIMAL(20,2),
-	@zaloOaId INT,
-	@accountId INT
-AS
+CREATE OR REPLACE FUNCTION create_zns_template (
+    p_tem_id TEXT,
+    p_images TEXT,
+    p_data_fields TEXT,
+    p_phone_cost DECIMAL(20,2),
+    p_uid_cost DECIMAL(20,2),
+    p_zalo_oa_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF zns_template
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_zns_template_id UUID;
 BEGIN
-	SET NOCOUNT ON;
+    -- Kiểm tra OA có thuộc account hay không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM zalo_oa
+        WHERE id = p_zalo_oa_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION 'Không phải OA của bạn.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    -- Tạo ZNS template
+    INSERT INTO zns_template (
+        tem_id,
+        images,
+        data_fields,
+        phone_cost,
+        uid_cost,
+        is_delete,
+        zalo_oa_id,
+        update_time,
+        create_time
+    )
+    VALUES (
+        p_tem_id,
+        p_images,
+        p_data_fields,
+        p_phone_cost,
+        p_uid_cost,
+        FALSE,
+        p_zalo_oa_id,
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP
+    )
+    RETURNING id INTO v_zns_template_id;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @accountId )
-		BEGIN
-			THROW 50001, N'Không phải OA của bạn .', 1;
-		END
-
-		DECLARE @znsTemplateId INT;
-
-        INSERT INTO dbo.znsTemplate (temId, images, dataFields, phoneCost, uidCost, isDelete, zaloOaId, updateTime, createTime)
-        VALUES (@temId, @images, @dataFields, @phoneCost, @uidCost, 0, @zaloOaId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50002, 'Tạo znsTemplate không thành công.', 2;
-        END
-
-		SET @znsTemplateId = SCOPE_IDENTITY();
-
-		SELECT * FROM dbo.znsTemplate WHERE id = @znsTemplateId;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    -- Trả về record vừa tạo
+    RETURN QUERY
+    SELECT *
+    FROM zns_template
+    WHERE id = v_zns_template_id;
 END;
-GO
+$$;
 
-CREATE PROCEDURE EditZnsTemplate
-	@id INT,
-	@temId NVARCHAR(255),
-	@images NVARCHAR(MAX),
-	@dataFields NVARCHAR(MAX),
-	@phoneCost DECIMAL(20,2),
-	@uidCost DECIMAL(20,2),
-	@zaloOaId INT,
-	@accountId INT
-AS
+CREATE OR REPLACE FUNCTION edit_zns_template (
+    p_id UUID,
+    p_tem_id TEXT,
+    p_images TEXT,
+    p_data_fields TEXT,
+    p_phone_cost DECIMAL(20,2),
+    p_uid_cost DECIMAL(20,2),
+    p_zalo_oa_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF zns_template
+LANGUAGE plpgsql
+AS $$
 BEGIN
-	SET NOCOUNT ON;
+    -- Kiểm tra OA có thuộc account
+    IF NOT EXISTS (
+        SELECT 1
+        FROM zalo_oa
+        WHERE id = p_zalo_oa_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION 'Không phải OA của bạn.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    -- Kiểm tra template có tồn tại và thuộc OA
+    IF NOT EXISTS (
+        SELECT 1
+        FROM zns_template
+        WHERE id = p_id
+          AND zalo_oa_id = p_zalo_oa_id
+    ) THEN
+        RAISE EXCEPTION 'Không tồn tại znsTemplate này.'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @accountId )
-		BEGIN
-			THROW 50001, N'Không phải OA của bạn .', 1;
-		END
+    -- Update
+    UPDATE zns_template
+    SET
+        tem_id = p_tem_id,
+        images = p_images,
+        data_fields = p_data_fields,
+        phone_cost = p_phone_cost,
+        uid_cost = p_uid_cost
+    WHERE id = p_id
+      AND is_delete = FALSE;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.znsTemplate WHERE id = @id AND zaloOaId = @zaloOaId )
-		BEGIN
-			THROW 50002, N'Không tồn tại znsTemplate này .', 2;
-		END
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Cập nhật znsTemplate của zaloOa không thành công.'
+            USING ERRCODE = 'P0003';
+    END IF;
 
-		UPDATE dbo.znsTemplate
-		SET temId = @temId, images = @images, dataFields = @dataFields, phoneCost = @phoneCost, uidCost = @uidCost
-		WHERE id = @id AND isDelete = 0
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50003, 'Cập nhật znsTemplate của zaloOa không thành công.', 3;
-        END
-
-		SELECT * FROM dbo.znsTemplate WHERE id = @id;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    -- Trả về template sau khi update
+    RETURN QUERY
+    SELECT *
+    FROM zns_template
+    WHERE id = p_id;
 END;
-GO
+$$;
 
-CREATE PROCEDURE CreateZnsMessage
-	@type NVARCHAR(255),
-	@data NVARCHAR(MAX),
-	@cost DECIMAL(20,2),
-	@znsTemplateId INT,
-	@accountId INT
-AS
+CREATE OR REPLACE FUNCTION create_zns_message (
+    p_type VARCHAR(255),
+    p_data TEXT,
+    p_cost DECIMAL(20,2),
+    p_zns_template_id UUID,
+    p_account_id UUID
+)
+RETURNS TABLE (
+    id UUID,
+    type VARCHAR(255),
+    data TEXT,
+    cost DECIMAL(20,2),
+    znsTemplateId UUID,
+    accountId UUID,
+    createTime TIMESTAMPTZ
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_zalo_oa_id UUID;
+    v_admin_id UUID;
+    v_zns_message_id UUID;
 BEGIN
-	SET NOCOUNT ON;
+    -- Lấy zaloOaId từ znsTemplate
+    SELECT zalo_oa_id
+    INTO v_zalo_oa_id
+    FROM zns_template
+    WHERE id = p_zns_template_id;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    IF v_zalo_oa_id IS NULL THEN
+        RAISE EXCEPTION USING
+            ERRCODE = 'P0001',
+            MESSAGE = 'Không tìm thấy zalo_oa_id của znsTemplate.',
+            DETAIL = 'zns_template_id = ' || p_zns_template_id;
+    END IF;
 
-		DECLARE @zaloOaId INT;
-		SELECT @zaloOaId = zaloOaId FROM dbo.znsTemplate WHERE id = @znsTemplateId;
-		IF @zaloOaId IS NULL THROW 50001, N'Không tìm thấy zaloOaId của znsTemplate .', 1;
+    -- Lấy adminId của OA
+    SELECT account_id
+    INTO v_admin_id
+    FROM zalo_oa
+    WHERE id = v_zalo_oa_id;
 
-		DECLARE @adminId INT;
-		SELECT @adminId = accountId FROM dbo.zaloOa WHERE id = @zaloOaId;
-		IF @adminId IS NULL THROW 50002, N'Không tìm thấy adminId của zaloOa .', 2;
+    IF v_admin_id IS NULL THEN
+        RAISE EXCEPTION USING
+            ERRCODE = 'P0001',
+            MESSAGE = 'Không tìm thấy adminId của zalo_oa.',
+            DETAIL = 'zalo_oa_id = ' || v_zalo_oa_id;
+    END IF;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.accountInformation WHERE addedById = @adminId AND accountId = @accountId )
-		BEGIN
-			THROW 50003, N'Bạn không có quyền trên oa này .', 3;
-		END
+    -- Kiểm tra quyền
+    IF NOT EXISTS (
+        SELECT 1
+        FROM account_information
+        WHERE added_by_id = v_admin_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION USING
+            ERRCODE = 'P0001',
+            MESSAGE = 'Bạn không có quyền trên oa này.',
+            DETAIL = 'account_id = ' || p_account_id;
+    END IF;
 
-		DECLARE @znsMessageId INT;
+    -- Insert
+    INSERT INTO zns_nessage (
+        type,
+        data,
+        cost,
+        zns_template_id,
+        account_id,
+        create_time
+    )
+    VALUES (
+        p_type,
+        p_data,
+        p_cost,
+        p_zns_template_id,
+        p_account_id,
+        CURRENT_TIMESTAMP
+    )
+    RETURNING zns_message.id
+    INTO v_zns_message_id;
 
-        INSERT INTO dbo.znsMessage (type, data, cost, znsTemplateId, accountId, createTime)
-        VALUES (@type, @data, @cost, @znsTemplateId, @accountId , SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50004, 'Tạo znsMessage không thành công.', 4;
-        END
-
-		SET @znsMessageId = SCOPE_IDENTITY();
-
-		SELECT * FROM dbo.znsMessage WHERE id = @znsMessageId;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    -- Trả về record vừa tạo
+    RETURN QUERY
+    SELECT
+        zm.id,
+        zm.type,
+        zm.data,
+        zm.cost,
+        zm.zns_template_id,
+        zm.account_id,
+        zm.create_time
+    FROM zns_message zm
+    WHERE zm.id = v_zns_message_id;
 END;
-GO
+$$;

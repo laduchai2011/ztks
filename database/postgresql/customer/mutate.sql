@@ -1,47 +1,53 @@
-CREATE PROCEDURE CreateCustomer
-	  @phone NVARCHAR(255),
-	  @password NVARCHAR(255)
-AS
+CREATE OR REPLACE FUNCTION create_customer (
+    p_phone VARCHAR(255),
+    p_password VARCHAR(255)
+)
+RETURNS SETOF customer
+LANGUAGE plpgsql
+AS $$
 BEGIN
-	SET NOCOUNT ON;
+    INSERT INTO customer (
+        phone,
+        password,
+        create_time
+    )
+    VALUES (
+        p_phone,
+        p_password,
+        CURRENT_TIMESTAMP
+    );
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Đăng ký tài khoản không thành công.';
+    END IF;
 
-		DECLARE @newAccountId INT;
-
-		INSERT INTO dbo.customer (phone, password, createTime)
-		VALUES (@phone, @password, SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50001, 'Đăng ký tài khoản không thành công.', 1;
-        END
-
-		SELECT * FROM dbo.customer WHERE phone = @phone;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    RETURN QUERY
+    SELECT *
+    FROM customer
+    WHERE phone = p_phone;
 END;
-GO
+$$;
 
-CREATE PROCEDURE CustomerForgetPassword
-	@phone NVARCHAR(255),
-	@password NVARCHAR(255)
-AS
+CREATE OR REPLACE FUNCTION customer_forget_password (
+    p_phone VARCHAR(255),
+    p_password VARCHAR(255)
+)
+RETURNS SETOF customer
+LANGUAGE plpgsql
+AS $$
 BEGIN
-	UPDATE dbo.customer
-	SET password = @password
-	WHERE phone = @phone;
-	IF @@ROWCOUNT = 0
-    BEGIN
-		THROW 50001, 'Cập nhật mật khẩu không thành công.', 1;
-    END
+    UPDATE customer
+    SET password = p_password
+    WHERE phone = p_phone;
 
-    SELECT * FROM dbo.customer WHERE phone = @phone;
-END
-GO
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Cập nhật mật khẩu không thành công.'
+            USING ERRCODE = 'P0001';
+    END IF;
+
+    RETURN QUERY
+    SELECT *
+    FROM customer
+    WHERE phone = p_phone;
+END;
+$$;

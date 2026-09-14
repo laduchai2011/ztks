@@ -1,478 +1,851 @@
-﻿CREATE PROCEDURE PayOrder
-	@walletId INT,
-	@addedAmount DECIMAL(20,2),
-	@orderId INT,
-	@payHookId INT
-AS
+﻿CREATE OR REPLACE FUNCTION pay_order (
+    p_wallet_id UUID,
+    p_added_amount DECIMAL(20,2),
+    p_order_id UUID,
+    p_pay_hook_id UUID
+)
+RETURNS TABLE (
+    order_data JSONB,
+    statistics_data JSONB
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_voucher_id UUID;
+    v_is_used BOOLEAN;
+    v_time_expire TIMESTAMPTZ;
+    v_money_voucher DECIMAL(20,2);
+
+    v_money_order DECIMAL(20,2);
+
+    v_chat_room_id UUID;
+    v_zalo_oa_id UUID;
+    v_account_id UUID;
+
+    v_update_time TIMESTAMPTZ;
+
+    v_order_data JSONB;
 BEGIN
-	SET NOCOUNT ON;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    /*
+     * 1. Thanh toán đơn hàng
+     */
+    UPDATE orderr
+    SET is_pay = TRUE
+    WHERE id = p_order_id
+      AND is_delete = FALSE
+      AND is_pay = FALSE;
 
-		UPDATE dbo.[order]
-		SET isPay = 1
-		WHERE id = @orderId AND isDelete = 0 AND isPay = 0
-		IF @@ROWCOUNT = 0
-		BEGIN
-			THROW 50001, N'Đơn hàng đã thanh toán hoặc không tồn tại .', 1;
-		END
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Đơn hàng đã thanh toán hoặc không tồn tại.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-		-- Kiểm tra voucher đã dùng hay chưa, đã chết hạn chưa
-		DECLARE @voucherId INT;
-		DECLARE @isUsed BIT;
-		DECLARE @timeExpire DATETIMEOFFSET(7);
-		DECLARE @money_voucher DECIMAL(20,2);
-		SELECT @voucherId = id, @isUsed = isUsed, @timeExpire = timeExpire, @money_voucher = money FROM dbo.voucher WHERE orderId = @orderId;
-		IF @isUsed = 1
-		BEGIN
-			THROW 50002, N'Voucher đã được sử dụng .', 2;
-		END
-		IF @timeExpire < SYSDATETIMEOFFSET()
-		BEGIN
-			THROW 50003, N'Voucher đã hết hạn .', 3;
-		END
+    /*
+     * 2. Kiểm tra voucher
+     */
+    SELECT
+        id,
+        is_used,
+        time_expire,
+        money
+    INTO
+        v_voucher_id,
+        v_is_used,
+        v_time_expire,
+        v_money_voucher
+    FROM voucher
+    WHERE order_id = p_order_id
+    LIMIT 1;
 
-		DECLARE @money_order DECIMAL(20,2);
-		SELECT @money_order = money FROM dbo.[order] WHERE id = @orderId;
-		IF @money_order IS NULL THROW 50002, N'Không tìm thấy tiền trong đơn hàng .', 2;
-		IF @money_order > @addedAmount + COALESCE(@money_voucher, 0)
-		BEGIN
-			THROW 50004, N'Tiền chuyển vào không đủ .', 4;
-		END
+    IF v_is_used = TRUE THEN
+        RAISE EXCEPTION 'Voucher đã được sử dụng.'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-		-- cập nhật tiền nhận được từ chuyển khoản
-        UPDATE dbo.wallet
-		SET amount = amount + @addedAmount, updateTime = SYSDATETIMEOFFSET()
-		WHERE id = @walletId
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50005, 'Cập nhật ví không thành công.', 5;
-        END
-		INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, voucherId, orderId, walletId, createTime)
-        VALUES (@addedAmount, 'payOrder', @payHookId, NULL, @orderId, @walletId, SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50006, 'Cập nhật biến động số dư không thành công.', 6;
-        END
+    IF v_time_expire IS NOT NULL
+       AND v_time_expire < CURRENT_TIMESTAMP THEN
+        RAISE EXCEPTION 'Voucher đã hết hạn.'
+            USING ERRCODE = 'P0003';
+    END IF;
 
-		-- cập nhật tiền nhận được từ voucher
-		IF ( @voucherId IS NOT NULL )
-		BEGIN
-			UPDATE dbo.voucher
-			SET isUsed = 1
-			WHERE id = @voucherId
-			IF @@ROWCOUNT = 0
-			BEGIN
-				THROW 50007, 'Cập nhật trạng thái sử dụng voucher không thành công.', 7;
-			END
+    /*
+     * 3. Kiểm tra tiền đơn hàng
+     */
+    SELECT money
+    INTO v_money_order
+    FROM orderr
+    WHERE id = p_order_id;
 
-			UPDATE dbo.wallet
-			SET amount = amount + @money_voucher, updateTime = SYSDATETIMEOFFSET()
-			WHERE id = @walletId
-			IF @@ROWCOUNT = 0
-			BEGIN
-				THROW 50008, 'Hoàn tiền từ voucher tới ví không thành công.', 8;
-			END
-			INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, voucherId, orderId, walletId, createTime)
-			VALUES (@money_voucher, 'voucher', NULL, @voucherId, NULL, @walletId, SYSDATETIMEOFFSET());
-			IF @@ROWCOUNT = 0
-			BEGIN
-				THROW 50009, 'Cập nhật biến động số dư hoàn tiền từ voucher không thành công.', 9;
-			END
-		END
+    IF v_money_order IS NULL THEN
+        RAISE EXCEPTION 'Không tìm thấy tiền trong đơn hàng.'
+            USING ERRCODE = 'P0004';
+    END IF;
 
-		-- trừ tiền phí dịch vụ 1%
-		DECLARE @updateTime DATETIMEOFFSET(7) = SYSDATETIMEOFFSET();
-		UPDATE dbo.wallet
-		SET amount = amount - (@addedAmount + COALESCE(@money_voucher, 0)) * 0.01, updateTime = @updateTime
-		WHERE id = @walletId
-		IF @@ROWCOUNT = 0
-		BEGIN
-			THROW 50010, 'Cập nhật ví khấu trừ phí không thành công.', 10;
-		END
-		INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, voucherId, orderId, walletId, createTime)
-		VALUES (- (@addedAmount + COALESCE(@money_voucher, 0)) * 0.01, 'cost1%', NULL, NULL, NULL, @walletId, SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-		BEGIN
-			THROW 50011, 'Cập nhật biến động số dư khấu trừ phí không thành công.', 11;
-		END
+    IF v_money_order >
+       p_added_amount + COALESCE(v_money_voucher, 0) THEN
 
-		DECLARE @chatRoomId INT;
-		SELECT @chatRoomId = chatRoomId FROM dbo.[order] WHERE id = @orderId;
-		IF @chatRoomId IS NULL THROW 50012, N'Không tìm thấy chatRoomId trong đơn hàng .', 12;
+        RAISE EXCEPTION 'Tiền chuyển vào không đủ.'
+            USING ERRCODE = 'P0005';
+    END IF;
 
-		DECLARE @zaloOaId INT;
-		DECLARE @accountId INT;
-		SELECT @zaloOaId = zaloOaId, @accountId = accountId FROM dbo.chatRoom WHERE id = @chatRoomId;
-		IF @zaloOaId IS NULL THROW 50013, N'Không tìm thấy @zaloOaId trong đơn hàng .', 13;
-		IF @accountId IS NULL THROW 50014, N'Không tìm thấy @accountId trong đơn hàng .', 14;
-		
-		SELECT * FROM dbo.[order] WHERE id = @orderId;
+    /*
+     * 4. Cộng tiền chuyển khoản vào wallet
+     */
+    UPDATE wallet
+    SET
+        amount = amount + p_added_amount,
+        update_time = CURRENT_TIMESTAMP
+    WHERE id = p_wallet_id;
 
-		SELECT @addedAmount as sales, @zaloOaId as zaloOaId, @accountId as accountId, @updateTime as ofDay;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Cập nhật ví không thành công.'
+            USING ERRCODE = 'P0006';
+    END IF;
 
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
-END
-GO
+    /*
+     * 5. Ghi biến động số dư - tiền thanh toán
+     */
+    INSERT INTO balance_fluctuation (
+        amount,
+        type,
+        pay_hook_id,
+        voucher_id,
+        order_id,
+        wallet_id,
+        create_time
+    )
+    VALUES (
+        p_added_amount,
+        'payOrder',
+        p_pay_hook_id,
+        NULL,
+        p_order_id,
+        p_wallet_id,
+        CURRENT_TIMESTAMP
+    );
 
-CREATE PROCEDURE PayAgentFromWallet
-	@walletId INT,
-	@agentPayId INT,
-	@accountId INT
-AS
+    /*
+     * 6. Xử lý voucher
+     */
+    IF v_voucher_id IS NOT NULL THEN
+
+        UPDATE voucher
+        SET is_used = TRUE
+        WHERE id = v_voucher_id;
+
+        IF NOT FOUND THEN
+            RAISE EXCEPTION
+                'Cập nhật trạng thái sử dụng voucher không thành công.'
+                USING ERRCODE = 'P0007';
+        END IF;
+
+        /*
+         * Cộng tiền voucher vào wallet
+         */
+        UPDATE wallet
+        SET
+            amount = amount + v_money_voucher,
+            update_time = CURRENT_TIMESTAMP
+        WHERE id = p_wallet_id;
+
+        IF NOT FOUND THEN
+            RAISE EXCEPTION
+                'Hoàn tiền từ voucher tới ví không thành công.'
+                USING ERRCODE = 'P0008';
+        END IF;
+
+        /*
+         * Ghi biến động voucher
+         */
+        INSERT INTO balance_fluctuation (
+            amount,
+            type,
+            pay_hook_id,
+            voucher_id,
+            order_id,
+            wallet_id,
+            create_time
+        )
+        VALUES (
+            v_money_voucher,
+            'voucher',
+            NULL,
+            v_voucher_id,
+            NULL,
+            p_wallet_id,
+            CURRENT_TIMESTAMP
+        );
+
+    END IF;
+
+    /*
+     * 7. Trừ phí dịch vụ 1%
+     */
+    v_update_time := CURRENT_TIMESTAMP;
+
+    UPDATE wallet
+    SET
+        amount =
+            amount -
+            (p_added_amount + COALESCE(v_money_voucher, 0)) * 0.01,
+        update_time = v_update_time
+    WHERE id = p_wallet_id;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION
+            'Cập nhật ví khấu trừ phí không thành công.'
+            USING ERRCODE = 'P0009';
+    END IF;
+
+    /*
+     * 8. Ghi biến động phí
+     */
+    INSERT INTO balance_fluctuation (
+        amount,
+        type,
+        pay_hook_id,
+        voucher_id,
+        order_id,
+        wallet_id,
+        create_time
+    )
+    VALUES (
+        -(
+            p_added_amount +
+            COALESCE(v_money_voucher, 0)
+        ) * 0.01,
+        'cost1%',
+        NULL,
+        NULL,
+        NULL,
+        p_wallet_id,
+        CURRENT_TIMESTAMP
+    );
+
+    /*
+     * 9. Lấy chatRoomId
+     */
+    SELECT chat_room_id
+    INTO v_chat_room_id
+    FROM orderr
+    WHERE id = p_order_id;
+
+    IF v_chat_room_id IS NULL THEN
+        RAISE EXCEPTION
+            'Không tìm thấy chatRoomId trong đơn hàng.'
+            USING ERRCODE = 'P0010';
+    END IF;
+
+    /*
+     * 10. Lấy zaloOaId + accountId
+     */
+    SELECT
+        zalo_oa_id,
+        account_id
+    INTO
+        v_zalo_oa_id,
+        v_account_id
+    FROM chat_room
+    WHERE id = v_chat_room_id;
+
+    IF v_zalo_oa_id IS NULL THEN
+        RAISE EXCEPTION
+            'Không tìm thấy zaloOaId trong đơn hàng.'
+            USING ERRCODE = 'P0011';
+    END IF;
+
+    IF v_account_id IS NULL THEN
+        RAISE EXCEPTION
+            'Không tìm thấy accountId trong đơn hàng.'
+            USING ERRCODE = 'P0012';
+    END IF;
+
+    /*
+     * 11. Lấy order sau khi thanh toán
+     */
+    SELECT to_jsonb(o)
+    INTO v_order_data
+    FROM orderr o
+    WHERE o.id = p_order_id;
+
+    /*
+     * 12. Trả kết quả
+     */
+    RETURN QUERY
+    SELECT
+        v_order_data,
+        jsonb_build_object(
+            'sales', p_added_amount,
+            'zalo_oa_id', v_zalo_oa_id,
+            'account_id', v_account_id,
+            'of_day', v_update_time
+        );
+
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION pay_agent_from_wallet (
+    p_wallet_id UUID,
+    p_agent_pay_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF wallet
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_agent_id UUID;
 BEGIN
-	SET NOCOUNT ON;
 
-	BEGIN TRY
-	BEGIN TRANSACTION;
+    /*
+     * 1. Đánh dấu AgentPay đã thanh toán
+     */
+    UPDATE agent_pay
+    SET is_pay = TRUE
+    WHERE id = p_agent_pay_id
+      AND is_pay = FALSE;
 
-		UPDATE dbo.agentPay
-		SET isPay = 1
-		WHERE id = @agentPayId AND isPay = 0;
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50001, 'Cập nhật Agent-Pay thất bại.', 1;
-        END
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Cập nhật Agent-Pay thất bại.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-		UPDATE dbo.wallet
-		SET amount = amount - 50000, updateTime = SYSDATETIMEOFFSET()
-		WHERE id = @walletId AND amount >= 50000 AND accountId = @accountId;
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50002, 'Tiền không đủ.', 2;
-        END
+    /*
+     * 2. Trừ 50.000 khỏi wallet
+     *
+     * Điều kiện amount >= 50000 giúp tránh âm tiền.
+     */
+    UPDATE wallet
+    SET
+        amount = amount - 50000,
+        update_time = CURRENT_TIMESTAMP
+    WHERE id = p_wallet_id
+      AND amount >= 50000
+      AND account_id = p_account_id;
 
-		INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, walletId, createTime)
-        VALUES (-50000, 'payAgent', NULL, @walletId, SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50003, 'Tiền không đủ.', 3;
-        END
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Tiền không đủ.'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-		-- --UpdateAgentPaid
-		-- IF NOT EXISTS ( SELECT 1 FROM dbo.agentPay WHERE isPay = 0 AND id = @agentPayId )
-		-- BEGIN
-		-- 	THROW 50004, N'Chưa tồn tại 1 agentPay .', 4;
-		-- END
+    /*
+     * 3. Ghi biến động số dư
+     */
+    INSERT INTO balance_fluctuation (
+        amount,
+        type,
+        pay_hook_id,
+        wallet_id,
+        create_time
+    )
+    VALUES (
+        -50000,
+        'payAgent',
+        NULL,
+        p_wallet_id,
+        CURRENT_TIMESTAMP
+    );
 
-		DECLARE @agentId INT;
-		SELECT @agentId = agentId FROM dbo.agentPay WHERE id = @agentPayId;
-		IF @agentId IS NULL THROW 50005, N'Không tìm agentId', 5;
+    /*
+     * 4. Lấy agentId
+     */
+    SELECT agent_id
+    INTO v_agent_id
+    FROM agent_pay
+    WHERE id = p_agent_pay_id;
 
-		UPDATE dbo.agent
-		SET expiry = DATEADD(MONTH, 1, SYSDATETIMEOFFSET()), type = 'upgrade'
-		WHERE id = @agentId;
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50006, 'Cập nhật Agent thất bại.', 6;
-        END
+    IF v_agent_id IS NULL THEN
+        RAISE EXCEPTION 'Không tìm agentId.'
+            USING ERRCODE = 'P0003';
+    END IF;
 
-		SELECT * FROM dbo.wallet WHERE id = @walletId
-	COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
-END
-GO
+    /*
+     * 5. Gia hạn Agent thêm 1 tháng
+     */
+    UPDATE agent
+    SET
+        expiry = CURRENT_TIMESTAMP + INTERVAL '1 month',
+        type = 'upgrade'
+    WHERE id = v_agent_id;
 
-CREATE PROCEDURE CreateRequireTakeMoney
-	@amount DECIMAL(20,2),
-	@bankId INT,
-	@walletId INT,
-	@accountId INT
-AS
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Cập nhật Agent thất bại.'
+            USING ERRCODE = 'P0004';
+    END IF;
+
+    /*
+     * 6. Trả về wallet
+     */
+    RETURN QUERY
+    SELECT *
+    FROM wallet
+    WHERE id = p_wallet_id;
+
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION create_require_take_money (
+    p_amount DECIMAL(20,2),
+    p_bank_id UUID,
+    p_wallet_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF require_take_money
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_money_amount DECIMAL(20,2);
+    v_new_id UUID;
+    v_cost_take_money DECIMAL(20,2) := 5000;
 BEGIN
-	SET NOCOUNT ON;
+    -- Kiểm tra ngân hàng thuộc account
+    IF NOT EXISTS (
+        SELECT 1
+        FROM bank
+        WHERE id = p_bank_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION 'Ngân hàng này không phải của bạn.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-	BEGIN TRY
-	BEGIN TRANSACTION;
-		IF NOT EXISTS ( SELECT 1 FROM dbo.bank WHERE id = @bankId AND accountId = @accountId )
-		BEGIN
-			THROW 50001, N'Ngân hàng này không phải của bạn .', 1;
-		END
+    -- Kiểm tra ví thuộc account
+    IF NOT EXISTS (
+        SELECT 1
+        FROM wallet
+        WHERE id = p_wallet_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION 'Ví này không phải của bạn.'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.wallet WHERE id = @walletId AND accountId = @accountId )
-		BEGIN
-			THROW 50002, N'Ví này không phải của bạn .', 2;
-		END
+    -- Không cho rút từ ví type = '1'
+    IF EXISTS (
+        SELECT 1
+        FROM wallet
+        WHERE id = p_wallet_id
+          AND type = '1'
+    ) THEN
+        RAISE EXCEPTION 'Không thể rút tiền từ ví 1.'
+            USING ERRCODE = 'P0003';
+    END IF;
 
-		IF EXISTS ( SELECT 1 FROM dbo.wallet WHERE id = @walletId AND type = '1' )
-		BEGIN
-			THROW 50003, N'Không thể rút tiền từ ví 1 .', 3;
-		END
+    -- Không cho tạo request mới nếu đã có request đang xử lý
+    IF EXISTS (
+        SELECT 1
+        FROM require_take_money
+        WHERE wallet_id = p_wallet_id
+          AND account_id = p_account_id
+          AND is_do = FALSE
+          AND is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Đã tồn tại 1 yêu cầu rút tiền, không thể tạo thêm yêu cầu mới.'
+            USING ERRCODE = 'P0004';
+    END IF;
 
-		IF EXISTS ( SELECT 1 FROM dbo.requireTakeMoney WHERE walletId = @walletId AND accountId = @accountId AND isDo = 0 AND isDelete = 0 )
-		BEGIN
-			THROW 50004, N'Đã tồn tại 1 yêu cầu rút tiền, không thể tạo thêm yêu cầu mới .', 4;
-		END
+    -- Lấy số tiền trong ví
+    SELECT amount
+    INTO v_money_amount
+    FROM wallet
+    WHERE id = p_wallet_id;
 
-		DECLARE @moneyAmount DECIMAL(20,2);
-		SELECT @moneyAmount = amount FROM dbo.wallet WHERE id = @walletId;
-		IF @moneyAmount IS NULL THROW 50003, N'Ví không tồn tại .', 3;
-		IF @amount > @moneyAmount
-		BEGIN
-			THROW 50005, N'Tiền không đủ .', 5;
-		END
+    IF v_money_amount IS NULL THEN
+        RAISE EXCEPTION 'Ví không tồn tại.'
+            USING ERRCODE = 'P0005';
+    END IF;
 
-		DECLARE @costTakeMoney5 INT;
-		SET @costTakeMoney5 = 5000;
-		IF @amount < @costTakeMoney5
-		BEGIN
-			THROW 50006, N'Tiền yêu cầu quá nhỏ .', 6;
-		END
+    -- Kiểm tra số dư
+    IF p_amount > v_money_amount THEN
+        RAISE EXCEPTION 'Tiền không đủ.'
+            USING ERRCODE = 'P0006';
+    END IF;
 
-		DECLARE @newRequireTakeMoneyId INT;
-		INSERT INTO dbo.requireTakeMoney (amount, bankId, walletId, accountId, updateTime, createTime)
-		VALUES (@amount, @bankId, @walletId, @accountId, SYSDATETIMEOFFSET(), SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-		BEGIN
-			THROW 50007, N'Yêu cầu rút tiền không thành công .', 7;
-		END
-		SET @newRequireTakeMoneyId = SCOPE_IDENTITY();
+    -- Kiểm tra số tiền tối thiểu
+    IF p_amount < v_cost_take_money THEN
+        RAISE EXCEPTION 'Tiền yêu cầu quá nhỏ.'
+            USING ERRCODE = 'P0007';
+    END IF;
 
-		SELECT * FROM dbo.requireTakeMoney WHERE id = @newRequireTakeMoneyId
-	COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
-END
-GO
+    -- Tạo yêu cầu rút tiền
+    INSERT INTO require_take_money (
+        amount,
+        bank_id,
+        wallet_id,
+        account_id,
+        update_time,
+        create_time
+    )
+    VALUES (
+        p_amount,
+        p_bank_id,
+        p_wallet_id,
+        p_account_id,
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP
+    )
+    RETURNING id INTO v_new_id;
 
-CREATE PROCEDURE EditRequireTakeMoney
-	@requireTakeMoneyId INT,
-	@amount DECIMAL(20,2),
-	@bankId INT,
-	@walletId INT,
-	@accountId INT
-AS
+    -- Giữ nguyên cấu trúc trả về như SQL Server
+    RETURN QUERY
+    SELECT *
+    FROM require_take_money
+    WHERE id = v_new_id;
+
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION edit_require_take_money (
+    p_require_take_money_id UUID,
+    p_amount DECIMAL(20,2),
+    p_bank_id UUID,
+    p_wallet_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF require_take_money
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_member_ztks_id UUID;
+    v_money_amount DECIMAL(20,2);
+    v_cost_take_money DECIMAL(20,2) := 5000;
 BEGIN
-	SET NOCOUNT ON;
 
-	BEGIN TRY
-	BEGIN TRANSACTION;
-		IF NOT EXISTS ( SELECT 1 FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId AND accountId = @accountId AND isDelete = 0 )
-		BEGIN
-			THROW 50001, N'Yêu cầu rút tiền này không phải của bạn .', 1;
-		END
+    -- Kiểm tra yêu cầu rút tiền
+    IF NOT EXISTS (
+        SELECT 1
+        FROM require_take_money
+        WHERE id = p_require_take_money_id
+          AND account_id = p_account_id
+          AND is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Yêu cầu rút tiền này không phải của bạn.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-		DECLARE @memberZtksId INT;
-		SELECT @memberZtksId = memberZtksId FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId;
-		IF @memberZtksId IS NOT NULL THROW 50002, N'Yêu cầu rút tiền này đã được xác nhận nên không thể chỉnh sửa .', 2;
+    -- Kiểm tra yêu cầu đã được xác nhận chưa
+    SELECT member_ztks_id
+    INTO v_member_ztks_id
+    FROM require_take_money
+    WHERE id = p_require_take_money_id;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.bank WHERE id = @bankId AND accountId = @accountId )
-		BEGIN
-			THROW 50003, N'Ngân hàng này không phải của bạn .', 3;
-		END
+    IF v_member_ztks_id IS NOT NULL THEN
+        RAISE EXCEPTION 'Yêu cầu rút tiền này đã được xác nhận nên không thể chỉnh sửa.'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.wallet WHERE id = @walletId AND accountId = @accountId )
-		BEGIN
-			THROW 50004, N'Ví này không phải của bạn .', 4;
-		END
+    -- Kiểm tra ngân hàng thuộc account
+    IF NOT EXISTS (
+        SELECT 1
+        FROM bank
+        WHERE id = p_bank_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION 'Ngân hàng này không phải của bạn.'
+            USING ERRCODE = 'P0003';
+    END IF;
 
-		IF EXISTS ( SELECT 1 FROM dbo.wallet WHERE id = @walletId AND type = '1' )
-		BEGIN
-			THROW 50005, N'Không thể rút tiền từ ví 1 .', 5;
-		END
+    -- Kiểm tra ví thuộc account
+    IF NOT EXISTS (
+        SELECT 1
+        FROM wallet
+        WHERE id = p_wallet_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION 'Ví này không phải của bạn.'
+            USING ERRCODE = 'P0004';
+    END IF;
 
-		DECLARE @moneyAmount DECIMAL(20,2);
-		SELECT @moneyAmount = amount FROM dbo.wallet WHERE id = @walletId;
-		IF @moneyAmount IS NULL THROW 50003, N'Ví không tồn tại .', 3;
-		IF @amount > @moneyAmount
-		BEGIN
-			THROW 50006, N'Tiền không đủ .', 6;
-		END
+    -- Không cho rút từ ví type = '1'
+    IF EXISTS (
+        SELECT 1
+        FROM wallet
+        WHERE id = p_wallet_id
+          AND type = '1'
+    ) THEN
+        RAISE EXCEPTION 'Không thể rút tiền từ ví 1.'
+            USING ERRCODE = 'P0005';
+    END IF;
 
-		DECLARE @costTakeMoney5 INT;
-		SET @costTakeMoney5 = 5000;
-		IF @amount < @costTakeMoney5
-		BEGIN
-			THROW 50007, N'Tiền yêu cầu quá nhỏ .', 7;
-		END
+    -- Lấy số dư ví
+    SELECT amount
+    INTO v_money_amount
+    FROM wallet
+    WHERE id = p_wallet_id;
 
-		UPDATE dbo.requireTakeMoney
-		SET amount = @amount, bankId = @bankId
-		WHERE id = @requireTakeMoneyId AND memberZtksId IS NULL AND isDelete = 0
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50008, 'Cập nhật yêu cầu rút tiền thất bại.', 8;
-        END
+    IF v_money_amount IS NULL THEN
+        RAISE EXCEPTION 'Ví không tồn tại.'
+            USING ERRCODE = 'P0003';
+    END IF;
 
-		SELECT * FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId
-	COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
-END
-GO
+    -- Kiểm tra tiền
+    IF p_amount > v_money_amount THEN
+        RAISE EXCEPTION 'Tiền không đủ.'
+            USING ERRCODE = 'P0006';
+    END IF;
 
-CREATE PROCEDURE DeleteRequireTakeMoney
-	@requireTakeMoneyId INT,
-	@accountId INT
-AS
+    -- Số tiền rút tối thiểu
+    IF p_amount < v_cost_take_money THEN
+        RAISE EXCEPTION 'Tiền yêu cầu quá nhỏ.'
+            USING ERRCODE = 'P0007';
+    END IF;
+
+    -- Cập nhật yêu cầu
+    UPDATE require_take_money
+    SET
+        amount = p_amount,
+        bankId = p_bank_id
+    WHERE id = p_require_take_money_id
+      AND member_ztks_id IS NULL
+      AND is_delete = FALSE;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Cập nhật yêu cầu rút tiền thất bại.'
+            USING ERRCODE = 'P0008';
+    END IF;
+
+    -- Trả về record sau khi cập nhật
+    RETURN QUERY
+    SELECT *
+    FROM require_take_money
+    WHERE id = p_require_take_money_id;
+
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION delete_require_take_money(
+    p_require_take_money_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF require_take_money
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_member_ztks_id UUID;
 BEGIN
-	SET NOCOUNT ON;
 
-	BEGIN TRY
-	BEGIN TRANSACTION;
-		IF NOT EXISTS ( SELECT 1 FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId AND accountId = @accountId AND isDelete = 0 )
-		BEGIN
-			THROW 50001, N'Yêu cầu rút tiền này không phải của bạn .', 1;
-		END
+    -- Kiểm tra yêu cầu rút tiền thuộc account
+    IF NOT EXISTS (
+        SELECT 1
+        FROM require_take_money
+        WHERE id = p_require_take_money_id
+          AND account_id = p_account_id
+          AND is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Yêu cầu rút tiền này không phải của bạn.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-		DECLARE @memberZtksId INT;
-		SELECT @memberZtksId = memberZtksId FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId;
-		IF @memberZtksId IS NOT NULL THROW 50002, N'Không thể xóa yêu cầu tút tiền khi đã được xác nhận .', 2;
+    -- Kiểm tra đã được xác nhận chưa
+    SELECT member_ztks_id
+    INTO v_member_ztks_id
+    FROM require_take_money
+    WHERE id = p_require_take_money_id;
 
-		UPDATE dbo.requireTakeMoney
-		SET isDelete = 1
-		WHERE id = @requireTakeMoneyId AND memberZtksId IS NULL AND isDelete = 0
-		IF @@ROWCOUNT = 0
-		BEGIN
-		   THROW 50003, 'Huỷ yêu cầu rút tiền không thành công .', 3;
-		END
+    IF v_member_ztks_id IS NOT NULL THEN
+        RAISE EXCEPTION 'Không thể xóa yêu cầu rút tiền khi đã được xác nhận.'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-		SELECT * FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId
-	COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
-END
-GO
+    -- Xóa mềm
+    UPDATE require_take_money
+    SET is_delete = TRUE
+    WHERE id = p_require_take_money_id
+      AND member_ztks_id IS NULL
+      AND is_delete = FALSE;
 
-CREATE PROCEDURE MemberZtksConfirmTakeMoney
-	@requireTakeMoneyId INT,
-	@memberZtksId INT
-AS
+    -- PostgreSQL tương đương @@ROWCOUNT = 0
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Huỷ yêu cầu rút tiền không thành công.'
+            USING ERRCODE = 'P0003';
+    END IF;
+
+    -- Trả về dữ liệu sau khi xóa mềm
+    RETURN QUERY
+    SELECT *
+    FROM require_take_money
+    WHERE id = p_require_take_money_id;
+
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION member_ztks_confirm_take_money (
+    p_require_take_money_id UUID,
+    p_member_ztks_id UUID
+)
+RETURNS SETOF require_take_money
+LANGUAGE plpgsql
+AS $$
 BEGIN
-	SET NOCOUNT ON;
 
-	BEGIN TRY
-	BEGIN TRANSACTION;
-		IF NOT EXISTS ( SELECT 1 FROM dbo.accountInformation WHERE accountId = @memberZtksId AND accountType = 'memberZtks' )
-		BEGIN
-			THROW 50001, N'Không tồn tại memberZtks này .', 1;
-		END
+    -- Kiểm tra memberZtks tồn tại
+    IF NOT EXISTS (
+        SELECT 1
+        FROM account_information
+        WHERE account_id = p_member_ztks_id
+          AND account_type = 'memberZtks'
+    ) THEN
+        RAISE EXCEPTION 'Không tồn tại memberZtks này.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-		UPDATE dbo.requireTakeMoney
-		SET memberZtksId = @memberZtksId
-		WHERE id = @requireTakeMoneyId AND isDelete = 0 AND memberZtksId IS NULL;
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50002, 'MemberZtks các nhận yêu cầu KHÔNG thành công .', 2;
-        END
+    -- Xác nhận yêu cầu rút tiền
+    UPDATE require_take_money
+    SET member_ztks_id = p_member_ztks_id
+    WHERE id = p_require_take_money_id
+      AND is_delete = FALSE
+      AND member_ztks_id IS NULL;
 
-		SELECT * FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId
-	COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
-END
-GO
+    -- PostgreSQL tương đương @@ROWCOUNT = 0
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'MemberZtks xác nhận yêu cầu KHÔNG thành công.'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-CREATE PROCEDURE TakeMoney
-	@amount DECIMAL(20,2),
-	@bankId INT,
-	@payHookId INT,
-	@requireTakeMoneyId INT,
-	@walletId INT,
-	@accountId INT
-AS
+    -- Trả về yêu cầu sau khi xác nhận
+    RETURN QUERY
+    SELECT *
+    FROM require_take_money
+    WHERE id = p_require_take_money_id;
+
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE take_money (
+    IN p_amount DECIMAL(20,2),
+    IN p_bank_id UUID,
+    IN p_pay_hook_id UUID,
+    IN p_require_take_money_id UUID,
+    IN p_wallet_id UUID,
+    IN p_account_id UUID
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_cost_take_money5 INT := 5000;
 BEGIN
-	SET NOCOUNT ON;
+    -- Kiểm tra yêu cầu rút tiền
+    IF NOT EXISTS (
+        SELECT 1
+        FROM require_take_money
+        WHERE id = p_require_take_money_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION USING
+            ERRCODE = 'P5001',
+            MESSAGE = 'Yêu cầu rút tiền này không phải của bạn .';
+    END IF;
 
-	BEGIN TRY
-	BEGIN TRANSACTION;
-		IF NOT EXISTS ( SELECT 1 FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId AND accountId = @accountId )
-		BEGIN
-			THROW 50001, N'Yêu cầu rút tiền này không phải của bạn .', 1;
-		END
+    -- Kiểm tra ngân hàng
+    IF NOT EXISTS (
+        SELECT 1
+        FROM bank
+        WHERE id = p_bank_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION USING
+            ERRCODE = 'P5002',
+            MESSAGE = 'Ngân hàng này không phải của bạn .';
+    END IF;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.bank WHERE id = @bankId AND accountId = @accountId )
-		BEGIN
-			THROW 50002, N'Ngân hàng này không phải của bạn .', 2;
-		END
+    -- Kiểm tra ví
+    IF NOT EXISTS (
+        SELECT 1
+        FROM wallet
+        WHERE id = p_wallet_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION USING
+            ERRCODE = 'P5003',
+            MESSAGE = 'Ví này không phải của bạn .';
+    END IF;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.wallet WHERE id = @walletId AND accountId = @accountId )
-		BEGIN
-			THROW 50003, N'Ví này không phải của bạn .', 3;
-		END
+    -- Kiểm tra yêu cầu đã bị xóa
+    IF EXISTS (
+        SELECT 1
+        FROM require_take_money
+        WHERE id = p_require_take_money_id
+          AND account_id = p_account_id
+          AND is_delete = TRUE
+    ) THEN
+        RAISE EXCEPTION USING
+            ERRCODE = 'P5004',
+            MESSAGE = 'Yêu cầu rút tiền này đã bị xóa .';
+    END IF;
 
-		IF EXISTS ( SELECT 1 FROM dbo.requireTakeMoney WHERE id = @requireTakeMoneyId AND accountId = @accountId AND isDelete = 1 )
-		BEGIN
-			THROW 50004, N'Yêu cầu rút tiền này đã bị xóa .', 4;
-		END
+    -- Trừ tiền rút khỏi ví
+    UPDATE wallet
+    SET
+        amount = amount - p_amount,
+        update_time = CURRENT_TIMESTAMP
+    WHERE id = p_wallet_id;
 
-		DECLARE @costTakeMoney5 INT;
-		SET @costTakeMoney5 = 5000;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION USING
+            ERRCODE = 'P5005',
+            MESSAGE = 'Cập nhật tiền ra khỏi ví không thành công.';
+    END IF;
 
-		-- cập nhật tiền chuyển ra khỏi ví
-        UPDATE dbo.wallet
-		SET amount = amount - @amount, updateTime = SYSDATETIMEOFFSET()
-		WHERE id = @walletId
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50005, 'Cập nhật tiền ra khỏi ví không thành công.', 5;
-        END
-		INSERT INTO dbo.balanceFluctuation (amount, type, payHookId, requireTakeMoneyId, walletId, createTime)
-        VALUES (- @amount, 'takeMoney', @payHookId, @requireTakeMoneyId, @walletId, SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50006, 'Cập nhật biến động số dư tiền ra khỏi ví không thành công.', 6;
-        END
+    -- Ghi nhận biến động số dư
+    INSERT INTO balance_fluctuation (
+        amount,
+        type,
+        pay_hook_id,
+        require_take_money_id,
+        wallet_id,
+        create_time
+    )
+    VALUES (
+        -p_amount,
+        'takeMoney',
+        p_pay_hook_id,
+        p_require_take_money_id,
+        p_wallet_id,
+        CURRENT_TIMESTAMP
+    );
 
-		-- khấu trừ phí rút tiền 5000
-        UPDATE dbo.wallet
-		SET amount = amount - @costTakeMoney5, updateTime = SYSDATETIMEOFFSET()
-		WHERE id = @walletId
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50007, 'Cập nhật khấu trừ phí rút tiền không thành công.', 7;
-        END
-		INSERT INTO dbo.balanceFluctuation (amount, type, walletId, createTime)
-        VALUES (- @costTakeMoney5, 'costTakeMoney5', @walletId, SYSDATETIMEOFFSET());
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50008, 'Cập nhật biến động số dư khấu trừ phí rút tiền không thành công.', 8;
-        END
+    -- Trừ phí rút tiền 5000
+    UPDATE wallet
+    SET
+        amount = amount - v_cost_take_money5,
+        update_time = CURRENT_TIMESTAMP
+    WHERE id = p_wallet_id;
 
-		-- cập nhật yêu cầu rút tiền hoàn 
-		UPDATE dbo.requireTakeMoney
-		SET isDo = 1, doTime = SYSDATETIMEOFFSET()
-		WHERE id = @requireTakeMoneyId and isDelete = 0
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50009, 'Cập nhật yêu cầu rút tiền thất bại.', 9;
-        END
+    IF NOT FOUND THEN
+        RAISE EXCEPTION USING
+            ERRCODE = 'P5007',
+            MESSAGE = 'Cập nhật khấu trừ phí rút tiền không thành công.';
+    END IF;
 
-		SELECT * FROM dbo.wallet WHERE id = @walletId
-	COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
-END
-GO
+    -- Ghi nhận phí rút tiền
+    INSERT INTO balance_fluctuation (
+        amount,
+        type,
+        wallet_id,
+        create_time
+    )
+    VALUES (
+        -v_cost_take_money5,
+        'costTakeMoney5',
+        p_wallet_id,
+        CURRENT_TIMESTAMP
+    );
+
+    -- Hoàn tất yêu cầu rút tiền
+    UPDATE require_take_money
+    SET
+        is_do = TRUE,
+        do_time = CURRENT_TIMESTAMP
+    WHERE id = p_require_take_money_id
+      AND is_delete = FALSE;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION USING
+            ERRCODE = 'P5009',
+            MESSAGE = 'Cập nhật yêu cầu rút tiền thất bại.';
+    END IF;
+
+    -- PostgreSQL procedure không trả result set bằng SELECT như SQL Server.
+    -- Nếu cần trả wallet về Node.js, nên dùng FUNCTION.
+END;
+$$;

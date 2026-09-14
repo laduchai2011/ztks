@@ -1,36 +1,52 @@
-﻿CREATE PROCEDURE GetVouchers
-	@page INT,
-    @size INT,
-	@isUsed BIT = NULL,
-	@phone NVARCHAR(255)
-AS
+﻿CREATE OR REPLACE FUNCTION get_vouchers (
+    p_page INT,
+    p_size INT,
+    p_phone VARCHAR(255),
+	p_is_used BOOLEAN DEFAULT NULL
+)
+RETURNS TABLE (
+    data JSONB,
+    total_count BIGINT
+)
+LANGUAGE plpgsql
+AS $$
 BEGIN
-	-- Tập kết quả 1: dữ liệu phân trang
-    WITH vouchers AS (
-        SELECT v.*,
-			ROW_NUMBER() OVER (ORDER BY v.id DESC) AS rn
-        FROM dbo.voucher AS v
-		WHERE 
-			(@isUsed IS NULL OR isUsed = @isUsed)
-			AND phone = @phone
-    )
+    RETURN QUERY
+    SELECT
+        COALESCE(
+            (
+                SELECT jsonb_agg(to_jsonb(v))
+                FROM (
+                    SELECT
+                        v.*
+                    FROM voucher AS v
+                    WHERE
+                        (p_is_used IS NULL OR v.is_used = p_is_used)
+                        AND v.phone = p_phone
+                    ORDER BY v.id DESC
+                    OFFSET (p_page - 1) * p_size
+                    LIMIT p_size
+                ) AS v
+            ),
+            '[]'::jsonb
+        ) AS data,
+        (
+            SELECT COUNT(*)
+            FROM voucher AS v
+            WHERE
+                (p_is_used IS NULL OR v.is_used = p_is_used)
+                AND v.phone = p_phone
+        ) AS total_count;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_voucher_with_order_id (
+    p_order_id UUID
+)
+RETURNS SETOF voucher
+LANGUAGE sql
+AS $$
     SELECT *
-    FROM vouchers
-    WHERE rn BETWEEN ((@page - 1) * @size + 1) AND (@page * @size);
-
-    -- Tập kết quả 2: tổng số dòng
-    SELECT COUNT(*) AS totalCount
-	FROM dbo.voucher AS v
-	WHERE 
-		(@isUsed IS NULL OR isUsed = @isUsed)
-		AND phone = @phone
-END
-GO
-
-CREATE PROCEDURE GetVoucherWithOrderId
-	@orderId INT
-AS
-BEGIN
-	SELECT * FROM dbo.voucher WHERE orderId = @orderId
-END
-GO
+    FROM voucher
+    WHERE order_id = p_order_id;
+$$;

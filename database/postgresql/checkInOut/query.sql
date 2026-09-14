@@ -1,107 +1,126 @@
-﻿CREATE PROCEDURE GetMyCheckInOuts
-    @fromDate DATE,
-	@toDate DATE,
-    @accountId INT
-AS
+﻿CREATE OR REPLACE FUNCTION get_my_check_in_outs (
+    p_from_date DATE,
+    p_to_date DATE,
+    p_account_id UUID
+)
+RETURNS TABLE (
+    date DATE,
+    id UUID,
+    type VARCHAR(255),
+    note VARCHAR(255),
+    image VARCHAR(255),
+    video VARCHAR(255),
+    is_delete BOOLEAN,
+    account_id UUID,
+    create_time TIMESTAMPTZ
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_first_date DATE;
+    v_to_date DATE;
 BEGIN
-	 DECLARE @firstDate DATE;
-
     -- Ngày tạo dữ liệu đầu tiên của account
-    SELECT @firstDate = CAST(MIN(createTime) AS DATE)
-    FROM checkInOut
-    WHERE accountId = @accountId
-      AND isDelete = 0;
+    SELECT MIN(create_time)::DATE
+    INTO v_first_date
+    FROM check_in_out
+    WHERE account_id = p_account_id
+      AND is_delete = FALSE;
 
-    -- Nếu account chưa có dữ liệu
-    IF @firstDate IS NULL
-        --RETURN;
-	BEGIN
-		SELECT
-			CAST(NULL AS DATE) AS [date],
-			CAST(NULL AS INT) AS id,
-			CAST(NULL AS NVARCHAR(255)) AS type,
-			CAST(NULL AS NVARCHAR(255)) AS note,
-			CAST(NULL AS NVARCHAR(255)) AS image,
-			CAST(NULL AS NVARCHAR(255)) AS video,
-			CAST(NULL AS DATETIMEOFFSET(7)) AS createTime
-		WHERE 1 = 0;
-
-		RETURN;
-	END;
+    -- Account chưa có dữ liệu
+    IF v_first_date IS NULL THEN
+        RETURN;
+    END IF;
 
     -- Không cho toDate nhỏ hơn ngày đầu tiên
-    IF @toDate < @firstDate
-        SET @toDate = @firstDate;
+    v_to_date := p_to_date;
 
-    WITH Dates AS (
-        -- Bắt đầu từ hôm nay
-        SELECT @fromDate AS [date]
+    IF v_to_date < v_first_date THEN
+        v_to_date := v_first_date;
+    END IF;
 
-        UNION ALL
-
-        -- Đi ngược từng ngày
-        SELECT DATEADD(DAY, -1, [date])
-        FROM Dates
-        WHERE [date] > @toDate
-    )
+    RETURN QUERY
     SELECT
-        d.[date],
+        d.date::DATE,
         c.id,
         c.type,
         c.note,
         c.image,
         c.video,
-		c.isDelete,
-		@accountId as accountId,
-        c.createTime
-    FROM Dates d
-    LEFT JOIN checkInOut c
-        ON c.accountId = @accountId
-        AND c.isDelete = 0
-        AND c.createTime >= TODATETIMEOFFSET(
-            CAST(d.[date] AS DATETIME2),
-            '+07:00'
-        )
-        AND c.createTime < TODATETIMEOFFSET(
-            CAST(DATEADD(DAY, 1, d.[date]) AS DATETIME2),
-            '+07:00'
-        )
+        c.is_delete,
+        p_account_id AS account_id,
+        c.create_time
+    FROM generate_series(
+        p_from_date,
+        v_to_date,
+        INTERVAL '1 day'
+    ) AS d(date)
+
+    LEFT JOIN check_in_out c
+        ON c.account_id = p_account_id
+        AND c.is_delete = FALSE
+        AND c.create_time >= (d.date::DATE::TIMESTAMP AT TIME ZONE '+07:00')
+        AND c.create_time < ((d.date::DATE + 1)::TIMESTAMP AT TIME ZONE '+07:00')
+
     ORDER BY
-        d.[date] DESC,
-        c.createTime
-    OPTION (MAXRECURSION 0);
-END
-GO
+        d.date DESC,
+        c.create_time;
+END;
+$$;
 
-CREATE PROCEDURE GetCheckInOutsWithDate
-	@type NVARCHAR(255),
-	@date DATE,
-    @accountId INT
-AS
+CREATE OR REPLACE FUNCTION get_check_in_outs_with_date (
+    p_type VARCHAR(255),
+    p_date DATE,
+    p_account_id UUID
+)
+RETURNS TABLE (
+    id UUID,
+    type VARCHAR(255),
+    note VARCHAR(255),
+    image VARCHAR(255),
+    video VARCHAR(255),
+    is_delete BOOLEAN,
+    account_id UUID,
+    create_time TIMESTAMPTZ
+)
+LANGUAGE plpgsql
+AS $$
 BEGIN
-	 SELECT
-		id,
-		type,
-		note,
-		image,
-		video,
-		isDelete,
-		accountId,
-		createTime
-	FROM dbo.checkInOut
-	WHERE accountId = @accountId
-		AND type = @type
-		AND isDelete = 0
-		AND createTime >= CAST(@date AS DATETIMEOFFSET)
-		AND createTime < DATEADD(DAY, 1, CAST(@date AS DATETIMEOFFSET))
-	ORDER BY createTime ASC;
-END
-GO
+    RETURN QUERY
+    SELECT
+        c.id,
+        c.type,
+        c.note,
+        c.image,
+        c.video,
+        c.is_delete,
+        c.account_id,
+        c.create_time
+    FROM check_in_out AS c
+    WHERE c.account_id = p_account_id
+      AND c.type = p_type
+      AND c.is_delete = FALSE
+      AND c.create_time >= (
+          p_date::TIMESTAMP AT TIME ZONE '+07:00'
+      )
+      AND c.create_time < (
+          (p_date + 1)::TIMESTAMP AT TIME ZONE '+07:00'
+      )
+    ORDER BY c.create_time ASC;
+END;
+$$;
 
-CREATE PROCEDURE GetCheckInOutInspectWithFk
-    @checkInOutId INT
-AS
+CREATE OR REPLACE FUNCTION get_check_in_out_inspect_with_fk (
+    p_check_in_out_id UUID
+)
+RETURNS SETOF check_in_out_inspect
+LANGUAGE plpgsql
+AS $$
 BEGIN
-	 SELECT * FROM dbo.checkInOutInspect WHERE checkInOutId = @checkInOutId AND isDelete = 0;
-END
-GO
+    RETURN QUERY
+    SELECT *
+    FROM check_in_out_inspect
+    WHERE check_in_out_id = p_check_in_out_id
+      AND is_delete = FALSE;
+END;
+$$;

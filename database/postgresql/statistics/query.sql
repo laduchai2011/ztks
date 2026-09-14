@@ -1,37 +1,18 @@
-﻿CREATE PROCEDURE GetStatisticsOa
-	@fromDate DATE,
-    @toDate DATE,
-	@zaloOaId INT
-AS
+﻿CREATE OR REPLACE FUNCTION get_statistics_oa (
+    p_from_date DATE,
+    p_to_date DATE,
+    p_zalo_oa_id UUID
+)
+RETURNS SETOF statistics_oa
+LANGUAGE plpgsql
+AS $$
 BEGIN
-	SET NOCOUNT ON;
-
-	BEGIN TRY
-	BEGIN TRANSACTION;
-
-		SELECT *
-		FROM dbo.[statisticsOa]
-		WHERE ofDay >= CAST(@fromDate AS DATETIMEOFFSET)
-		  AND ofDay < DATEADD(DAY, 1, CAST(@toDate AS DATETIMEOFFSET))
-		  AND zaloOaId = @zaloOaId
-		ORDER BY ofDay;
-
-	COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
-END
-GO
-
-CREATE PROCEDURE GetStatisticsMemberInOneMonth
-    @ofMonth DATE,
-	@zaloOaId INT,
-	@accountId INT
-AS
-BEGIN
-	SELECT * FROM dbo.[statistics] WHERE accountId = @accountId AND zaloOaId = @zaloOaId AND ofMonth = @ofMonth;
-END
-GO
+    RETURN QUERY
+    SELECT *
+    FROM statistics_oa
+    WHERE of_day >= p_from_date
+      AND of_day <= p_to_date
+      AND zalo_oa_id = p_zalo_oa_id
+    ORDER BY of_day;
+END;
+$$;

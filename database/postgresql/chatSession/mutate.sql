@@ -65,7 +65,7 @@ CREATE OR REPLACE FUNCTION update_selected_account_id_of_chat_session (
     p_selected_account_id UUID,
     p_account_id UUID
 )
-RETURNS SETOF chatSession
+RETURNS SETOF chat_session
 LANGUAGE plpgsql
 AS $$
 BEGIN
@@ -73,20 +73,20 @@ BEGIN
     -- mà p_account_id là admin hay không
     IF NOT EXISTS (
         SELECT 1
-        FROM accountInformation
-        WHERE addedById = p_account_id
-          AND accountId = p_selected_account_id
+        FROM account_information
+        WHERE added_by_id = p_account_id
+          AND account_id = p_selected_account_id
     ) THEN
         RAISE EXCEPTION 'Bạn không phải admin của tài khoản này.'
             USING ERRCODE = 'P0001';
     END IF;
 
     -- Update
-    UPDATE chatSession
-    SET selectedAccountId = p_selected_account_id
+    UPDATE chat_session
+    SET selected_account_id = p_selected_account_id
     WHERE status = 'normal'
       AND id = p_id
-      AND accountId = p_account_id;
+      AND account_id = p_account_id;
 
     -- Tương đương @@ROWCOUNT = 0
     IF NOT FOUND THEN
@@ -97,72 +97,80 @@ BEGIN
     -- Trả về chatSession sau khi update
     RETURN QUERY
     SELECT *
-    FROM chatSession
+    FROM chat_session
     WHERE id = p_id;
 END;
 $$;
 
-CREATE PROCEDURE UpdateIsReadyOfChatSession
-	@id INT,
-	@isReady BIT,
-	@accountId INT
-AS
+CREATE OR REPLACE FUNCTION update_is_ready_of_chat_session (
+    p_id UUID,
+    p_is_ready BOOLEAN,
+    p_account_id UUID
+)
+RETURNS SETOF chat_session
+LANGUAGE plpgsql
+AS $$
 BEGIN
-	SET NOCOUNT ON;
+    UPDATE chat_session
+    SET is_ready = p_is_ready
+    WHERE status = 'normal'
+      AND id = p_id
+      AND account_id = p_account_id;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Cập nhật chat_session không thành công.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-		UPDATE dbo.chatSession
-		SET isReady = @isReady
-		WHERE status = 'normal' AND id = @id AND accountId = @accountId;
-		IF @@ROWCOUNT = 0
-        BEGIN
-            THROW 50001, 'Cập nhật chatSession không thành công.', 1;
-        END
-
-		SELECT * FROM dbo.chatSession WHERE id = @id;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    RETURN QUERY
+    SELECT *
+    FROM chat_session
+    WHERE id = p_id;
 END;
-GO
+$$;
 
-CREATE PROCEDURE LeaveAllChatSession
-	@accountId INT
-AS
+CREATE OR REPLACE FUNCTION leave_all_chat_session (
+    p_account_id UUID
+)
+RETURNS TABLE (
+    success BOOLEAN
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_my_admin_id UUID;
 BEGIN
-	SET NOCOUNT ON;
+    -- Lấy admin của account
+    SELECT ai.added_by_id
+    INTO v_my_admin_id
+    FROM account_information AS ai
+    WHERE ai.account_id = p_account_id
+    LIMIT 1;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    IF v_my_admin_id IS NULL THEN
+        RAISE EXCEPTION 'Không tồn tại 1 admin nào cho bạn.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-		DECLARE @myAdminId INT;
+    -- Chuyển các chat session đang được account này xử lý
+    UPDATE chat_session
+    SET selected_account_id = v_my_admin_id
+    WHERE status = 'normal'
+      AND selected_account_id = p_account_id;
 
-		SELECT @myAdminId = addedById FROM dbo.accountInformation WHERE accountId = @accountId
-		IF @myAdminId IS NULL THROW 50001, N'Không tồn tại 1 admin nào cho bạn .', 1;
+    -- Kiểm tra còn session nào đang chọn account này không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM chat_session
+        WHERE selected_account_id = p_account_id
+    ) THEN
+        RETURN QUERY
+        SELECT TRUE;
 
-		UPDATE dbo.chatSession
-		SET selectedAccountId = @myAdminId
-		WHERE status = 'normal' AND selectedAccountId = @accountId;
+        RETURN;
+    END IF;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.chatSession WHERE selectedAccountId = @accountId )
-		BEGIN
-			SELECT CAST(1 AS BIT) AS success;
-		END
-
-		SELECT CAST(0 AS BIT) AS success;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    RETURN QUERY
+    SELECT FALSE;
 END;
-GO
-
+$$;

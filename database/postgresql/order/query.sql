@@ -1,117 +1,150 @@
-﻿CREATE PROCEDURE GetOrders
-	@page INT,
-    @size INT,
-	@uuid NVARCHAR(255) = NULL,
-	@moneyFrom DECIMAL(20,2) = NULL,
-    @moneyTo DECIMAL(20,2) = NULL,
-	@isPay BIT = NULL,
-	@phone NVARCHAR(255) = NULL,
-	@isDelete BIT = NULL,
-	@chatRoomId INT,
-    @accountId INT
-AS
+﻿CREATE OR REPLACE FUNCTION get_orders (
+    p_page INT,
+    p_size INT,
+	p_chat_room_id UUID,
+    p_account_id UUID,
+    p_uuid VARCHAR(255) DEFAULT NULL,
+    p_money_from DECIMAL(20,2) DEFAULT NULL,
+    p_money_to DECIMAL(20,2) DEFAULT NULL,
+    p_is_pay BOOLEAN DEFAULT NULL,
+    p_phone VARCHAR(255) DEFAULT NULL,
+    p_is_delete BOOLEAN DEFAULT NULL
+)
+RETURNS TABLE (
+    data JSONB,
+    total_count BIGINT
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_data JSONB;
+    v_total_count BIGINT;
 BEGIN
-	SET NOCOUNT ON;
+    -- Kiểm tra ChatRoom tồn tại và thuộc account
+    IF NOT EXISTS (
+        SELECT 1
+        FROM chat_room
+        WHERE id = p_chat_room_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION 'ChatRoom không tồn tại .'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
+    -- Kiểm tra ChatRoom đã bị xóa
+    IF EXISTS (
+        SELECT 1
+        FROM chat_room
+        WHERE id = p_chat_room_id
+          AND status = 'delete'
+    ) THEN
+        RAISE EXCEPTION 'ChatRoom đã bị xóa .'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-		IF NOT EXISTS ( SELECT 1 FROM dbo.chatRoom WHERE id = @chatRoomId AND accountId = @accountId )
-		BEGIN
-			THROW 50001, N'ChatRoom không tồn tại .', 1;
-		END
-
-		IF EXISTS ( SELECT 1 FROM dbo.chatRoom WHERE id = @chatRoomId AND status = 'delete' )
-		BEGIN
-			THROW 50002, N'ChatRoom đã bị xóa .', 2;
-		END
-
-		-- Tập kết quả 1: dữ liệu phân trang
-		;WITH orders AS (
-			SELECT o.*,
-				ROW_NUMBER() OVER (ORDER BY o.id DESC) AS rn
-			FROM dbo.[order] AS o
-			WHERE 
-				chatRoomId = @chatRoomId
-				AND (@uuid IS NULL OR uuid = @uuid)
-				AND (@moneyFrom IS NULL OR money >= @moneyFrom)
-				AND (@moneyTo   IS NULL OR money <= @moneyTo)
-				AND (@isPay IS NULL OR isPay = @isPay)
-				AND (@phone IS NULL OR phone LIKE '%' + @phone + '%')
-				AND (@isDelete IS NULL OR isDelete = @isDelete)
-		)
-		SELECT *
-		FROM orders
-		WHERE rn BETWEEN ((@page - 1) * @size + 1) AND (@page * @size);
-
-		-- Tập kết quả 2: tổng số dòng
-		SELECT COUNT(*) AS totalCount
-		FROM dbo.[order] AS o
-			WHERE 
-				chatRoomId = @chatRoomId
-				AND (@uuid IS NULL OR uuid = @uuid)
-				AND (@moneyFrom IS NULL OR money >= @moneyFrom)
-				AND (@moneyTo   IS NULL OR money <= @moneyTo)
-				AND (@isPay IS NULL OR isPay = @isPay)
-				AND (@phone IS NULL OR phone LIKE '%' + @phone + '%')
-				AND (@isDelete IS NULL OR isDelete = @isDelete)
-				
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
-END;
-GO
-
--- BO
--- CREATE PROCEDURE GetMyOrderWithId
--- 	@id INT,
--- 	@accountId INT
--- AS
--- BEGIN
--- 	SELECT * FROM dbo.[order] WHERE status = 'normal' AND id = @id AND accountId = @accountId
--- END
--- GO
-
-CREATE PROCEDURE GetOrderWithId
-	@id INT
-AS
-BEGIN
-	SELECT * FROM dbo.[order] WHERE id = @id AND isDelete = 0;
-END
-GO
-
-CREATE PROCEDURE GetOrdersWithPhone
-	@page INT,
-    @size INT,
-	@phone INT
-AS
-BEGIN
-	-- Tập kết quả 1: dữ liệu phân trang
-    WITH orders AS (
-        SELECT o.*,
-			ROW_NUMBER() OVER (ORDER BY o.id DESC) AS rn
-        FROM dbo.[order] AS o
-		WHERE isDelete = 0 AND phone = @phone
+    -- Dữ liệu phân trang
+    SELECT COALESCE(
+        jsonb_agg(to_jsonb(t) - 'rn' ORDER BY t.id DESC),
+        '[]'::jsonb
     )
-    SELECT *
-    FROM orders
-    WHERE rn BETWEEN ((@page - 1) * @size + 1) AND (@page * @size);
+    INTO v_data
+    FROM (
+        SELECT
+            o.*,
+            ROW_NUMBER() OVER (ORDER BY o.id DESC) AS rn
+        FROM orderr AS o
+        WHERE
+            o.chat_room_id = p_chat_room_id
+            AND (p_uuid IS NULL OR o.uuid = p_uuid)
+            AND (p_money_from IS NULL OR o.money >= p_money_from)
+            AND (p_money_to IS NULL OR o.money <= p_money_to)
+            AND (p_is_pay IS NULL OR o.is_pay = p_is_pay)
+            AND (p_phone IS NULL OR o.phone LIKE '%' || p_phone || '%')
+            AND (p_is_delete IS NULL OR o.is_delete = p_is_delete)
+    ) AS t
+    WHERE t.rn BETWEEN ((p_page - 1) * p_size + 1)
+                    AND (p_page * p_size);
 
-    -- Tập kết quả 2: tổng số dòng
-    SELECT COUNT(*) AS totalCount
-	FROM dbo.[order] AS o
-	WHERE isDelete = 0 AND phone = @phone
-END
-GO
+    -- Tổng số dòng
+    SELECT COUNT(*)
+    INTO v_total_count
+    FROM orderr AS o
+    WHERE
+        o.chat_room_id = p_chat_room_id
+        AND (p_uuid IS NULL OR o.uuid = p_uuid)
+        AND (p_money_from IS NULL OR o.money >= p_money_from)
+        AND (p_money_to IS NULL OR o.money <= p_money_to)
+        AND (p_is_pay IS NULL OR o.is_pay = p_is_pay)
+        AND (p_phone IS NULL OR o.phone LIKE '%' || p_phone || '%')
+        AND (p_is_delete IS NULL OR o.is_delete = p_is_delete);
 
-CREATE PROCEDURE GetAllOrderStatus
-	@orderId INT
-AS
+    RETURN QUERY
+    SELECT v_data, v_total_count;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_order_with_id (
+    p_id UUID
+)
+RETURNS SETOF orderr
+LANGUAGE plpgsql
+AS $$
 BEGIN
-	SELECT * FROM dbo.orderStatus WHERE orderId = @orderId ORDER BY id DESC
-END
-GO
+    RETURN QUERY
+    SELECT *
+    FROM orderr
+    WHERE id = p_id
+      AND is_delete = FALSE;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_orders_with_phone (
+    p_page INT,
+    p_size INT,
+    p_phone VARCHAR(255)
+)
+RETURNS TABLE (
+    data JSONB,
+    total_count BIGINT
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    SELECT
+        COALESCE(
+            jsonb_agg(to_jsonb(t) - 'rn' ORDER BY t.id DESC),
+            '[]'::jsonb
+        ),
+        (
+            SELECT COUNT(*)
+            FROM orderr AS o
+            WHERE o.is_delete = FALSE
+              AND o.phone = p_phone
+        )
+    INTO data, total_count
+    FROM (
+        SELECT
+            o.*,
+            ROW_NUMBER() OVER (ORDER BY o.id DESC) AS rn
+        FROM orderr AS o
+        WHERE o.is_delete = FALSE
+          AND o.phone = p_phone
+    ) AS t
+    WHERE t.rn BETWEEN
+        ((p_page - 1) * p_size + 1)
+        AND
+        (p_page * p_size);
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_all_order_status (
+    p_order_id UUID
+)
+RETURNS SETOF order_status
+LANGUAGE sql
+AS $$
+    SELECT *
+    FROM order_status
+    WHERE order_id = p_order_id
+    ORDER BY id DESC;
+$$;

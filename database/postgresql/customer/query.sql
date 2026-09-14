@@ -1,14 +1,23 @@
-CREATE FUNCTION SigninCustomer (@phone NVARCHAR(255), @password NVARCHAR(255)) RETURNS TABLE AS RETURN (
-    SELECT * FROM dbo.customer WHERE phone = @phone AND password = @password
-);
-GO
+CREATE OR REPLACE FUNCTION signin_customer(
+    p_phone VARCHAR(255),
+    p_password VARCHAR(255)
+)
+RETURNS SETOF customer
+LANGUAGE sql
+AS $$
+    SELECT *
+    FROM customer
+    WHERE phone = p_phone
+      AND password = p_password;
+$$;
 
-CREATE PROCEDURE CustomerGetMe
-    @id INT
-AS
-BEGIN
-	SELECT *
-	FROM dbo.customer
-	WHERE id = @id
-END
-GO
+CREATE OR REPLACE FUNCTION customer_get_me(
+    p_id UUID
+)
+RETURNS SETOF customer
+LANGUAGE sql
+AS $$
+    SELECT *
+    FROM customer
+    WHERE id = p_id;
+$$;
