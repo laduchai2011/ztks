@@ -1,0 +1,300 @@
+﻿CREATE PROCEDURE GetZaloAppWithAccountId
+    @accountId INT
+AS
+BEGIN
+	SELECT *
+	FROM dbo.zaloApp
+	WHERE 
+		status = 'normal' 
+		AND accountId = @accountId
+END
+GO
+
+CREATE PROCEDURE GetZaloOaListWith2Fk
+	@page INT,
+    @size INT,
+	@zaloAppId INT,
+    @accountId INT
+AS
+BEGIN
+	-- Tập kết quả 1: dữ liệu phân trang
+    WITH zaloOas AS (
+        SELECT zo.*,
+			ROW_NUMBER() OVER (ORDER BY zo.id DESC) AS rn
+        FROM dbo.zaloOa AS zo
+		WHERE 
+			status = 'normal'  
+			AND (@zaloAppId IS NULL OR zo.zaloAppId = @zaloAppId) 
+			AND (@accountId IS NULL OR zo.accountId = @accountId) 
+    )
+    SELECT *
+    FROM zaloOas
+    WHERE rn BETWEEN ((@page - 1) * @size + 1) AND (@page * @size);
+
+    -- Tập kết quả 2: tổng số dòng
+    SELECT COUNT(*) AS totalCount
+	FROM dbo.zaloOa AS zo
+		WHERE 
+			status = 'normal' 
+			AND (@zaloAppId IS NULL OR zo.zaloAppId = @zaloAppId) 
+			AND (@accountId IS NULL OR zo.accountId = @accountId) 
+END
+GO
+
+CREATE PROCEDURE IsMyOa
+	@id INT,
+    @accountId INT
+AS
+BEGIN
+	SELECT *
+	FROM dbo.zaloOa
+	WHERE 
+		status = 'normal' 
+		AND id = @id
+		AND accountId = @accountId
+END
+GO
+
+CREATE PROCEDURE GetZaloOaWithId
+	@id INT,
+	@accountId INT
+AS
+BEGIN
+	SELECT *
+	FROM dbo.zaloOa
+	WHERE 
+		status = 'normal' 
+		AND id = @id
+		AND accountId = @accountId
+END
+GO
+
+CREATE PROCEDURE GetZaloOaWithOaId
+	@oaId NVARCHAR(255),
+	@accountId INT
+AS
+BEGIN
+	SELECT *
+	FROM dbo.zaloOa
+	WHERE 
+		status = 'normal' 
+		AND oaId = @oaId
+		AND accountId = @accountId
+END
+GO
+
+CREATE PROCEDURE CheckZaloAppWithAppId
+    @appId NVARCHAR(255)
+AS
+BEGIN
+	SELECT *
+	FROM dbo.zaloApp
+	WHERE 
+		status = 'normal' 
+		AND appId = @appId
+END
+GO
+
+CREATE PROCEDURE CheckZaloOaListWithZaloAppId
+    @zaloAppId INT
+AS
+BEGIN
+	SELECT *
+	FROM dbo.zaloOa
+	WHERE 
+		status = 'normal' 
+		AND zaloAppId = @zaloAppId
+END
+GO
+
+CREATE PROCEDURE GetZaloOaTokenWithFk
+    @zaloOaId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+		-- IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @accountId )
+		-- BEGIN
+		-- 	THROW 50001, N'Không phải OA của bạn .', 1;
+		-- END
+
+		DECLARE @addedById INT;
+		SELECT @addedById = addedById FROM dbo.accountInformation WHERE accountId = @accountId;
+		IF @zaloOaId IS NULL THROW 50001, N'Không tìm thấy addedById .', 1;
+
+		IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @addedById )
+		BEGIN
+			THROW 50002, N'Không phải OA của bạn .', 2;
+		END
+
+		SELECT * FROM dbo.zaloOaToken WHERE zaloOaId = @zaloOaId
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
+CREATE PROCEDURE PlaywightGetZaloApp
+    @userName NVARCHAR(100),
+	@password NVARCHAR(100)
+AS
+BEGIN
+	DECLARE @accountId INT;
+	SELECT @accountId = id FROM dbo.account WHERE userName = @userName AND password=@password AND status = 'normal'
+	IF @accountId IS NULL THROW 50001, N'Không tìm tài khoản', 1;
+
+	SELECT * FROM dbo.zaloApp WHERE accountId = @accountId AND status = 'normal'
+	SELECT @accountId AS accountId;
+END
+GO
+
+CREATE PROCEDURE GetZnsTemplates
+	@page INT,
+    @size INT,
+	@offset INT,
+    @zaloOaId INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+			IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @accountId )
+			BEGIN
+				THROW 50001, N'Không phải OA của bạn .', 1;
+			END
+
+			-- Tập kết quả 1: dữ liệu phân trang
+			;WITH znsTemplates AS (
+				SELECT z.*,
+					ROW_NUMBER() OVER (ORDER BY z.id DESC) AS rn
+				FROM dbo.znsTemplate AS z
+				WHERE zaloOaId = @zaloOaId AND isDelete = 0
+		
+			)
+			SELECT *
+			FROM znsTemplates
+			WHERE rn BETWEEN (((@page - 1) * @size + 1) + @offset) AND ((@page * @size) + @offset);
+
+			-- Tập kết quả 2: tổng số dòng
+			SELECT COUNT(*) AS totalCount
+			FROM dbo.znsTemplate AS z
+			WHERE zaloOaId = @zaloOaId AND isDelete = 0
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
+CREATE PROCEDURE GetZnsTemplateWithId
+	@id INT,
+	@accountId INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRY
+        BEGIN TRANSACTION;
+			DECLARE @zaloOaId INT;
+			SELECT @zaloOaId = zaloOaId FROM dbo.znsTemplate WHERE id = @id
+			IF @zaloOaId IS NULL THROW 50001, N'Không tìm thấy zaloOa', 1;
+
+			IF NOT EXISTS ( SELECT 1 FROM dbo.znsTemplate WHERE id = @id AND isDelete = 0 )
+			BEGIN
+				THROW 50002, N'ZnsTemplate này đã bị xóa .', 2;
+			END
+
+			DECLARE @adminId INT;
+			SELECT @adminId = accountId FROM dbo.zaloOa WHERE id = @zaloOaId
+			IF @adminId IS NULL THROW 50003, N'Không tìm thấy Admin', 3;
+
+			IF NOT EXISTS ( SELECT 1 FROM dbo.accountInformation WHERE addedById = @adminId AND accountId = @accountId )
+			BEGIN
+				THROW 50004, N'Admin này không phải của bạn .', 4;
+			END
+
+			SELECT * FROM dbo.znsTemplate WHERE id = @id;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+			ROLLBACK TRANSACTION;
+		THROW;
+	END CATCH
+END;
+GO
+
+CREATE PROCEDURE GetZnsMessages
+    @page INT,
+    @size INT,
+    @znsTemplateId INT,
+    @accountId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+            WITH pagedDates AS (
+                SELECT DISTINCT
+                    CAST(
+                        createTime AT TIME ZONE 'SE Asia Standard Time'
+                        AS DATE
+                    ) AS createDate
+                FROM znsMessage
+                WHERE accountId = @accountId
+                    AND znsTemplateId = @znsTemplateId
+                ORDER BY createDate DESC
+                OFFSET (@page - 1) * @size ROWS
+                FETCH NEXT @size ROWS ONLY
+            )
+
+            SELECT
+                z.id,
+                z.type,
+				z.cost,
+                z.data,
+                z.znsTemplateId,
+                z.accountId,
+
+                -- giờ Việt Nam
+                z.createTime AT TIME ZONE 'SE Asia Standard Time'
+                    AS createTime
+
+            FROM znsMessage z
+            JOIN pagedDates d
+                ON CAST(
+                    z.createTime AT TIME ZONE 'SE Asia Standard Time'
+                    AS DATE
+                ) = d.createDate
+            WHERE z.accountId = @accountId
+                AND z.znsTemplateId = @znsTemplateId
+            ORDER BY
+                z.createTime AT TIME ZONE 'SE Asia Standard Time' DESC;
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        THROW;
+    END CATCH
+END;
+GO

@@ -1,0 +1,8 @@
+CREATE TABLE cache_redis (
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
+	key VARCHAR(255) NOT NULL,
+    value TEXT NOT NULL,
+    update_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    create_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX idx_cache_redis_key ON cache_redis(key);

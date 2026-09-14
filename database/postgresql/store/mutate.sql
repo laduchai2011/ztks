@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION Create_Shop(
+CREATE OR REPLACE FUNCTION .(
     p_name VARCHAR(50),
     p_description VARCHAR(255),
     p_content TEXT,

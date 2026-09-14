@@ -8,3 +8,13 @@ EXEC dbo.GetNotReplyAccounts
     @size = 10,
     @chatRoomId = 24,
     @accountId = 1;
+
+SELECT
+    SERVERPROPERTY('Edition') AS Edition,
+    SERVERPROPERTY('ProductVersion') AS ProductVersion,
+    SERVERPROPERTY('ProductLevel') AS ProductLevel;
+
+SELECT
+    SERVERPROPERTY('Edition') AS Edition,
+    SERVERPROPERTY('ProductVersion') AS ProductVersion,
+    SERVERPROPERTY('ProductUpdateLevel') AS ProductUpdateLevel;

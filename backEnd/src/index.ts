@@ -160,6 +160,11 @@ app.use(`${apiString}/hello`, (req, res) => {
         const service_checkInOut = (await import('@src/services/checkInOut')).default;
         app.use(`${prefix}/service_checkInOut`, service_checkInOut);
     }
+
+    if (services.includes('shop')) {
+        const service_shop = (await import('@src/services/shop')).default;
+        app.use(`${prefix}/service_shop`, service_shop);
+    }
 })();
 
 app.listen(port, () => {
