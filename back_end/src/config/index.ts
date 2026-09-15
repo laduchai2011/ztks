@@ -1,0 +1,100 @@
+import dotenv from 'dotenv';
+import my_interface from '@src/interface';
+
+dotenv.config();
+
+const isProduct = process.env.NODE_ENV === 'production';
+
+const mssql_config: my_interface['mssql']['config'] = isProduct
+    ? {
+          host: process.env.MSSQL_SERVER_HOST,
+          port: Number(process.env.MSSQL_SERVER_PORT),
+          database: process.env.MSSQL_SERVER_DATABASE,
+          username: process.env.MSSQL_SERVER_USERNAME,
+          password: process.env.MSSQL_SERVER_PASSWORD,
+      }
+    : {
+          host: '103.38.236.182',
+          port: 1433,
+          database: 'ztksdev',
+          username: 'sa',
+          password: '201195laducHai',
+      };
+
+const postgresql_config: my_interface['postgresql']['config'] = isProduct
+    ? {
+          host: process.env.POSTGRES_HOST,
+          port: Number(process.env.POSTGRES_PORT),
+          database: process.env.POSTGRES_DB,
+          user: process.env.POSTGRES_USER,
+          password: process.env.POSTGRES_PASSWORD,
+      }
+    : {
+          host: '103.38.236.182',
+          port: 5432,
+          database: 'ztksdev',
+          user: 'postgres',
+          password: '2011Hai',
+      };
+
+const redis_config: my_interface['redis']['config'] = isProduct
+    ? {
+          host: process.env.REDIS_SERVER_HOST,
+          port: Number(process.env.REDIS_SERVER_PORT),
+          username: process.env.REDIS_SERVER_USERNAME,
+          password: process.env.REDIS_SERVER_PASSWORD,
+      }
+    : {
+          host: '103.38.236.182',
+          port: 6379,
+          username: 'ztks',
+          password: 'hai20111995',
+      };
+
+const rabbitmq_config: my_interface['rabbitmq']['config'] = isProduct
+    ? {
+          host: process.env.RABBITMQ_SERVER_HOST,
+          port: Number(process.env.RABBITMQ_SERVER_PORT),
+          username: process.env.RABBITMQ_SERVER_USERNAME,
+          password: process.env.RABBITMQ_SERVER_PASSWORD,
+      }
+    : {
+          host: '103.38.236.182',
+          port: 5672,
+          username: 'admin',
+          password: 'admin123',
+      };
+
+const mongo_config: my_interface['mongo']['config'] = isProduct
+    ? {
+          host: process.env.MONGO_SERVER_HOST,
+          port: Number(process.env.MONGO_SERVER_PORT),
+          username: process.env.MONGO_SERVER_USERNAME,
+          password: process.env.MONGO_SERVER_PASSWORD,
+          database: process.env.MONGO_SERVER_DATABASE,
+      }
+    : {
+          host: '103.38.236.182',
+          port: 27017,
+          username: 'admin',
+          password: 'admin123',
+          database: 'ztksdev',
+      };
+
+const minio_config: my_interface['minio']['config'] = isProduct
+    ? {
+          endPoint: process.env.MINIO_SERVER_END_POINT,
+          port: Number(process.env.MINIO_SERVER_PORT),
+          accessKey: process.env.MINIO_SERVER_ACCESS_KEY,
+          secretKey: process.env.MINIO_SERVER_SECRET_KEY,
+          useSSL: process.env.MINIO_SERVER_USE_SSL === 'true',
+      }
+    : {
+          endPoint: '103.38.236.182',
+          port: 9000,
+          accessKey: 'minioadmin',
+          secretKey: 'ztkzstore',
+          useSSL: false,
+      };
+
+export { mssql_config, postgresql_config, redis_config, rabbitmq_config, mongo_config, minio_config };

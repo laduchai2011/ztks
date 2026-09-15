@@ -1,5 +1,5 @@
-import { CallTypeType } from '.';
-import { ZaloAppField, ZaloOaField } from '../zalo';
+import { Call_Type_Type } from '.';
+import { Zalo_App_Field, Zalo_Oa_Field } from '../zalo';
 
 export interface RequestConsentBodyField {
     phone: string;

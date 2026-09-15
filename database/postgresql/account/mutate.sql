@@ -1,10 +1,10 @@
-﻿DROP FUNCTION IF EXISTS signup(
-    VARCHAR,
-    VARCHAR,
-    VARCHAR,
-    VARCHAR,
-    VARCHAR
-);
+﻿-- DROP FUNCTION IF EXISTS signup(
+--     VARCHAR,
+--     VARCHAR,
+--     VARCHAR,
+--     VARCHAR,
+--     VARCHAR
+-- );
 CREATE OR REPLACE FUNCTION signup (
     p_user_name   VARCHAR(100),
     p_password   VARCHAR(100),

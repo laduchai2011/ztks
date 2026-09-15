@@ -1,0 +1,30 @@
+Dưới đây là một số cấu hình Prettier cơ bản mà bạn có thể sử dụng để tùy chỉnh cách định dạng mã trong dự án của mình:
+
+1 - Cấu hình cơ bản (trong file .prettierrc hoặc prettier.config.js):
+json
+Copy
+Edit
+{
+  "semi": true, // Thêm dấu chấm phẩy ở cuối câu lệnh
+  "singleQuote": true, // Sử dụng dấu nháy đơn thay vì nháy kép
+  "trailingComma": "es5", // Thêm dấu phẩy sau cùng trong các cấu trúc như mảng hoặc đối tượng (es5 hoặc all)
+  "tabWidth": 2, // Số khoảng trắng dùng cho mỗi tab
+  "useTabs": false, // Sử dụng tab thay vì khoảng trắng (nếu true)
+  "printWidth": 80, // Độ dài dòng tối đa
+  "bracketSpacing": true, // Thêm khoảng trắng giữa dấu ngoặc nhọn
+  "jsxBracketSameLine": false, // Đưa dấu `>` của thẻ JSX lên cùng dòng với thẻ đóng
+  "arrowParens": "always" // Luôn luôn bao dấu ngoặc tròn quanh tham số của hàm mũi tên
+}
+2 - Sử dụng file cấu hình .prettierignore để bỏ qua các file hoặc thư mục: Ví dụ:
+
+Copy
+Edit
+node_modules/
+dist/
+build/
+.git/
+Tích hợp Prettier với các editor:
+
+Cài đặt plugin Prettier cho các editor như VSCode.
+Cấu hình để tự động format mã khi lưu tệp.
+Bạn có thể tùy chỉnh thêm các cấu hình này theo nhu cầu của dự án.
