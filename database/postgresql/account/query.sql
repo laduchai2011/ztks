@@ -26,14 +26,20 @@ AS $$
       AND phone = p_phone;
 $$;
 
+-- DROP FUNCTION IF EXISTS get_members(
+--     INT,
+--     INT,
+--     UUID,
+--     UUID
+-- );
 CREATE OR REPLACE FUNCTION get_members (
     p_page INT,
     p_size INT,
-    p_searched_account_id INT DEFAULT NULL,
-    p_account_id UUID
+    p_account_id UUID,
+    p_searched_account_id UUID DEFAULT NULL
 )
 RETURNS TABLE (
-    account_data account,
+    items JSONB,
     total_count BIGINT
 )
 LANGUAGE plpgsql
@@ -41,31 +47,46 @@ AS $$
 DECLARE
     v_added_by_id UUID;
 BEGIN
-    SELECT ai.addedbyid
+
+    SELECT ai.added_by_id
     INTO v_added_by_id
-    FROM accountinformation ai
-    WHERE ai.accountid = p_account_id;
+    FROM account_information ai
+    WHERE ai.account_id = p_account_id;
 
-    IF v_added_by_id IS NOT NULL THEN
-
+    IF v_added_by_id IS NULL THEN
         RETURN QUERY
         SELECT
-            a,
-            COUNT(*) OVER () AS total_count
+            '[]'::JSONB,
+            0::BIGINT;
+
+        RETURN;
+    END IF;
+
+    RETURN QUERY
+    SELECT
+        COALESCE(
+            JSONB_AGG(to_jsonb(x) ORDER BY x.id DESC),
+            '[]'::JSONB
+        ) AS items,
+
+        COUNT(*)::BIGINT AS total_count
+
+    FROM (
+        SELECT a.*
         FROM account a
-        JOIN accountinformation ai
-            ON ai.accountid = a.id
+        JOIN account_information ai
+            ON ai.account_id = a.id
         WHERE a.status = 'normal'
-          AND ai.addedbyid = v_added_by_id
+          AND ai.added_by_id = v_added_by_id
           AND (
               p_searched_account_id IS NULL
               OR a.id = p_searched_account_id
           )
         ORDER BY a.id DESC
         LIMIT p_size
-        OFFSET (p_page - 1) * p_size;
+        OFFSET (p_page - 1) * p_size
+    ) x;
 
-    END IF;
 END;
 $$;
 
@@ -143,7 +164,7 @@ CREATE OR REPLACE FUNCTION get_reply_accounts (
     p_chat_room_id UUID
 )
 RETURNS TABLE (
-    data JSONB,
+    items JSONB,
     total_count BIGINT
 )
 LANGUAGE sql
@@ -154,7 +175,7 @@ AS $$
         INNER JOIN chat_room_role crr
             ON crr.authorized_account_id = a.id
         WHERE
-            a.status = 'normal'
+            a.is_delete = False
             AND crr.status = 'normal'
             AND crr.chat_room_id = p_chat_room_id
     ),
@@ -178,7 +199,8 @@ AS $$
                     trim(last_name),
                     '\s+'
                 ) WITH ORDINALITY AS x(value, ordinality)
-            ),
+            ) COLLATE "vi-x-icu",
+
             (
                 SELECT string_agg(
                     x.value,
@@ -189,26 +211,60 @@ AS $$
                     trim(first_name),
                     '\s+'
                 ) WITH ORDINALITY AS x(value, ordinality)
-            ),
+            ) COLLATE "vi-x-icu",
+
             id ASC
-        OFFSET (p_page - 1) * p_size
+
         LIMIT p_size
+        OFFSET (p_page - 1) * p_size
     )
     SELECT
         COALESCE(
             jsonb_agg(
                 to_jsonb(paginated)
                 - 'total_count'
+                ORDER BY
+                    (
+                        SELECT string_agg(
+                            x.value,
+                            ' '
+                            ORDER BY x.ordinality DESC
+                        )
+                        FROM regexp_split_to_table(
+                            trim(paginated.last_name),
+                            '\s+'
+                        ) WITH ORDINALITY AS x(value, ordinality)
+                    ),
+                    (
+                        SELECT string_agg(
+                            x.value,
+                            ' '
+                            ORDER BY x.ordinality DESC
+                        )
+                        FROM regexp_split_to_table(
+                            trim(paginated.first_name),
+                            '\s+'
+                        ) WITH ORDINALITY AS x(value, ordinality)
+                    ),
+                    paginated.id ASC
             ),
             '[]'::jsonb
-        ) AS data,
+        ) AS items,
+
         COALESCE(
             MAX(paginated.total_count),
             0
-        ) AS total_count
+        )::BIGINT AS total_count
+
     FROM paginated;
 $$;
 
+-- DROP FUNCTION IF EXISTS get_not_reply_accounts (
+--     INT,
+--     INT,
+--     UUID,
+--     UUID
+-- );
 CREATE OR REPLACE FUNCTION get_not_reply_accounts (
     p_page INT,
     p_size INT,
@@ -216,21 +272,16 @@ CREATE OR REPLACE FUNCTION get_not_reply_accounts (
     p_account_id UUID
 )
 RETURNS TABLE (
-    -- Các column của account
-    id UUID,
-    user_name VARCHAR,
-    password VARCHAR,
-    first_name VARCHAR,
-    last_name VARCHAR,
-    status VARCHAR,
+    items JSONB,
     total_count BIGINT
 )
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    v_added_by_id INT;
+    v_added_by_id UUID;
 BEGIN
-    -- Lấy addedById của account hiện tại
+
+    -- Lấy added_by_id của account hiện tại
     SELECT ai.added_by_id
     INTO v_added_by_id
     FROM account_information ai
@@ -238,55 +289,78 @@ BEGIN
 
     RETURN QUERY
     SELECT
-        a.id,
-        a.user_name,
-        a.password,
-        a.first_name,
-        a.last_name,
-        a.status,
-        COUNT(*) OVER () AS total_count
-    FROM account a
-    INNER JOIN account_information ai
-        ON ai.account_id = a.id
-    LEFT JOIN chat_room_role crr
-        ON crr.authorized_account_id = a.id
-        AND crr.chat_room_id = p_chat_room_id
-        AND crr.status = 'normal'
-    WHERE
-        a.status = 'normal'
-        AND ai.added_by_id = v_added_by_id
-        AND crr.id IS NULL
-    ORDER BY
-        -- lastName
-        (
-            SELECT string_agg(
-                s.value,
-                ' '
-                ORDER BY s.ordinal DESC
-            )
-            FROM regexp_split_to_table(
-                trim(a.last_name),
-                '\s+'
-            ) WITH ORDINALITY AS s(value, ordinal)
-        ) COLLATE "vi-x-icu",
+        COALESCE(
+            JSONB_AGG(
+                to_jsonb(x)
+                ORDER BY
+                    x.last_name_sort,
+                    x.first_name_sort,
+                    x.id ASC
+            ),
+            '[]'::JSONB
+        ) AS items,
 
-        -- firstName
-        (
-            SELECT string_agg(
-                s.value,
-                ' '
-                ORDER BY s.ordinal DESC
-            )
-            FROM regexp_split_to_table(
-                trim(a.first_name),
-                '\s+'
-            ) WITH ORDINALITY AS s(value, ordinal)
-        ) COLLATE "vi-x-icu",
+        COUNT(*)::BIGINT AS total_count
 
-        a.id ASC
+    FROM (
+        SELECT
+            a.id,
+            a.user_name,
+            a.password,
+            a.first_name,
+            a.last_name,
+            a.status,
 
-    OFFSET (p_page - 1) * p_size
-    LIMIT p_size;
+            -- Dùng để sort last_name
+            (
+                SELECT string_agg(
+                    s.value,
+                    ' '
+                    ORDER BY s.ordinal DESC
+                )
+                FROM regexp_split_to_table(
+                    trim(a.last_name),
+                    '\s+'
+                ) WITH ORDINALITY AS s(value, ordinal)
+            ) COLLATE "vi-x-icu" AS last_name_sort,
+
+            -- Dùng để sort first_name
+            (
+                SELECT string_agg(
+                    s.value,
+                    ' '
+                    ORDER BY s.ordinal DESC
+                )
+                FROM regexp_split_to_table(
+                    trim(a.first_name),
+                    '\s+'
+                ) WITH ORDINALITY AS s(value, ordinal)
+            ) COLLATE "vi-x-icu" AS first_name_sort
+
+        FROM account a
+
+        INNER JOIN account_information ai
+            ON ai.account_id = a.id
+
+        LEFT JOIN chat_room_role crr
+            ON crr.authorized_account_id = a.id
+            AND crr.chat_room_id = p_chat_room_id
+            AND crr.status = 'normal'
+
+        WHERE
+            a.status = 'normal'
+            AND ai.added_by_id = v_added_by_id
+            AND crr.id IS NULL
+
+        ORDER BY
+            last_name_sort,
+            first_name_sort,
+            a.id ASC
+
+        LIMIT p_size
+        OFFSET (p_page - 1) * p_size
+
+    ) x;
 
 END;
 $$;

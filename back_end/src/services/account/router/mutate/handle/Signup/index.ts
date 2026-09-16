@@ -1,118 +1,90 @@
-import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
 import MutateDB_Signup from '../../mutateDB/Signup';
-import { AccountField } from '@src/dataStruct/account';
-import { MyResponse } from '@src/dataStruct/response';
+import { Account_Field } from '@src/dataStruct/account';
+import { My_Response_Field } from '@src/dataStruct/response';
 
 class Handle_Signup {
-    private _mssql_server = mssql_server;
-
-    constructor() {}
-
-    isAccountCheckUserName = async (
-        req: Request<Record<string, never>, unknown, AccountField>,
+  
+    is_Account_Check_User_Name = async (
+        req: Request<Record<string, never>, unknown, Account_Field>,
         res: Response,
         next: NextFunction
     ) => {
-        const signupInfor = req.body;
+        const signup_infor = req.body;
 
-        await this._mssql_server.init();
-
-        const myResponse: MyResponse<AccountField> = {
-            isSuccess: false,
+        const my_response: My_Response_Field<Account_Field> = {
+            is_success: false,
         };
 
-        const mutateDB_signup = new MutateDB_Signup();
-        const connection_pool = this._mssql_server.get_connectionPool();
-        if (connection_pool) {
-            mutateDB_signup.set_connection_pool(connection_pool);
-        } else {
-            myResponse.message = 'Kết nối cơ sở dữ liệu KHÔNG thành công !';
-            res.status(200).json(myResponse);
-        }
+        const mutateDB = new MutateDB_Signup();
+        mutateDB.set_data(signup_infor);
 
-        mutateDB_signup.set_data(signupInfor);
-
-        const is = await mutateDB_signup.isAccountCheckUserName(signupInfor.userName);
+        const is = await mutateDB.is_Account_Check_User_Name(signup_infor.user_name);
 
         if (is) {
-            myResponse.message = 'Tên người dùng đã được sử dụng !';
-            res.status(200).json(myResponse);
+            my_response.message = 'Tên người dùng đã được sử dụng !';
+            res.status(200).json(my_response);
+            return;
         } else {
             next();
+            return;
         }
     };
 
-    isAccountCheckPhone = async (
-        req: Request<Record<string, never>, unknown, AccountField>,
+    is_Account_Check_Phone = async (
+        req: Request<any, any, Account_Field>,
         res: Response,
         next: NextFunction
     ) => {
-        const signupInfor = req.body;
+        const signup_infor = req.body;
 
-        const myResponse: MyResponse<AccountField> = {
-            isSuccess: false,
+        const my_response: My_Response_Field<Account_Field> = {
+            is_success: false,
         };
 
-        await this._mssql_server.init();
+        const mutateDB = new MutateDB_Signup();
+        mutateDB.set_data(signup_infor);
 
-        const mutateDB_signup = new MutateDB_Signup();
-        const connection_pool = this._mssql_server.get_connectionPool();
-        if (connection_pool) {
-            mutateDB_signup.set_connection_pool(connection_pool);
-        } else {
-            myResponse.message = 'Kết nối cơ sở dữ liệu KHÔNG thành công !';
-            res.status(200).json(myResponse);
-        }
-
-        mutateDB_signup.set_data(signupInfor);
-
-        const is = await mutateDB_signup.isAccountCheckPhone(signupInfor.phone);
+        const is = await mutateDB.is_Account_Check_Phone(signup_infor.phone);
 
         if (is) {
-            myResponse.message = 'Số điện thoại đã được sử dụng !';
-            res.status(200).json(myResponse);
+            my_response.message = 'Số điện thoại đã được sử dụng !';
+            res.status(200).json(my_response);
+            return;
         } else {
             next();
+            return;
         }
     };
 
-    main = async (req: Request<Record<string, never>, unknown, AccountField>, res: Response) => {
+    main = async (req: Request<any, any, Account_Field>, res: Response) => {
         const signupInfor = req.body;
 
-        const myResponse: MyResponse<AccountField> = {
-            isSuccess: false,
+        const my_response: My_Response_Field<Account_Field> = {
+            is_success: false,
         };
 
-        await this._mssql_server.init();
+        const mutateDB = new MutateDB_Signup();
 
-        const mutateDB_signup = new MutateDB_Signup();
-        const connection_pool = this._mssql_server.get_connectionPool();
-        if (connection_pool) {
-            mutateDB_signup.set_connection_pool(connection_pool);
-        } else {
-            myResponse.message = 'Kết nối cơ sở dữ liệu KHÔNG thành công !';
-            res.status(200).json(myResponse);
-        }
-
-        if (connection_pool) {
-            try {
-                mutateDB_signup.set_data(signupInfor);
-                const result = await mutateDB_signup.run();
-                if (result?.recordset.length && result?.recordset.length > 0) {
-                    myResponse.message = 'Đăng ký thành công !';
-                    myResponse.isSuccess = true;
-                    myResponse.data = result?.recordset[0];
-                    res.json(myResponse);
-                } else {
-                    myResponse.message = 'Đăng ký KHÔNG thành công !';
-                    res.status(200).json(myResponse);
-                }
-            } catch (error) {
-                myResponse.message = 'Đăng ký thất bại !';
-                myResponse.err = error;
-                res.status(200).json(myResponse);
+        try {
+            mutateDB.set_data(signupInfor);
+            const result = await mutateDB.run();
+            if (result) {
+                my_response.message = 'Đăng ký thành công !';
+                my_response.is_success = true;
+                my_response.data = result;
+                res.json(my_response);
+                return;
+            } else {
+                my_response.message = 'Đăng ký KHÔNG thành công !';
+                res.status(200).json(my_response);
+                return;
             }
+        } catch (error) {
+            my_response.message = 'Đăng ký thất bại !';
+            my_response.err = error;
+            res.status(200).json(my_response);
+            return;
         }
     };
 }

@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { MyResponse } from '@src/dataStruct/response';
+import { My_Response_Field } from '@src/dataStruct/response';
 import { dev_prefix } from '@src/mode';
-import { mssqlDeleteCacheRedisWithKey } from '@src/cache/cacheMssql';
+import { postgresql_Delete_Cache_Redis_With_Key } from '@src/cache/cacheMssql';
 import { DeviceType, DeviceEnum } from '@src/device/type';
 
 const serviceRedis = ServiceRedis.getInstance();
@@ -15,9 +15,9 @@ if (process.env.NODE_ENV !== 'development') {
     secure_cookie = true;
 }
 
-const sameSite = process.env.NODE_ENV === 'development' ? 'lax' : 'none';
+const same_site = process.env.NODE_ENV === 'development' ? 'lax' : 'none';
 // const sameSite = 'none';
-const cookieDomain = isProduct ? '.taokosao.com' : 'localhost';
+const cookie_domain = isProduct ? '.taokosao.com' : 'localhost';
 
 class Handle_Signout {
     constructor() {}
@@ -25,8 +25,8 @@ class Handle_Signout {
     async main(req: Request, res: Response) {
         const device = req.headers['x-device-type'] as DeviceType;
 
-        const myResponse: MyResponse<unknown> = {
-            isSuccess: false,
+        const my_response: My_Response_Field<unknown> = {
+            is_success: false,
             message: 'Bắt đầu đăng xuất !',
         };
 
@@ -36,24 +36,24 @@ class Handle_Signout {
                     const id = req.cookies?.id;
                     if (id) {
                         // Xóa dữ liệu token trong Redis
-                        const keyServiceRedisWeb = `web-token-storeAuthToken-${id}_${dev_prefix}`;
-                        await serviceRedis.deleteData(keyServiceRedisWeb);
+                        const key_service_redis_web = `web-token-store_auth_token-${id}_${dev_prefix}`;
+                        await serviceRedis.deleteData(key_service_redis_web);
 
-                        await mssqlDeleteCacheRedisWithKey(keyServiceRedisWeb);
+                        await postgresql_Delete_Cache_Redis_With_Key(key_service_redis_web);
                     }
 
-                    const cookieOptions = {
+                    const cookie_options = {
                         httpOnly: true,
                         secure: secure_cookie,
-                        sameSite: sameSite as 'lax' | 'none' | 'strict',
-                        domain: cookieDomain,
+                        sameSite: same_site as 'lax' | 'none' | 'strict',
+                        domain: cookie_domain,
                     };
 
                     // Xóa cookie
-                    res.clearCookie('id', cookieOptions);
-                    res.clearCookie('accessToken', cookieOptions);
-                    res.clearCookie('refreshToken', cookieOptions);
-                    res.clearCookie('socketToken', cookieOptions);
+                    res.clearCookie('id', cookie_options);
+                    res.clearCookie('accessToken', cookie_options);
+                    res.clearCookie('refreshToken', cookie_options);
+                    res.clearCookie('socketToken', cookie_options);
 
                     break;
                 }
@@ -61,10 +61,10 @@ class Handle_Signout {
                     const id = req.headers['x-account-id'] as string;
                     if (id) {
                         // Xóa dữ liệu token trong Redis
-                        const keyServiceRedisMobile = `mobile-token-storeAuthToken-${id}_${dev_prefix}`;
-                        await serviceRedis.deleteData(keyServiceRedisMobile);
+                        const key_service_redis_mobile = `mobile-token-store_auth_token-${id}_${dev_prefix}`;
+                        await serviceRedis.deleteData(key_service_redis_mobile);
 
-                        await mssqlDeleteCacheRedisWithKey(keyServiceRedisMobile);
+                        await postgresql_Delete_Cache_Redis_With_Key(key_service_redis_mobile);
                     }
 
                     res.setHeader('x-account-id', '');
@@ -76,20 +76,20 @@ class Handle_Signout {
                 }
                 default: {
                     console.log('Chưa xác định thiết bị !');
-                    myResponse.message = 'Chưa xác định thiết bị !';
-                    res.status(500).json(myResponse);
+                    my_response.message = 'Chưa xác định thiết bị !';
+                    res.status(500).json(my_response);
                     return;
                 }
             }
 
-            myResponse.message = 'Đăng xuất thành công và cookie đã được xóa.';
-            myResponse.isSuccess = true;
-            res.status(200).json(myResponse);
+            my_response.message = 'Đăng xuất thành công và cookie đã được xóa.';
+            my_response.is_success = true;
+            res.status(200).json(my_response);
             return;
         } catch (error) {
-            myResponse.message = 'Đăng xuất thất bại !';
-            myResponse.err = error;
-            res.status(500).json(myResponse);
+            my_response.message = 'Đăng xuất thất bại !';
+            my_response.err = error;
+            res.status(500).json(my_response);
         }
     }
 }

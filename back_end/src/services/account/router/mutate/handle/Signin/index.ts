@@ -7,8 +7,8 @@ import { generate_access_token, generate_refresh_token, generate_socket_token, M
 import { SignOptions } from 'jsonwebtoken';
 import { Store_Auth_Token_Field } from '@src/auth/type';
 import { signin_infor_type } from './type';
-import { Account_Field } from '@src/datastruct/account';
-import { postgresql_get_value, postgresql_update_value, postgresql_set_value } from '@src/cache/cacheMssql';
+import { Account_Field } from '@src/dataStruct/account';
+import { postgresql_Get_Value, postgresql_Update_Value, postgresql_Set_Value } from '@src/cache/cacheMssql';
 import { dev_prefix } from '@src/mode';
 import { DeviceType, DeviceEnum } from '@src/device/type';
 
@@ -34,7 +34,7 @@ class Handle_Signin {
 
     main = async (req: Request<any, any, signin_infor_type>, res: Response) => {
         const signinInfor = req.body;
-        const userName = signinInfor.user_name;
+        const user_name = signinInfor.user_name;
         const password = signinInfor.password;
         const device = req.headers['x-device-type'] as DeviceType;
 
@@ -48,18 +48,7 @@ class Handle_Signin {
 
         const mutateDB = new MutateDB_Signin();
 
-        mutateDB.set_infor_input({ user_name: userName, password: password });
-
-        // const connection_pool = this._mssql_server.get_connectionPool();
-        // if (connection_pool) {
-        //     connection_pool_isExist = true;
-        //     mutateDB_signin.set_connection_pool(connection_pool);
-        //     myResponse.message = 'Connect BD(mssql) successly, but NOT yet login !';
-        // } else {
-        //     myResponse.message = 'Connect BD(mssql) NOT successly !';
-        //     res.status(500).json(myResponse);
-        //     return;
-        // }
+        mutateDB.set_infor_input({ user_name: user_name, password: password });
 
         try {
             const result = await mutateDB.run();
@@ -104,10 +93,10 @@ class Handle_Signin {
                             black_list: [],
                         };
 
-                        const result_get = await postgresql_get_value(key_service_redis_web);
+                        const result_get = await postgresql_Get_Value(key_service_redis_web);
 
                         if (result_get?.is_success) {
-                            const result_update = await postgresql_update_value(
+                            const result_update = await postgresql_Update_Value(
                                 key_service_redis_web,
                                 JSON.stringify(store_auth_token)
                             );
@@ -117,7 +106,7 @@ class Handle_Signin {
                                 return;
                             }
                         } else {
-                            const result_set = await postgresql_set_value(
+                            const result_set = await postgresql_Set_Value(
                                 key_service_redis_web,
                                 JSON.stringify(store_auth_token)
                             );
@@ -199,10 +188,10 @@ class Handle_Signin {
                             black_list: [],
                         };
 
-                        const result_get = await postgresql_get_value(key_service_redis_mobile);
+                        const result_get = await postgresql_Get_Value(key_service_redis_mobile);
 
                         if (result_get?.is_success) {
-                            const result_update = await postgresql_update_value(
+                            const result_update = await postgresql_Update_Value(
                                 key_service_redis_mobile,
                                 JSON.stringify(store_auth_token)
                             );
@@ -212,7 +201,7 @@ class Handle_Signin {
                                 return;
                             }
                         } else {
-                            const result_set = await postgresql_set_value(
+                            const result_set = await postgresql_Set_Value(
                                 key_service_redis_mobile,
                                 JSON.stringify(store_auth_token)
                             );

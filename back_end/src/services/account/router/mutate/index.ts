@@ -7,7 +7,7 @@ import Handle_Signin from './handle/Signin';
 import Handle_Signout from './handle/Signout';
 import Handle_Create_Reply_Account from './handle/Create_Reply_Account';
 import Handle_Create_Account_Receive_Message from './handle/Create_Account_Receive_Message';
-import Handle_UpdateAccountReceiveMessage from './handle/UpdateAccountReceiveMessage';
+import Handle_Update_Account_Receive_Message from './handle/Update_Account_Receive_Message';
 import Handle_Add_Member_V1 from './handle/Add_Member_V1';
 import Handle_Create_Account_Information from './handle/Create_Account_Information';
 import Handle_Edit_Infor_Account from './handle/Edit_Infor_Account';
@@ -24,7 +24,7 @@ const handle_signin = new Handle_Signin();
 const handle_signout = new Handle_Signout();
 const handle_create_reply_account = new Handle_Create_Reply_Account();
 const handle_create_account_receive_message = new Handle_Create_Account_Receive_Message();
-const handle_updateAccountReceiveMessage = new Handle_UpdateAccountReceiveMessage();
+const handle_update_account_receive_message = new Handle_Update_Account_Receive_Message();
 const handle_add_member_v1 = new Handle_Add_Member_V1();
 const handle_create_account_information = new Handle_Create_Account_Information();
 const handle_edit_infor_account = new Handle_Edit_Infor_Account();
@@ -39,8 +39,8 @@ router_mutate_account.post('/', (_: Request, res: Response) => {
 
 router_mutate_account.post(
     '/signup',
-    handle_signup.isAccountCheckUserName,
-    handle_signup.isAccountCheckPhone,
+    handle_signup.is_Account_Check_User_Name,
+    handle_signup.is_Account_Check_Phone,
     authOtpFirebaseMiddleware,
     handle_signup.main
 );
@@ -65,10 +65,10 @@ router_mutate_account.post(
 );
 
 router_mutate_account.post(
-    '/updateAccountReceiveMessage',
+    '/update_account_receive_message',
     authentication,
-    handle_updateAccountReceiveMessage.setup,
-    handle_updateAccountReceiveMessage.main
+    handle_update_account_receive_message.setup,
+    handle_update_account_receive_message.main
 );
 
 router_mutate_account.post('/add_member_v1', authentication, handle_add_member_v1.setup, handle_add_member_v1.main);

@@ -50,11 +50,11 @@ export const prefix_cache__not_reply_accounts = {
     time: 60 * 5, // 5p
 };
 
-export const prefix_cache_accountReceiveMessage = {
+export const prefix_cache__account_receive_message = {
     key: {
-        with_accountId: isProduct
-            ? 'prefix_cache_accountReceiveMessage_with_accountId'
-            : 'prefix_cache_accountReceiveMessage_with_accountId_dev',
+        with_account_id: isProduct
+            ? 'prefix_cache__account_receive_message_with_account_id'
+            : 'prefix_cache__account_receive_message_with_account_id_dev',
     },
     time: 60 * 5, // 5p
 };

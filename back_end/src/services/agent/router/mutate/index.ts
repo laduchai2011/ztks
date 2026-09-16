@@ -2,7 +2,7 @@ import express, { Router } from 'express';
 import dotenv from 'dotenv';
 import authentication from '@src/auth';
 import Handle_CreateAgent from './handle/CreateAgent';
-import Handle_AgentAddAccount from './handle/AgentAddAccount';
+import Handle_Agent_Add_Account from './handle/Agent_Add_Account';
 import Handle_AgentDelAccount from './handle/AgentDelAccount';
 import Handle_CreateAgentPay from './handle/CreateAgentPay';
 
@@ -10,17 +10,17 @@ dotenv.config();
 
 const router_mutate_agent: Router = express.Router();
 const handle_createAgent = new Handle_CreateAgent();
-const handle_agentAddAccount = new Handle_AgentAddAccount();
+const handle_agent_add_account = new Handle_Agent_Add_Account();
 const handle_agentDelAccount = new Handle_AgentDelAccount();
 const handle_createAgentPay = new Handle_CreateAgentPay();
 
 router_mutate_agent.post('/createAgent', authentication, handle_createAgent.setup, handle_createAgent.main);
 
 router_mutate_agent.patch(
-    '/agentAddAccount',
+    '/agent_add_account',
     authentication,
-    handle_agentAddAccount.setup,
-    handle_agentAddAccount.main
+    handle_agent_add_account.setup,
+    handle_agent_add_account.main
 );
 
 router_mutate_agent.patch(

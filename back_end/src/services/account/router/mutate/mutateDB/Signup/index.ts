@@ -1,5 +1,4 @@
 import { pool } from '@src/connect/postgresql';
-import { MutateDB } from '@src/services/account/interface';
 import { signup_infor_type } from '../../handle/Signup/type';
 import { Account_Field } from '@src/dataStruct/account';
 

@@ -19,7 +19,7 @@ type CleanPayload = Omit<My_Jwt_Payload_Field & Partial<JwtPayload>, 'exp' | 'ia
 
 type Token_State = My_Jwt_Payload_Field | 'expired' | 'invalid';
 
-export function isJwtPayload(obj: Token_State): obj is My_Jwt_Payload_Field {
+export function is_Jwt_Payload(obj: Token_State): obj is My_Jwt_Payload_Field {
     return typeof obj === 'object' && obj !== null && 'id' in obj;
 }
 
