@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
 import { ChatRoomField } from '@src/dataStruct/chatRoom';
 import { GetChatRoomWithIdBodyField } from '@src/dataStruct/chatRoom/body';
-import QueryDB_GetChatRoomWithId from '../../queryDB/GetChatRoomWithId';
+import QueryDB_GetChatRoomWithId from '../../queryDB/Get_Chat_Room_With_Id';
 import { CacheGetChatRoomWithId } from '@src/const/redisKey/chatRoom';
 
 class Handle_GetChatRoomWithId {

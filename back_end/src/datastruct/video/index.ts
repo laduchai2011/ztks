@@ -1,11 +1,11 @@
-export interface VideoTDBodyField {
-    receiveId: string;
+export interface Video_TD_Body_Field {
+    receive_id: string;
     oaid: string;
     name: string;
-    accountId: string;
+    account_id: string;
 }
 
-export function isVideoTDBodyField(data: unknown): data is VideoTDBodyField {
+export function is_video_td(data: unknown): data is Video_TD_Body_Field {
     return (
         typeof data === 'object' &&
         data !== null &&

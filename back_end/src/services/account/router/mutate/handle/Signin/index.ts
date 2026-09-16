@@ -2,13 +2,13 @@ import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
 import MutateDB_Signin from '../../mutateDB/Signin';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { MyResponse } from '@src/dataStruct/response';
-import { generateAccessToken, generateRefreshToken, generateSocketToken, MyJwtPayload } from '@src/token';
+import { My_Response_Field } from '@src/dataStruct/response';
+import { generate_access_token, generate_refresh_token, generate_socket_token, My_Jwt_Payload_Field } from '@src/token';
 import { SignOptions } from 'jsonwebtoken';
-import { StoreAuthToken } from '@src/auth/type';
+import { Store_Auth_Token_Field } from '@src/auth/type';
 import { signin_infor_type } from './type';
-import { AccountField } from '@src/dataStruct/account';
-import { mssqlGetValue, mssqlUpdateValue, mssqlSetValue } from '@src/cache/cacheMssql';
+import { Account_Field } from '@src/datastruct/account';
+import { postgresql_get_value, postgresql_update_value, postgresql_set_value } from '@src/cache/cacheMssql';
 import { dev_prefix } from '@src/mode';
 import { DeviceType, DeviceEnum } from '@src/device/type';
 
@@ -32,238 +32,236 @@ class Handle_Signin {
 
     constructor() {}
 
-    main = async (req: Request<Record<string, never>, unknown, signin_infor_type>, res: Response) => {
+    main = async (req: Request<any, any, signin_infor_type>, res: Response) => {
         const signinInfor = req.body;
-        const userName = signinInfor.userName;
+        const userName = signinInfor.user_name;
         const password = signinInfor.password;
         const device = req.headers['x-device-type'] as DeviceType;
 
         await this._mssql_server.init();
 
-        const myResponse: MyResponse<AccountField> = {
-            isSuccess: false,
+        const my_response: My_Response_Field<Account_Field> = {
+            is_success: false,
         };
 
-        let connection_pool_isExist: boolean = false;
+        // let connection_pool_isExist: boolean = false;
 
-        const mutateDB_signin = new MutateDB_Signin();
+        const mutateDB = new MutateDB_Signin();
 
-        mutateDB_signin.set_infor_input({ userName: userName, password: password });
+        mutateDB.set_infor_input({ user_name: userName, password: password });
 
-        const connection_pool = this._mssql_server.get_connectionPool();
-        if (connection_pool) {
-            connection_pool_isExist = true;
-            mutateDB_signin.set_connection_pool(connection_pool);
-            myResponse.message = 'Connect BD(mssql) successly, but NOT yet login !';
-        } else {
-            myResponse.message = 'Connect BD(mssql) NOT successly !';
-            res.status(500).json(myResponse);
-            return;
-        }
+        // const connection_pool = this._mssql_server.get_connectionPool();
+        // if (connection_pool) {
+        //     connection_pool_isExist = true;
+        //     mutateDB_signin.set_connection_pool(connection_pool);
+        //     myResponse.message = 'Connect BD(mssql) successly, but NOT yet login !';
+        // } else {
+        //     myResponse.message = 'Connect BD(mssql) NOT successly !';
+        //     res.status(500).json(myResponse);
+        //     return;
+        // }
 
-        if (connection_pool_isExist) {
-            try {
-                const result = await mutateDB_signin.run();
+        try {
+            const result = await mutateDB.run();
 
-                if (result?.recordset.length && result?.recordset.length > 0) {
-                    const id = result.recordset[0].id;
+            if (result) {
+                const id = result.id;
 
-                    if (id === null) {
-                        myResponse.message = 'Đăng nhập thất bại !';
-                        res.status(500).json(myResponse);
-                        return;
-                    }
+                if (id === null) {
+                    my_response.message = 'Đăng nhập thất bại !';
+                    res.status(500).json(my_response);
+                    return;
+                }
 
-                    switch (device) {
-                        case DeviceEnum.WEB: {
-                            console.log('login with: ', DeviceEnum.WEB);
+                switch (device) {
+                    case DeviceEnum.WEB: {
+                        console.log('login with: ', DeviceEnum.WEB);
 
-                            const keyServiceRedisWeb = `web-token-storeAuthToken-${id}_${dev_prefix}`;
+                        const key_service_redis_web = `web-token-storeAuthToken-${id}_${dev_prefix}`;
 
-                            const myJwtPayload: MyJwtPayload = {
-                                id: id,
-                            };
+                        const my_jwt_payload: My_Jwt_Payload_Field = {
+                            id: id,
+                        };
 
-                            const signOptions_accessToken: SignOptions = {
-                                expiresIn: '5m',
-                            };
-                            const signOptions_refreshToken: SignOptions = {
-                                expiresIn: '1y',
-                            };
-                            const signOptions_socketToken: SignOptions = {
-                                expiresIn: '1y',
-                            };
+                        const signOptions_accessToken: SignOptions = {
+                            expiresIn: '5m',
+                        };
+                        const signOptions_refreshToken: SignOptions = {
+                            expiresIn: '1y',
+                        };
+                        const signOptions_socketToken: SignOptions = {
+                            expiresIn: '1y',
+                        };
 
-                            const accessToken = generateAccessToken(myJwtPayload, signOptions_accessToken);
-                            const refreshToken = generateRefreshToken(myJwtPayload, signOptions_refreshToken);
-                            const socketToken = generateSocketToken(myJwtPayload, signOptions_socketToken);
+                        const access_token = generate_access_token(my_jwt_payload, signOptions_accessToken);
+                        const refresh_token = generate_refresh_token(my_jwt_payload, signOptions_refreshToken);
+                        const socket_token = generate_socket_token(my_jwt_payload, signOptions_socketToken);
 
-                            const storeAuthToken: StoreAuthToken = {
-                                accessToken: accessToken,
-                                refreshToken: refreshToken,
-                                grayAccessToken: accessToken,
-                                blackList: [],
-                            };
+                        const store_auth_token: Store_Auth_Token_Field = {
+                            access_token: access_token,
+                            refresh_token: refresh_token,
+                            gray_access_token: access_token,
+                            black_list: [],
+                        };
 
-                            const resultget = await mssqlGetValue(keyServiceRedisWeb);
+                        const result_get = await postgresql_get_value(key_service_redis_web);
 
-                            if (resultget?.isSuccess) {
-                                const resultupdate = await mssqlUpdateValue(
-                                    keyServiceRedisWeb,
-                                    JSON.stringify(storeAuthToken)
-                                );
-                                if (!resultupdate?.isSuccess) {
-                                    myResponse.message = 'Login NOT successly, account or password is incorrect !';
-                                    res.status(200).json(myResponse);
-                                    return;
-                                }
-                            } else {
-                                const resultset = await mssqlSetValue(
-                                    keyServiceRedisWeb,
-                                    JSON.stringify(storeAuthToken)
-                                );
-                                if (!resultset?.isSuccess) {
-                                    myResponse.message = 'Login NOT successly, account or password is incorrect !';
-                                    res.status(200).json(myResponse);
-                                    return;
-                                }
-                            }
-
-                            await serviceRedis.setData<StoreAuthToken>(
-                                keyServiceRedisWeb,
-                                storeAuthToken,
-                                timeExpireat
+                        if (result_get?.is_success) {
+                            const result_update = await postgresql_update_value(
+                                key_service_redis_web,
+                                JSON.stringify(store_auth_token)
                             );
+                            if (!result_update?.is_success) {
+                                my_response.message = 'Login NOT successly, account or password is incorrect !';
+                                res.status(200).json(my_response);
+                                return;
+                            }
+                        } else {
+                            const result_set = await postgresql_set_value(
+                                key_service_redis_web,
+                                JSON.stringify(store_auth_token)
+                            );
+                            if (!result_set?.is_success) {
+                                my_response.message = 'Login NOT successly, account or password is incorrect !';
+                                res.status(200).json(my_response);
+                                return;
+                            }
+                        }
 
-                            res.cookie('id', id, {
+                        await serviceRedis.setData<Store_Auth_Token_Field>(
+                            key_service_redis_web,
+                            store_auth_token,
+                            timeExpireat
+                        );
+
+                        res.cookie('id', id, {
+                            httpOnly: true,
+                            secure: secure_cookie,
+                            sameSite: sameSite,
+                            expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+                            // signed: true
+                            domain: cookieDomain,
+                        })
+                            .cookie('accessToken', access_token, {
                                 httpOnly: true,
                                 secure: secure_cookie,
                                 sameSite: sameSite,
                                 expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-                                // signed: true
                                 domain: cookieDomain,
                             })
-                                .cookie('accessToken', accessToken, {
-                                    httpOnly: true,
-                                    secure: secure_cookie,
-                                    sameSite: sameSite,
-                                    expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-                                    domain: cookieDomain,
-                                })
-                                .cookie('refreshToken', refreshToken, {
-                                    httpOnly: true,
-                                    secure: secure_cookie,
-                                    sameSite: sameSite,
-                                    expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-                                    domain: cookieDomain,
-                                })
-                                .cookie('socketToken', socketToken, {
-                                    secure: secure_cookie,
-                                    sameSite: sameSite,
-                                    expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-                                    domain: cookieDomain,
-                                });
+                            .cookie('refreshToken', refresh_token, {
+                                httpOnly: true,
+                                secure: secure_cookie,
+                                sameSite: sameSite,
+                                expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+                                domain: cookieDomain,
+                            })
+                            .cookie('socketToken', socket_token, {
+                                secure: secure_cookie,
+                                sameSite: sameSite,
+                                expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+                                domain: cookieDomain,
+                            });
 
-                            myResponse.message = 'Login successly !';
-                            myResponse.isSuccess = true;
-                            myResponse.data = result.recordset[0];
-                            res.json(myResponse);
-                            return;
-                        }
-                        case DeviceEnum.MOBILE: {
-                            console.log('login with: ', DeviceEnum.MOBILE);
-
-                            const keyServiceRedisMobile = `mobile-token-storeAuthToken-${id}_${dev_prefix}`;
-
-                            const myJwtPayload: MyJwtPayload = {
-                                id: id,
-                            };
-
-                            const signOptions_accessToken: SignOptions = {
-                                expiresIn: '5m',
-                            };
-                            const signOptions_refreshToken: SignOptions = {
-                                expiresIn: '1y',
-                            };
-                            const signOptions_socketToken: SignOptions = {
-                                expiresIn: '1y',
-                            };
-
-                            const accessToken = generateAccessToken(myJwtPayload, signOptions_accessToken);
-                            const refreshToken = generateRefreshToken(myJwtPayload, signOptions_refreshToken);
-                            const socketToken = generateSocketToken(myJwtPayload, signOptions_socketToken);
-
-                            const storeAuthToken: StoreAuthToken = {
-                                accessToken: accessToken,
-                                refreshToken: refreshToken,
-                                grayAccessToken: accessToken,
-                                blackList: [],
-                            };
-
-                            const resultget = await mssqlGetValue(keyServiceRedisMobile);
-
-                            if (resultget?.isSuccess) {
-                                const resultupdate = await mssqlUpdateValue(
-                                    keyServiceRedisMobile,
-                                    JSON.stringify(storeAuthToken)
-                                );
-                                if (!resultupdate?.isSuccess) {
-                                    myResponse.message = 'Login NOT successly, account or password is incorrect !';
-                                    res.status(200).json(myResponse);
-                                    return;
-                                }
-                            } else {
-                                const resultset = await mssqlSetValue(
-                                    keyServiceRedisMobile,
-                                    JSON.stringify(storeAuthToken)
-                                );
-                                if (!resultset?.isSuccess) {
-                                    myResponse.message = 'Login NOT successly, account or password is incorrect !';
-                                    res.status(200).json(myResponse);
-                                    return;
-                                }
-                            }
-
-                            await serviceRedis.setData<StoreAuthToken>(
-                                keyServiceRedisMobile,
-                                storeAuthToken,
-                                timeExpireat
-                            );
-
-                            res.setHeader(
-                                'Access-Control-Expose-Headers',
-                                'x-account-id,x-access-token,x-refresh-token,x-socket-token'
-                            );
-
-                            res.setHeader('x-account-id', id.toString());
-                            res.setHeader('x-access-token', accessToken);
-                            res.setHeader('x-refresh-token', refreshToken);
-                            res.setHeader('x-socket-token', socketToken);
-
-                            myResponse.message = 'Login successly !';
-                            myResponse.isSuccess = true;
-                            myResponse.data = result.recordset[0];
-                            res.json(myResponse);
-                            return;
-                        }
-                        default: {
-                            console.log('Chưa xác định thiết bị !');
-                            myResponse.message = 'Chưa xác định thiết bị !';
-                            res.status(500).json(myResponse);
-                            return;
-                        }
+                        my_response.message = 'Login successly !';
+                        my_response.is_success = true;
+                        my_response.data = result;
+                        res.json(my_response);
+                        return;
                     }
-                } else {
-                    myResponse.message = 'Login NOT successly, account or password is incorrect !';
-                    res.status(500).json(myResponse);
-                    return;
+                    case DeviceEnum.MOBILE: {
+                        console.log('login with: ', DeviceEnum.MOBILE);
+
+                        const key_service_redis_mobile = `mobile-token-storeAuthToken-${id}_${dev_prefix}`;
+
+                        const my_jwt_payload: My_Jwt_Payload_Field = {
+                            id: id,
+                        };
+
+                        const signOptions_access_token: SignOptions = {
+                            expiresIn: '5m',
+                        };
+                        const signOptions_refresh_token: SignOptions = {
+                            expiresIn: '1y',
+                        };
+                        const signOptions_socket_Token: SignOptions = {
+                            expiresIn: '1y',
+                        };
+
+                        const access_token = generate_access_token(my_jwt_payload, signOptions_access_token);
+                        const refresh_token = generate_refresh_token(my_jwt_payload, signOptions_refresh_token);
+                        const socket_token = generate_socket_token(my_jwt_payload, signOptions_socket_Token);
+
+                        const store_auth_token: Store_Auth_Token_Field = {
+                            access_token: access_token,
+                            refresh_token: refresh_token,
+                            gray_access_token: access_token,
+                            black_list: [],
+                        };
+
+                        const result_get = await postgresql_get_value(key_service_redis_mobile);
+
+                        if (result_get?.is_success) {
+                            const result_update = await postgresql_update_value(
+                                key_service_redis_mobile,
+                                JSON.stringify(store_auth_token)
+                            );
+                            if (!result_update?.is_success) {
+                                my_response.message = 'Login NOT successly, account or password is incorrect !';
+                                res.status(200).json(my_response);
+                                return;
+                            }
+                        } else {
+                            const result_set = await postgresql_set_value(
+                                key_service_redis_mobile,
+                                JSON.stringify(store_auth_token)
+                            );
+                            if (!result_set?.is_success) {
+                                my_response.message = 'Login NOT successly, account or password is incorrect !';
+                                res.status(200).json(my_response);
+                                return;
+                            }
+                        }
+
+                        await serviceRedis.setData<Store_Auth_Token_Field>(
+                            key_service_redis_mobile,
+                            store_auth_token,
+                            timeExpireat
+                        );
+
+                        res.setHeader(
+                            'Access-Control-Expose-Headers',
+                            'x-account-id,x-access-token,x-refresh-token,x-socket-token'
+                        );
+
+                        res.setHeader('x-account-id', id.toString());
+                        res.setHeader('x-access-token', access_token);
+                        res.setHeader('x-refresh-token', refresh_token);
+                        res.setHeader('x-socket-token', socket_token);
+
+                        my_response.message = 'Login successly !';
+                        my_response.is_success = true;
+                        my_response.data = result;
+                        res.json(my_response);
+                        return;
+                    }
+                    default: {
+                        console.log('Chưa xác định thiết bị !');
+                        my_response.message = 'Chưa xác định thiết bị !';
+                        res.status(500).json(my_response);
+                        return;
+                    }
                 }
-            } catch (error) {
-                myResponse.message = 'Login NOT successly 6 !';
-                myResponse.err = error;
-                res.status(500).json(myResponse);
+            } else {
+                my_response.message = 'Login NOT successly, account or password is incorrect !';
+                res.status(500).json(my_response);
                 return;
             }
+        } catch (error) {
+            my_response.message = 'Login NOT successly 6 !';
+            my_response.err = error;
+            res.status(500).json(my_response);
+            return;
         }
     };
 }

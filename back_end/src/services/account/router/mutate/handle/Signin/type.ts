@@ -1,4 +1,4 @@
 export type signin_infor_type = {
-    userName: string;
+    user_name: string;
     password: string;
 };

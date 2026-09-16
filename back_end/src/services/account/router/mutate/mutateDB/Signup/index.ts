@@ -1,42 +1,27 @@
-import sql from 'mssql';
+import { pool } from '@src/connect/postgresql';
 import { MutateDB } from '@src/services/account/interface';
 import { signup_infor_type } from '../../handle/Signup/type';
-import { AccountField } from '@src/dataStruct/account';
+import { Account_Field } from '@src/dataStruct/account';
 
-class MutateDB_Signup extends MutateDB {
-    private _connectionPool: sql.ConnectionPool | undefined;
+class MutateDB_Signup {
     private _signup_infor: signup_infor_type | undefined;
 
-    constructor() {
-        super();
-    }
-
-    set_connection_pool = (connectionPool: sql.ConnectionPool): void => {
-        this._connectionPool = connectionPool;
-    };
-
-    set_data = (account: AccountField) => {
+    set_data = (account: Account_Field) => {
         this._signup_infor = account;
     };
 
-    isAccountCheckUserName = async (userName: string): Promise<boolean> => {
-        if (this._connectionPool !== undefined) {
-            return await isAccountCheckUserName(this._connectionPool, userName);
-        }
-        return false;
+    is_Account_Check_User_Name = async (user_name: string): Promise<boolean> => {
+        return await is_Account_Check_User_Name(user_name);
     };
 
-    isAccountCheckPhone = async (phone: string): Promise<boolean> => {
-        if (this._connectionPool !== undefined) {
-            return await isAccountCheckPhone(this._connectionPool, phone);
-        }
-        return false;
+    is_Account_Check_Phone = async (phone: string): Promise<boolean> => {
+        return await is_Account_Check_Phone(phone);
     };
 
-    async run(): Promise<sql.IResult<AccountField> | void> {
-        if (this._connectionPool !== undefined && this._signup_infor !== undefined) {
+    async run(): Promise<Account_Field | void> {
+        if (this._signup_infor !== undefined) {
             try {
-                const result = SignupToDB(this._connectionPool, this._signup_infor);
+                const result = signup_To_Db(this._signup_infor);
                 return result;
             } catch (error) {
                 console.error(error);
@@ -47,47 +32,57 @@ class MutateDB_Signup extends MutateDB {
     }
 }
 
-async function isAccountCheckUserName(pool: sql.ConnectionPool, userName: string): Promise<boolean> {
-    const conn = await pool;
-    const existing = await conn
-        .request()
-        .input('userName', sql.NVarChar, userName)
-        .query('SELECT 1 FROM account WHERE userName = @userName');
+async function is_Account_Check_User_Name(user_name: string): Promise<boolean> {
+    const result = await pool.query(
+        `SELECT 1 FROM account WHERE user_name = $1 LIMIT 1;`,
+        [user_name]
+    );
 
-    if (existing.recordset.length > 0) {
+    const exists = result.rows.length > 0;
+
+    if (exists) {
         return true;
     }
     return false;
 }
 
-async function isAccountCheckPhone(pool: sql.ConnectionPool, phone: string): Promise<boolean> {
-    const conn = await pool;
-    const existing = await conn
-        .request()
-        .input('phone', sql.NVarChar, phone)
-        .query('SELECT 1 FROM account WHERE phone = @phone');
+async function is_Account_Check_Phone(phone: string): Promise<boolean> {
+    const result = await pool.query(
+        `SELECT 1 FROM account WHERE phone = $1 LIMIT 1;`,
+        [phone]
+    );
 
-    if (existing.recordset.length > 0) {
+    const exists = result.rows.length > 0;
+
+    if (exists) {
         return true;
     }
     return false;
 }
 
-async function SignupToDB(
-    pool: sql.ConnectionPool,
-    account: AccountField
-): Promise<sql.IProcedureResult<AccountField>> {
-    const conn = await pool;
-    const result = await conn
-        .request()
-        .input('userName', sql.NVarChar, account.userName)
-        .input('password', sql.NVarChar, account.password)
-        .input('phone', sql.NVarChar, account.phone)
-        .input('firstName', sql.NVarChar, account.firstName)
-        .input('lastName', sql.NVarChar, account.lastName)
-        .execute('Signup');
+async function signup_To_Db(account: Account_Field): Promise<Account_Field | undefined> {
+    const client = await pool.connect();
 
-    return result;
+    try {
+
+        await client.query('BEGIN');
+                                                                        
+        const result = await pool.query<Account_Field>(`SELECT * FROM signup($1, $2, $3, $4, $5);`, [
+            account.user_name,
+            account.password,
+            account.phone,
+            account.first_name,
+            account.last_name
+        ]);
+        
+        await client.query('COMMIT');
+
+        return result.rows[0];
+    } catch (error) {
+        console.error(error);
+    } finally {
+        client.release();
+    }
 }
 
 export default MutateDB_Signup;

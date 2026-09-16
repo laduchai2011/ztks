@@ -1,16 +1,16 @@
-export interface VoucherField {
-    id: number;
-    isUsed: boolean;
-    timeExpire: string;
+export interface Voucher_Field {
+    id: string;
+    is_used: boolean;
+    time_expire: string;
     money: number;
-    orderId: number | null;
-    memberZtksId: number;
+    order_id: string | null;
+    member_ztks_id: string;
     phone: string;
-    updateTime: string;
-    createTime: string;
+    update_time: string;
+    create_time: string;
 }
 
-export interface PagedVoucherField {
-    items: VoucherField[];
-    totalCount: number;
+export interface Paged_Voucher_Field {
+    items: Voucher_Field[];
+    total_count: number;
 }

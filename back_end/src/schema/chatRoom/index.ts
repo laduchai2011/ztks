@@ -1,6 +1,6 @@
 import z from 'zod';
 
-export const ChatRoomRoleZodSchema = z.object({
+export const Chat_Room_Role_Zod_Schema = z.object({
     authorized_account_id: z.number().int(),
     is_read: z.boolean(),
     is_send: z.boolean(),
@@ -9,4 +9,4 @@ export const ChatRoomRoleZodSchema = z.object({
     account_id: z.number().int(),
 });
 
-export type ChatRoomRoleSchemaType = z.infer<typeof ChatRoomRoleZodSchema>;
+export type Chat_Room_Role_Schema_Type = z.infer<typeof Chat_Room_Role_Zod_Schema>;

@@ -1,16 +1,16 @@
-export interface HookDataBodyField<T = ZaloMessageBodyType> {
+export interface Hook_Data_Body_Field<T = Zalo_Message_Body_Type> {
     recipient: {
         user_id: string;
     };
     message: T;
 }
 
-interface MessageTextBodyField {
+interface Message_Text_Body_Field {
     text: string;
     quote_message_id?: string;
 }
 
-export interface MessageImageBodyField {
+export interface Message_Image_Body_Field {
     text: string;
     attachment: {
         type: 'template';
@@ -27,7 +27,7 @@ export interface MessageImageBodyField {
     };
 }
 
-interface MessageFileBodyField {
+interface Message_File_Body_Field {
     attachment: {
         type: 'file';
         payload: {
@@ -36,7 +36,7 @@ interface MessageFileBodyField {
     };
 }
 
-interface MessageStickerBodyField {
+interface Message_Sticker_Body_Field {
     attachment: {
         type: 'template';
         payload: {
@@ -51,9 +51,9 @@ interface MessageStickerBodyField {
     };
 }
 
-type ZaloMessageBodyType =
-    | MessageTextBodyField
-    | MessageImageBodyField
-    | MessageFileBodyField
-    | MessageStickerBodyField
+type Zalo_Message_Body_Type =
+    | Message_Text_Body_Field
+    | Message_Image_Body_Field
+    | Message_File_Body_Field
+    | Message_Sticker_Body_Field
     | Record<string, unknown>; // fallback

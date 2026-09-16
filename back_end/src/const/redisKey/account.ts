@@ -4,9 +4,9 @@ dotenv.config();
 
 const isProduct = process.env.NODE_ENV === 'production';
 
-export const prefix_cache_account = {
+export const prefix_cache__account = {
     key: {
-        with_id: isProduct ? 'prefix_cache_account_with_id' : 'prefix_cache_account_with_id_dev',
+        with_id: isProduct ? 'prefix_cache__account_with_id' : 'prefix_cache__account_with_id_dev',
     },
     time: 60 * 5, // 5p
 };
@@ -20,32 +20,32 @@ export const prefix_cache_accountInformation = {
     time: 60 * 5, // 5p
 };
 
-export const prefix_cache_replyAccounts = {
+export const prefix_cache__reply_accounts = {
     key: {
-        with_chatRoomId: isProduct
-            ? 'prefix_cache_replyAccount_with_chatRoomId'
-            : 'prefix_cache_replyAccount_with_chatRoomId_dev',
-        body_with_chatRoomId: isProduct
-            ? 'prefix_cache_replyAccount_body_with_chatRoomId'
-            : 'prefix_cache_replyAccount_body_with_chatRoomId_dev',
-        maxPage_with_chatRoomId: isProduct
-            ? 'prefix_cache_replyAccount_maxPage_with_chatRoomId'
-            : 'prefix_cache_replyAccount_maxPage_with_chatRoomId_dev',
+        with_chat_room_id: isProduct
+            ? 'prefix_cache__reply_accounts_with_chat_room_id'
+            : 'prefix_cache__reply_accounts_with_chat_room_id_dev',
+        body_with_chat_room_id: isProduct
+            ? 'prefix_cache__reply_accounts_body_with_chat_room_id'
+            : 'prefix_cache__reply_accounts_body_with_chat_room_id_dev',
+        max_page_with_chat_room_id: isProduct
+            ? 'prefix_cache__reply_accounts_max_page_with_chat_room_id'
+            : 'prefix_cache__reply_accounts_max_page_with_chat_room_id_dev',
     },
     time: 60 * 5, // 5p
 };
 
-export const prefix_cache_notReplyAccounts = {
+export const prefix_cache__not_reply_accounts = {
     key: {
-        with_chatRoomId: isProduct
-            ? 'prefix_cache_notReplyAccount_with_chatRoomId'
-            : 'prefix_cache_notReplyAccount_with_chatRoomId_dev',
-        body_with_chatRoomId: isProduct
-            ? 'prefix_cache_notReplyAccount_body_with_chatRoomId'
-            : 'prefix_cache_notReplyAccount_body_with_chatRoomId_dev',
-        maxPage_with_chatRoomId: isProduct
-            ? 'prefix_cache_notReplyAccount_maxPage_with_chatRoomId'
-            : 'prefix_cache_notReplyAccount_maxPage_with_chatRoomId_dev',
+        with_chat_room_id: isProduct
+            ? 'prefix_cache__not_reply_accounts_with_chat_room_id'
+            : 'prefix_cache__not_reply_account_with_chat_room_id_dev',
+        body_with_chat_room_id: isProduct
+            ? 'prefix_cache__not_reply_account_body_with_chat_room_id'
+            : 'prefix_cache__not_reply_account_body_with_chat_room_id_dev',
+        max_page_with_chat_room_id: isProduct
+            ? 'prefix_cache__not_reply_account_max_page_with_chat_room_id'
+            : 'prefix_cache__not_reply_account_max_page_with_chat_room_id_dev',
     },
     time: 60 * 5, // 5p
 };

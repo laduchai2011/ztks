@@ -7,7 +7,7 @@ import { WaitSessionField } from '../type';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 import { UserTakeSessionToChatBodyField } from '@src/dataStruct/chatSession/body';
-import QueryDB_UserTakeSessionToChat from '../handleHookData/queryDB/UserTakeSessionToChat';
+import QueryDB_UserTakeSessionToChat from './queryDB/UserTakeSessionToChat';
 import { my_log } from '@src/log';
 import { prefix_cache_zalo_message_wait_session_with_zaloOaId_userIdByApp } from '@src/const/redisKey';
 

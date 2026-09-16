@@ -1,34 +1,34 @@
-import { HookDataSchema, HookCallSchema } from '@src/dataStruct/zalo/hookData';
-import { ChatRoomRoleField } from '../chatRoom';
+import { Hook_Data_Schema, Hook_Call_Schema } from '@src/dataStruct/zalo/hookData';
+import { Chat_Room_Role_Field } from '../chatRoom';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface MessageV1Field<T> extends HookDataSchema<T> {}
+export interface Message_V1_Field<T> extends Hook_Data_Schema<T> {}
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface CallV1Field<T> extends HookCallSchema<T> {}
+export interface Call_V1_Field<T> extends Hook_Call_Schema<T> {}
 
-export interface NewMessageV1Field<T> extends MessageV1Field<T> {
-    account_id: number;
+export interface New_Message_V1_Field<T> extends Message_V1_Field<T> {
+    account_id: string;
     created_at: Date;
 }
-export interface NewCallV1Field<T> extends CallV1Field<T> {
-    account_id: number;
+export interface New_Call_V1_Field<T> extends Call_V1_Field<T> {
+    account_id: string;
     created_at: Date;
 }
 
-export interface PagedMessageV1Field<T, K> {
-    items: (MessageV1Field<T> | CallV1Field<K>)[];
+export interface Paged_Message_V1_Field<T, K> {
+    items: (Message_V1_Field<T> | Call_V1_Field<K>)[];
     cursor: string | null;
 }
 
-export interface SocketMessageField {
-    chatRoomId: number;
+export interface Socket_Message_Field {
+    chat_room_id: string;
     _id: string;
-    allChatRoomRoles: ChatRoomRoleField[];
+    all_chat_room_roles: Chat_Room_Role_Field[];
 }
 
-export interface MessageAmountInDayField {
+export interface Message_Amount_In_Day_Field {
     amount: number;
     dateKey: string;
-    account_id: number;
+    account_id: string;
     timestamp: Date;
 }

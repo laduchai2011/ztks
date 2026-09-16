@@ -55,8 +55,8 @@ export interface Create_Account_Information_Body_Field {
 
 export interface Edit_Infor_Account_Body_Field {
     id: string;
-    firstName: string;
-    lastName: string;
+    first_name: string;
+    last_name: string;
     avatar: string;
 }
 

@@ -1,4 +1,4 @@
-export interface ZaloUserField {
+export interface Zalo_User_Field {
     data: {
         avatar: string;
         avatars: {

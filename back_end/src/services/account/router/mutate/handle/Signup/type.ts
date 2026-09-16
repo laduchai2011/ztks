@@ -1,3 +1,3 @@
-import { AccountField } from '@src/dataStruct/account';
+import { Account_Field } from '@src/dataStruct/account';
 
-export type signup_infor_type = AccountField;
+export type signup_infor_type = Account_Field;

@@ -58,7 +58,7 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION get_chat_room_with_id (
-    p_id INTEGER
+    p_id UUID
 )
 RETURNS SETOF chat_room
 LANGUAGE plpgsql

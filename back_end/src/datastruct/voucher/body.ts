@@ -1,23 +1,23 @@
-export interface CreateVoucherBodyField {
-    dayAmount: number;
+export interface Create_Voucher_Body_Field {
+    day_amount: number;
     money: number;
     phone: string;
-    memberZtksId: number;
+    member_ztks_id: string;
 }
 
-export interface GetVouchersBodyField {
+export interface Get_Vouchers_Body_Field {
     page: number;
     size: number;
-    isUsed: boolean | null;
+    is_used: boolean | null;
     phone: string;
 }
 
-export interface GetVoucherWithOrderIdBodyField {
-    orderId: number;
+export interface Get_Voucher_With_Order_Id_Body_Field {
+    order_id: string;
 }
 
-export interface CustomerUseVoucherBodyField {
-    orderId: number;
-    voucherId: number;
-    customerId: number;
+export interface Customer_Use_Voucher_Body_Field {
+    order_id: string;
+    voucher_id: string;
+    customer_id: string;
 }

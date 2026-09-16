@@ -1,52 +1,52 @@
 import dotenv from 'dotenv';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { ChatRoomField, ChatRoomRoleField } from '@src/dataStruct/chatRoom';
+import { Chat_Room_Field, Chat_Room_Role_Field } from '@src/dataStruct/chatRoom';
 import {
-    GetChatRoomWithIdBodyField,
-    ChatRoomRoleWithCridAaidBodyField,
-    GetAllChatRoomRoleWithCridBodyField,
-    GetChatRoomWithZaloOaIdUserIdByAppBodyField,
+    Get_Chat_Room_With_Id_Body_Field,
+    Chat_Room_Role_With_Crid_Aaid_Body_Field,
+    Get_All_Chat_Room_Role_With_Crid_Body_Field,
+    Get_Chat_Room_With_Zalo_Oa_Id_User_Id_By_App_Body_Field,
 } from '@src/dataStruct/chatRoom/body';
 
 dotenv.config();
 
 const isProduct = process.env.NODE_ENV === 'production';
 
-const prefix_cache_getChatRoomWithId = {
+const prefix_cache__get_chat_room_with_id = {
     key: {
-        main: isProduct ? 'cache_get_chatRoomWithId' : 'cache_get_chatRoomWithId_dev',
+        main: isProduct ? 'cache__get_chat_room_with_id' : 'cache__get_chat_room_with_id_dev',
     },
     time: 60 * 5, // 5p
 };
 
-const prefix_cache_getChatRoomRoleWithCridAaid = {
+const prefix_cache__get_chat_room_role_with_crid_aaid = {
     key: {
-        main: isProduct ? 'cache_get_chatRoomRoleWithCridAaid' : 'cache_get_chatRoomRoleWithCridAaid_dev',
-        cache_keys_with_crid: 'cache_get_chatRoomRoles_cache_keys_with_crid',
+        main: isProduct ? 'cache__get_chat_room_role_with_crid_aaid' : 'cache__get_chat_room_role_with_crid_aaid_dev',
+        cache_keys_with_crid: 'cache__get_chat_room_roles_cache_keys_with_crid',
     },
     time: 60 * 5, // 5p
 };
 
-const prefix_cache_getAllChatRoomRoleWithCrid = {
+const prefix_cache__get_all_chat_room_role_with_crid = {
     key: {
-        main: isProduct ? 'cache_get_allChatRoomRoleWithCrid' : 'cache_get_allChatRoomRoleWithCrid_dev',
+        main: isProduct ? 'cache__get_all_chat_room_role_with_crid' : 'cache__get_all_chat_room_role_with_crid_dev',
     },
     time: 60 * 5, // 5p
 };
 
-const prefix_cache_getChatRoomWithZaloOaIdUserIdByApp = {
+const prefix_cache__get_chat_room_with_zalo_oa_id_user_id_by_app = {
     key: {
-        main: isProduct ? 'cache_get_chatRoomWithZaloOaIdUserIdByApp' : 'cache_get_chatRoomWithZaloOaIdUserIdByApp_dev',
+        main: isProduct ? 'cache__get_chat_room_with_zalo_oa_id_user_id_by_app' : 'cache__get_chat_room_with_zalo_oa_id_user_id_by_app_dev',
     },
     time: 60 * 5, // 5p
 };
 
 interface OptionsField {
-    logPrameter?: string;
+    log_prameter?: string;
 }
 
-export class CacheGetChatRoomWithId {
-    private _body: GetChatRoomWithIdBodyField | undefined;
+export class Cache_Get_Chat_Room_With_Id {
+    private _body: Get_Chat_Room_With_Id_Body_Field | undefined;
     private _serviceRedis = ServiceRedis.getInstance();
     private _options?: OptionsField;
 
@@ -54,11 +54,11 @@ export class CacheGetChatRoomWithId {
         this._options = options;
     }
 
-    logError(...args: unknown[]) {
-        if (this._options?.logPrameter) {
-            console.error('CacheGetChatRoomWithId', this._options.logPrameter, ...args);
+    log_Error(...args: unknown[]) {
+        if (this._options?.log_prameter) {
+            console.error('Cache_Get_Chat_Room_With_Id', this._options.log_prameter, ...args);
         } else {
-            console.error('CacheGetChatRoomWithId', ...args);
+            console.error('Cache_Get_Chat_Room_With_Id', ...args);
         }
     }
 
@@ -66,61 +66,61 @@ export class CacheGetChatRoomWithId {
         this._serviceRedis.init();
     }
 
-    setBody(body: GetChatRoomWithIdBodyField) {
+    set_Body(body: Get_Chat_Room_With_Id_Body_Field) {
         this._body = body;
     }
 
-    getKeyMain() {
+    get_Key_Main() {
         if (!this._body) {
-            this.logError('Chưa thiết lập body');
+            this.log_Error('Chưa thiết lập body');
             return;
         }
 
-        const key_main = `${prefix_cache_getChatRoomWithId.key.main}_id${this._body.id}`;
+        const key_main = `${prefix_cache__get_chat_room_with_id.key.main}_id${this._body.id}`;
 
         return key_main;
     }
 
-    getTimeExpireat() {
-        const timeExpireat = prefix_cache_getChatRoomWithId.time;
-        return timeExpireat;
+    get_Time_Expireat() {
+        const time_expireat = prefix_cache__get_chat_room_with_id.time;
+        return time_expireat;
     }
 
-    async setData(data: ChatRoomField) {
-        const key_main = this.getKeyMain();
-        const timeExpireat = this.getTimeExpireat();
+    async set_Data(data: Chat_Room_Field) {
+        const key_main = this.get_Key_Main();
+        const time_expireat = this.get_Time_Expireat();
 
         if (!key_main) {
-            this.logError('Lấy key_main không thành công');
+            this.log_Error('Lấy key_main không thành công');
             return;
         }
 
-        const isSet = await this._serviceRedis.setData<ChatRoomField>(key_main, data, timeExpireat);
+        const isSet = await this._serviceRedis.setData<Chat_Room_Field>(key_main, data, time_expireat);
         if (!isSet) {
-            this.logError('Failed to set in Redis', key_main);
+            this.log_Error('Failed to set in Redis', key_main);
         }
 
         return isSet;
     }
 
-    async getData() {
-        const key_main = this.getKeyMain();
+    async get_Data() {
+        const key_main = this.get_Key_Main();
 
         if (!key_main) {
-            this.logError('Lấy key_main không thành công');
+            this.log_Error('Lấy key_main không thành công');
             return;
         }
 
-        const data = await this._serviceRedis.getData<ChatRoomField>(key_main);
+        const data = await this._serviceRedis.getData<Chat_Room_Field>(key_main);
 
         return data;
     }
 
-    async clearCache() {
-        const key_main = this.getKeyMain();
+    async clear_Cache() {
+        const key_main = this.get_Key_Main();
 
         if (!key_main) {
-            this.logError('Lấy key_main không thành công');
+            this.log_Error('Lấy key_main không thành công');
             return;
         }
 
@@ -128,10 +128,10 @@ export class CacheGetChatRoomWithId {
     }
 }
 
-export class CacheGetChatRoomRoleWithCridAaid {
-    private _body: ChatRoomRoleWithCridAaidBodyField | undefined;
+export class Cache_Get_Chat_Room_Role_With_Crid_Aaid {
+    private _body: Chat_Room_Role_With_Crid_Aaid_Body_Field | undefined;
     private _serviceRedis = ServiceRedis.getInstance();
-    private _fkCrid: number | undefined;
+    private _fk_crid: string | undefined;
 
     constructor() {}
 
@@ -139,43 +139,43 @@ export class CacheGetChatRoomRoleWithCridAaid {
         this._serviceRedis.init();
     }
 
-    setBody(body: ChatRoomRoleWithCridAaidBodyField) {
+    set_Body(body: Chat_Room_Role_With_Crid_Aaid_Body_Field) {
         this._body = body;
     }
 
-    setFkCrid(fkCrid: number) {
-        this._fkCrid = fkCrid;
+    set_Fk_Crid(fk_crid: string) {
+        this._fk_crid = fk_crid;
     }
 
-    getKeyMain() {
+    get_Key_Main() {
         if (!this._body) {
             console.error('Chưa thiết lập body');
             return;
         }
 
-        const key_main = `${prefix_cache_getChatRoomRoleWithCridAaid.key.main}_crid${this._body.chatRoomId}_aaid${this._body.authorizedAccountId}`;
+        const key_main = `${prefix_cache__get_chat_room_role_with_crid_aaid.key.main}_crid${this._body.chat_room_id}_aaid${this._body.authorized_account_id}`;
 
         return key_main;
     }
 
-    getKeyCacheKeysWithCrid() {
-        if (!this._fkCrid) {
+    get_Key_Cache_Keys_With_Crid() {
+        if (!this._fk_crid) {
             console.error('Chưa thiết lập fkCrid');
             return;
         }
-        const key_cache_keys_with_crid = `${prefix_cache_getChatRoomRoleWithCridAaid.key.cache_keys_with_crid}_fkCrid${this._fkCrid}`;
+        const key_cache_keys_with_crid = `${prefix_cache__get_chat_room_role_with_crid_aaid.key.cache_keys_with_crid}_fk_crid${this._fk_crid}`;
         return key_cache_keys_with_crid;
     }
 
-    getTimeExpireat() {
-        const timeExpireat = prefix_cache_getChatRoomRoleWithCridAaid.time;
-        return timeExpireat;
+    get_Time_Expireat() {
+        const time_expireat = prefix_cache__get_chat_room_role_with_crid_aaid.time;
+        return time_expireat;
     }
 
-    async setData(data: ChatRoomRoleField) {
-        const key_main = this.getKeyMain();
-        const timeExpireat = this.getTimeExpireat();
-        const key_cache_keys_with_crid = this.getKeyCacheKeysWithCrid();
+    async set_Data(data: Chat_Room_Role_Field) {
+        const key_main = this.get_Key_Main();
+        const time_expireat = this.get_Time_Expireat();
+        const key_cache_keys_with_crid = this.get_Key_Cache_Keys_With_Crid();
 
         if (!key_main) {
             console.error('Lấy key_main không thành công');
@@ -187,33 +187,33 @@ export class CacheGetChatRoomRoleWithCridAaid {
             return;
         }
 
-        const isSet = await this._serviceRedis.setData<ChatRoomRoleField>(key_main, data, timeExpireat);
+        const isSet = await this._serviceRedis.setData<Chat_Room_Role_Field>(key_main, data, time_expireat);
         if (!isSet) {
             console.error('Failed to set in Redis', key_main);
         }
 
         const clientRedis = this._serviceRedis.getClientRedis();
         await clientRedis.sAdd(key_cache_keys_with_crid, key_main);
-        await clientRedis.expire(key_cache_keys_with_crid, timeExpireat);
+        await clientRedis.expire(key_cache_keys_with_crid, time_expireat);
 
         return isSet;
     }
 
-    async getData() {
-        const key_main = this.getKeyMain();
+    async get_Data() {
+        const key_main = this.get_Key_Main();
 
         if (!key_main) {
             console.error('Lấy key_main không thành công');
             return;
         }
 
-        const data = await this._serviceRedis.getData<ChatRoomRoleField>(key_main);
+        const data = await this._serviceRedis.getData<Chat_Room_Role_Field>(key_main);
 
         return data;
     }
 
-    async clearCache() {
-        const key_main = this.getKeyMain();
+    async clear_Cache() {
+        const key_main = this.get_Key_Main();
 
         if (!key_main) {
             console.error('Lấy key_main không thành công');
@@ -223,8 +223,8 @@ export class CacheGetChatRoomRoleWithCridAaid {
         await this._serviceRedis.deleteData(key_main);
     }
 
-    async clearCacheWithFkCrid() {
-        const key_cache_keys_with_crid = this.getKeyCacheKeysWithCrid();
+    async clear_Cache_With_Fk_Crid() {
+        const key_cache_keys_with_crid = this.get_Key_Cache_Keys_With_Crid();
 
         if (!key_cache_keys_with_crid) {
             console.error('Lấy key_cache_keys_with_crid không thành công');
@@ -240,8 +240,8 @@ export class CacheGetChatRoomRoleWithCridAaid {
     }
 }
 
-export class CacheGetAllChatRoomRoleWithCrid {
-    private _body: GetAllChatRoomRoleWithCridBodyField | undefined;
+export class Cache_Get_All_Chat_Room_Role_With_Crid {
+    private _body: Get_All_Chat_Room_Role_With_Crid_Body_Field | undefined;
     private _serviceRedis = ServiceRedis.getInstance();
 
     constructor() {}
@@ -250,36 +250,36 @@ export class CacheGetAllChatRoomRoleWithCrid {
         this._serviceRedis.init();
     }
 
-    setBody(body: GetAllChatRoomRoleWithCridBodyField) {
+    set_Body(body: Get_All_Chat_Room_Role_With_Crid_Body_Field) {
         this._body = body;
     }
 
-    getKeyMain() {
+    get_Key_Main() {
         if (!this._body) {
             console.error('Chưa thiết lập body');
             return;
         }
 
-        const key_main = `${prefix_cache_getAllChatRoomRoleWithCrid.key.main}_crid${this._body.chatRoomId}`;
+        const key_main = `${prefix_cache__get_all_chat_room_role_with_crid.key.main}_crid${this._body.chat_room_id}`;
 
         return key_main;
     }
 
-    getTimeExpireat() {
-        const timeExpireat = prefix_cache_getAllChatRoomRoleWithCrid.time;
+    get_Time_Expireat() {
+        const timeExpireat = prefix_cache__get_all_chat_room_role_with_crid.time;
         return timeExpireat;
     }
 
-    async setData(data: ChatRoomRoleField[]) {
-        const key_main = this.getKeyMain();
-        const timeExpireat = this.getTimeExpireat();
+    async set_Data(data: Chat_Room_Role_Field[]) {
+        const key_main = this.get_Key_Main();
+        const time_expireat = this.get_Time_Expireat();
 
         if (!key_main) {
             console.error('Lấy key_main không thành công');
             return;
         }
 
-        const isSet = await this._serviceRedis.setData<ChatRoomRoleField[]>(key_main, data, timeExpireat);
+        const isSet = await this._serviceRedis.setData<Chat_Room_Role_Field[]>(key_main, data, time_expireat);
         if (!isSet) {
             console.error('Failed to set in Redis', key_main);
         }
@@ -287,21 +287,21 @@ export class CacheGetAllChatRoomRoleWithCrid {
         return isSet;
     }
 
-    async getData() {
-        const key_main = this.getKeyMain();
+    async get_Data() {
+        const key_main = this.get_Key_Main();
 
         if (!key_main) {
             console.error('Lấy key_main không thành công');
             return;
         }
 
-        const data = await this._serviceRedis.getData<ChatRoomRoleField[]>(key_main);
+        const data = await this._serviceRedis.getData<Chat_Room_Role_Field[]>(key_main);
 
         return data;
     }
 
-    async clearCache() {
-        const key_main = this.getKeyMain();
+    async clear_Cache() {
+        const key_main = this.get_Key_Main();
 
         if (!key_main) {
             console.error('Lấy key_main không thành công');
@@ -312,8 +312,8 @@ export class CacheGetAllChatRoomRoleWithCrid {
     }
 }
 
-export class CacheGetChatRoomWithZaloOaIdUserIdByApp {
-    private _body: GetChatRoomWithZaloOaIdUserIdByAppBodyField | undefined;
+export class Cache_Get_Chat_Room_With_Zalo_Oa_Id_User_Id_By_App {
+    private _body: Get_Chat_Room_With_Zalo_Oa_Id_User_Id_By_App_Body_Field | undefined;
     private _serviceRedis = ServiceRedis.getInstance();
 
     constructor() {}
@@ -322,36 +322,36 @@ export class CacheGetChatRoomWithZaloOaIdUserIdByApp {
         this._serviceRedis.init();
     }
 
-    setBody(body: GetChatRoomWithZaloOaIdUserIdByAppBodyField) {
+    set_Body(body: Get_Chat_Room_With_Zalo_Oa_Id_User_Id_By_App_Body_Field) {
         this._body = body;
     }
 
-    getKeyMain() {
+    get_Key_Main() {
         if (!this._body) {
             console.error('Chưa thiết lập body');
             return;
         }
 
-        const key_main = `${prefix_cache_getChatRoomWithZaloOaIdUserIdByApp.key.main}_zaloOaId${this._body.zaloOaId}_userIdByApp${this._body.userIdByApp}`;
+        const key_main = `${prefix_cache__get_chat_room_with_zalo_oa_id_user_id_by_app.key.main}_zalo_oa_id${this._body.zalo_oa_id}_user_id_by_app${this._body.user_id_by_app}`;
 
         return key_main;
     }
 
-    getTimeExpireat() {
-        const timeExpireat = prefix_cache_getChatRoomWithZaloOaIdUserIdByApp.time;
-        return timeExpireat;
+    get_Time_Expireat() {
+        const time_expireat = prefix_cache__get_chat_room_with_zalo_oa_id_user_id_by_app.time;
+        return time_expireat;
     }
 
-    async setData(data: ChatRoomField) {
-        const key_main = this.getKeyMain();
-        const timeExpireat = this.getTimeExpireat();
+    async set_Data(data: Chat_Room_Field) {
+        const key_main = this.get_Key_Main();
+        const time_expireat = this.get_Time_Expireat();
 
         if (!key_main) {
             console.error('Lấy key_main không thành công');
             return;
         }
 
-        const isSet = await this._serviceRedis.setData<ChatRoomField>(key_main, data, timeExpireat);
+        const isSet = await this._serviceRedis.setData<Chat_Room_Field>(key_main, data, time_expireat);
         if (!isSet) {
             console.error('Failed to set in Redis', key_main);
         }
@@ -359,21 +359,21 @@ export class CacheGetChatRoomWithZaloOaIdUserIdByApp {
         return isSet;
     }
 
-    async getData() {
-        const key_main = this.getKeyMain();
+    async get_Data() {
+        const key_main = this.get_Key_Main();
 
         if (!key_main) {
             console.error('Lấy key_main không thành công');
             return;
         }
 
-        const data = await this._serviceRedis.getData<ChatRoomField>(key_main);
+        const data = await this._serviceRedis.getData<Chat_Room_Field>(key_main);
 
         return data;
     }
 
-    async clearCache() {
-        const key_main = this.getKeyMain();
+    async clear_Cache() {
+        const key_main = this.get_Key_Main();
 
         if (!key_main) {
             console.error('Lấy key_main không thành công');

@@ -1,6 +1,6 @@
-import { Zalo_Event_Name_Enum } from './common';
+import { Zalo_Event_Name_Enum } from "./common";
 
-export interface HookDataSchema<T = ZaloMessageType> {
+export interface Hook_Data_Schema<T = Zalo_Message_Type> {
     event_name: Zalo_Event_Name_Enum;
     app_id: string;
     oa_id: string;
@@ -15,7 +15,7 @@ export interface HookDataSchema<T = ZaloMessageType> {
     timestamp: Date;
 }
 
-export interface HookDataField<T = ZaloMessageType> {
+export interface Hook_Data_Field<T = Zalo_Message_Type> {
     app_id: string;
     user_id_by_app: string;
     event_name: Zalo_Event_Name_Enum;
@@ -29,18 +29,18 @@ export interface HookDataField<T = ZaloMessageType> {
     timestamp: string;
 }
 
-interface MessageField {
+interface Message_Field {
     msg_id: string;
     text?: string;
 }
 
-export interface MessageTextField extends MessageField {
+export interface Message_Text_Field extends Message_Field {
     quote_msg_id?: string;
     msg_id: string;
     text: string;
 }
 
-export interface MessageImageField extends MessageField {
+export interface Message_Image_Field extends Message_Field {
     msg_id: string;
     attachments: [
         {
@@ -53,7 +53,7 @@ export interface MessageImageField extends MessageField {
     ];
 }
 
-export interface MessageMultiImageField extends MessageField {
+export interface Message_Multi_Image_Field extends Message_Field {
     msg_id: string;
     attachments: [
         {
@@ -69,7 +69,7 @@ export interface MessageMultiImageField extends MessageField {
     ];
 }
 
-export interface MessageVideoField extends MessageField {
+export interface Message_Video_Field extends Message_Field {
     msg_id: string;
     attachments: [
         {
@@ -83,7 +83,7 @@ export interface MessageVideoField extends MessageField {
     ];
 }
 
-export interface MessageAudioField extends MessageField {
+export interface Message_Audio_Field extends Message_Field {
     msg_id: string;
     attachments: [
         {
@@ -95,7 +95,7 @@ export interface MessageAudioField extends MessageField {
     ];
 }
 
-export interface MessageFileField extends MessageField {
+export interface Message_File_Field extends Message_Field {
     msg_id: string;
     attachments: [
         {
@@ -111,7 +111,7 @@ export interface MessageFileField extends MessageField {
     ];
 }
 
-export interface MessageStickerField extends MessageField {
+export interface Message_Sticker_Field extends Message_Field {
     msg_id: string;
     attachments: [
         {
@@ -124,7 +124,7 @@ export interface MessageStickerField extends MessageField {
     ];
 }
 
-export interface MessageLinkField extends MessageField {
+export interface Message_Link_Field extends Message_Field {
     msg_id: string;
     attachments: [
         {
@@ -139,18 +139,18 @@ export interface MessageLinkField extends MessageField {
     ];
 }
 
-export type ZaloMessageType =
-    | MessageTextField
-    | MessageImageField
-    | MessageMultiImageField
-    | MessageVideoField
-    | MessageAudioField
-    | MessageFileField
-    | MessageStickerField
-    | MessageLinkField;
+export type Zalo_Message_Type =
+    | Message_Text_Field
+    | Message_Image_Field
+    | Message_Multi_Image_Field
+    | Message_Video_Field
+    | Message_Audio_Field
+    | Message_File_Field
+    | Message_Sticker_Field
+    | Message_Link_Field;
 // | Record<string, unknown>; // fallback
 
-export interface ResultSendToZaloField {
+export interface Result_Send_To_Zalo_Field {
     data: {
         message_id: string;
         user_id: string;
@@ -160,13 +160,13 @@ export interface ResultSendToZaloField {
     message: string;
 }
 
-export enum HookCallTypeEnum {
+export enum Hook_Call_Type_Enum {
     AUDIO = 'AUDIO',
 }
 
-export type ZaloCallType = HookCallTypeEnum.AUDIO;
+export type Zalo_Call_Type = Hook_Call_Type_Enum.AUDIO;
 
-export interface HookCallSchema<T = ZaloCallType> {
+export interface Hook_Call_Schema<T = Zalo_Call_Type> {
     event_name: Zalo_Event_Name_Enum;
     app_id: string;
     oa_id: string;
@@ -185,7 +185,7 @@ export interface HookCallSchema<T = ZaloCallType> {
     timestamp: Date;
 }
 
-export interface HookCallField<T = ZaloCallType> {
+export interface Hook_Call_Field<T = Zalo_Call_Type> {
     event_name: Zalo_Event_Name_Enum;
     app_id: string;
     oa_id: string;

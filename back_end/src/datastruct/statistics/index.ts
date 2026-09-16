@@ -1,28 +1,28 @@
-export enum StatisticsFlag {
+export enum Statistics_Flag {
     New = 'new',
     Old = 'old',
 }
 
-export type StatisticsFlagType = StatisticsFlag.New | StatisticsFlag.Old;
+export type Statistics_Flag_Type = Statistics_Flag.New | Statistics_Flag.Old;
 
-export interface StatisticsOaField {
-    id: number;
+export interface Statistics_Oa_Field {
+    id: string;
     sales: number;
-    orderAmount: number;
-    isDelete: boolean;
-    zaloOaId: number;
-    ofDay: Date;
-    createTime: Date;
+    order_amount: number;
+    is_delete: boolean;
+    zalo_oa_id: string;
+    of_day: Date;
+    create_time: Date;
 }
 
-export interface StatisticsMemberInOneMonthField {
-    id: number;
+export interface Statistics_Member_In_One_Month_Field {
+    id: string;
     sales: number;
-    orderAmount: number;
-    flag: StatisticsFlagType;
-    isDelete: boolean;
-    ofMonth: Date;
-    zaloOaId: number;
-    accountId: number;
-    createTime: Date;
+    order_amount: number;
+    flag: Statistics_Flag_Type;
+    is_delete: boolean;
+    of_month: Date;
+    zalo_oa_id: string;
+    account_id: string;
+    create_time: Date;
 }
