@@ -2,7 +2,6 @@ import { pool } from '@src/connect/postgresql';
 import { Account_Field, Paged_Account_Field } from '@src/dataStruct/account';
 import { Get_Members_Body_Field } from '@src/dataStruct/account/body';
 
-
 class QueryDB_Get_Members {
 
     private _get_members_body: Get_Members_Body_Field | undefined;
@@ -17,7 +16,7 @@ class QueryDB_Get_Members {
                 const searched_account_id = this._get_members_body.searched_account_id
                     ? this._get_members_body.searched_account_id
                     : null
-               const result = await pool.query<{
+                const result = await pool.query<{
                     items: Account_Field[];
                     total_count: string;
                 }>(`SELECT * FROM get_members($1, $2, $3, $4);`, [

@@ -32,6 +32,8 @@ class MutateDB_Agent_Add_Account {
                 return result.rows[0];
             } catch (error) {
                 console.error(error);
+            } finally {
+                client.release();
             }
         }
     }

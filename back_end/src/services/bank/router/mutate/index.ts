@@ -1,21 +1,21 @@
 import express, { Router } from 'express';
 import dotenv from 'dotenv';
 import authentication from '@src/auth';
-import Handle_AddBank from './handle/AddBank';
-import Handle_EditBank from './handle/EditBank';
-import Handle_DeleteBank from './handle/DeleteBank';
+import Handle_Add_Bank from './handle/Add_Bank';
+import Handle_Edit_Bank from './handle/Edit_Bank';
+import Handle_Delete_Bank from './handle/Delete_Bank';
 
 dotenv.config();
 
 const router_mutate_bank: Router = express.Router();
-const handle_addBank = new Handle_AddBank();
-const handle_editBank = new Handle_EditBank();
-const handle_deleteBank = new Handle_DeleteBank();
+const handle_add_bank = new Handle_Add_Bank();
+const handle_edit_bank = new Handle_Edit_Bank();
+const handle_delete_bank = new Handle_Delete_Bank();
 
-router_mutate_bank.post('/addBank', authentication, handle_addBank.setup, handle_addBank.main);
+router_mutate_bank.post('/add_bank', authentication, handle_add_bank.setup, handle_add_bank.main);
 
-router_mutate_bank.patch('/editBank', authentication, handle_editBank.setup, handle_editBank.main);
+router_mutate_bank.patch('/edit_bank', authentication, handle_edit_bank.setup, handle_edit_bank.main);
 
-router_mutate_bank.delete('/deleteBank', authentication, handle_deleteBank.setup, handle_deleteBank.main);
+router_mutate_bank.delete('/delete_bank', authentication, handle_delete_bank.setup, handle_delete_bank.main);
 
 export default router_mutate_bank;

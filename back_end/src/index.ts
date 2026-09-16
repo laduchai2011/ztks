@@ -84,9 +84,9 @@ app.use(`${apiString}/hello`, (req, res) => {
         app.use(`${prefix}/service_call`, service_call);
     }
 
-    if (services.includes('callAgent')) {
-        const service_callAgent = (await import('./services/callAgent')).default;
-        app.use(`${prefix}/service_callAgent`, service_callAgent);
+    if (services.includes('call_agent')) {
+        const service__call_agent = (await import('./services/call_agent')).default;
+        app.use(`${prefix}/service__call_agent`, service__call_agent);
     }
 
     if (services.includes('note')) {
@@ -104,9 +104,9 @@ app.use(`${apiString}/hello`, (req, res) => {
         app.use(`${prefix}/service_chatSession`, service_chatSession);
     }
 
-    if (services.includes('chatRoom')) {
-        const service_chatRoom = (await import('@src/services/chatRoom')).default;
-        app.use(`${prefix}/service_chatRoom`, service_chatRoom);
+    if (services.includes('chat_room')) {
+        const service__chat_room = (await import('@src/services/chat_room')).default;
+        app.use(`${prefix}/service__chat_room`, service__chat_room);
     }
 
     if (services.includes('order')) {
