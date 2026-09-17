@@ -1,7 +1,10 @@
 import dotenv from 'dotenv';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { Call_Agent_Field, Call_PerMit_Field } from '@src/dataStruct/callAgent';
-import { Get_Call_Agent_With_Account_Id_Body_Field, Get_Call_Permit_With_Uid_Body_Field } from '@src/dataStruct/callAgent/body';
+import { Call_Agent_Field, Call_PerMit_Field } from '@src/data_struct/call_agent';
+import {
+    Get_Call_Agent_With_Account_Id_Body_Field,
+    Get_Call_Permit_With_Uid_Body_Field,
+} from '@src/data_struct/call_agent/body';
 
 dotenv.config();
 

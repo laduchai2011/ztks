@@ -1,44 +1,44 @@
 import express, { Router } from 'express';
 import dotenv from 'dotenv';
 import authentication from '@src/auth';
-import Handle_CreateRegisterPost from './handle/CreateRegisterPost';
-import Handle_EditRegisterPost from './handle/EditRegisterPost';
-import Handle_DeleteRegisterPost from './handle/DeleteRegisterPost';
-import Handle_CreatePost from './handle/CreatePost';
-import Handle_EditPost from './handle/EditPost';
+import Handle_Create_Register_Post from './handle/Create_Register_Post';
+import Handle_Edit_Register_Post from './handle/Edit_Register_Post';
+import Handle_Delete_Register_Post from './handle/Delete_Register_Post';
+import Handle_Create_Post from './handle/Create_Post';
+import Handle_Edit_Post from './handle/Edit_Post';
 
 dotenv.config();
 
 const router_mutate_post: Router = express.Router();
-const handle_createRegisterPost = new Handle_CreateRegisterPost();
-const handle_editRegisterPost = new Handle_EditRegisterPost();
-const handle_deleteRegisterPost = new Handle_DeleteRegisterPost();
-const handle_createPost = new Handle_CreatePost();
-const handle_editPost = new Handle_EditPost();
+const handle_create_register_post = new Handle_Create_Register_Post();
+const handle_edit_register_post = new Handle_Edit_Register_Post();
+const handle_delete_register_post = new Handle_Delete_Register_Post();
+const handle_create_post = new Handle_Create_Post();
+const handle_edit_post = new Handle_Edit_Post();
 
 router_mutate_post.post(
-    '/createRegisterPost',
+    '/create_register_post',
     authentication,
-    handle_createRegisterPost.setup,
-    handle_createRegisterPost.main
+    handle_create_register_post.setup,
+    handle_create_register_post.main
 );
 
 router_mutate_post.post(
-    '/editRegisterPost',
+    '/edit_register_post',
     authentication,
-    handle_editRegisterPost.setup,
-    handle_editRegisterPost.main
+    handle_edit_register_post.setup,
+    handle_edit_register_post.main
 );
 
 router_mutate_post.post(
-    '/deleteRegisterPost',
+    '/delete_register_post',
     authentication,
-    handle_deleteRegisterPost.setup,
-    handle_deleteRegisterPost.main
+    handle_delete_register_post.setup,
+    handle_delete_register_post.main
 );
 
-router_mutate_post.post('/createPost', authentication, handle_createPost.setup, handle_createPost.main);
+router_mutate_post.post('/create_post', authentication, handle_create_post.setup, handle_create_post.main);
 
-router_mutate_post.post('/editPost', authentication, handle_editPost.setup, handle_editPost.main);
+router_mutate_post.post('/edit_post', authentication, handle_edit_post.setup, handle_edit_post.main);
 
 export default router_mutate_post;
