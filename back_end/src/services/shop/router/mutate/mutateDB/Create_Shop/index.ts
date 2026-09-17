@@ -1,6 +1,6 @@
 import { pool } from '@src/connect/postgresql';
-import { Shop_Field } from '@src/dataStruct/shop';
-import { Create_Shop_Body_Field } from '@src/dataStruct/shop/body';
+import { Shop_Field } from '@src/data_struct/shop';
+import { Create_Shop_Body_Field } from '@src/data_struct/shop/body';
 
 class MutateDB_Create_Shop {
     private _create_shop_body: Create_Shop_Body_Field | undefined;

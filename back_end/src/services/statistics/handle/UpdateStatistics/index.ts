@@ -1,5 +1,5 @@
 import { mssql_server } from '@src/connect';
-import { UpdateStatisticsBodyField } from '@src/dataStruct/statistics/body';
+import { UpdateStatisticsBodyField } from '@src/data_struct/statistics/body';
 import MutateDB_UpdateStatistics from '../../mutateDB/UpdateStatistics';
 
 export async function isUpdateStatistics(body: UpdateStatisticsBodyField): Promise<boolean> {

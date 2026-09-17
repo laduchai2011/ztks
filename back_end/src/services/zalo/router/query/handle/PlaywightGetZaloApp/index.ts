@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { ZaloAppField, PlaywightGetZaloAppField } from '@src/dataStruct/zalo';
-import { PlaywightGetZaloAppBodyField } from '@src/dataStruct/zalo/body';
+import { MyResponse } from '@src/data_struct/response';
+import { ZaloAppField, PlaywightGetZaloAppField } from '@src/data_struct/zalo';
+import { PlaywightGetZaloAppBodyField } from '@src/data_struct/zalo/body';
 import QueryDB_PlaywightGetZaloApp from '../../queryDB/PlaywightGetZaloApp';
 import { SignOptions } from 'jsonwebtoken';
 import { generateSocketToken, MyJwtPayload } from '@src/token';

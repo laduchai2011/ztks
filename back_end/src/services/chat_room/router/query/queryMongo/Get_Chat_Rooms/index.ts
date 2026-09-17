@@ -1,12 +1,15 @@
 import { get_Db_Monggo } from '@src/connect/mongo';
-import { Chat_Room_Role_Schema, Paged_Chat_Room_Mongo_Field } from '@src/datastruct/chat_room';
-import { Chat_Rooms_Mongo_Body_Field } from '@src/datastruct/chat_room/body';
+import { Chat_Room_Role_Schema, Paged_Chat_Room_Mongo_Field } from '@src/data_struct/chat_room';
+import { Chat_Rooms_Mongo_Body_Field } from '@src/data_struct/chat_room/body';
 
-export async function get_Chat_Rooms_Mongo(chat_rooms_mongo_body: Chat_Rooms_Mongo_Body_Field): Promise<Paged_Chat_Room_Mongo_Field> {
+export async function get_Chat_Rooms_Mongo(
+    chat_rooms_mongo_body: Chat_Rooms_Mongo_Body_Field
+): Promise<Paged_Chat_Room_Mongo_Field> {
     const db = get_Db_Monggo();
     const col = db.collection<Chat_Room_Role_Schema>('chat_room_role');
 
-    const { limit, cursor, is_my, authorized_account_id, is_read, is_send, zalo_oa_id, account_id } = chat_rooms_mongo_body;
+    const { limit, cursor, is_my, authorized_account_id, is_read, is_send, zalo_oa_id, account_id } =
+        chat_rooms_mongo_body;
 
     // const authorized_account_id = authorizedAccountId;
     // const is_read = isRead;

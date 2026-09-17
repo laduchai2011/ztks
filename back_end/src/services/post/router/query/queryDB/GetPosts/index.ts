@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { PostField } from '@src/dataStruct/post';
-import { GetPostsBodyField } from '@src/dataStruct/post/body';
+import { PostField } from '@src/data_struct/post';
+import { GetPostsBodyField } from '@src/data_struct/post/body';
 
 interface TotalCountField {
     totalCount: number;

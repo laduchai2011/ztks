@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { PostField } from '@src/dataStruct/post';
-import { GetPostWithIdBodyField } from '@src/dataStruct/post/body';
+import { PostField } from '@src/data_struct/post';
+import { GetPostWithIdBodyField } from '@src/data_struct/post/body';
 
 class QueryDB_GetPostWithId {
     private _connectionPool: sql.ConnectionPool | undefined;

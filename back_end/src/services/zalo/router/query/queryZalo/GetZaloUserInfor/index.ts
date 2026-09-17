@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { ZaloUserField } from '@src/dataStruct/zalo/user';
-import { ZaloUserBodyField } from '@src/dataStruct/zalo/user/body';
+import { ZaloUserField } from '@src/data_struct/zalo/user';
+import { ZaloUserBodyField } from '@src/data_struct/zalo/user/body';
 import { refreshAccessToken, getAccessToken } from '@src/zaloToken';
 
 class QueryZalo_GetZaloUserInfor {

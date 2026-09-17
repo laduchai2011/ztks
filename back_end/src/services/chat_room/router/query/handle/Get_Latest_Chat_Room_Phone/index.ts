@@ -1,14 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Chat_Room_Phone_Field } from '@src/datastruct/chat_room';
-import { Get_Latest_Chat_Room_Phone_Body_Field } from '@src/datastruct/chat_room/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Chat_Room_Phone_Field } from '@src/data_struct/chat_room';
+import { Get_Latest_Chat_Room_Phone_Body_Field } from '@src/data_struct/chat_room/body';
 import QueryDB_Get_Latest_Chat_Room_Phone from '../../queryDB/Get_Latest_Chat_Room_Phone';
 import { verify_refresh_token } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Get_Latest_Chat_Room_Phone {
-
-    setup = async (req: Request<any, any, Get_Latest_Chat_Room_Phone_Body_Field>, res: Response, next: NextFunction) => {
+    setup = async (
+        req: Request<any, any, Get_Latest_Chat_Room_Phone_Body_Field>,
+        res: Response,
+        next: NextFunction
+    ) => {
         const my_response: My_Response_Field<Chat_Room_Phone_Field> = {
             is_success: false,
             message: 'Băt đầu (Handle_Get_Latest_Chat_Room_Phone-setup) !',
@@ -45,7 +48,8 @@ class Handle_Get_Latest_Chat_Room_Phone {
     };
 
     main = async (_: Request, res: Response) => {
-        const get_latest_chat_room_phone_body = res.locals.get_latest_chat_room_phone_body as Get_Latest_Chat_Room_Phone_Body_Field;
+        const get_latest_chat_room_phone_body = res.locals
+            .get_latest_chat_room_phone_body as Get_Latest_Chat_Room_Phone_Body_Field;
 
         const my_response: My_Response_Field<Chat_Room_Phone_Field> = {
             is_success: false,

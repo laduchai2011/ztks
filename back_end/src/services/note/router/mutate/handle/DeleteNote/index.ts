@@ -1,10 +1,10 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
+import { MyResponse } from '@src/data_struct/response';
 import MutateDB_DeleteNote from '../../mutateDB/DeleteNote';
 import { verifyRefreshToken } from '@src/token';
-import { NoteField } from '@src/dataStruct/note';
-import { DeleteNoteBodyField } from '@src/dataStruct/note/body';
+import { NoteField } from '@src/data_struct/note';
+import { DeleteNoteBodyField } from '@src/data_struct/note/body';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_DeleteNote {

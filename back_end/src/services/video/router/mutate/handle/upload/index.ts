@@ -6,7 +6,7 @@ import path from 'path';
 import fs from 'fs';
 import { resolution_options } from './type';
 import { MyRequest } from '../../type';
-import { MyResponse } from '@src/dataStruct/response';
+import { MyResponse } from '@src/data_struct/response';
 
 const root_path = process.cwd();
 

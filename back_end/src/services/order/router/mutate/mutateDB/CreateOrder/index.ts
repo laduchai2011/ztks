@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { OrderField } from '@src/dataStruct/order';
-import { CreateOrderBodyField } from '@src/dataStruct/order/body';
+import { OrderField } from '@src/data_struct/order';
+import { CreateOrderBodyField } from '@src/data_struct/order/body';
 
 class MutateDB_CreateOrder {
     private _connectionPool: sql.ConnectionPool | undefined;

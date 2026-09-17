@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { RequireTakeMoneyField } from '@src/dataStruct/wallet';
-import { GetRequireWithIdBodyField } from '@src/dataStruct/wallet/body';
+import { RequireTakeMoneyField } from '@src/data_struct/wallet';
+import { GetRequireWithIdBodyField } from '@src/data_struct/wallet/body';
 
 class QueryDB_GetRequireWithId {
     private _connectionPool: sql.ConnectionPool | undefined;

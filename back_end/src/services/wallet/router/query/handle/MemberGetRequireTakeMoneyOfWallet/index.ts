@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { RequireTakeMoneyField } from '@src/dataStruct/wallet';
-import { MemberGetRequireTakeMoneyOfWalletBodyField } from '@src/dataStruct/wallet/body';
+import { MyResponse } from '@src/data_struct/response';
+import { RequireTakeMoneyField } from '@src/data_struct/wallet';
+import { MemberGetRequireTakeMoneyOfWalletBodyField } from '@src/data_struct/wallet/body';
 import QueryDB_MemberGetRequireTakeMoneyOfWallet from '../../queryDB/MemberGetRequireTakeMoneyOfWallet';
 
 class Handle_MemberGetRequireTakeMoneyOfWallet {

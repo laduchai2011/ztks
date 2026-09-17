@@ -1,27 +1,27 @@
 import express, { Router } from 'express';
 import dotenv from 'dotenv';
 import { authOtpFirebaseMiddleware } from '@src/otp';
-import Handle_CreateCustomer from './handle/CreateCustomer';
+import Handle_Create_Customer from './handle/Create_Customer';
 import Handle_CustomerForgetPassword from './handle/CustomerForgetPassword';
-import Handle_CustomerSignout from './handle/CustomerSignout';
+import Handle_Customer_Signout from './handle/Customer_Signout';
 
 dotenv.config();
 
 const router_mutate_customer: Router = express.Router();
 
-const handle_createCustomer = new Handle_CreateCustomer();
+const handle_create_customer = new Handle_Create_Customer();
 const handle_customerForgetPassword = new Handle_CustomerForgetPassword();
-const handle_customerSignout = new Handle_CustomerSignout();
+const handle_customer_signout = new Handle_Customer_Signout();
 
 router_mutate_customer.post(
-    '/createCustomer',
-    handle_createCustomer.isCheckPhone,
+    '/create_customer',
+    handle_create_customer.is_Check_Phone,
     authOtpFirebaseMiddleware,
-    handle_createCustomer.main
+    handle_create_customer.main
 );
 
 router_mutate_customer.post('/customerForgetPassword', authOtpFirebaseMiddleware, handle_customerForgetPassword.main);
 
-router_mutate_customer.post('/customerSignout', handle_customerSignout.main);
+router_mutate_customer.post('/customer_signout', handle_customer_signout.main);
 
 export default router_mutate_customer;

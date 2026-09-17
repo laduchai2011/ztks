@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { VoucherField } from '@src/dataStruct/voucher';
-import { CreateVoucherBodyField } from '@src/dataStruct/voucher/body';
+import { VoucherField } from '@src/data_struct/voucher';
+import { CreateVoucherBodyField } from '@src/data_struct/voucher/body';
 
 class MutateDB_CreateVoucher {
     private _connectionPool: sql.ConnectionPool | undefined;

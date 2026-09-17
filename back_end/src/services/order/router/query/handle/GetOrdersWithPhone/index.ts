@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { OrderField, PagedOrderField } from '@src/dataStruct/order';
-import { GetOrdersWithPhoneBodyField } from '@src/dataStruct/order/body';
+import { MyResponse } from '@src/data_struct/response';
+import { OrderField, PagedOrderField } from '@src/data_struct/order';
+import { GetOrdersWithPhoneBodyField } from '@src/data_struct/order/body';
 import QueryDB_GetOrdersWithPhone from '../../queryDB/GetOrdersWithPhone';
 
 class Handle_GetOrdersWithPhone {

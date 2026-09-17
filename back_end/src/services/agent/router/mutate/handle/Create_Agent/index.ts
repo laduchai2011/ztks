@@ -1,18 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Agent_Field } from '@src/dataStruct/agent';
-import { Create_Agent_Body_Field } from '@src/dataStruct/agent/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Agent_Field } from '@src/data_struct/agent';
+import { Create_Agent_Body_Field } from '@src/data_struct/agent/body';
 import { verify_refresh_token } from '@src/token';
 import MutateDB_Create_Agent from '../../mutateDB/Create_Agent';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Create_Agent {
-
-    setup = async (
-        req: Request<any, any, Create_Agent_Body_Field>,
-        res: Response,
-        next: NextFunction
-    ) => {
+    setup = async (req: Request<any, any, Create_Agent_Body_Field>, res: Response, next: NextFunction) => {
         const my_response: My_Response_Field<Agent_Field> = {
             is_success: false,
             message: 'Bắt đầu (Handle_Create_Agent-setup)',

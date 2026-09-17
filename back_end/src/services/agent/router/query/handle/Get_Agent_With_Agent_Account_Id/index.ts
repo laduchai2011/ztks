@@ -1,11 +1,10 @@
 import { Request, Response } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Agent_Field } from '@src/dataStruct/agent';
-import { Get_Agent_With_Agent_Account_Id_Body_Field } from '@src/dataStruct/agent/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Agent_Field } from '@src/data_struct/agent';
+import { Get_Agent_With_Agent_Account_Id_Body_Field } from '@src/data_struct/agent/body';
 import QueryDB_Get_Agent_With_Agent_Account_Id from '../../queryDB/Get_Agent_With_Agent_Account_Id';
 
 class Handle_Get_Agent_With_Agent_Account_Id {
-    
     main = async (req: Request<any, any, Get_Agent_With_Agent_Account_Id_Body_Field>, res: Response) => {
         const get_agent_with_agent_account_id_body = req.body;
 

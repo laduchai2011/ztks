@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { ZaloAppField } from '@src/dataStruct/zalo';
-import { PlaywightGetZaloAppBodyField } from '@src/dataStruct/zalo/body';
+import { ZaloAppField } from '@src/data_struct/zalo';
+import { PlaywightGetZaloAppBodyField } from '@src/data_struct/zalo/body';
 
 class QueryDB_PlaywightGetZaloApp {
     private _connectionPool: sql.ConnectionPool | undefined;

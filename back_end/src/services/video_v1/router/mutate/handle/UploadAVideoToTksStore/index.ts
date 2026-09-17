@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import multer from 'multer';
 import { PassThrough } from 'stream';
 import { MinioServiceV1 } from '@src/connect/minio/service';
-import { MyResponse } from '@src/dataStruct/response';
+import { MyResponse } from '@src/data_struct/response';
 import fs from 'fs';
 
 const CHUNK_SIZE = 5 * 1024 * 1024;

@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { NoteField } from '@src/dataStruct/note';
-import { UpdateNoteBodyField } from '@src/dataStruct/note/body';
+import { NoteField } from '@src/data_struct/note';
+import { UpdateNoteBodyField } from '@src/data_struct/note/body';
 
 class MutateDB_UpdateNote {
     private _connectionPool: sql.ConnectionPool | undefined;

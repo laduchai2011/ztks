@@ -1,12 +1,11 @@
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Account_Field } from '@src/dataStruct/account';
-import { Check_Forget_Password_Body_Field } from '@src/dataStruct/account/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Account_Field } from '@src/data_struct/account';
+import { Check_Forget_Password_Body_Field } from '@src/data_struct/account/body';
 import QueryDB_Check_Forget_Password from '../../queryDB/Check_Forget_Password';
 
 class Handle_Check_Forget_Password {
-
     private _serviceRedis = ServiceRedis.getInstance();
 
     constructor() {

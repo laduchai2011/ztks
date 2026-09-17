@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { CustomerField } from '@src/dataStruct/customer';
-import { SigninCustomerBodyField } from '@src/dataStruct/customer/body';
+import { CustomerField } from '@src/data_struct/customer';
+import { SigninCustomerBodyField } from '@src/data_struct/customer/body';
 
 class QueryDB_Signin {
     private _connectionPool: sql.ConnectionPool | undefined;

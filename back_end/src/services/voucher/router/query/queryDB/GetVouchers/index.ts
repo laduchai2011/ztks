@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { VoucherField } from '@src/dataStruct/voucher';
-import { GetVouchersBodyField } from '@src/dataStruct/voucher/body';
+import { VoucherField } from '@src/data_struct/voucher';
+import { GetVouchersBodyField } from '@src/data_struct/voucher/body';
 
 interface TotalCountField {
     totalCount: number;

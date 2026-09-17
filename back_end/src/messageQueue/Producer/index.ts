@@ -1,7 +1,7 @@
 import { rabbit_server } from '@src/connect';
 import { MessageZaloField } from '../type';
-import { VideoMessageBodyField } from '../../dataStruct/message_v1/body';
-import { UpdateStatisticsBodyField } from '@src/dataStruct/statistics/body';
+import { VideoMessageBodyField } from '../../data_struct/message_v1/body';
+import { UpdateStatisticsBodyField } from '@src/data_struct/statistics/body';
 
 export async function sendMessage(queue: string, messageZalo: MessageZaloField) {
     await rabbit_server.init();

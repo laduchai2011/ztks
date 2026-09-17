@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { AccountInformationField } from '@src/dataStruct/account';
-import { GetMyAccountInformationBodyField } from '@src/dataStruct/account/body';
+import { AccountInformationField } from '@src/data_struct/account';
+import { GetMyAccountInformationBodyField } from '@src/data_struct/account/body';
 
 class QueryDB_GetMyAccountInformation {
     private _connectionPool: sql.ConnectionPool | undefined;

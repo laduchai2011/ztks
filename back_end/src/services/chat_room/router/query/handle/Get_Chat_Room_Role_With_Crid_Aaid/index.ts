@@ -1,8 +1,8 @@
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Chat_Room_Role_Field } from '@src/datastruct/chat_room';
-import { Chat_Room_Role_With_Crid_Aaid_Body_Field } from '@src/datastruct/chat_room/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Chat_Room_Role_Field } from '@src/data_struct/chat_room';
+import { Chat_Room_Role_With_Crid_Aaid_Body_Field } from '@src/data_struct/chat_room/body';
 import QueryDB_Get_Chat_Room_Role_With_Crid_Aaid from '../../queryDB/Get_Chat_Room_Role_With_Crid_Aaid';
 import { Cache_Get_Chat_Room_Role_With_Crid_Aaid } from '@src/const/redisKey/chat_room';
 

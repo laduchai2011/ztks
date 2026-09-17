@@ -4,7 +4,7 @@ import { parameter_options } from '../../type';
 import path from 'path';
 import fs from 'fs';
 // import my_interface from '@src/interface';
-import { MyResponse } from '@src/dataStruct/response';
+import { MyResponse } from '@src/data_struct/response';
 
 const root_path = process.cwd();
 

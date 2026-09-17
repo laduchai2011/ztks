@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Chat_Room_Field, Chat_Room_Role_Schema } from '@src/datastruct/chat_room';
-import { Change_Chat_Room_Master_Body_Field } from '@src/datastruct/chat_room/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Chat_Room_Field, Chat_Room_Role_Schema } from '@src/data_struct/chat_room';
+import { Change_Chat_Room_Master_Body_Field } from '@src/data_struct/chat_room/body';
 import MutateDB_Change_Chat_Room_Master from '../../mutateDB/Change_Chat_Room_Master';
 import { verify_refresh_token } from '@src/token';
 import { get_Db_Monggo } from '@src/connect/mongo';

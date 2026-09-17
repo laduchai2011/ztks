@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { My_Response_Field } from '@src/dataStruct/response';
+import { My_Response_Field } from '@src/data_struct/response';
 import { dev_prefix } from '@src/mode';
 import { postgresql_Delete_Cache_Redis_With_Key } from '@src/cache/cacheMssql';
 import { DeviceType, DeviceEnum } from '@src/device/type';

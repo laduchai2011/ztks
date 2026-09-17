@@ -1,13 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Bank_Field } from '@src/dataStruct/bank';
-import { Edit_Bank_Body_Field } from '@src/dataStruct/bank/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Bank_Field } from '@src/data_struct/bank';
+import { Edit_Bank_Body_Field } from '@src/data_struct/bank/body';
 import { verify_refresh_token } from '@src/token';
 import MutateDB_Edit_Bank from '../../mutateDB/Edit_Bank';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Edit_Bank {
-
     setup = async (req: Request<any, any, Edit_Bank_Body_Field>, res: Response, next: NextFunction) => {
         const my_response: My_Response_Field<Bank_Field> = {
             is_success: false,

@@ -1,12 +1,12 @@
 import dotenv from 'dotenv';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { Chat_Room_Field, Chat_Room_Role_Field } from '@src/datastruct/chat_room';
+import { Chat_Room_Field, Chat_Room_Role_Field } from '@src/data_struct/chat_room';
 import {
     Get_Chat_Room_With_Id_Body_Field,
     Chat_Room_Role_With_Crid_Aaid_Body_Field,
     Get_All_Chat_Room_Role_With_Crid_Body_Field,
     Get_Chat_Room_With_Zalo_Oa_Id_User_Id_By_App_Body_Field,
-} from '@src/datastruct/chat_room/body';
+} from '@src/data_struct/chat_room/body';
 
 dotenv.config();
 
@@ -36,7 +36,9 @@ const prefix_cache__get_all_chat_room_role_with_crid = {
 
 const prefix_cache__get_chat_room_with_zalo_oa_id_user_id_by_app = {
     key: {
-        main: isProduct ? 'cache__get_chat_room_with_zalo_oa_id_user_id_by_app' : 'cache__get_chat_room_with_zalo_oa_id_user_id_by_app_dev',
+        main: isProduct
+            ? 'cache__get_chat_room_with_zalo_oa_id_user_id_by_app'
+            : 'cache__get_chat_room_with_zalo_oa_id_user_id_by_app_dev',
     },
     time: 60 * 5, // 5p
 };

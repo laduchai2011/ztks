@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import MutateDB_Add_Your_Recommend from '../../mutateDB/Add_Your_Recommend';
-import { Recommend_Field } from '@src/dataStruct/account';
-import { Add_Your_Recommend_Body_Field } from '@src/dataStruct/account/body';
-import { My_Response_Field } from '@src/dataStruct/response';
+import { Recommend_Field } from '@src/data_struct/account';
+import { Add_Your_Recommend_Body_Field } from '@src/data_struct/account/body';
+import { My_Response_Field } from '@src/data_struct/response';
 import { verify_refresh_token } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 
@@ -54,7 +54,7 @@ class Handle_Add_Your_Recommend {
 
         const mutateDB = new MutateDB_Add_Your_Recommend();
         mutateDB.setA_Add_Your_Recommend_Body(add_your_recommend_body);
-       
+
         try {
             const result = await mutateDB.run();
             if (result) {

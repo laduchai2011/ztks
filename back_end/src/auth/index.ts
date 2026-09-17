@@ -4,7 +4,7 @@ import { serviceRedlock } from '@src/connect';
 import { SignOptions } from 'jsonwebtoken';
 import ServiceRedis from '@src/cache/cacheRedis';
 import LockError from 'redlock';
-import { MyResponse } from '@src/dataStruct/response';
+import { MyResponse } from '@src/data_struct/response';
 import { StoreAuthToken } from './type';
 import { dev_prefix } from '@src/mode';
 import { mssqlGetValue, mssqlUpdateValue } from '@src/cache/cacheMssql';

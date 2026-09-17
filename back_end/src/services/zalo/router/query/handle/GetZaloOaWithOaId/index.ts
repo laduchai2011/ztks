@@ -1,12 +1,12 @@
 import { mssql_server } from '@src/connect';
 // import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { ZaloOaField } from '@src/dataStruct/zalo';
-import { GetZaloOaWithOaIdBodyField } from '@src/dataStruct/zalo/body';
+import { MyResponse } from '@src/data_struct/response';
+import { ZaloOaField } from '@src/data_struct/zalo';
+import { GetZaloOaWithOaIdBodyField } from '@src/data_struct/zalo/body';
 import QueryDB_GetZaloOaWithOaId from '../../queryDB/GetZaloOaWithOaId';
 import { verifyRefreshToken } from '@src/token';
-import { accountType_enum, accountType_type } from '@src/dataStruct/account';
+import { accountType_enum, accountType_type } from '@src/data_struct/account';
 // import { prefix_cache_zaloOa } from '@src/const/redisKey/zalo';
 import { getRefreshToken } from '@src/device/getDevice';
 

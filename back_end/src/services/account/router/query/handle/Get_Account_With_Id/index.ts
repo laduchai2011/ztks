@@ -1,12 +1,11 @@
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Account_Field } from '@src/dataStruct/account';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Account_Field } from '@src/data_struct/account';
 import QueryDB_Get_Account_With_Id from '../../queryDB/Get_Account_With_Id';
 import { prefix_cache__account } from '@src/const/redisKey/account';
 
 class Handle_Get_Account_With_Id {
-
     private _serviceRedis = ServiceRedis.getInstance();
 
     constructor() {
@@ -43,7 +42,11 @@ class Handle_Get_Account_With_Id {
                 account.password = '';
                 account.phone = '';
 
-                const is_set_data = await this._serviceRedis.setData<Account_Field>(key_data_redis, account, time_expireat);
+                const is_set_data = await this._serviceRedis.setData<Account_Field>(
+                    key_data_redis,
+                    account,
+                    time_expireat
+                );
                 if (!is_set_data) {
                     console.error('Failed to set thông tin tài khoản in Redis', key_data_redis);
                 }

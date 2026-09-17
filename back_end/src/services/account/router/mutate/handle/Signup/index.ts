@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import MutateDB_Signup from '../../mutateDB/Signup';
-import { Account_Field } from '@src/dataStruct/account';
-import { My_Response_Field } from '@src/dataStruct/response';
+import { Account_Field } from '@src/data_struct/account';
+import { My_Response_Field } from '@src/data_struct/response';
 
 class Handle_Signup {
-  
     is_Account_Check_User_Name = async (
         req: Request<Record<string, never>, unknown, Account_Field>,
         res: Response,
@@ -31,11 +30,7 @@ class Handle_Signup {
         }
     };
 
-    is_Account_Check_Phone = async (
-        req: Request<any, any, Account_Field>,
-        res: Response,
-        next: NextFunction
-    ) => {
+    is_Account_Check_Phone = async (req: Request<any, any, Account_Field>, res: Response, next: NextFunction) => {
         const signup_infor = req.body;
 
         const my_response: My_Response_Field<Account_Field> = {

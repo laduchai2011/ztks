@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
+import { MyResponse } from '@src/data_struct/response';
 import { MinioService } from '@src/connect/minio/service';
 import { PassThrough } from 'stream';
 

@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Leave_Admin_Body_Field } from '@src/dataStruct/account/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Leave_Admin_Body_Field } from '@src/data_struct/account/body';
 import MutateDB_LeaveAdmin from '../../mutateDB/Leave_Admin';
 import { verify_refresh_token } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Leave_Admin {
-
     setup = async (req: Request<any, any, Leave_Admin_Body_Field>, res: Response, next: NextFunction) => {
         const my_response: My_Response_Field<boolean> = {
             is_success: false,

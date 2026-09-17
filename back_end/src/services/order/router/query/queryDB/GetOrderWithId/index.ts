@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { OrderField } from '@src/dataStruct/order';
-import { GetOrderWithIdBodyField } from '@src/dataStruct/order/body';
+import { OrderField } from '@src/data_struct/order';
+import { GetOrderWithIdBodyField } from '@src/data_struct/order/body';
 
 class QueryDB_GetOrderWithId {
     private _connectionPool: sql.ConnectionPool | undefined;

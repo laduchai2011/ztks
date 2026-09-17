@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { OrderField } from '@src/dataStruct/order';
-import { OrdersFilterBodyField } from '@src/dataStruct/order/body';
+import { OrderField } from '@src/data_struct/order';
+import { OrdersFilterBodyField } from '@src/data_struct/order/body';
 
 interface TotalCountField {
     totalCount: number;

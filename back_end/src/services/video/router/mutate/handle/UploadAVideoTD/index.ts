@@ -3,8 +3,8 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import sharp from 'sharp';
-import { MyResponse } from '@src/dataStruct/response';
-import { AVideoFileField } from '@src/dataStruct/photo';
+import { MyResponse } from '@src/data_struct/response';
+import { AVideoFileField } from '@src/data_struct/photo';
 import { exec } from 'child_process';
 // import { my_log } from '@src/log';
 

@@ -1,6 +1,6 @@
-import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { HookDataField } from '@src/dataStruct/zalo/hookData';
-import { ChatSessionField } from '@src/datastruct/chat_session';
+import { ZaloAppField, ZaloOaField } from '@src/data_struct/zalo';
+import { HookDataField } from '@src/data_struct/zalo/hookData';
+import { ChatSessionField } from '@src/data_struct/chat_session';
 
 export interface IsPassField {
     isPass: boolean;

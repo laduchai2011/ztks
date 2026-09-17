@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { BalanceFluctuationField } from '@src/dataStruct/wallet';
-import { GetBalanceFluctuationsBodyField } from '@src/dataStruct/wallet/body';
+import { MyResponse } from '@src/data_struct/response';
+import { BalanceFluctuationField } from '@src/data_struct/wallet';
+import { GetBalanceFluctuationsBodyField } from '@src/data_struct/wallet/body';
 import QueryDB_GetBalanceFluctuations from '../../queryDB/GetBalanceFluctuations';
 
 class Handle_GetBalanceFluctuations {

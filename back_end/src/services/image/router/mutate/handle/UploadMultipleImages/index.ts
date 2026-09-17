@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import path from 'path';
 import fs from 'fs';
 import multer from 'multer';
-import { AImageFileField } from '@src/dataStruct/photo';
-import { MyResponse } from '@src/dataStruct/response';
+import { AImageFileField } from '@src/data_struct/photo';
+import { MyResponse } from '@src/data_struct/response';
 import sharp from 'sharp';
 
 const imagePath = path.join(process.cwd(), 'data', 'image');

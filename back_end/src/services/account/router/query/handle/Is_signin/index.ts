@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
+import { My_Response_Field } from '@src/data_struct/response';
 import { verify_refresh_token, is_Jwt_Payload } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 

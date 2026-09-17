@@ -1,12 +1,12 @@
 import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { NewMessageV1Field } from '@src/dataStruct/message_v1';
-import { AllNewMessagesBodyField } from '@src/dataStruct/message_v1/body';
-import { ChatRoomRoleField } from '@src/datastruct/chat_room';
-import { ChatRoomRoleWithCridAaidBodyField } from '@src/datastruct/chat_room/body';
-import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
+import { MyResponse } from '@src/data_struct/response';
+import { NewMessageV1Field } from '@src/data_struct/message_v1';
+import { AllNewMessagesBodyField } from '@src/data_struct/message_v1/body';
+import { ChatRoomRoleField } from '@src/data_struct/chat_room';
+import { ChatRoomRoleWithCridAaidBodyField } from '@src/data_struct/chat_room/body';
+import { ZaloMessageType } from '@src/data_struct/zalo/hookData';
 import { getAllNewMessages } from '../../queryMongo/GetAllNewMessages';
 import { verifyRefreshToken } from '@src/token';
 import { CacheGetChatRoomRoleWithCridAaid } from '@src/const/redisKey/chat_room';

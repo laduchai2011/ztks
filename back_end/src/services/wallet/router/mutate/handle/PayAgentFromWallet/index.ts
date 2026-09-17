@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { WalletField } from '@src/dataStruct/wallet';
-import { PayAgentFromWalletBodyField } from '@src/dataStruct/wallet/body';
+import { MyResponse } from '@src/data_struct/response';
+import { WalletField } from '@src/data_struct/wallet';
+import { PayAgentFromWalletBodyField } from '@src/data_struct/wallet/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_PayAgentFromWallet from '../../mutateDB/PayAgentFromWallet';
 import { getRefreshToken } from '@src/device/getDevice';

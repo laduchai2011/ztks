@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { ZaloOaField } from '@src/dataStruct/zalo';
-import { GetZaloOaWithOaIdBodyField } from '@src/dataStruct/zalo/body';
+import { ZaloOaField } from '@src/data_struct/zalo';
+import { GetZaloOaWithOaIdBodyField } from '@src/data_struct/zalo/body';
 
 class QueryDB_GetZaloOaWithOaId {
     private _connectionPool: sql.ConnectionPool | undefined;

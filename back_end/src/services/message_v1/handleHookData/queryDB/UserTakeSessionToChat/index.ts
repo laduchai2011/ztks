@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { ChatSessionField } from '@src/datastruct/chat_session';
-import { UserTakeSessionToChatBodyField } from '@src/datastruct/chat_session/body';
+import { ChatSessionField } from '@src/data_struct/chat_session';
+import { UserTakeSessionToChatBodyField } from '@src/data_struct/chat_session/body';
 
 class QueryDB_UserTakeSessionToChat {
     private _connectionPool: sql.ConnectionPool | undefined;

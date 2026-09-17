@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { RequireTakeMoneyField } from '@src/dataStruct/wallet';
-import { MemberZtksConfirmTakeMoneyBodyField } from '@src/dataStruct/wallet/body';
+import { MyResponse } from '@src/data_struct/response';
+import { RequireTakeMoneyField } from '@src/data_struct/wallet';
+import { MemberZtksConfirmTakeMoneyBodyField } from '@src/data_struct/wallet/body';
 import MutateDB_MemberZtksConfirmTakeMoney from '../../mutateDB/MemberZtksConfirmTakeMoney';
 
 // không lấy id từ cookie, cần chú ý xem xét lại

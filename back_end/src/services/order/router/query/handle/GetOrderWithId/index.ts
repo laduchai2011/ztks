@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { OrderField } from '@src/dataStruct/order';
+import { MyResponse } from '@src/data_struct/response';
+import { OrderField } from '@src/data_struct/order';
 import QueryDB_GetOrderWithId from '../../queryDB/GetOrderWithId';
 
 class Handle_GetOrderWithId {

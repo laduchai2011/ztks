@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { AccountReceiveMessageField } from '@src/dataStruct/account';
-import { GetAccountReceiveMessageBodyField } from '@src/dataStruct/account/body';
+import { AccountReceiveMessageField } from '@src/data_struct/account';
+import { GetAccountReceiveMessageBodyField } from '@src/data_struct/account/body';
 
 class QueryDB_GetAccountReceiveMessage {
     private _connectionPool: sql.ConnectionPool | undefined;

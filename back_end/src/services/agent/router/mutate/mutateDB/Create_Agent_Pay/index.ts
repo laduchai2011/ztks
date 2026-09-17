@@ -1,9 +1,8 @@
 import { pool } from '@src/connect/postgresql';
-import { Agent_Pay_Field } from '@src/dataStruct/agent';
-import { Create_Agent_Pay_Body_Field } from '@src/dataStruct/agent/body';
+import { Agent_Pay_Field } from '@src/data_struct/agent';
+import { Create_Agent_Pay_Body_Field } from '@src/data_struct/agent/body';
 
 class MutateDB_Create_Agent_Pay {
-   
     private _create_agent_pay_body: Create_Agent_Pay_Body_Field | undefined;
 
     set_Create_Agent_Pay_Body(create_agent_pay_body: Create_Agent_Pay_Body_Field): void {
@@ -16,10 +15,10 @@ class MutateDB_Create_Agent_Pay {
 
             try {
                 await client.query('BEGIN');
-                                
+
                 const result = await pool.query<Agent_Pay_Field>(`SELECT * FROM create_agent_pay($1, $2);`, [
                     this._create_agent_pay_body.agent_id,
-                    this._create_agent_pay_body.account_id
+                    this._create_agent_pay_body.account_id,
                 ]);
 
                 await client.query('COMMIT');

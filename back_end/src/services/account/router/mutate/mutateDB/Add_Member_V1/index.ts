@@ -1,6 +1,6 @@
 import { pool } from '@src/connect/postgresql';
-import { Account_Information_Field } from '@src/dataStruct/account';
-import { Add_Member_V1_Body_Field } from '@src/dataStruct/account/body';
+import { Account_Information_Field } from '@src/data_struct/account';
+import { Add_Member_V1_Body_Field } from '@src/data_struct/account/body';
 
 class MutateDB_Add_Member_V1 {
     private _add_member_v1_body: Add_Member_V1_Body_Field | undefined;

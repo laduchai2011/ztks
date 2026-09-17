@@ -3,7 +3,7 @@ import multer from 'multer';
 import axios from 'axios';
 import FormData from 'form-data';
 import { getAccessToken, refreshAccessToken } from '@src/zaloToken';
-import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
+import { ZaloAppField, ZaloOaField } from '@src/data_struct/zalo';
 import sharp from 'sharp';
 import { Readable } from 'stream';
 

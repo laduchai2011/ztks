@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { PagedNoteField, NoteField } from '@src/dataStruct/note';
-import { GetNotesBodyField } from '@src/dataStruct/note/body';
+import { MyResponse } from '@src/data_struct/response';
+import { PagedNoteField, NoteField } from '@src/data_struct/note';
+import { GetNotesBodyField } from '@src/data_struct/note/body';
 import QueryDB_GetNotes from '../../queryDB/GetNotes';
 import { verifyRefreshToken } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';

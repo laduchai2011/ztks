@@ -1,13 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Account_Information_Field } from '@src/dataStruct/account';
-import { Create_Account_Information_Body_Field } from '@src/dataStruct/account/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Account_Information_Field } from '@src/data_struct/account';
+import { Create_Account_Information_Body_Field } from '@src/data_struct/account/body';
 import { verify_refresh_token } from '@src/token';
 import MutateDB_Create_Account_Information from '../../mutateDB/Create_Account_Information';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Create_Account_Information {
-    setup = async (req: Request<any, any, Create_Account_Information_Body_Field>, res: Response, next: NextFunction) => {
+    setup = async (
+        req: Request<any, any, Create_Account_Information_Body_Field>,
+        res: Response,
+        next: NextFunction
+    ) => {
         const my_response: My_Response_Field<Account_Information_Field> = {
             is_success: false,
             message: 'Bắt đầu (Handle_Create_Account_Information-setup)',

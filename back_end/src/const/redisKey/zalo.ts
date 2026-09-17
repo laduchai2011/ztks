@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { accountType_enum } from '@src/dataStruct/account';
+import { accountType_enum } from '@src/data_struct/account';
 
 dotenv.config();
 

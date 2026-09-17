@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { ZaloOaTokenField } from '@src/dataStruct/zalo';
-import { GetZaloOaTokenWithFkBodyField } from '@src/dataStruct/zalo/body';
+import { MyResponse } from '@src/data_struct/response';
+import { ZaloOaTokenField } from '@src/data_struct/zalo';
+import { GetZaloOaTokenWithFkBodyField } from '@src/data_struct/zalo/body';
 import QueryDB_GetZaloOaTokenWithFk from '../../queryDB/GetZaloOaTokenWithFk';
 import { verifyRefreshToken } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';

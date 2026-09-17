@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { OrderField, PagedOrderField } from '@src/dataStruct/order';
-import { OrdersFilterBodyField } from '@src/dataStruct/order/body';
+import { MyResponse } from '@src/data_struct/response';
+import { OrderField, PagedOrderField } from '@src/data_struct/order';
+import { OrdersFilterBodyField } from '@src/data_struct/order/body';
 import QueryDB_GetOrders from '../../queryDB/GetOrders';
 import { verifyRefreshToken } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';

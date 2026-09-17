@@ -10,19 +10,19 @@ import {
     CallZodSchema,
     getDateKeyVN,
 } from '@src/schema/message';
-import { NewMessageV1Field, MessageAmountInDayField, NewCallV1Field } from '@src/dataStruct/message_v1';
+import { NewMessageV1Field, MessageAmountInDayField, NewCallV1Field } from '@src/data_struct/message_v1';
 import { ChatRoomRoleZodSchema, ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
-import { SocketMessageField, MessageV1Field } from '@src/dataStruct/message_v1';
+import { SocketMessageField, MessageV1Field } from '@src/data_struct/message_v1';
 import { getDbMonggo } from '@src/connect/mongo';
 import { my_log } from '@src/log';
 import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { AccountReceiveMessageField } from '@src/dataStruct/account';
-import { GetAccountReceiveMessageBodyField } from '@src/dataStruct/account/body';
-import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { ChatRoomField, ChatRoomRoleSchema } from '@src/datastruct/chat_room';
-import { UserTakeRoomToChatBodyField, ChatRoomBodyField } from '@src/datastruct/chat_room/body';
-import { CheckZaloAppWithAppIdBodyField, CheckZaloOaListWithZaloAppIdBodyField } from '@src/dataStruct/zalo/body';
+import { AccountReceiveMessageField } from '@src/data_struct/account';
+import { GetAccountReceiveMessageBodyField } from '@src/data_struct/account/body';
+import { ZaloAppField, ZaloOaField } from '@src/data_struct/zalo';
+import { ChatRoomField, ChatRoomRoleSchema } from '@src/data_struct/chat_room';
+import { UserTakeRoomToChatBodyField, ChatRoomBodyField } from '@src/data_struct/chat_room/body';
+import { CheckZaloAppWithAppIdBodyField, CheckZaloOaListWithZaloAppIdBodyField } from '@src/data_struct/zalo/body';
 import QueryDB_CheckZaloAppWithAppId from './handleHookData/queryDB/CheckZaloAppWithAppId';
 import QueryDB_CheckZaloOaListWithZaloAppId from './handleHookData/queryDB/CheckZaloOaListWithZaloAppId';
 import QueryDB_UserTakeRoomToChat from './handleHookData/queryDB/UserTakeRoomToChat';
@@ -44,14 +44,14 @@ import {
     HookCallField,
     HookCallSchema,
     ZaloCallType,
-} from '@src/dataStruct/zalo/hookData';
+} from '@src/data_struct/zalo/hookData';
 import { feedbackToTakeChatSession } from './handleHookData/feedbackToTakeChatSession';
-import { ChatSessionField } from '@src/datastruct/chat_session';
+import { ChatSessionField } from '@src/data_struct/chat_session';
 import { sendMessageToUser } from './sendMessageToUser';
 import { ensureIndexes } from './handleHookData/ensureIndexes';
 import { getEnv } from '@src/mode';
 import { myEnv } from '@src/mode/type';
-import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
+import { Zalo_Event_Name_Enum } from '@src/data_struct/zalo/hookData/common';
 import handleCreateCallPermit from './handleCreateCallPermit';
 import { hookCall_getChatRoom, hookCall_feedbackToTakeChatSession } from './handleHookCall';
 

@@ -99,9 +99,9 @@ app.use(`${apiString}/hello`, (req, res) => {
         app.use(`${prefix}/service_zalo`, service_zalo);
     }
 
-    if (services.includes('chatSession')) {
-        const service_chatSession = (await import('@src/services/chatSession')).default;
-        app.use(`${prefix}/service_chatSession`, service_chatSession);
+    if (services.includes('chat_session')) {
+        const service__chat_session = (await import('@src/services/chat_session')).default;
+        app.use(`${prefix}/service__chat_session`, service__chat_session);
     }
 
     if (services.includes('chat_room')) {
@@ -156,9 +156,9 @@ app.use(`${apiString}/hello`, (req, res) => {
         app.use(`${prefix}/service_post`, service_post);
     }
 
-    if (services.includes('checkInOut')) {
-        const service_checkInOut = (await import('@src/services/checkInOut')).default;
-        app.use(`${prefix}/service_checkInOut`, service_checkInOut);
+    if (services.includes('check_in_out')) {
+        const service__check_in_out = (await import('@src/services/check_in_out')).default;
+        app.use(`${prefix}/service__check_in_out`, service__check_in_out);
     }
 
     if (services.includes('shop')) {

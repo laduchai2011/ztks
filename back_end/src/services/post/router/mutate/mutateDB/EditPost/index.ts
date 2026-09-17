@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { PostField } from '@src/dataStruct/post';
-import { EditPostBodyField } from '@src/dataStruct/post/body';
+import { PostField } from '@src/data_struct/post';
+import { EditPostBodyField } from '@src/data_struct/post/body';
 
 class MutateDB_EditPost {
     private _connectionPool: sql.ConnectionPool | undefined;

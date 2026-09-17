@@ -1,8 +1,7 @@
 import { pool } from '@src/connect/postgresql';
-import { Account_Information_Field } from '@src/dataStruct/account';
+import { Account_Information_Field } from '@src/data_struct/account';
 
 class QueryDB_Get_Account_Information {
-
     private _account_id: string | undefined;
 
     set_Account_Id(account_id: string): void {
@@ -12,9 +11,10 @@ class QueryDB_Get_Account_Information {
     async run(): Promise<Account_Information_Field | void> {
         if (this._account_id !== undefined) {
             try {
-                const result = await pool.query<Account_Information_Field>(`SELECT * FROM get_account_information($1);`, [
-                    this._account_id
-                ]);
+                const result = await pool.query<Account_Information_Field>(
+                    `SELECT * FROM get_account_information($1);`,
+                    [this._account_id]
+                );
 
                 return result.rows[0];
             } catch (error) {

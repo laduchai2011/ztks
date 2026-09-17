@@ -1,8 +1,8 @@
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Paged_Account_Field, Account_Field } from '@src/dataStruct/account';
-import { Get_Not_Reply_Account_Body_Field } from '@src/dataStruct/account/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Paged_Account_Field, Account_Field } from '@src/data_struct/account';
+import { Get_Not_Reply_Account_Body_Field } from '@src/data_struct/account/body';
 import QueryDB_Get_Not_Reply_Accounts from '../../queryDB/Get_Not_Reply_Accounts';
 import { prefix_cache__not_reply_accounts } from '@src/const/redisKey/account';
 

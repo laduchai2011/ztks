@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { OrderStatusField } from '@src/dataStruct/order';
-import { GetAllOrderStatusBodyField } from '@src/dataStruct/order/body';
+import { MyResponse } from '@src/data_struct/response';
+import { OrderStatusField } from '@src/data_struct/order';
+import { GetAllOrderStatusBodyField } from '@src/data_struct/order/body';
 import QueryDB_GetAllOrderStatus from '../../queryDB/GetAllOrderStatus';
 
 class Handle_GetAllOrderStatus {

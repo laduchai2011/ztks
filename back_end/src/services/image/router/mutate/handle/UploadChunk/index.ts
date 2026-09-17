@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { MyResponse } from '@src/dataStruct/response';
+import { MyResponse } from '@src/data_struct/response';
 
 const uploadsDir = path.join(process.cwd(), 'data', 'image', 'uploads');
 

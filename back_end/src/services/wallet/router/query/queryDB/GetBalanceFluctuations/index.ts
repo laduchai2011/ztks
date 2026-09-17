@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { BalanceFluctuationField } from '@src/dataStruct/wallet';
-import { GetBalanceFluctuationsBodyField } from '@src/dataStruct/wallet/body';
+import { BalanceFluctuationField } from '@src/data_struct/wallet';
+import { GetBalanceFluctuationsBodyField } from '@src/data_struct/wallet/body';
 
 class QueryDB_GetBalanceFluctuations {
     private _connectionPool: sql.ConnectionPool | undefined;

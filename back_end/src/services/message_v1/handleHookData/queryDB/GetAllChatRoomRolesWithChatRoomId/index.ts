@@ -1,5 +1,5 @@
 import sql from 'mssql';
-import { ChatRoomRoleField } from '@src/datastruct/chat_room';
+import { ChatRoomRoleField } from '@src/data_struct/chat_room';
 
 class QueryDB_GetAllChatRoomRolesWithChatRoomId {
     private _connectionPool: sql.ConnectionPool | undefined;

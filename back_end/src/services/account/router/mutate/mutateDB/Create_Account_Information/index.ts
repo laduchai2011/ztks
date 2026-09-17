@@ -1,6 +1,6 @@
 import { pool } from '@src/connect/postgresql';
-import { Account_Information_Field, account_type_enum } from '@src/dataStruct/account';
-import { Create_Account_Information_Body_Field } from '@src/dataStruct/account/body';
+import { Account_Information_Field, account_type_enum } from '@src/data_struct/account';
+import { Create_Account_Information_Body_Field } from '@src/data_struct/account/body';
 
 class MutateDB_Create_Account_Information {
     private _create_account_information_body: Create_Account_Information_Body_Field | undefined;
@@ -20,13 +20,16 @@ class MutateDB_Create_Account_Information {
                         : null;
 
                 await client.query('BEGIN');
-                                
-                const result = await pool.query<Account_Information_Field>(`SELECT * FROM create_account_information($1, $2, $3);`, [
-                    this._create_account_information_body.account_type,
-                    this._create_account_information_body.account_id,
-                    added_by_id
-                ]);
-                
+
+                const result = await pool.query<Account_Information_Field>(
+                    `SELECT * FROM create_account_information($1, $2, $3);`,
+                    [
+                        this._create_account_information_body.account_type,
+                        this._create_account_information_body.account_id,
+                        added_by_id,
+                    ]
+                );
+
                 await client.query('COMMIT');
 
                 return result.rows[0];

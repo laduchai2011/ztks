@@ -1,11 +1,11 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
+import { MyResponse } from '@src/data_struct/response';
 import { verifyRefreshToken } from '@src/token';
-import { ZaloOaField, PagedZaloOaField } from '@src/dataStruct/zalo';
-import { ZaloOaListWith2FkBodyField } from '@src/dataStruct/zalo/body';
+import { ZaloOaField, PagedZaloOaField } from '@src/data_struct/zalo';
+import { ZaloOaListWith2FkBodyField } from '@src/data_struct/zalo/body';
 import QueryDB_GetZaloOaListWith2Fk from '../../queryDB/GetZaloOaListWith2Fk';
-import { accountType_enum, accountType_type } from '@src/dataStruct/account';
+import { accountType_enum, accountType_type } from '@src/data_struct/account';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_GetZaloOaListWith2Fk {

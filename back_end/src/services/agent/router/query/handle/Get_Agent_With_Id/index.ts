@@ -1,10 +1,9 @@
 import { Request, Response } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Agent_Field } from '@src/dataStruct/agent';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Agent_Field } from '@src/data_struct/agent';
 import QueryDB_Get_Agent_With_Id from '../../queryDB/Get_Agent_With_Id';
 
 class Handle_Get_Agent_With_Id {
-    
     main = async (req: Request<any, any, any, { id: string }>, res: Response) => {
         const id = req.query.id;
 

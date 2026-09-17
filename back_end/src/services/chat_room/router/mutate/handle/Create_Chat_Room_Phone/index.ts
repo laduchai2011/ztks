@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Chat_Room_Phone_Field } from '@src/datastruct/chat_room';
-import { Create_Chat_Room_Phone_Body_Field } from '@src/datastruct/chat_room/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Chat_Room_Phone_Field } from '@src/data_struct/chat_room';
+import { Create_Chat_Room_Phone_Body_Field } from '@src/data_struct/chat_room/body';
 import { verify_refresh_token } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 import MutateDB_Create_Chat_Room_Phone from '../../mutateDB/Create_Chat_Room_Phone';

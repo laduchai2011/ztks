@@ -1,9 +1,8 @@
 import { pool } from '@src/connect/postgresql';
-import { Zalo_Trunk_Field } from '@src/dataStruct/call_agent';
-import { Create_Zalo_Trunk_Body_Field } from '@src/dataStruct/call_agent/body';
+import { Zalo_Trunk_Field } from '@src/data_struct/call_agent';
+import { Create_Zalo_Trunk_Body_Field } from '@src/data_struct/call_agent/body';
 
 class MutateDB_Create_Zalo_Trunk {
-   
     private _create_zalo_trunk_body: Create_Zalo_Trunk_Body_Field | undefined;
 
     set_Create_Zalo_Trunk_Body(create_zalo_trunk_body: Create_Zalo_Trunk_Body_Field): void {
@@ -16,14 +15,17 @@ class MutateDB_Create_Zalo_Trunk {
 
             try {
                 await client.query('BEGIN');
-                                                
-                const result = await pool.query<Zalo_Trunk_Field>(`SELECT * FROM create_zalo_trunk($1, $2, $3, $4, $5);`, [
-                    this._create_zalo_trunk_body.trunk_code,
-                    this._create_zalo_trunk_body.app_id,
-                    this._create_zalo_trunk_body.oa_id,
-                    this._create_zalo_trunk_body.port,
-                    this._create_zalo_trunk_body.account_id
-                ]);
+
+                const result = await pool.query<Zalo_Trunk_Field>(
+                    `SELECT * FROM create_zalo_trunk($1, $2, $3, $4, $5);`,
+                    [
+                        this._create_zalo_trunk_body.trunk_code,
+                        this._create_zalo_trunk_body.app_id,
+                        this._create_zalo_trunk_body.oa_id,
+                        this._create_zalo_trunk_body.port,
+                        this._create_zalo_trunk_body.account_id,
+                    ]
+                );
 
                 await client.query('COMMIT');
 

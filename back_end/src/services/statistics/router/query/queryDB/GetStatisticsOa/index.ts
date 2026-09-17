@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { StatisticsOaField } from '@src/dataStruct/statistics';
-import { GetStatisticsOaBodyField } from '@src/dataStruct/statistics/body';
+import { StatisticsOaField } from '@src/data_struct/statistics';
+import { GetStatisticsOaBodyField } from '@src/data_struct/statistics/body';
 
 class QueryDB_GetStatisticsOa {
     private _connectionPool: sql.ConnectionPool | undefined;

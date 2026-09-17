@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { PagedZnsTemplateField, ZnsTemplateField } from '@src/dataStruct/zalo';
-import { GetZnsTemplatesBodyField } from '@src/dataStruct/zalo/body';
+import { MyResponse } from '@src/data_struct/response';
+import { PagedZnsTemplateField, ZnsTemplateField } from '@src/data_struct/zalo';
+import { GetZnsTemplatesBodyField } from '@src/data_struct/zalo/body';
 import QueryDB_GetZnsTemplates from '../../queryDB/GetZnsTemplates';
 
 class Handle_GetZnsTemplates {

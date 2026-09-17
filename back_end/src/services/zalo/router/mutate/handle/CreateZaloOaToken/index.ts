@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { ZaloOaTokenField } from '@src/dataStruct/zalo';
-import { CreateZaloOaTokenBodyField } from '@src/dataStruct/zalo/body';
+import { MyResponse } from '@src/data_struct/response';
+import { ZaloOaTokenField } from '@src/data_struct/zalo';
+import { CreateZaloOaTokenBodyField } from '@src/data_struct/zalo/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateZaloOaToken from '../../mutateDB/CreateZaloOaToken';
 import { getRefreshToken } from '@src/device/getDevice';

@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { ZaloOaTokenField } from '@src/dataStruct/zalo';
-import { GetZaloOaTokenWithFkBodyField } from '@src/dataStruct/zalo/body';
+import { ZaloOaTokenField } from '@src/data_struct/zalo';
+import { GetZaloOaTokenWithFkBodyField } from '@src/data_struct/zalo/body';
 
 class QueryDB_GetZaloOaTokenWithFk {
     private _connectionPool: sql.ConnectionPool | undefined;

@@ -1,6 +1,6 @@
 import { pool } from '@src/connect/postgresql';
 import { signup_infor_type } from '../../handle/Signup/type';
-import { Account_Field } from '@src/dataStruct/account';
+import { Account_Field } from '@src/data_struct/account';
 
 class MutateDB_Signup {
     private _signup_infor: signup_infor_type | undefined;
@@ -32,10 +32,7 @@ class MutateDB_Signup {
 }
 
 async function is_Account_Check_User_Name(user_name: string): Promise<boolean> {
-    const result = await pool.query(
-        `SELECT 1 FROM account WHERE user_name = $1 LIMIT 1;`,
-        [user_name]
-    );
+    const result = await pool.query(`SELECT 1 FROM account WHERE user_name = $1 LIMIT 1;`, [user_name]);
 
     const exists = result.rows.length > 0;
 
@@ -46,10 +43,7 @@ async function is_Account_Check_User_Name(user_name: string): Promise<boolean> {
 }
 
 async function is_Account_Check_Phone(phone: string): Promise<boolean> {
-    const result = await pool.query(
-        `SELECT 1 FROM account WHERE phone = $1 LIMIT 1;`,
-        [phone]
-    );
+    const result = await pool.query(`SELECT 1 FROM account WHERE phone = $1 LIMIT 1;`, [phone]);
 
     const exists = result.rows.length > 0;
 
@@ -63,17 +57,16 @@ async function signup_To_Db(account: Account_Field): Promise<Account_Field | und
     const client = await pool.connect();
 
     try {
-
         await client.query('BEGIN');
-                                                                        
+
         const result = await pool.query<Account_Field>(`SELECT * FROM signup($1, $2, $3, $4, $5);`, [
             account.user_name,
             account.password,
             account.phone,
             account.first_name,
-            account.last_name
+            account.last_name,
         ]);
-        
+
         await client.query('COMMIT');
 
         return result.rows[0];

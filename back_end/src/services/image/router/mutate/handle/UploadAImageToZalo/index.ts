@@ -5,7 +5,7 @@ import axios from 'axios';
 import FormData from 'form-data';
 import fs from 'fs';
 import { getAccessToken, refreshAccessToken } from '@src/services/zalo_webhook/handle/TokenZaloOA';
-import { ZaloOaAImageField } from '@src/dataStruct/photo';
+import { ZaloOaAImageField } from '@src/data_struct/photo';
 // import { my_log } from '@src/log';
 // import { MyResponse } from '@src/dataStruct/response';
 

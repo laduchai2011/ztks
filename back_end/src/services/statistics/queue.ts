@@ -1,5 +1,5 @@
 import { consumeStatistics } from '@src/messageQueue/Consumer';
-import { UpdateStatisticsBodyField } from '@src/dataStruct/statistics/body';
+import { UpdateStatisticsBodyField } from '@src/data_struct/statistics/body';
 import { getEnv } from '@src/mode';
 import { myEnv } from '@src/mode/type';
 import { isUpdateStatistics } from './handle/UpdateStatistics';

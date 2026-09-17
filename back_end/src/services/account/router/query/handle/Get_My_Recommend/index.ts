@@ -1,13 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Recommend_Field } from '@src/dataStruct/account';
-import { Get_My_Recommend_Body_Field } from '@src/dataStruct/account/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Recommend_Field } from '@src/data_struct/account';
+import { Get_My_Recommend_Body_Field } from '@src/data_struct/account/body';
 import QueryDB_Get_My_Recommend from '../../queryDB/Get_My_Recommend';
 import { verify_refresh_token } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Get_My_Recommend {
-   
     setup = (req: Request<any, any, Get_My_Recommend_Body_Field>, res: Response, next: NextFunction) => {
         const get_my_recommend_body = req.body;
 

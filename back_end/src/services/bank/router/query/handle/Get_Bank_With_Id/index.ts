@@ -1,11 +1,10 @@
 import { Request, Response } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Bank_Field } from '@src/dataStruct/bank';
-import { Get_Bank_With_Id_Body_Field } from '@src/dataStruct/bank/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Bank_Field } from '@src/data_struct/bank';
+import { Get_Bank_With_Id_Body_Field } from '@src/data_struct/bank/body';
 import QueryDB_Get_Bank_With_Id from '../../queryDB/Get_Bank_With_Id';
 
 class Handle_Get_Bank_With_Id {
-
     main = async (req: Request<any, any, Get_Bank_With_Id_Body_Field>, res: Response) => {
         const get_bank_with_id_body = req.body;
 

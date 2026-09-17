@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { ZnsMessageField } from '@src/dataStruct/zalo';
-import { CreateZnsMessageBodyField } from '@src/dataStruct/zalo/body';
+import { MyResponse } from '@src/data_struct/response';
+import { ZnsMessageField } from '@src/data_struct/zalo';
+import { CreateZnsMessageBodyField } from '@src/data_struct/zalo/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateZnsMessage from '../../mutateDB/CreateZnsMessage';
 import { sendViaPhone } from './handle';

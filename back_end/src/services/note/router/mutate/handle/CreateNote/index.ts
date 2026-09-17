@@ -1,9 +1,9 @@
 import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { NoteField } from '@src/dataStruct/note';
-import { CreateNoteBodyField } from '@src/dataStruct/note/body';
+import { MyResponse } from '@src/data_struct/response';
+import { NoteField } from '@src/data_struct/note';
+import { CreateNoteBodyField } from '@src/data_struct/note/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateNote from '../../mutateDB/CreateNote';
 import { CacheGetChatRoomWithId } from '@src/const/redisKey/chat_room';

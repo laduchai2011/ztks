@@ -1,13 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Agent_Field } from '@src/dataStruct/agent';
-import { Agent_Add_Account_Body_Field } from '@src/dataStruct/agent/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Agent_Field } from '@src/data_struct/agent';
+import { Agent_Add_Account_Body_Field } from '@src/data_struct/agent/body';
 import { verify_refresh_token } from '@src/token';
 import MutateDB_Agent_Add_Account from '../../mutateDB/Agent_Add_Account';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Agent_Add_Account {
-
     setup = async (req: Request<any, any, Agent_Add_Account_Body_Field>, res: Response, next: NextFunction) => {
         const my_response: My_Response_Field<Agent_Field> = {
             is_success: false,

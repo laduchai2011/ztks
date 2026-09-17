@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { ZaloOaTokenField } from '@src/dataStruct/zalo';
-import { UpdateRefreshTokenOfZaloOaBodyField } from '@src/dataStruct/zalo/body';
+import { ZaloOaTokenField } from '@src/data_struct/zalo';
+import { UpdateRefreshTokenOfZaloOaBodyField } from '@src/data_struct/zalo/body';
 
 class MutateDB_UpdateRefreshTokenOfZaloOa {
     private _connectionPool: sql.ConnectionPool | undefined;

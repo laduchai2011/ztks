@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { RequireTakeMoneyField } from '@src/dataStruct/wallet';
-import { EditRequireTakeMoneyBodyField } from '@src/dataStruct/wallet/body';
+import { MyResponse } from '@src/data_struct/response';
+import { RequireTakeMoneyField } from '@src/data_struct/wallet';
+import { EditRequireTakeMoneyBodyField } from '@src/data_struct/wallet/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_EditRequireTakeMoney from '../../mutateDB/EditRequireTakeMoney';
 import { getRefreshToken } from '@src/device/getDevice';

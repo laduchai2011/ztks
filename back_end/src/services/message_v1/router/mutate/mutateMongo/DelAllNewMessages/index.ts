@@ -1,7 +1,7 @@
 import { getDbMonggo } from '@src/connect/mongo';
-import { NewMessageV1Field } from '@src/dataStruct/message_v1';
-import { DelNewMessagesBodyField } from '@src/dataStruct/message_v1/body';
-import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
+import { NewMessageV1Field } from '@src/data_struct/message_v1';
+import { DelNewMessagesBodyField } from '@src/data_struct/message_v1/body';
+import { ZaloMessageType } from '@src/data_struct/zalo/hookData';
 
 export async function delAllNewMessages(delNewMessagesBody: DelNewMessagesBodyField) {
     const db = getDbMonggo();

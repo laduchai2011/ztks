@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { CustomerField } from '@src/dataStruct/customer';
-import { CustomerForgetPasswordBodyField } from '@src/dataStruct/customer/body';
+import { MyResponse } from '@src/data_struct/response';
+import { CustomerField } from '@src/data_struct/customer';
+import { CustomerForgetPasswordBodyField } from '@src/data_struct/customer/body';
 import MutateDB_CustomerForgetPassword from '../../mutateDB/CustomerForgetPassword';
 
 class Handle_CustomerForgetPassword {

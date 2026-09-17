@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { WalletField } from '@src/dataStruct/wallet';
-import { CreateWalletBodyField } from '@src/dataStruct/wallet/body';
+import { WalletField } from '@src/data_struct/wallet';
+import { CreateWalletBodyField } from '@src/data_struct/wallet/body';
 
 class MutateDB_CreateWallet {
     private _connectionPool: sql.ConnectionPool | undefined;

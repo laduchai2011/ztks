@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 // import { exec } from 'child_process';
 import path from 'path';
 import fs from 'fs';
-import { MyResponse } from '@src/dataStruct/response';
+import { MyResponse } from '@src/data_struct/response';
 import sharp from 'sharp';
 
 const uploadsDir = path.join(process.cwd(), 'data', 'image', 'uploads');

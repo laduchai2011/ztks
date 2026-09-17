@@ -1,9 +1,8 @@
 import { pool } from '@src/connect/postgresql';
-import { Agent_Field } from '@src/dataStruct/agent';
-import { Create_Agent_Body_Field } from '@src/dataStruct/agent/body';
+import { Agent_Field } from '@src/data_struct/agent';
+import { Create_Agent_Body_Field } from '@src/data_struct/agent/body';
 
 class MutateDB_Create_Agent {
-    
     private _create_agent_body: Create_Agent_Body_Field | undefined;
 
     set_Create_Agent_Body(create_agent_body: Create_Agent_Body_Field): void {
@@ -16,9 +15,9 @@ class MutateDB_Create_Agent {
 
             try {
                 await client.query('BEGIN');
-                
+
                 const result = await pool.query<Agent_Field>(`SELECT * FROM create_agent($1);`, [
-                    this._create_agent_body.account_id
+                    this._create_agent_body.account_id,
                 ]);
 
                 await client.query('COMMIT');

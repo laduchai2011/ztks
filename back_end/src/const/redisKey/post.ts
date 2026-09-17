@@ -1,12 +1,12 @@
 import dotenv from 'dotenv';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { PagedPostField, PagedRegisterPostField, PostField, RegisterPostField } from '@src/dataStruct/post';
+import { PagedPostField, PagedRegisterPostField, PostField, RegisterPostField } from '@src/data_struct/post';
 import {
     GetPostsBodyField,
     GetRegisterPostsBodyField,
     GetPostWithIdBodyField,
     GetRegisterPostWithIdBodyField,
-} from '@src/dataStruct/post/body';
+} from '@src/data_struct/post/body';
 
 dotenv.config();
 

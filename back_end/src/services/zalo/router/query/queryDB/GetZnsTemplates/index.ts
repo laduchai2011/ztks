@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { ZnsTemplateField } from '@src/dataStruct/zalo';
-import { GetZnsTemplatesBodyField } from '@src/dataStruct/zalo/body';
+import { ZnsTemplateField } from '@src/data_struct/zalo';
+import { GetZnsTemplatesBodyField } from '@src/data_struct/zalo/body';
 
 interface TotalCountField {
     totalCount: number;

@@ -1,13 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Paged_Agent_Field } from '@src/dataStruct/agent';
-import { Get_Agents_Body_Field } from '@src/dataStruct/agent/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Paged_Agent_Field } from '@src/data_struct/agent';
+import { Get_Agents_Body_Field } from '@src/data_struct/agent/body';
 import QueryDB_Get_Members from '../../queryDB/Get_Agents';
 import { verify_refresh_token } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Get_Agents {
-
     setup = (req: Request<any, any, Get_Agents_Body_Field>, res: Response, next: NextFunction) => {
         const my_response: My_Response_Field<Paged_Agent_Field> = {
             is_success: false,

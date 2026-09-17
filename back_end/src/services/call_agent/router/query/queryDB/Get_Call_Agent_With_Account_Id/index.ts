@@ -1,6 +1,6 @@
 import { pool } from '@src/connect/postgresql';
-import { Call_Agent_Field } from '@src/dataStruct/call_agent';
-import { Get_Call_Agent_With_Account_Id_Body_Field } from '@src/dataStruct/call_agent/body';
+import { Call_Agent_Field } from '@src/data_struct/call_agent';
+import { Get_Call_Agent_With_Account_Id_Body_Field } from '@src/data_struct/call_agent/body';
 
 class QueryDB_Get_Call_Agent_With_Account_Id {
     private _get_call_agent_with_account_id_body: Get_Call_Agent_With_Account_Id_Body_Field | undefined;

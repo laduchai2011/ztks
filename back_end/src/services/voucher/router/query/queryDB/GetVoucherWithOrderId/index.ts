@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { VoucherField } from '@src/dataStruct/voucher';
-import { GetVoucherWithOrderIdBodyField } from '@src/dataStruct/voucher/body';
+import { VoucherField } from '@src/data_struct/voucher';
+import { GetVoucherWithOrderIdBodyField } from '@src/data_struct/voucher/body';
 
 class QueryDB_GetVoucherWithOrderId {
     private _connectionPool: sql.ConnectionPool | undefined;

@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { RequireTakeMoneyField, PagedRequireTakeMoneyField } from '@src/dataStruct/wallet';
-import { MemberZtksGetRequiresTakeMoneyBodyField } from '@src/dataStruct/wallet/body';
+import { MyResponse } from '@src/data_struct/response';
+import { RequireTakeMoneyField, PagedRequireTakeMoneyField } from '@src/data_struct/wallet';
+import { MemberZtksGetRequiresTakeMoneyBodyField } from '@src/data_struct/wallet/body';
 import QueryDB_MemberZtksGetRequiresTakeMoney from '../../queryDB/MemberZtksGetRequiresTakeMoney';
 // import { verifyRefreshToken } from '@src/token';
 

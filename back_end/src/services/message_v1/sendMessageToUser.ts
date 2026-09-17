@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { getAccessToken, refreshAccessToken } from '@src/zaloToken';
-import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { ResultSendToZaloField } from '@src/dataStruct/zalo/hookData';
-import { HookDataBodyField } from '@src/dataStruct/zalo/hookData/body';
+import { ZaloAppField, ZaloOaField } from '@src/data_struct/zalo';
+import { ResultSendToZaloField } from '@src/data_struct/zalo/hookData';
+import { HookDataBodyField } from '@src/data_struct/zalo/hookData/body';
 
 export async function sendMessageToUser(zaloApp: ZaloAppField, zaloOa: ZaloOaField, payload: HookDataBodyField) {
     try {

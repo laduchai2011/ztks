@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { OrderStatusField } from '@src/dataStruct/order';
-import { GetAllOrderStatusBodyField } from '@src/dataStruct/order/body';
+import { OrderStatusField } from '@src/data_struct/order';
+import { GetAllOrderStatusBodyField } from '@src/data_struct/order/body';
 
 class QueryDB_GetAllOrderStatus {
     private _connectionPool: sql.ConnectionPool | undefined;

@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { PostField } from '@src/dataStruct/post';
-import { CreatePostBodyField } from '@src/dataStruct/post/body';
+import { MyResponse } from '@src/data_struct/response';
+import { PostField } from '@src/data_struct/post';
+import { CreatePostBodyField } from '@src/data_struct/post/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreatePost from '../../mutateDB/CreatePost';
 import { CacheGetPosts } from '@src/const/redisKey/post';

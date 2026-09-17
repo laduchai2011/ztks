@@ -2,13 +2,13 @@ import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
 import QueryDB_Signin from '../../queryDB/Signin';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { MyResponse } from '@src/dataStruct/response';
+import { MyResponse } from '@src/data_struct/response';
 import { generateAccessToken, generateRefreshToken } from '@src/token';
 import { SignOptions } from 'jsonwebtoken';
 import { MyJwtPayload } from '@src/token';
 import { StoreAuthToken } from '@src/auth/type';
-import { CustomerField } from '@src/dataStruct/customer';
-import { SigninCustomerBodyField } from '@src/dataStruct/customer/body';
+import { CustomerField } from '@src/data_struct/customer';
+import { SigninCustomerBodyField } from '@src/data_struct/customer/body';
 import { mssqlGetValue, mssqlUpdateValue, mssqlSetValue } from '@src/cache/cacheMssql';
 import { dev_prefix } from '@src/mode';
 

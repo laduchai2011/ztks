@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { ZnsTemplateField } from '@src/dataStruct/zalo';
-import { GetZnsTemplateWithIdBodyField } from '@src/dataStruct/zalo/body';
+import { ZnsTemplateField } from '@src/data_struct/zalo';
+import { GetZnsTemplateWithIdBodyField } from '@src/data_struct/zalo/body';
 
 class QueryDB_GetZnsTemplateWithId {
     private _connectionPool: sql.ConnectionPool | undefined;

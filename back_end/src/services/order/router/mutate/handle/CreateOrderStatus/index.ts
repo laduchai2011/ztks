@@ -1,9 +1,9 @@
 import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { OrderStatusField } from '@src/dataStruct/order';
-import { CreateOrderStatusBodyField } from '@src/dataStruct/order/body';
+import { MyResponse } from '@src/data_struct/response';
+import { OrderStatusField } from '@src/data_struct/order';
+import { CreateOrderStatusBodyField } from '@src/data_struct/order/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateOrderStatus from '../../mutateDB/CreateOrderStatus';
 import { getRefreshToken } from '@src/device/getDevice';

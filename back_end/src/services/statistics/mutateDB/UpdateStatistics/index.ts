@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { StatisticsOaField } from '@src/dataStruct/statistics';
-import { UpdateStatisticsBodyField } from '@src/dataStruct/statistics/body';
+import { StatisticsOaField } from '@src/data_struct/statistics';
+import { UpdateStatisticsBodyField } from '@src/data_struct/statistics/body';
 
 class MutateDB_UpdateStatistics {
     private _connectionPool: sql.ConnectionPool | undefined;

@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { RegisterPostField } from '@src/dataStruct/post';
-import { DeleteRegisterPostBodyField } from '@src/dataStruct/post/body';
+import { MyResponse } from '@src/data_struct/response';
+import { RegisterPostField } from '@src/data_struct/post';
+import { DeleteRegisterPostBodyField } from '@src/data_struct/post/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_DeleteRegisterPost from '../../mutateDB/DeleteRegisterPost';
 import { CacheGetRegisterPosts } from '@src/const/redisKey/post';

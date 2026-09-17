@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Account_Field } from '@src/dataStruct/account';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Account_Field } from '@src/data_struct/account';
 import QueryDB_Get_Me from '../../queryDB/Get_Me';
 import { verify_refresh_token } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Get_Me {
-
     setup = (req: Request, res: Response, next: NextFunction) => {
         const my_response: My_Response_Field<Account_Field> = {
             is_success: false,

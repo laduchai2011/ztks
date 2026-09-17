@@ -1,5 +1,5 @@
 import { getDbMonggo } from '@src/connect/mongo';
-import { MessageAmountInDayField } from '@src/dataStruct/message_v1';
+import { MessageAmountInDayField } from '@src/data_struct/message_v1';
 import { MessageAmountInDayType, getDateKeyVN } from '@src/schema/message';
 
 export async function getMessageAmountInDay(account_id: number): Promise<MessageAmountInDayField | undefined> {

@@ -1,7 +1,7 @@
 import sql from 'mssql';
 import { MutateDB } from '@src/services/note/interface';
-import { NoteField } from '@src/dataStruct/note';
-import { CreateNoteBodyField } from '@src/dataStruct/note/body';
+import { NoteField } from '@src/data_struct/note';
+import { CreateNoteBodyField } from '@src/data_struct/note/body';
 
 class MutateDB_CreateNote extends MutateDB {
     private _connectionPool: sql.ConnectionPool | undefined;

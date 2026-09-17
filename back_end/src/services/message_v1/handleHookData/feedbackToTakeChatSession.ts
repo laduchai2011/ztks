@@ -1,12 +1,12 @@
 import { mssql_server } from '@src/connect';
 import { sendMessageToUser } from '../sendMessageToUser';
-import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { HookDataField, MessageTextField } from '@src/dataStruct/zalo/hookData';
-import { ChatSessionField } from '@src/datastruct/chat_session';
+import { ZaloAppField, ZaloOaField } from '@src/data_struct/zalo';
+import { HookDataField, MessageTextField } from '@src/data_struct/zalo/hookData';
+import { ChatSessionField } from '@src/data_struct/chat_session';
 import { WaitSessionField } from '../type';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
-import { UserTakeSessionToChatBodyField } from '@src/datastruct/chat_session/body';
+import { Zalo_Event_Name_Enum } from '@src/data_struct/zalo/hookData/common';
+import { UserTakeSessionToChatBodyField } from '@src/data_struct/chat_session/body';
 import QueryDB_UserTakeSessionToChat from './queryDB/UserTakeSessionToChat';
 import { my_log } from '@src/log';
 import { prefix_cache_zalo_message_wait_session_with_zaloOaId_userIdByApp } from '@src/const/redisKey';

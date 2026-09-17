@@ -1,13 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Bank_Field } from '@src/dataStruct/bank';
-import { Get_All_Banks_Body_Field } from '@src/dataStruct/bank/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Bank_Field } from '@src/data_struct/bank';
+import { Get_All_Banks_Body_Field } from '@src/data_struct/bank/body';
 import QueryDB_Get_All_Banks from '../../queryDB/Get_All_Banks';
 import { verify_refresh_token } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Get_All_Banks {
-
     setup = (req: Request<any, any, Get_All_Banks_Body_Field>, res: Response, next: NextFunction) => {
         const my_response: My_Response_Field<Bank_Field[]> = {
             is_success: false,

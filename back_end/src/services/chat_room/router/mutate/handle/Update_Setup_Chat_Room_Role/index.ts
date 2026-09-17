@@ -1,8 +1,8 @@
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Chat_Room_Role_Field, Chat_Room_Role_Schema } from '@src/datastruct/chat_room';
-import { Update_Setup_Chat_Room_Role_Body_Field } from '@src/datastruct/chat_room/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Chat_Room_Role_Field, Chat_Room_Role_Schema } from '@src/data_struct/chat_room';
+import { Update_Setup_Chat_Room_Role_Body_Field } from '@src/data_struct/chat_room/body';
 import MutateDB_Update_Setup_Chat_Room_Role from '../../mutateDB/Update_Setup_Chat_Room_Role';
 import { verify_refresh_token } from '@src/token';
 import {

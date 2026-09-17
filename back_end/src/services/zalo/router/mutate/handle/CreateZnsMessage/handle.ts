@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ZaloOaField, ZaloAppField } from '@src/dataStruct/zalo';
+import { ZaloOaField, ZaloAppField } from '@src/data_struct/zalo';
 import { getAccessToken, refreshAccessToken } from '@src/zaloToken';
 
 export async function sendViaPhone(payload: any, zaloApp: ZaloAppField, zaloOa: ZaloOaField) {

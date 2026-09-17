@@ -10,7 +10,7 @@ import {
     MessageLinkSchema,
     CallSchema,
 } from './messageType';
-import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
+import { Zalo_Event_Name_Enum } from '@src/data_struct/zalo/hookData/common';
 
 const BaseEventSchema = {
     app_id: z.string(),

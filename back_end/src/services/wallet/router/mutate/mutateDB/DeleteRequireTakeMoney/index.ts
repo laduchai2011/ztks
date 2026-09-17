@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { RequireTakeMoneyField } from '@src/dataStruct/wallet';
-import { DeleteRequireTakeMoneyBodyField } from '@src/dataStruct/wallet/body';
+import { RequireTakeMoneyField } from '@src/data_struct/wallet';
+import { DeleteRequireTakeMoneyBodyField } from '@src/data_struct/wallet/body';
 
 class MutateDB_DeleteRequireTakeMoney {
     private _connectionPool: sql.ConnectionPool | undefined;

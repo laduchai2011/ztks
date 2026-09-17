@@ -1,15 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Agent_Pay_Field } from '@src/dataStruct/agent';
-import { Get_Last_Agent_Pay_Body_Field } from '@src/dataStruct/agent/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Agent_Pay_Field } from '@src/data_struct/agent';
+import { Get_Last_Agent_Pay_Body_Field } from '@src/data_struct/agent/body';
 import QueryDB_Get_Last_Agent_Pay from '../../queryDB/Get_Last_Agent_Pay';
 import { verify_refresh_token } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Get_Last_Agent_Pay {
-
     setup = (req: Request<any, any, Get_Last_Agent_Pay_Body_Field>, res: Response, next: NextFunction) => {
-
         const my_response: My_Response_Field<Agent_Pay_Field> = {
             is_success: false,
             message: 'Bắt đầu (Handle_Get_Last_Agent_Pay-setup)',

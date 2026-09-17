@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { ZnsMessageField } from '@src/dataStruct/zalo';
-import { GetZnsMessagesBodyField } from '@src/dataStruct/zalo/body';
+import { MyResponse } from '@src/data_struct/response';
+import { ZnsMessageField } from '@src/data_struct/zalo';
+import { GetZnsMessagesBodyField } from '@src/data_struct/zalo/body';
 import QueryDB_GetZnsMessages from '../../queryDB/GetZnsMessages';
 
 class Handle_GetZnsMessages {

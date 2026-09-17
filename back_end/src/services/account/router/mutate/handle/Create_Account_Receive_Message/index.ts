@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Account_Receive_Message_Field } from '@src/dataStruct/account';
-import { Create_Account_Receive_Message_Body_Field } from '@src/dataStruct/account/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Account_Receive_Message_Field } from '@src/data_struct/account';
+import { Create_Account_Receive_Message_Body_Field } from '@src/data_struct/account/body';
 import { verify_refresh_token } from '@src/token';
 import MutateDB_Create_Account_Receive_Message from '../../mutateDB/Create_Account_Receive_Message';
 import { getRefreshToken } from '@src/device/getDevice';

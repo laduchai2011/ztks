@@ -1,9 +1,8 @@
 import { pool } from '@src/connect/postgresql';
-import { Chat_Room_Field, Paged_Chat_Room_Field } from '@src/datastruct/chat_room';
-import { Get_My_Chat_Rooms_Body_Field } from '@src/datastruct/chat_room/body';
+import { Chat_Room_Field, Paged_Chat_Room_Field } from '@src/data_struct/chat_room';
+import { Get_My_Chat_Rooms_Body_Field } from '@src/data_struct/chat_room/body';
 
 class QueryDB_Get_My_Chat_Rooms {
-    
     private _get_my_chat_rooms_body: Get_My_Chat_Rooms_Body_Field | undefined;
 
     set_Get_My_Chat_Rooms_Body(get_my_chat_rooms_body: Get_My_Chat_Rooms_Body_Field): void {
@@ -19,12 +18,12 @@ class QueryDB_Get_My_Chat_Rooms {
                 }>(`SELECT * FROM get_my_chat_rooms($1, $2, $3);`, [
                     this._get_my_chat_rooms_body.page,
                     this._get_my_chat_rooms_body.size,
-                    this._get_my_chat_rooms_body.account_id
+                    this._get_my_chat_rooms_body.account_id,
                 ]);
 
                 const data: Paged_Chat_Room_Field = {
                     items: result.rows[0].items,
-                    total_count: Number(result.rows[0].total_count)
+                    total_count: Number(result.rows[0].total_count),
                 };
 
                 return data;

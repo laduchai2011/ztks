@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Account_Field, All_Members_Body_Field } from '@src/dataStruct/account';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Account_Field, All_Members_Body_Field } from '@src/data_struct/account';
 import QueryDB_Get_All_Members from '../../queryDB/Get_All_Members';
 import { verify_refresh_token } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Get_All_Members {
-
     setup = (req: Request<any, any, All_Members_Body_Field>, res: Response, next: NextFunction) => {
         const my_response: My_Response_Field<Account_Field> = {
             is_success: false,

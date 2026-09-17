@@ -1,6 +1,6 @@
 import { pool } from '@src/connect/postgresql';
-import { Chat_Room_Field } from '@src/datastruct/chat_room';
-import { Change_Chat_Room_Master_Body_Field } from '@src/datastruct/chat_room/body';
+import { Chat_Room_Field } from '@src/data_struct/chat_room';
+import { Change_Chat_Room_Master_Body_Field } from '@src/data_struct/chat_room/body';
 
 class MutateDB_Change_Chat_Room_Master {
     private _change_chat_room_master_body: Change_Chat_Room_Master_Body_Field | undefined;

@@ -1,8 +1,8 @@
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Account_Field } from '@src/dataStruct/account';
-import { Edit_Infor_Account_Body_Field } from '@src/dataStruct/account/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Account_Field } from '@src/data_struct/account';
+import { Edit_Infor_Account_Body_Field } from '@src/data_struct/account/body';
 import { verify_refresh_token } from '@src/token';
 import MutateDB_Edit_Infor_Account from '../../mutateDB/Edit_Infor_Account';
 import { prefix_cache__account } from '@src/const/redisKey/account';
@@ -15,11 +15,7 @@ class Handle_Edit_Infor_Account {
         this._serviceRedis.init();
     }
 
-    setup = async (
-        req: Request<any, any, Edit_Infor_Account_Body_Field>,
-        res: Response,
-        next: NextFunction
-    ) => {
+    setup = async (req: Request<any, any, Edit_Infor_Account_Body_Field>, res: Response, next: NextFunction) => {
         const my_response: My_Response_Field<Account_Field> = {
             is_success: false,
             message: 'Bắt đầu (Handle_Edit_Infor_Account-setup)',

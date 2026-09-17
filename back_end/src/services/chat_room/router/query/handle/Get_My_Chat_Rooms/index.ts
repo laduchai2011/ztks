@@ -1,11 +1,10 @@
 import { Request, Response } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Paged_Chat_Room_Field } from '@src/datastruct/chat_room';
-import { Get_My_Chat_Rooms_Body_Field } from '@src/datastruct/chat_room/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Paged_Chat_Room_Field } from '@src/data_struct/chat_room';
+import { Get_My_Chat_Rooms_Body_Field } from '@src/data_struct/chat_room/body';
 import QueryDB_Get_My_Chat_Rooms from '../../queryDB/Get_My_Chat_Rooms';
 
 class Handle_Get_My_Chat_Rooms {
-
     main = async (req: Request<any, any, Get_My_Chat_Rooms_Body_Field>, res: Response) => {
         const get_my_chat_rooms_body = req.body;
 

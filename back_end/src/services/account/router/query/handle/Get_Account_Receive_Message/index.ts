@@ -1,13 +1,12 @@
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response } from 'express';
 import QueryDB_Get_Account_Receive_Message from '../../queryDB/Get_Account_Receive_Message';
-import { Account_Receive_Message_Field } from '@src/dataStruct/account';
-import { Get_Account_Receive_Message_Body_Field } from '@src/dataStruct/account/body';
-import { My_Response_Field } from '@src/dataStruct/response';
+import { Account_Receive_Message_Field } from '@src/data_struct/account';
+import { Get_Account_Receive_Message_Body_Field } from '@src/data_struct/account/body';
+import { My_Response_Field } from '@src/data_struct/response';
 import { prefix_cache__account_receive_message } from '@src/const/redisKey/account';
 
 class Handle_Get_Account_Receive_Message {
-  
     private _serviceRedis = ServiceRedis.getInstance();
 
     constructor() {

@@ -1,9 +1,8 @@
 import { pool } from '@src/connect/postgresql';
-import { Bank_Field } from '@src/dataStruct/bank';
-import { Delete_Bank_Body_Field } from '@src/dataStruct/bank/body';
+import { Bank_Field } from '@src/data_struct/bank';
+import { Delete_Bank_Body_Field } from '@src/data_struct/bank/body';
 
 class MutateDB_Delete_Bank {
-   
     private _delete_bank_body: Delete_Bank_Body_Field | undefined;
 
     set_Delete_Bank_Body(delete_bank_body: Delete_Bank_Body_Field): void {
@@ -16,10 +15,10 @@ class MutateDB_Delete_Bank {
 
             try {
                 await client.query('BEGIN');
-                                
+
                 const result = await pool.query<Bank_Field>(`SELECT * FROM delete_bank($1, $2);`, [
                     this._delete_bank_body.id,
-                    this._delete_bank_body.account_id
+                    this._delete_bank_body.account_id,
                 ]);
 
                 await client.query('COMMIT');

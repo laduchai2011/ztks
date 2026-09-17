@@ -2,9 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import { verify_refresh_token } from '@src/token';
 import MutateDB_Add_Member_V1 from '../../mutateDB/Add_Member_V1';
 import { getRefreshToken } from '@src/device/getDevice';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Account_Information_Field } from '@src/dataStruct/account';
-import { Add_Member_V1_Body_Field } from '@src/dataStruct/account/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Account_Information_Field } from '@src/data_struct/account';
+import { Add_Member_V1_Body_Field } from '@src/data_struct/account/body';
 
 class Handle_Add_Member_V1 {
     setup = async (req: Request<any, any, Add_Member_V1_Body_Field>, res: Response, next: NextFunction) => {

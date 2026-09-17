@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { RegisterPostField, PagedRegisterPostField } from '@src/dataStruct/post';
-import { GetRegisterPostsBodyField } from '@src/dataStruct/post/body';
+import { MyResponse } from '@src/data_struct/response';
+import { RegisterPostField, PagedRegisterPostField } from '@src/data_struct/post';
+import { GetRegisterPostsBodyField } from '@src/data_struct/post/body';
 import QueryDB_GetRegisterPosts from '../../queryDB/GetRegisterPosts';
 import { CacheGetRegisterPosts } from '@src/const/redisKey/post';
 

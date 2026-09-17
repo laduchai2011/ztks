@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Agent_Pay_Field } from '@src/dataStruct/agent';
-import { Create_Agent_Pay_Body_Field } from '@src/dataStruct/agent/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Agent_Pay_Field } from '@src/data_struct/agent';
+import { Create_Agent_Pay_Body_Field } from '@src/data_struct/agent/body';
 import { verify_refresh_token } from '@src/token';
 import MutateDB_Create_Agent_Pay from '../../mutateDB/Create_Agent_Pay';
 import { getRefreshToken } from '@src/device/getDevice';
@@ -14,11 +14,7 @@ class Handle_Create_Agent_Pay {
         this._mssql_server.init();
     }
 
-    setup = async (
-        req: Request<any, any, Create_Agent_Pay_Body_Field>,
-        res: Response,
-        next: NextFunction
-    ) => {
+    setup = async (req: Request<any, any, Create_Agent_Pay_Body_Field>, res: Response, next: NextFunction) => {
         const my_response: My_Response_Field<Agent_Pay_Field> = {
             is_success: false,
             message: 'Bắt đầu (Handle_Create_Agent_Pay-setup)',
@@ -43,7 +39,7 @@ class Handle_Create_Agent_Pay {
             }
 
             const { id } = verify_refreshToken;
-          
+
             if (create_agent_pay_body.account_id.length === 0) {
                 create_agent_pay_body.account_id = id;
             }

@@ -1,11 +1,10 @@
 import { Request, Response } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Paged_Account_Field } from '@src/dataStruct/account';
-import { Get_Members_Body_Field } from '@src/dataStruct/account/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Paged_Account_Field } from '@src/data_struct/account';
+import { Get_Members_Body_Field } from '@src/data_struct/account/body';
 import QueryDB_Get_Members from '../../queryDB/Get_Members';
 
 class Handle_Get_Members {
-   
     main = async (req: Request<any, any, Get_Members_Body_Field>, res: Response) => {
         const get_members_body = req.body;
 

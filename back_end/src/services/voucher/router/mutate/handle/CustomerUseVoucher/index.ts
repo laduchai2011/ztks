@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { VoucherField } from '@src/dataStruct/voucher';
-import { CustomerUseVoucherBodyField } from '@src/dataStruct/voucher/body';
+import { MyResponse } from '@src/data_struct/response';
+import { VoucherField } from '@src/data_struct/voucher';
+import { CustomerUseVoucherBodyField } from '@src/data_struct/voucher/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CustomerUseVoucher from '../../mutateDB/CustomerUseVoucher';
 import { getRefreshToken } from '@src/device/getDevice';

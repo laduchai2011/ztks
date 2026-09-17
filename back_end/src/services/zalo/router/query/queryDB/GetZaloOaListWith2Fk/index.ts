@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { ZaloOaField } from '@src/dataStruct/zalo';
-import { ZaloOaListWith2FkBodyField } from '@src/dataStruct/zalo/body';
+import { ZaloOaField } from '@src/data_struct/zalo';
+import { ZaloOaListWith2FkBodyField } from '@src/data_struct/zalo/body';
 
 interface TotalCountField {
     totalCount: number;

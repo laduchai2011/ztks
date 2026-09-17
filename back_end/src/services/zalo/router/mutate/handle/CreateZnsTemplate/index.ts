@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { ZnsTemplateField } from '@src/dataStruct/zalo';
-import { CreateZnsTemplateBodyField } from '@src/dataStruct/zalo/body';
+import { MyResponse } from '@src/data_struct/response';
+import { ZnsTemplateField } from '@src/data_struct/zalo';
+import { CreateZnsTemplateBodyField } from '@src/data_struct/zalo/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateZnsTemplate from '../../mutateDB/CreateZnsTemplate';
 import { getRefreshToken } from '@src/device/getDevice';

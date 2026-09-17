@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { ZnsTemplateField } from '@src/dataStruct/zalo';
-import { CreateZnsTemplateBodyField } from '@src/dataStruct/zalo/body';
+import { ZnsTemplateField } from '@src/data_struct/zalo';
+import { CreateZnsTemplateBodyField } from '@src/data_struct/zalo/body';
 
 class MutateDB_CreateZnsTemplate {
     private _connectionPool: sql.ConnectionPool | undefined;

@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { RequireTakeMoneyField } from '@src/dataStruct/wallet';
-import { MemberZtksGetRequiresTakeMoneyBodyField } from '@src/dataStruct/wallet/body';
+import { RequireTakeMoneyField } from '@src/data_struct/wallet';
+import { MemberZtksGetRequiresTakeMoneyBodyField } from '@src/data_struct/wallet/body';
 
 interface TotalCountField {
     totalCount: number;

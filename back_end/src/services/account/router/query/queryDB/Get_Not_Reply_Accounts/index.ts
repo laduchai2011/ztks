@@ -1,9 +1,8 @@
 import { pool } from '@src/connect/postgresql';
-import { Account_Field, Paged_Account_Field } from '@src/dataStruct/account';
-import { Get_Not_Reply_Account_Body_Field } from '@src/dataStruct/account/body';
+import { Account_Field, Paged_Account_Field } from '@src/data_struct/account';
+import { Get_Not_Reply_Account_Body_Field } from '@src/data_struct/account/body';
 
 class QueryDB_Get_Not_Reply_Account {
-    
     private _get_not_reply_account_body: Get_Not_Reply_Account_Body_Field | undefined;
 
     set_Get_Not_Reply_Account_Body(get_not_reply_account_body: Get_Not_Reply_Account_Body_Field): void {
@@ -20,12 +19,12 @@ class QueryDB_Get_Not_Reply_Account {
                     this._get_not_reply_account_body.page,
                     this._get_not_reply_account_body.size,
                     this._get_not_reply_account_body.chat_room_id,
-                    this._get_not_reply_account_body.account_id
+                    this._get_not_reply_account_body.account_id,
                 ]);
 
                 const data: Paged_Account_Field = {
                     items: result.rows[0].items,
-                    total_count: Number(result.rows[0].total_count)
+                    total_count: Number(result.rows[0].total_count),
                 };
 
                 return data;

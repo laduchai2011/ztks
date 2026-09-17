@@ -1,7 +1,7 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { CustomerField } from '@src/dataStruct/customer';
+import { MyResponse } from '@src/data_struct/response';
+import { CustomerField } from '@src/data_struct/customer';
 import QueryDB_CustomerGetMe from '../../queryDB/GetMe';
 import { verifyRefreshToken } from '@src/token';
 

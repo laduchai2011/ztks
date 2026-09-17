@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { CheckConsentField } from '@src/dataStruct/call';
-import { CheckConsentBodyField } from '@src/dataStruct/call/body';
+import { MyResponse } from '@src/data_struct/response';
+import { CheckConsentField } from '@src/data_struct/call';
+import { CheckConsentBodyField } from '@src/data_struct/call/body';
 import { verifyRefreshToken } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 import axios from 'axios';

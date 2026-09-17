@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { ZnsTemplateField } from '@src/dataStruct/zalo';
-import { GetZnsTemplateWithIdBodyField } from '@src/dataStruct/zalo/body';
+import { MyResponse } from '@src/data_struct/response';
+import { ZnsTemplateField } from '@src/data_struct/zalo';
+import { GetZnsTemplateWithIdBodyField } from '@src/data_struct/zalo/body';
 import QueryDB_GetZnsTemplateWithId from '../../queryDB/GetZnsTemplateWithId';
 import { verifyRefreshToken } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';

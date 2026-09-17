@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { WalletField } from '@src/dataStruct/wallet';
-import { GetMyWalletWithTypeBodyField } from '@src/dataStruct/wallet/body';
+import { WalletField } from '@src/data_struct/wallet';
+import { GetMyWalletWithTypeBodyField } from '@src/data_struct/wallet/body';
 
 class QueryDB_GetMyWalletWithType {
     private _connectionPool: sql.ConnectionPool | undefined;

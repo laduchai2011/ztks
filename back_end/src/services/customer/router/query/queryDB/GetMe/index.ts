@@ -1,5 +1,5 @@
 import sql from 'mssql';
-import { CustomerField } from '@src/dataStruct/customer';
+import { CustomerField } from '@src/data_struct/customer';
 
 class QueryDB_CustomerGetMe {
     private _connectionPool: sql.ConnectionPool | undefined;

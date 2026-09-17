@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { ZaloAppField } from '@src/dataStruct/zalo';
-import { CheckZaloAppWithAppIdBodyField } from '@src/dataStruct/zalo/body';
+import { ZaloAppField } from '@src/data_struct/zalo';
+import { CheckZaloAppWithAppIdBodyField } from '@src/data_struct/zalo/body';
 
 class QueryDB_CheckZaloAppWithAppId {
     private _connectionPool: sql.ConnectionPool | undefined;

@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { AgentField } from '@src/dataStruct/agent';
-import { GetAgentWithAgentAccountIdBodyField } from '@src/dataStruct/agent/body';
+import { AgentField } from '@src/data_struct/agent';
+import { GetAgentWithAgentAccountIdBodyField } from '@src/data_struct/agent/body';
 
 class QueryDB_GetAgentWithAgentAccountId {
     private _connectionPool: sql.ConnectionPool | undefined;

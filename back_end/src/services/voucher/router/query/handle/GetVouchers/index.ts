@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { VoucherField, PagedVoucherField } from '@src/dataStruct/voucher';
-import { GetVouchersBodyField } from '@src/dataStruct/voucher/body';
+import { MyResponse } from '@src/data_struct/response';
+import { VoucherField, PagedVoucherField } from '@src/data_struct/voucher';
+import { GetVouchersBodyField } from '@src/data_struct/voucher/body';
 import QueryDB_GetVouchers from '../../queryDB/GetVouchers';
 
 class Handle_GetVouchers {

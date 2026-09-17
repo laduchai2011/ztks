@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { RegisterPostField } from '@src/dataStruct/post';
-import { DeleteRegisterPostBodyField } from '@src/dataStruct/post/body';
+import { RegisterPostField } from '@src/data_struct/post';
+import { DeleteRegisterPostBodyField } from '@src/data_struct/post/body';
 
 class MutateDB_DeleteRegisterPost {
     private _connectionPool: sql.ConnectionPool | undefined;

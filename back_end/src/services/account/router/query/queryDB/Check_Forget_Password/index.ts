@@ -1,9 +1,8 @@
 import { pool } from '@src/connect/postgresql';
-import { Account_Field } from '@src/dataStruct/account';
-import { Check_Forget_Password_Body_Field } from '@src/dataStruct/account/body';
+import { Account_Field } from '@src/data_struct/account';
+import { Check_Forget_Password_Body_Field } from '@src/data_struct/account/body';
 
 class QueryDB_Check_Forget_Password {
-
     private _check_forget_password_body: Check_Forget_Password_Body_Field | undefined;
 
     set_Check_Forget_Password_Body(check_forget_password_body: Check_Forget_Password_Body_Field): void {

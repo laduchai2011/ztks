@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { NoteField } from '@src/dataStruct/note';
-import { GetNotesBodyField } from '@src/dataStruct/note/body';
+import { NoteField } from '@src/data_struct/note';
+import { GetNotesBodyField } from '@src/data_struct/note/body';
 
 interface TotalCountField {
     totalCount: number;

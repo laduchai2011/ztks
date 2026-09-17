@@ -1,13 +1,12 @@
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Account_Field } from '@src/dataStruct/account';
-import { Forget_Password_Body_Field } from '@src/dataStruct/account/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Account_Field } from '@src/data_struct/account';
+import { Forget_Password_Body_Field } from '@src/data_struct/account/body';
 import MutateDB_Forget_Password from '../../mutateDB/Forget_Password';
 import { prefix_cache__account } from '@src/const/redisKey/account';
 
 class Handle_Forget_Password {
-
     private _serviceRedis = ServiceRedis.getInstance();
 
     constructor() {

@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { getDbMonggo } from '@src/connect/mongo';
-import { MessageV1Field } from '@src/dataStruct/message_v1';
-import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
+import { MessageV1Field } from '@src/data_struct/message_v1';
+import { ZaloMessageType } from '@src/data_struct/zalo/hookData';
 
 export async function getMessageWithId(id: string): Promise<MessageV1Field<ZaloMessageType> | undefined> {
     const db = getDbMonggo();

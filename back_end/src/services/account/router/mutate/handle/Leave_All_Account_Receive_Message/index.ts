@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Leave_All_Account_Receive_Message_Body_Field } from '@src/dataStruct/account/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Leave_All_Account_Receive_Message_Body_Field } from '@src/data_struct/account/body';
 import MutateDB_Leave_All_Account_Receive_Message from '../../mutateDB/Leave_All_Account_Receive_Message';
 import { verify_refresh_token } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Leave_All_Account_Receive_Message {
-
     setup = async (
         req: Request<any, any, Leave_All_Account_Receive_Message_Body_Field>,
         res: Response,

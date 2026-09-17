@@ -7,8 +7,8 @@ import path from 'path';
 import fs from 'fs';
 import { resolution_options } from './type';
 // import { MyRequest } from '../../type';
-import { MyResponse } from '@src/dataStruct/response';
-import { AVideoFileField } from '@src/dataStruct/photo';
+import { MyResponse } from '@src/data_struct/response';
+import { AVideoFileField } from '@src/data_struct/photo';
 
 const root_path = process.cwd();
 const videoPath = path.join(process.cwd(), 'data', 'video', 'input');

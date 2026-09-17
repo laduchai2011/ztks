@@ -1,6 +1,6 @@
 import { pool } from '@src/connect/postgresql';
-import { Chat_Room_Role_Field } from '@src/datastruct/chat_room';
-import { Update_Setup_Chat_Room_Role_Body_Field } from '@src/datastruct/chat_room/body';
+import { Chat_Room_Role_Field } from '@src/data_struct/chat_room';
+import { Update_Setup_Chat_Room_Role_Body_Field } from '@src/data_struct/chat_room/body';
 
 class MutateDB_Update_Setup_Chat_Room_Role {
     private _update_setup_chat_room_role_body: Update_Setup_Chat_Room_Role_Body_Field | undefined;

@@ -1,15 +1,16 @@
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Chat_Room_Field } from '@src/datastruct/chat_room';
-import { Get_Chat_Room_With_Id_Body_Field } from '@src/datastruct/chat_room/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Chat_Room_Field } from '@src/data_struct/chat_room';
+import { Get_Chat_Room_With_Id_Body_Field } from '@src/data_struct/chat_room/body';
 import QueryDB_Get_Chat_Room_With_Id from '../../queryDB/Get_Chat_Room_With_Id';
 import { Cache_Get_Chat_Room_With_Id } from '@src/const/redisKey/chat_room';
 
 class Handle_Get_Chat_Room_With_Id {
-
     private _serviceRedis = ServiceRedis.getInstance();
-    private _cache_get_chat_room_with_id = new Cache_Get_Chat_Room_With_Id({ log_prameter: 'Handle_Get_Chat_Room_With_Id' });
+    private _cache_get_chat_room_with_id = new Cache_Get_Chat_Room_With_Id({
+        log_prameter: 'Handle_Get_Chat_Room_With_Id',
+    });
 
     constructor() {
         this._serviceRedis.init();

@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { CustomerField } from '@src/dataStruct/customer';
-import { CustomerForgetPasswordBodyField } from '@src/dataStruct/customer/body';
+import { CustomerField } from '@src/data_struct/customer';
+import { CustomerForgetPasswordBodyField } from '@src/data_struct/customer/body';
 
 class MutateDB_CustomerForgetPassword {
     private _connectionPool: sql.ConnectionPool | undefined;

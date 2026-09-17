@@ -1,14 +1,14 @@
 import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { ZaloAppField } from '@src/dataStruct/zalo';
-import { ZaloAppWithAccountIdBodyField } from '@src/dataStruct/zalo/body';
-import { ZaloUserField } from '@src/dataStruct/zalo/user';
+import { MyResponse } from '@src/data_struct/response';
+import { ZaloAppField } from '@src/data_struct/zalo';
+import { ZaloAppWithAccountIdBodyField } from '@src/data_struct/zalo/body';
+import { ZaloUserField } from '@src/data_struct/zalo/user';
 import QueryDB_GetZaloUserInfor from '../../queryZalo/GetZaloUserInfor';
-import { ZaloUserBodyField } from '@src/dataStruct/zalo/user/body';
+import { ZaloUserBodyField } from '@src/data_struct/zalo/user/body';
 import { prefix_cache_zaloUser } from '@src/const/redisKey/zalo';
-import { accountType_enum } from '@src/dataStruct/account';
+import { accountType_enum } from '@src/data_struct/account';
 import { prefix_cache_zaloApp } from '@src/const/redisKey/zalo';
 import QueryDB_GetZaloAppWithAccountId from '../../queryDB/GetZaloAppWithAccountId';
 

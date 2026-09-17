@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { ZaloOaField } from '@src/dataStruct/zalo';
-import { CreateZaloOaBodyField } from '@src/dataStruct/zalo/body';
+import { ZaloOaField } from '@src/data_struct/zalo';
+import { CreateZaloOaBodyField } from '@src/data_struct/zalo/body';
 
 class MutateDB_CreateZaloOa {
     private _connectionPool: sql.ConnectionPool | undefined;

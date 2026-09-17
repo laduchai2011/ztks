@@ -2,9 +2,9 @@ import { mssql_server } from '@src/connect';
 import axios from 'axios';
 import qs from 'qs';
 import { Request, Response } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { GenZaloOaTokenResultField } from '@src/dataStruct/zalo';
-import { GenZaloOaTokenBodyField } from '@src/dataStruct/zalo/body';
+import { MyResponse } from '@src/data_struct/response';
+import { GenZaloOaTokenResultField } from '@src/data_struct/zalo';
+import { GenZaloOaTokenBodyField } from '@src/data_struct/zalo/body';
 
 class Handle_GenZaloOaToken {
     private _mssql_server = mssql_server;

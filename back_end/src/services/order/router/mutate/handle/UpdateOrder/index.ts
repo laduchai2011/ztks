@@ -1,11 +1,11 @@
 import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
+import { MyResponse } from '@src/data_struct/response';
 import MutateDB_UpdateOrder from '../../mutateDB/UpdateOrder';
 import { verifyRefreshToken } from '@src/token';
-import { OrderField } from '@src/dataStruct/order';
-import { UpdateOrderBodyField } from '@src/dataStruct/order/body';
+import { OrderField } from '@src/data_struct/order';
+import { UpdateOrderBodyField } from '@src/data_struct/order/body';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_UpdateOrder {

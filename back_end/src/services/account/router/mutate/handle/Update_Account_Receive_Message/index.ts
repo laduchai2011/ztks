@@ -1,15 +1,14 @@
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Account_Receive_Message_Field } from '@src/dataStruct/account';
-import { Update_Account_Receive_Message_Body_Field } from '@src/dataStruct/account/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Account_Receive_Message_Field } from '@src/data_struct/account';
+import { Update_Account_Receive_Message_Body_Field } from '@src/data_struct/account/body';
 import { verify_refresh_token } from '@src/token';
 import MutateDB_Update_Account_Receive_Message from '../../mutateDB/Update_Account_Receive_Message';
 import { prefix_cache__account_receive_message } from '@src/const/redisKey/account';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Update_Account_Receive_Message {
-   
     private _serviceRedis = ServiceRedis.getInstance();
 
     constructor() {

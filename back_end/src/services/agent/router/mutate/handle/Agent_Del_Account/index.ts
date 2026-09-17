@@ -1,18 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
-import { My_Response_Field } from '@src/dataStruct/response';
-import { Agent_Field } from '@src/dataStruct/agent';
-import { Agent_Del_Account_Body_Field } from '@src/dataStruct/agent/body';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Agent_Field } from '@src/data_struct/agent';
+import { Agent_Del_Account_Body_Field } from '@src/data_struct/agent/body';
 import { verify_refresh_token } from '@src/token';
 import MutateDB_Agent_Del_Account from '../../mutateDB/Agent_Del_Account';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Agent_Del_Account {
-
-    setup = async (
-        req: Request<any, any, Agent_Del_Account_Body_Field>,
-        res: Response,
-        next: NextFunction
-    ) => {
+    setup = async (req: Request<any, any, Agent_Del_Account_Body_Field>, res: Response, next: NextFunction) => {
         const my_Response: My_Response_Field<Agent_Field> = {
             is_success: false,
             message: 'Bắt đầu (Handle_Agent_Del_Account-setup)',

@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { StatisticsOaField } from '@src/dataStruct/statistics';
-import { GetStatisticsOaBodyField } from '@src/dataStruct/statistics/body';
+import { MyResponse } from '@src/data_struct/response';
+import { StatisticsOaField } from '@src/data_struct/statistics';
+import { GetStatisticsOaBodyField } from '@src/data_struct/statistics/body';
 import QueryDB_GetStatisticsOa from '../../queryDB/GetStatisticsOa';
 
 class Handle_GetStatistics {

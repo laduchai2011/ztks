@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/dataStruct/response';
-import { Shop_Field } from '@src/dataStruct/shop';
-import { Create_Shop_Body_Field } from '@src/dataStruct/shop/body';
+import { MyResponse } from '@src/data_struct/response';
+import { Shop_Field } from '@src/data_struct/shop';
+import { Create_Shop_Body_Field } from '@src/data_struct/shop/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_Create_Shop from '../../mutateDB/Create_Shop';
 import { getRefreshToken } from '@src/device/getDevice';
