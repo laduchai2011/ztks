@@ -1,16 +1,27 @@
-﻿CREATE OR REPLACE FUNCTION get_my_notes (
+﻿-- DROP FUNCTION IF EXISTS get_my_notes(
+--     INT,
+--     INT,
+--     INT,
+-- 	UUID,
+-- 	UUID,
+-- 	BOOLEAN
+-- );
+CREATE OR REPLACE FUNCTION get_my_notes (
     p_page INT,
     p_size INT,
     p_offset INT,
     p_chat_room_id UUID,
     p_account_id UUID,
-	p_is_delete BOOLEAN DEFAULT NULL
+    p_is_delete BOOLEAN DEFAULT NULL
 )
-RETURNS JSON
+RETURNS TABLE (
+    items JSONB,
+    total_count BIGINT
+)
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    v_data JSON;
+    v_items JSONB;
     v_total_count BIGINT;
 BEGIN
     -- Kiểm tra ChatRoom có tồn tại và thuộc account
@@ -20,7 +31,7 @@ BEGIN
         WHERE id = p_chat_room_id
           AND account_id = p_account_id
     ) THEN
-        RAISE EXCEPTION 'ChatRoom không tồn tại .'
+        RAISE EXCEPTION 'ChatRoom không tồn tại.'
             USING ERRCODE = 'P0001';
     END IF;
 
@@ -31,16 +42,16 @@ BEGIN
         WHERE id = p_chat_room_id
           AND status = 'delete'
     ) THEN
-        RAISE EXCEPTION 'ChatRoom đã bị xóa .'
+        RAISE EXCEPTION 'ChatRoom đã bị xóa.'
             USING ERRCODE = 'P0002';
     END IF;
 
     -- Dữ liệu phân trang
     SELECT COALESCE(
-        json_agg(row_data ORDER BY row_data.id DESC),
-        '[]'::JSON
+        jsonb_agg(row_data ORDER BY row_data.id DESC),
+        '[]'::JSONB
     )
-    INTO v_data
+    INTO v_items
     FROM (
         SELECT n.*
         FROM note AS n
@@ -64,10 +75,10 @@ BEGIN
           OR n.is_delete = p_is_delete
       );
 
-    -- Trả về cả data + totalCount
-    RETURN json_build_object(
-        'data', v_data,
-        'totalCount', v_total_count
-    );
+    -- Gán vào các cột RETURNS TABLE
+    items := v_items;
+    total_count := v_total_count;
+
+    RETURN NEXT;
 END;
 $$;

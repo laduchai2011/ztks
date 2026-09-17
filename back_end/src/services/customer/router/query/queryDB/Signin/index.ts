@@ -1,31 +1,23 @@
-import sql from 'mssql';
-import { CustomerField } from '@src/data_struct/customer';
-import { SigninCustomerBodyField } from '@src/data_struct/customer/body';
+import { pool } from '@src/connect/postgresql';
+import { Customer_Field } from '@src/data_struct/customer';
+import { Signin_Customer_Body_Field } from '@src/data_struct/customer/body';
 
 class QueryDB_Signin {
-    private _connectionPool: sql.ConnectionPool | undefined;
-    private _signinCustomerBody: SigninCustomerBodyField | undefined;
+    private _signin_customer_body: Signin_Customer_Body_Field | undefined;
 
-    constructor() {}
-
-    set_connection_pool(connectionPool: sql.ConnectionPool): void {
-        this._connectionPool = connectionPool;
+    set_Signin_Customer_Body(signin_customer_body: Signin_Customer_Body_Field): void {
+        this._signin_customer_body = signin_customer_body;
     }
 
-    setSigninCustomerBody(signinCustomerBody: SigninCustomerBodyField): void {
-        this._signinCustomerBody = signinCustomerBody;
-    }
-
-    async run(): Promise<sql.IResult<CustomerField> | undefined> {
-        if (this._connectionPool !== undefined && this._signinCustomerBody !== undefined) {
+    async run(): Promise<Customer_Field | undefined> {
+        if (this._signin_customer_body !== undefined) {
             try {
-                const result = await this._connectionPool
-                    .request()
-                    .input('phone', sql.NVarChar(255), this._signinCustomerBody.phone)
-                    .input('password', sql.NVarChar(255), this._signinCustomerBody.password)
-                    .query(`SELECT * FROM dbo.SigninCustomer(@phone, @password)`);
+                const result = await pool.query<Customer_Field>(`SELECT * FROM signin_customer($1, $2);`, [
+                    this._signin_customer_body.phone,
+                    this._signin_customer_body.password,
+                ]);
 
-                return result;
+                return result.rows[0];
             } catch (error) {
                 console.error(error);
             }

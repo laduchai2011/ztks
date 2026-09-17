@@ -1,4 +1,16 @@
-﻿CREATE OR REPLACE FUNCTION get_orders (
+﻿-- DROP FUNCTION IF EXISTS get_orders(
+--     INT,
+--     INT,
+--     UUID,
+-- 	UUID,
+-- 	VARCHAR,
+-- 	DECIMAL,
+-- 	DECIMAL,
+-- 	BOOLEAN,
+-- 	VARCHAR,
+-- 	BOOLEAN
+-- );
+CREATE OR REPLACE FUNCTION get_orders (
     p_page INT,
     p_size INT,
 	p_chat_room_id UUID,
@@ -11,13 +23,13 @@
     p_is_delete BOOLEAN DEFAULT NULL
 )
 RETURNS TABLE (
-    data JSONB,
+    items JSONB,
     total_count BIGINT
 )
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    v_data JSONB;
+    v_items JSONB;
     v_total_count BIGINT;
 BEGIN
     -- Kiểm tra ChatRoom tồn tại và thuộc account
@@ -47,7 +59,7 @@ BEGIN
         jsonb_agg(to_jsonb(t) - 'rn' ORDER BY t.id DESC),
         '[]'::jsonb
     )
-    INTO v_data
+    INTO v_items
     FROM (
         SELECT
             o.*,
@@ -79,7 +91,7 @@ BEGIN
         AND (p_is_delete IS NULL OR o.is_delete = p_is_delete);
 
     RETURN QUERY
-    SELECT v_data, v_total_count;
+    SELECT v_items, v_total_count;
 END;
 $$;
 
