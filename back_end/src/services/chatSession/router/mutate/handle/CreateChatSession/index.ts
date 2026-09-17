@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { ChatSessionField } from '@src/dataStruct/chatSession';
-import { ChatSessionBodyField } from '@src/dataStruct/chatSession/body';
+import { ChatSessionField } from '@src/datastruct/chat_session';
+import { ChatSessionBodyField } from '@src/datastruct/chat_session/body';
 import { ZaloOaField } from '@src/dataStruct/zalo';
 import { IsMyOaBodyField } from '@src/dataStruct/zalo/body';
 import { verifyRefreshToken } from '@src/token';

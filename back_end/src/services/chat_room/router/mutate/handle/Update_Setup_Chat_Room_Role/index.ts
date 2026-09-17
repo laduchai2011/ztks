@@ -5,151 +5,143 @@ import { Chat_Room_Role_Field, Chat_Room_Role_Schema } from '@src/datastruct/cha
 import { Update_Setup_Chat_Room_Role_Body_Field } from '@src/datastruct/chat_room/body';
 import MutateDB_Update_Setup_Chat_Room_Role from '../../mutateDB/Update_Setup_Chat_Room_Role';
 import { verify_refresh_token } from '@src/token';
-import { 
-    Cache_Get_Chat_Room_Role_With_Crid_Aaid, 
-    Cache_Get_All_Chat_Room_Role_With_Crid 
+import {
+    Cache_Get_Chat_Room_Role_With_Crid_Aaid,
+    Cache_Get_All_Chat_Room_Role_With_Crid,
 } from '@src/const/redisKey/chat_room';
-import { ChatRoomRoleZodSchema } from '@src/schema/chatRoom';
-import { getDbMonggo } from '@src/connect/mongo';
+import { Chat_Room_Role_Zod_Schema } from '@src/schema/chatRoom';
+import { get_Db_Monggo } from '@src/connect/mongo';
 import { getRefreshToken } from '@src/device/getDevice';
 
-class Handle_UpdateSetupChatRoomRole {
-    private _mssql_server = mssql_server;
+class Handle_Update_Setup_Chat_Room_Role {
     private _serviceRedis = ServiceRedis.getInstance();
-    private _cacheGetChatRoomRoleWithCridAaid = new CacheGetChatRoomRoleWithCridAaid();
-    private _cacheGetAllChatRoomRoleWithCrid = new CacheGetAllChatRoomRoleWithCrid();
+    private _cache_get_chat_room_role_with_crid_aaid = new Cache_Get_Chat_Room_Role_With_Crid_Aaid();
+    private _cache_get_all_chat_room_role_with_crid = new Cache_Get_All_Chat_Room_Role_With_Crid();
 
     constructor() {
-        this._mssql_server.init();
         this._serviceRedis.init();
-        this._cacheGetChatRoomRoleWithCridAaid.init();
-        this._cacheGetAllChatRoomRoleWithCrid.init();
+        this._cache_get_chat_room_role_with_crid_aaid.init();
+        this._cache_get_all_chat_room_role_with_crid.init();
     }
 
     setup = async (
-        req: Request<Record<string, never>, unknown, UpdateSetupChatRoomRoleBodyField>,
+        req: Request<any, any, Update_Setup_Chat_Room_Role_Body_Field>,
         res: Response,
         next: NextFunction
     ) => {
-        const myResponse: MyResponse<ChatRoomRoleField> = {
-            isSuccess: false,
-            message: 'Băt đầu (Handle_UpdateSetupChatRoomRole-setup) !',
+        const my_response: My_Response_Field<Chat_Room_Role_Field> = {
+            is_success: false,
+            message: 'Băt đầu (Handle_Update_Setup_Chat_Room_Role-setup) !',
         };
 
-        const updateSetupChatRoomRoleBody = req.body;
-        // const { refreshToken } = req.cookies;
+        const update_setup_chat_room_role_body = req.body;
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verifyRefreshToken(refreshToken);
+            const verify_refreshToken = verify_refresh_token(refreshToken);
 
             if (verify_refreshToken === 'invalid') {
-                myResponse.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';
-                res.status(500).json(myResponse);
+                my_response.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';
+                res.status(500).json(my_response);
                 return;
             }
 
             if (verify_refreshToken === 'expired') {
-                myResponse.message = 'Refresh-Token hết hạn, hãy đăng nhập lại !';
-                res.status(500).json(myResponse);
+                my_response.message = 'Refresh-Token hết hạn, hãy đăng nhập lại !';
+                res.status(500).json(my_response);
                 return;
             }
 
             const { id } = verify_refreshToken;
-            if (updateSetupChatRoomRoleBody.accountId === id) {
+            if (update_setup_chat_room_role_body.account_id === id) {
                 next();
             } else {
-                myResponse.message = 'Bạn không có quyền này !';
-                res.status(200).json(myResponse);
+                my_response.message = 'Bạn không có quyền này !';
+                res.status(200).json(my_response);
                 return;
             }
         } else {
-            myResponse.message = 'Vui lòng đăng nhập lại !';
-            res.status(500).json(myResponse);
+            my_response.message = 'Vui lòng đăng nhập lại !';
+            res.status(500).json(my_response);
             return;
         }
     };
 
-    main = async (req: Request<Record<string, never>, unknown, UpdateSetupChatRoomRoleBodyField>, res: Response) => {
-        const updateSetupChatRoomRoleBody = req.body;
+    main = async (req: Request<any, any, Update_Setup_Chat_Room_Role_Body_Field>, res: Response) => {
+        const update_setup_chat_room_role_body = req.body;
 
-        const myResponse: MyResponse<ChatRoomRoleField> = {
-            isSuccess: false,
-            message: 'Băt đầu cập nhật (Handle_UpdateSetupChatRoomRole-main) !',
+        const my_response: My_Response_Field<Chat_Room_Role_Field> = {
+            is_success: false,
+            message: 'Băt đầu cập nhật (Handle_Update_Setup_Chat_Room_Role-main) !',
         };
 
-        const mutateDB = new MutateDB_UpdateSetupChatRoomRole();
-        mutateDB.setUpdateSetupChatRoomRoleBody(updateSetupChatRoomRoleBody);
-
-        const connection_pool = this._mssql_server.get_connectionPool();
-        if (connection_pool) {
-            mutateDB.set_connection_pool(connection_pool);
-        } else {
-            console.error('Kết nối cơ sở dữ liệu không thành công !');
-        }
+        const mutateDB = new MutateDB_Update_Setup_Chat_Room_Role();
+        mutateDB.set_Update_Setup_Chat_Room_Role_Body(update_setup_chat_room_role_body);
 
         try {
             const result = await mutateDB.run();
-            if (result?.recordset.length && result?.recordset.length > 0) {
-                const rData = result.recordset[0];
+            if (result) {
+                const rData = result;
 
-                await updateChatRoomRoleMongo(rData);
+                await update_Chat_Room_Role_Mongo(rData);
 
-                const crid = rData.chatRoomId;
-                const aaid = rData.authorizedAccountId;
-                this._cacheGetChatRoomRoleWithCridAaid.setBody({ chatRoomId: crid, authorizedAccountId: aaid }); // sap bo
-                this._cacheGetChatRoomRoleWithCridAaid.clearCache(); // sap bo
-                this._cacheGetChatRoomRoleWithCridAaid.setFkCrid(crid);
-                this._cacheGetChatRoomRoleWithCridAaid.clearCacheWithFkCrid();
+                const crid = rData.chat_room_id;
+                const aaid = rData.authorized_account_id;
+                this._cache_get_chat_room_role_with_crid_aaid.set_Body({
+                    chat_room_id: crid,
+                    authorized_account_id: aaid,
+                }); // sap bo
+                this._cache_get_chat_room_role_with_crid_aaid.clear_Cache(); // sap bo
+                this._cache_get_chat_room_role_with_crid_aaid.set_Fk_Crid(crid);
+                this._cache_get_chat_room_role_with_crid_aaid.clear_Cache_With_Fk_Crid();
 
-                this._cacheGetAllChatRoomRoleWithCrid.setBody({ chatRoomId: crid });
-                this._cacheGetAllChatRoomRoleWithCrid.clearCache();
+                this._cache_get_all_chat_room_role_with_crid.set_Body({ chat_room_id: crid });
+                this._cache_get_all_chat_room_role_with_crid.clear_Cache();
 
-                const data = rData;
-                myResponse.message = 'Cập nhật thành công !';
-                myResponse.isSuccess = true;
-                myResponse.data = data;
-                res.status(200).json(myResponse);
+                my_response.message = 'Cập nhật thành công !';
+                my_response.is_success = true;
+                my_response.data = rData;
+                res.status(200).json(my_response);
                 return;
             } else {
-                myResponse.message = 'Cập nhật KHÔNG thành công 1 !';
-                res.status(200).json(myResponse);
+                my_response.message = 'Cập nhật KHÔNG thành công 1 !';
+                res.status(200).json(my_response);
                 return;
             }
         } catch (error) {
             console.error(error);
-            myResponse.message = 'Cập nhật KHÔNG thành công 2 !';
-            myResponse.err = error;
-            res.status(500).json(myResponse);
+            my_response.message = 'Cập nhật KHÔNG thành công 2 !';
+            my_response.err = error;
+            res.status(500).json(my_response);
             return;
         }
     };
 }
 
-async function updateChatRoomRoleMongo(chatRoomRole: ChatRoomRoleField) {
-    const chatRommRoleSchema: ChatRoomRoleSchema = {
-        authorized_account_id: chatRoomRole.authorizedAccountId,
-        is_read: chatRoomRole.isRead,
-        is_send: chatRoomRole.isSend,
-        chat_room_id: chatRoomRole.chatRoomId,
-        zalo_oa_id: -1,
-        account_id: chatRoomRole.accountId,
+async function update_Chat_Room_Role_Mongo(chat_room_role: Chat_Room_Role_Field) {
+    const chat_room_role_schema: Chat_Room_Role_Schema = {
+        authorized_account_id: chat_room_role.authorized_account_id,
+        is_read: chat_room_role.is_read,
+        is_send: chat_room_role.is_send,
+        chat_room_id: chat_room_role.chat_room_id,
+        zalo_oa_id: '',
+        account_id: chat_room_role.account_id,
     };
 
-    const parsedChatRoomRole = ChatRoomRoleZodSchema.safeParse(chatRommRoleSchema);
-    if (!parsedChatRoomRole.success) {
-        console.error('Invalid chatRoomRole format:', parsedChatRoomRole.error);
+    const parsed_chat_room_role = Chat_Room_Role_Zod_Schema.safeParse(chat_room_role_schema);
+    if (!parsed_chat_room_role.success) {
+        console.error('Invalid chatRoomRole format:', parsed_chat_room_role.error);
     } else {
-        const db = getDbMonggo();
-        const dataParse = parsedChatRoomRole.data;
-        const col = db.collection<ChatRoomRoleSchema>('chatRoomRole');
+        const db = get_Db_Monggo();
+        const data_parse = parsed_chat_room_role.data;
+        const col = db.collection<Chat_Room_Role_Schema>('chat_room_role');
 
-        const { zalo_oa_id, ...doc } = dataParse as any;
+        const { zalo_oa_id, ...doc } = data_parse as any;
 
         await col.updateOne(
             {
-                chat_room_id: chatRommRoleSchema.chat_room_id,
-                authorized_account_id: chatRommRoleSchema.authorized_account_id,
+                chat_room_id: chat_room_role_schema.chat_room_id,
+                authorized_account_id: chat_room_role_schema.authorized_account_id,
             },
             { $set: doc },
             { upsert: true }
@@ -157,4 +149,4 @@ async function updateChatRoomRoleMongo(chatRoomRole: ChatRoomRoleField) {
     }
 }
 
-export default Handle_UpdateSetupChatRoomRole;
+export default Handle_Update_Setup_Chat_Room_Role;

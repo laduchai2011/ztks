@@ -1,22 +1,22 @@
 import express, { Router } from 'express';
 import dotenv from 'dotenv';
 import authentication from '@src/auth';
-import Handle_UpdateSetupChatRoomRole from './handle/Update_Setup_Chat_Room_Role';
+import Handle_Update_Setup_Chat_Room_Role from './handle/Update_Setup_Chat_Room_Role';
 import Handle_Change_Chat_Room_Master from './handle/Change_Chat_Room_Master';
 import Handle_Create_Chat_Room_Phone from './handle/Create_Chat_Room_Phone';
 
 dotenv.config();
 
 const router_mutate_chatRoom: Router = express.Router();
-const handle_updateSetupChatRoomRole = new Handle_UpdateSetupChatRoomRole();
+const handle_update_setup_chat_room_role = new Handle_Update_Setup_Chat_Room_Role();
 const handle_change_chat_room_master = new Handle_Change_Chat_Room_Master();
 const handle_create_chat_room_phone = new Handle_Create_Chat_Room_Phone();
 
 router_mutate_chatRoom.patch(
-    '/updateSetupChatRoomRole',
+    '/update_setup_chat_room_role',
     authentication,
-    handle_updateSetupChatRoomRole.setup,
-    handle_updateSetupChatRoomRole.main
+    handle_update_setup_chat_room_role.setup,
+    handle_update_setup_chat_room_role.main
 );
 
 router_mutate_chatRoom.patch(

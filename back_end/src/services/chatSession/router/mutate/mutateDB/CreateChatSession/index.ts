@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { ChatSessionField } from '@src/dataStruct/chatSession';
-import { ChatSessionBodyField } from '@src/dataStruct/chatSession/body';
+import { ChatSessionField } from '@src/datastruct/chat_session';
+import { ChatSessionBodyField } from '@src/datastruct/chat_session/body';
 import { ZaloOaField } from '@src/dataStruct/zalo';
 import { IsMyOaBodyField } from '@src/dataStruct/zalo/body';
 

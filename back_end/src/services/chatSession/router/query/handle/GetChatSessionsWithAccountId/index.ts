@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { PagedChatSessionField, ChatSessionField } from '@src/dataStruct/chatSession';
-import { ChatSessionWithAccountIdBodyField } from '@src/dataStruct/chatSession/body';
+import { PagedChatSessionField, ChatSessionField } from '@src/datastruct/chat_session';
+import { ChatSessionWithAccountIdBodyField } from '@src/datastruct/chat_session/body';
 import QueryDB_GetChatSessionsWithAccountId from '../../queryDB/GetChatSessionsWithAccountId';
 
 class Handle_GetChatSessionsWithAccountId {

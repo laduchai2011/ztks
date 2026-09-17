@@ -1,5 +1,5 @@
 import sql from 'mssql';
-import { LeaveAllChatSessionBodyField } from '@src/dataStruct/chatSession/body';
+import { LeaveAllChatSessionBodyField } from '@src/datastruct/chat_session/body';
 
 class MutateDB_LeaveAllChatSession {
     private _connectionPool: sql.ConnectionPool | undefined;

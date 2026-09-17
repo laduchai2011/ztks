@@ -1,8 +1,8 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { ChatSessionField } from '@src/dataStruct/chatSession';
-import { UpdateIsReadyOfChatSessionBodyField } from '@src/dataStruct/chatSession/body';
+import { ChatSessionField } from '@src/datastruct/chat_session';
+import { UpdateIsReadyOfChatSessionBodyField } from '@src/datastruct/chat_session/body';
 import MutateDB_UpdateIsReadyOfChatSession from '../../mutateDB/UpdateIsReadyOfChatSession';
 import { verifyRefreshToken } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';

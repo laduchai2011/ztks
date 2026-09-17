@@ -9,7 +9,6 @@ import { Cache_Get_Call_Agent_With_Account_Id } from '@src/const/redisKey/call_a
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Get_Call_Agent_With_Account_Id {
-  
     private _serviceRedis = ServiceRedis.getInstance();
     private _cache_get_call_agent_with_account_id = new Cache_Get_Call_Agent_With_Account_Id();
 
@@ -18,7 +17,11 @@ class Handle_Get_Call_Agent_With_Account_Id {
         this._cache_get_call_agent_with_account_id.init();
     }
 
-    setup = async (req: Request<any, any, Get_Call_Agent_With_Account_Id_Body_Field>, res: Response, next: NextFunction) => {
+    setup = async (
+        req: Request<any, any, Get_Call_Agent_With_Account_Id_Body_Field>,
+        res: Response,
+        next: NextFunction
+    ) => {
         const my_response: My_Response_Field<Call_Agent_Field> = {
             is_success: false,
             message: 'Băt đầu (Handle_Get_Call_Agent_With_Account_Id-setup) !',

@@ -7,7 +7,6 @@ import { getRefreshToken } from '@src/device/getDevice';
 import MutateDB_Create_Chat_Room_Phone from '../../mutateDB/Create_Chat_Room_Phone';
 
 class Handle_Create_Chat_Room_Phone {
-    
     setup = async (req: Request<any, any, Create_Chat_Room_Phone_Body_Field>, res: Response, next: NextFunction) => {
         const my_response: My_Response_Field<Chat_Room_Phone_Field> = {
             is_success: false,

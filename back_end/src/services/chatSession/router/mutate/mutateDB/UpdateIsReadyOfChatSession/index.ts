@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { ChatSessionField } from '@src/dataStruct/chatSession';
-import { UpdateIsReadyOfChatSessionBodyField } from '@src/dataStruct/chatSession/body';
+import { ChatSessionField } from '@src/datastruct/chat_session';
+import { UpdateIsReadyOfChatSessionBodyField } from '@src/datastruct/chat_session/body';
 
 class MutateDB_UpdateIsReadyOfChatSession {
     private _connectionPool: sql.ConnectionPool | undefined;

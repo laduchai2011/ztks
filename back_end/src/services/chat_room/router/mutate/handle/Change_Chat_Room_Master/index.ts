@@ -15,10 +15,13 @@ import { Chat_Room_Role_Zod_Schema, Chat_Room_Role_Schema_Type } from '@src/sche
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Change_Chat_Room_Master {
-    private _cache_get_chat_room_with_id = new Cache_Get_Chat_Room_With_Id({ log_prameter: 'Handle_Change_Chat_Room_Master' });
+    private _cache_get_chat_room_with_id = new Cache_Get_Chat_Room_With_Id({
+        log_prameter: 'Handle_Change_Chat_Room_Master',
+    });
     private _cache_get_chat_room_role_with_crid_aaid = new Cache_Get_Chat_Room_Role_With_Crid_Aaid();
     private _cache_get_all_chat_room_role_with_crid = new Cache_Get_All_Chat_Room_Role_With_Crid();
-    private _cache_get_chat_room_with_zalo_oa_id_user_id_by_app = new Cache_Get_Chat_Room_With_Zalo_Oa_Id_User_Id_By_App();
+    private _cache_get_chat_room_with_zalo_oa_id_user_id_by_app =
+        new Cache_Get_Chat_Room_With_Zalo_Oa_Id_User_Id_By_App();
 
     constructor() {
         this._cache_get_chat_room_with_id.init();
@@ -64,7 +67,8 @@ class Handle_Change_Chat_Room_Master {
     };
 
     main = async (_: Request, res: Response) => {
-        const change_chat_room_master_body = res.locals.change_chat_room_master_body as Change_Chat_Room_Master_Body_Field;
+        const change_chat_room_master_body = res.locals
+            .change_chat_room_master_body as Change_Chat_Room_Master_Body_Field;
 
         const my_response: My_Response_Field<Chat_Room_Field> = {
             is_success: false,

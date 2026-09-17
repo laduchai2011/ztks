@@ -1,7 +1,7 @@
 import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { LeaveAllChatSessionBodyField } from '@src/dataStruct/chatSession/body';
+import { LeaveAllChatSessionBodyField } from '@src/datastruct/chat_session/body';
 import MutateDB_LeaveAllChatSession from '../../mutateDB/LeaveAllChatSession';
 import { verifyRefreshToken } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';

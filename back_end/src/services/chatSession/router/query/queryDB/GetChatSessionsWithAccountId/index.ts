@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { ChatSessionField } from '@src/dataStruct/chatSession';
-import { ChatSessionWithAccountIdBodyField } from '@src/dataStruct/chatSession/body';
+import { ChatSessionField } from '@src/datastruct/chat_session';
+import { ChatSessionWithAccountIdBodyField } from '@src/datastruct/chat_session/body';
 
 interface TotalCountField {
     totalCount: number;
