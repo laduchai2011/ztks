@@ -1,300 +1,385 @@
-﻿CREATE PROCEDURE GetZaloAppWithAccountId
-    @accountId INT
-AS
-BEGIN
-	SELECT *
-	FROM dbo.zaloApp
-	WHERE 
-		status = 'normal' 
-		AND accountId = @accountId
-END
-GO
+﻿CREATE OR REPLACE FUNCTION get_zalo_app_with_account_id(
+    p_account_id UUID
+)
+RETURNS TABLE (
+    id UUID,
+    app_id VARCHAR,
+    app_secret VARCHAR,
+    status VARCHAR,
+    account_id UUID,
+    create_time TIMESTAMPTZ
+)
+LANGUAGE sql
+AS $$
+    SELECT
+        za.id,
+        za.app_id,
+        za.app_secret,
+        za.status,
+        za.account_id,
+        za.create_time
+    FROM zalo_app za
+    WHERE
+        za.status = 'normal'
+        AND za.account_id = p_account_id;
+$$;
 
-CREATE PROCEDURE GetZaloOaListWith2Fk
-	@page INT,
-    @size INT,
-	@zaloAppId INT,
-    @accountId INT
-AS
-BEGIN
-	-- Tập kết quả 1: dữ liệu phân trang
-    WITH zaloOas AS (
-        SELECT zo.*,
-			ROW_NUMBER() OVER (ORDER BY zo.id DESC) AS rn
-        FROM dbo.zaloOa AS zo
-		WHERE 
-			status = 'normal'  
-			AND (@zaloAppId IS NULL OR zo.zaloAppId = @zaloAppId) 
-			AND (@accountId IS NULL OR zo.accountId = @accountId) 
+CREATE OR REPLACE FUNCTION get_zalo_oa_list_with_2_fk (
+    p_page INT,
+    p_size INT,
+    p_zalo_app_id UUID,
+    p_account_id UUID
+)
+RETURNS TABLE (
+    items JSONB,
+    total_count BIGINT
+)
+LANGUAGE sql
+AS $$
+    WITH filtered_zalo_oa AS (
+        SELECT zo.*
+        FROM zalo_oa zo
+        WHERE
+            zo.status = 'normal'
+            AND (p_zalo_app_id IS NULL OR zo.zalo_app_id = p_zalo_app_id)
+            AND (p_account_id IS NULL OR zo.account_id = p_account_id)
+    ),
+    paginated AS (
+        SELECT *
+        FROM filtered_zalo_oa
+        ORDER BY id DESC
+        LIMIT p_size
+        OFFSET (p_page - 1) * p_size
     )
-    SELECT *
-    FROM zaloOas
-    WHERE rn BETWEEN ((@page - 1) * @size + 1) AND (@page * @size);
+    SELECT
+        COALESCE(
+            (
+                SELECT jsonb_agg(
+                    to_jsonb(p)
+                    ORDER BY p.id DESC
+                )
+                FROM paginated p
+            ),
+            '[]'::JSONB
+        ) AS items,
+        (
+            SELECT COUNT(*)
+            FROM filtered_zalo_oa
+        ) AS total_count;
+$$;
 
-    -- Tập kết quả 2: tổng số dòng
-    SELECT COUNT(*) AS totalCount
-	FROM dbo.zaloOa AS zo
-		WHERE 
-			status = 'normal' 
-			AND (@zaloAppId IS NULL OR zo.zaloAppId = @zaloAppId) 
-			AND (@accountId IS NULL OR zo.accountId = @accountId) 
-END
-GO
+CREATE OR REPLACE FUNCTION is_my_oa (
+    p_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF zalo_oa
+LANGUAGE sql
+AS $$
+    SELECT zo.*
+    FROM zalo_oa AS zo
+    WHERE
+        zo.status = 'normal'
+        AND zo.id = p_id
+        AND zo.account_id = p_account_id;
+$$;
 
-CREATE PROCEDURE IsMyOa
-	@id INT,
-    @accountId INT
-AS
+CREATE OR REPLACE FUNCTION get_zalo_oa_with_id (
+    p_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF zalo_oa
+LANGUAGE sql
+AS $$
+    SELECT zo.*
+    FROM zalo_oa AS zo
+    WHERE
+        zo.status = 'normal'
+        AND zo.id = p_id
+        AND zo.account_id = p_account_id;
+$$;
+
+CREATE OR REPLACE FUNCTION get_zalo_oa_with_oa_id (
+    p_oa_id VARCHAR(255),
+    p_account_id UUID
+)
+RETURNS SETOF zalo_oa
+LANGUAGE sql
+AS $$
+    SELECT zo.*
+    FROM zalo_oa AS zo
+    WHERE
+        zo.status = 'normal'
+        AND zo.oa_id = p_oa_id
+        AND zo.account_id = p_account_id;
+$$;
+
+CREATE OR REPLACE FUNCTION check_zalo_app_with_app_id (
+    p_app_id VARCHAR(255)
+)
+RETURNS SETOF zalo_app
+LANGUAGE sql
+AS $$
+    SELECT za.*
+    FROM zalo_app AS za
+    WHERE
+        za.status = 'normal'
+        AND za.app_id = p_app_id;
+$$;
+
+CREATE OR REPLACE FUNCTION check_zalo_oa_list_with_zalo_app_id (
+    p_zalo_app_id UUID
+)
+RETURNS SETOF zalo_oa
+LANGUAGE sql
+AS $$
+    SELECT zo.*
+    FROM zalo_oa AS zo
+    WHERE
+        zo.status = 'normal'
+        AND zo.zalo_app_id = p_zalo_app_id;
+$$;
+
+CREATE OR REPLACE FUNCTION get_zalo_oa_token_with_fk (
+    p_zalo_oa_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF zalo_oa_token
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_added_by_id UUID;
 BEGIN
-	SELECT *
-	FROM dbo.zaloOa
-	WHERE 
-		status = 'normal' 
-		AND id = @id
-		AND accountId = @accountId
-END
-GO
 
-CREATE PROCEDURE GetZaloOaWithId
-	@id INT,
-	@accountId INT
-AS
-BEGIN
-	SELECT *
-	FROM dbo.zaloOa
-	WHERE 
-		status = 'normal' 
-		AND id = @id
-		AND accountId = @accountId
-END
-GO
+    -- Lấy added_by_id của account
+    SELECT ai.added_by_id
+    INTO v_added_by_id
+    FROM account_information AS ai
+    WHERE ai.account_id = p_account_id;
 
-CREATE PROCEDURE GetZaloOaWithOaId
-	@oaId NVARCHAR(255),
-	@accountId INT
-AS
-BEGIN
-	SELECT *
-	FROM dbo.zaloOa
-	WHERE 
-		status = 'normal' 
-		AND oaId = @oaId
-		AND accountId = @accountId
-END
-GO
+    -- Không tìm thấy added_by_id
+    IF v_added_by_id IS NULL THEN
+        RAISE EXCEPTION 'Không tìm thấy addedById.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-CREATE PROCEDURE CheckZaloAppWithAppId
-    @appId NVARCHAR(255)
-AS
-BEGIN
-	SELECT *
-	FROM dbo.zaloApp
-	WHERE 
-		status = 'normal' 
-		AND appId = @appId
-END
-GO
+    -- Kiểm tra OA có thuộc added_by_id hay không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM zalo_oa AS zo
+        WHERE
+            zo.id = p_zalo_oa_id
+            AND zo.account_id = v_added_by_id
+    ) THEN
+        RAISE EXCEPTION 'Không phải OA của bạn.'
+            USING ERRCODE = 'P0002';
+    END IF;
 
-CREATE PROCEDURE CheckZaloOaListWithZaloAppId
-    @zaloAppId INT
-AS
-BEGIN
-	SELECT *
-	FROM dbo.zaloOa
-	WHERE 
-		status = 'normal' 
-		AND zaloAppId = @zaloAppId
-END
-GO
+    -- Trả toàn bộ token
+    RETURN QUERY
+    SELECT zot.*
+    FROM zalo_oa_token AS zot
+    WHERE zot.zalo_oa_id = p_zalo_oa_id;
 
-CREATE PROCEDURE GetZaloOaTokenWithFk
-    @zaloOaId INT,
-	@accountId INT
-AS
-BEGIN
-	SET NOCOUNT ON;
-
-	BEGIN TRY
-        BEGIN TRANSACTION;
-		-- IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @accountId )
-		-- BEGIN
-		-- 	THROW 50001, N'Không phải OA của bạn .', 1;
-		-- END
-
-		DECLARE @addedById INT;
-		SELECT @addedById = addedById FROM dbo.accountInformation WHERE accountId = @accountId;
-		IF @zaloOaId IS NULL THROW 50001, N'Không tìm thấy addedById .', 1;
-
-		IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @addedById )
-		BEGIN
-			THROW 50002, N'Không phải OA của bạn .', 2;
-		END
-
-		SELECT * FROM dbo.zaloOaToken WHERE zaloOaId = @zaloOaId
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
 END;
-GO
+$$;
 
-CREATE PROCEDURE PlaywightGetZaloApp
-    @userName NVARCHAR(100),
-	@password NVARCHAR(100)
-AS
+CREATE OR REPLACE FUNCTION playwright_get_zalo_app (
+    p_user_name VARCHAR(100),
+    p_password VARCHAR(100)
+)
+RETURNS TABLE (
+    items JSONB,
+    account_id UUID
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_account_id UUID;
 BEGIN
-	DECLARE @accountId INT;
-	SELECT @accountId = id FROM dbo.account WHERE userName = @userName AND password=@password AND status = 'normal'
-	IF @accountId IS NULL THROW 50001, N'Không tìm tài khoản', 1;
 
-	SELECT * FROM dbo.zaloApp WHERE accountId = @accountId AND status = 'normal'
-	SELECT @accountId AS accountId;
-END
-GO
+    -- Tìm account
+    SELECT a.id
+    INTO v_account_id
+    FROM account AS a
+    WHERE
+        a.user_name = p_user_name
+        AND a.password = p_password
+        AND a.status = 'normal';
 
-CREATE PROCEDURE GetZnsTemplates
-	@page INT,
-    @size INT,
-	@offset INT,
-    @zaloOaId INT,
-	@accountId INT
-AS
-BEGIN
-	SET NOCOUNT ON;
+    -- Không tìm thấy tài khoản
+    IF v_account_id IS NULL THEN
+        RAISE EXCEPTION 'Không tìm tài khoản'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
-			IF NOT EXISTS ( SELECT 1 FROM dbo.zaloOa WHERE id = @zaloOaId AND accountId = @accountId )
-			BEGIN
-				THROW 50001, N'Không phải OA của bạn .', 1;
-			END
+    -- Trả danh sách Zalo App + account_id
+    SELECT COALESCE(
+        jsonb_agg(to_jsonb(za)),
+        '[]'::JSONB
+    )
+    INTO items
+    FROM zalo_app AS za
+    WHERE
+        za.account_id = v_account_id
+        AND za.status = 'normal';
 
-			-- Tập kết quả 1: dữ liệu phân trang
-			;WITH znsTemplates AS (
-				SELECT z.*,
-					ROW_NUMBER() OVER (ORDER BY z.id DESC) AS rn
-				FROM dbo.znsTemplate AS z
-				WHERE zaloOaId = @zaloOaId AND isDelete = 0
-		
-			)
-			SELECT *
-			FROM znsTemplates
-			WHERE rn BETWEEN (((@page - 1) * @size + 1) + @offset) AND ((@page * @size) + @offset);
+    account_id := v_account_id;
 
-			-- Tập kết quả 2: tổng số dòng
-			SELECT COUNT(*) AS totalCount
-			FROM dbo.znsTemplate AS z
-			WHERE zaloOaId = @zaloOaId AND isDelete = 0
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
+    RETURN NEXT;
 END;
-GO
+$$;
 
-CREATE PROCEDURE GetZnsTemplateWithId
-	@id INT,
-	@accountId INT
-AS
+CREATE OR REPLACE FUNCTION get_zns_templates (
+    p_page INT,
+    p_size INT,
+    p_offset INT,
+    p_zalo_oa_id UUID,
+    p_account_id UUID
+)
+RETURNS TABLE (
+    items JSONB,
+    total_count BIGINT
+)
+LANGUAGE plpgsql
+AS $$
 BEGIN
-	SET NOCOUNT ON;
 
-	BEGIN TRY
-        BEGIN TRANSACTION;
-			DECLARE @zaloOaId INT;
-			SELECT @zaloOaId = zaloOaId FROM dbo.znsTemplate WHERE id = @id
-			IF @zaloOaId IS NULL THROW 50001, N'Không tìm thấy zaloOa', 1;
+    -- Kiểm tra OA có thuộc account không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM zalo_oa
+        WHERE id = p_zalo_oa_id
+          AND account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION 'Không phải OA của bạn.';
+    END IF;
 
-			IF NOT EXISTS ( SELECT 1 FROM dbo.znsTemplate WHERE id = @id AND isDelete = 0 )
-			BEGIN
-				THROW 50002, N'ZnsTemplate này đã bị xóa .', 2;
-			END
+    RETURN QUERY
+    SELECT
+        COALESCE(
+            (
+                SELECT jsonb_agg(row_data ORDER BY row_data.id DESC)
+                FROM (
+                    SELECT z.*
+                    FROM zns_template z
+                    WHERE z.zalo_oa_id = p_zalo_oa_id
+                      AND z.is_delete = false
+                    ORDER BY z.id DESC
+                    LIMIT p_size
+                    OFFSET ((p_page - 1) * p_size) + p_offset
+                ) AS row_data
+            ),
+            '[]'::jsonb
+        ) AS items,
 
-			DECLARE @adminId INT;
-			SELECT @adminId = accountId FROM dbo.zaloOa WHERE id = @zaloOaId
-			IF @adminId IS NULL THROW 50003, N'Không tìm thấy Admin', 3;
+        (
+            SELECT COUNT(*)
+            FROM zns_template z
+            WHERE z.zalo_oa_id = p_zalo_oa_id
+              AND z.is_delete = false
+        ) AS total_count;
 
-			IF NOT EXISTS ( SELECT 1 FROM dbo.accountInformation WHERE addedById = @adminId AND accountId = @accountId )
-			BEGIN
-				THROW 50004, N'Admin này không phải của bạn .', 4;
-			END
-
-			SELECT * FROM dbo.znsTemplate WHERE id = @id;
-
-		COMMIT TRANSACTION;
-	END TRY
-	BEGIN CATCH
-		IF @@TRANCOUNT > 0
-			ROLLBACK TRANSACTION;
-		THROW;
-	END CATCH
 END;
-GO
+$$;
 
-CREATE PROCEDURE GetZnsMessages
-    @page INT,
-    @size INT,
-    @znsTemplateId INT,
-    @accountId INT
-AS
+CREATE OR REPLACE FUNCTION get_zns_template_with_id (
+    p_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF zns_template
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_zalo_oa_id UUID;
+    v_admin_id UUID;
 BEGIN
-    SET NOCOUNT ON;
 
-    BEGIN TRY
-        BEGIN TRANSACTION;
+    -- 1. Lấy zalo_oa_id của ZNS Template
+    SELECT z.zalo_oa_id
+    INTO v_zalo_oa_id
+    FROM zns_template z
+    WHERE z.id = p_id;
 
-            WITH pagedDates AS (
-                SELECT DISTINCT
-                    CAST(
-                        createTime AT TIME ZONE 'SE Asia Standard Time'
-                        AS DATE
-                    ) AS createDate
-                FROM znsMessage
-                WHERE accountId = @accountId
-                    AND znsTemplateId = @znsTemplateId
-                ORDER BY createDate DESC
-                OFFSET (@page - 1) * @size ROWS
-                FETCH NEXT @size ROWS ONLY
-            )
+    IF v_zalo_oa_id IS NULL THEN
+        RAISE EXCEPTION 'Không tìm thấy zaloOa';
+    END IF;
 
-            SELECT
-                z.id,
-                z.type,
-				z.cost,
-                z.data,
-                z.znsTemplateId,
-                z.accountId,
 
-                -- giờ Việt Nam
-                z.createTime AT TIME ZONE 'SE Asia Standard Time'
-                    AS createTime
+    -- 2. Kiểm tra ZNS Template có bị xóa không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM zns_template z
+        WHERE z.id = p_id
+          AND z.is_delete = false
+    ) THEN
+        RAISE EXCEPTION 'ZnsTemplate này đã bị xóa';
+    END IF;
 
-            FROM znsMessage z
-            JOIN pagedDates d
-                ON CAST(
-                    z.createTime AT TIME ZONE 'SE Asia Standard Time'
-                    AS DATE
-                ) = d.createDate
-            WHERE z.accountId = @accountId
-                AND z.znsTemplateId = @znsTemplateId
-            ORDER BY
-                z.createTime AT TIME ZONE 'SE Asia Standard Time' DESC;
 
-        COMMIT TRANSACTION;
-    END TRY
-    BEGIN CATCH
-        IF @@TRANCOUNT > 0
-            ROLLBACK TRANSACTION;
+    -- 3. Lấy admin account của OA
+    SELECT zoa.account_id
+    INTO v_admin_id
+    FROM zalo_oa zoa
+    WHERE zoa.id = v_zalo_oa_id;
 
-        THROW;
-    END CATCH
+    IF v_admin_id IS NULL THEN
+        RAISE EXCEPTION 'Không tìm thấy Admin';
+    END IF;
+
+
+    -- 4. Kiểm tra account hiện tại có thuộc admin này không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM account_information ai
+        WHERE ai.added_by_id = v_admin_id
+          AND ai.account_id = p_account_id
+    ) THEN
+        RAISE EXCEPTION 'Admin này không phải của bạn';
+    END IF;
+
+
+    -- 5. Trả về ZNS Template
+    RETURN QUERY
+    SELECT z.*
+    FROM zns_template z
+    WHERE z.id = p_id;
+
 END;
-GO
+$$;
+
+CREATE OR REPLACE FUNCTION get_zns_messages (
+    p_page INT,
+    p_size INT,
+    p_zns_template_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF zns_message
+LANGUAGE sql
+AS $$
+    WITH paged_dates AS (
+        SELECT DISTINCT
+            (zm.create_time AT TIME ZONE 'Asia/Ho_Chi_Minh')::DATE AS create_date
+        FROM zns_message zm
+        WHERE zm.account_id = p_account_id
+          AND zm.zns_template_id = p_zns_template_id
+        ORDER BY create_date DESC
+        LIMIT p_size
+        OFFSET (p_page - 1) * p_size
+    )
+    SELECT
+        z.id,
+        z.type,
+        z.data,
+        z.cost,
+        z.zns_template_id,
+        z.account_id,
+        z.create_time
+    FROM zns_message z
+    INNER JOIN paged_dates d
+        ON (
+            z.create_time AT TIME ZONE 'Asia/Ho_Chi_Minh'
+        )::DATE = d.create_date
+    WHERE z.account_id = p_account_id
+      AND z.zns_template_id = p_zns_template_id
+    ORDER BY z.create_time DESC;
+$$;

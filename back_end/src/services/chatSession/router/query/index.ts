@@ -1,15 +1,15 @@
 import express, { Router } from 'express';
 import authentication from '@src/auth';
-import Handle_GetChatSessionsWithAccountId from './handle/GetChatSessionsWithAccountId';
+import Handle_Get_Chat_Sessions_With_Account_Id from './handle/Get_Chat_Sessions_With_Account_Id';
 
 const router_query_chatSession: Router = express.Router();
 
-const handle_getChatSessionsWithAccountId = new Handle_GetChatSessionsWithAccountId();
+const handle_get_chat_sessions_with_account_id = new Handle_Get_Chat_Sessions_With_Account_Id();
 
 router_query_chatSession.post(
-    '/getChatSessionsWithAccountId',
+    '/get_chat_sessions_with_account_id',
     authentication,
-    handle_getChatSessionsWithAccountId.main
+    handle_get_chat_sessions_with_account_id.main
 );
 
 export default router_query_chatSession;

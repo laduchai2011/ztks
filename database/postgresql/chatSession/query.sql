@@ -8,8 +8,8 @@ RETURNS JSONB
 LANGUAGE plpgsql
 AS $$
 DECLARE
+	v_items JSONB;
     v_total_count BIGINT;
-    v_data JSONB;
 BEGIN
     SELECT COUNT(*)
     INTO v_total_count
@@ -18,8 +18,11 @@ BEGIN
       AND (p_zalo_oa_id IS NULL OR cs.zalo_oa_id = p_zalo_oa_id)
       AND (p_account_id IS NULL OR cs.account_id = p_account_id);
 
-    SELECT COALESCE(jsonb_agg(to_jsonb(t) - 'rn'), '[]'::jsonb)
-    INTO v_data
+    SELECT COALESCE(
+        jsonb_agg(to_jsonb(t) - 'rn'),
+        '[]'::jsonb
+    )
+    INTO v_items
     FROM (
         SELECT
             cs.*,
@@ -34,8 +37,8 @@ BEGIN
     ) AS t;
 
     RETURN jsonb_build_object(
-        'data', v_data,
-        'totalCount', v_total_count
+        'items', v_items,
+        'total_count', v_total_count
     );
 END;
 $$;
