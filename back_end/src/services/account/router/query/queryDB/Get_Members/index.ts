@@ -16,6 +16,7 @@ class QueryDB_Get_Members {
                 const searched_account_id = this._get_members_body.searched_account_id
                     ? this._get_members_body.searched_account_id
                     : null
+                    
                 const result = await pool.query<{
                     items: Account_Field[];
                     total_count: string;

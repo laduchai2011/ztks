@@ -1,6 +1,6 @@
 import sql from 'mssql';
-import { ChatRoomField } from '@src/dataStruct/chatRoom';
-import { ChatRoomBodyField } from '@src/dataStruct/chatRoom/body';
+import { ChatRoomField } from '@src/datastruct/chat_room';
+import { ChatRoomBodyField } from '@src/datastruct/chat_room/body';
 
 class MutateDB_CreateChatRoom {
     private _connectionPool: sql.ConnectionPool | undefined;

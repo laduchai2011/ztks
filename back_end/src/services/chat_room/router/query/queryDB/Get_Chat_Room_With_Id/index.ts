@@ -1,6 +1,6 @@
 import { pool } from '@src/connect/postgresql';
-import { Chat_Room_Field } from '@src/dataStruct/chatRoom';
-import { Get_Chat_Room_With_Id_Body_Field } from '@src/dataStruct/chatRoom/body';
+import { Chat_Room_Field } from '@src/datastruct/chat_room';
+import { Get_Chat_Room_With_Id_Body_Field } from '@src/datastruct/chat_room/body';
 
 class QueryDB_Get_Chat_Room_With_Id {
   

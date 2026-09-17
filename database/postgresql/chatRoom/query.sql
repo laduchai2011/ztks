@@ -15,45 +15,49 @@ BEGIN
 END;
 $$;
 
+-- DROP FUNCTION IF EXISTS get_my_chat_rooms(
+--     INT,
+--     INT,
+--     UUID
+-- );
 CREATE OR REPLACE FUNCTION get_my_chat_rooms (
     p_page INT,
     p_size INT,
     p_account_id UUID
 )
-RETURNS JSONB
+RETURNS TABLE (
+    items JSONB,
+    total_count BIGINT
+)
 LANGUAGE plpgsql
 AS $$
-DECLARE
-    v_result JSONB;
 BEGIN
-    SELECT jsonb_build_object(
-        'data',
-        COALESCE(
-            (
-                SELECT jsonb_agg(to_jsonb(t) - 'rn' ORDER BY t.id DESC)
-                FROM (
-                    SELECT
-                        cr.*,
-                        ROW_NUMBER() OVER (ORDER BY cr.id DESC) AS rn
-                    FROM chatRoom AS cr
-                    WHERE cr.accountId = p_account_id
-                ) AS t
-                WHERE t.rn BETWEEN
-                    ((p_page - 1) * p_size + 1)
-                    AND (p_page * p_size)
-            ),
-            '[]'::jsonb
-        ),
-        'totalCount',
-        (
-            SELECT COUNT(*)
-            FROM chatRoom AS cr
-            WHERE cr.accountId = p_account_id
-        )
-    )
-    INTO v_result;
 
-    RETURN v_result;
+    RETURN QUERY
+    SELECT
+        COALESCE(
+            JSONB_AGG(
+                to_jsonb(x)
+                ORDER BY x.id DESC
+            ),
+            '[]'::JSONB
+        ) AS items,
+
+        (
+            SELECT COUNT(*)::BIGINT
+            FROM chat_room cr
+            WHERE cr.account_id = p_account_id
+        ) AS total_count
+
+    FROM (
+        SELECT cr.*
+        FROM chat_room cr
+        WHERE cr.account_id = p_account_id
+        ORDER BY cr.id DESC
+        LIMIT p_size
+        OFFSET (p_page - 1) * p_size
+    ) x;
+
 END;
 $$;
 

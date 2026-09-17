@@ -2,9 +2,9 @@ import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { HookCallField } from '@src/dataStruct/zalo/hookData';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { ChatRoomField } from '@src/dataStruct/chatRoom';
-import { UserTakeRoomToChatBodyField } from '@src/dataStruct/chatRoom/body';
-import { CacheGetChatRoomWithZaloOaIdUserIdByApp } from '@src/const/redisKey/chatRoom';
+import { ChatRoomField } from '@src/datastruct/chat_room';
+import { UserTakeRoomToChatBodyField } from '@src/datastruct/chat_room/body';
+import { CacheGetChatRoomWithZaloOaIdUserIdByApp } from '@src/const/redisKey/chat_room';
 import QueryDB_UserTakeRoomToChat from '../handleHookData/queryDB/UserTakeRoomToChat';
 import { my_log } from '@src/log';
 

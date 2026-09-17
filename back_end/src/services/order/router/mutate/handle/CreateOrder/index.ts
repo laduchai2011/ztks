@@ -8,7 +8,7 @@ import { OrderField } from '@src/dataStruct/order';
 import { CreateOrderBodyField } from '@src/dataStruct/order/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateOrder from '../../mutateDB/CreateOrder';
-import { CacheGetChatRoomWithId } from '@src/const/redisKey/chatRoom';
+import { CacheGetChatRoomWithId } from '@src/const/redisKey/chat_room';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_CreateOrder {

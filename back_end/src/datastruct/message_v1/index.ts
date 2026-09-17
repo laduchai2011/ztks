@@ -1,5 +1,5 @@
 import { Hook_Data_Schema, Hook_Call_Schema } from '@src/dataStruct/zalo/hookData';
-import { Chat_Room_Role_Field } from '../chatRoom';
+import { Chat_Room_Role_Field } from '../chat_room';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface Message_V1_Field<T> extends Hook_Data_Schema<T> {}

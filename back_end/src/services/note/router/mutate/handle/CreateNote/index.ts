@@ -6,7 +6,7 @@ import { NoteField } from '@src/dataStruct/note';
 import { CreateNoteBodyField } from '@src/dataStruct/note/body';
 import { verifyRefreshToken } from '@src/token';
 import MutateDB_CreateNote from '../../mutateDB/CreateNote';
-import { CacheGetChatRoomWithId } from '@src/const/redisKey/chatRoom';
+import { CacheGetChatRoomWithId } from '@src/const/redisKey/chat_room';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_CreateNote {

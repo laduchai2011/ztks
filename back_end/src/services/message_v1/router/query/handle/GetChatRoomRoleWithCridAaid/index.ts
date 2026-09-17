@@ -2,12 +2,12 @@ import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
 import { MyResponse } from '@src/dataStruct/response';
-import { ChatRoomRoleField } from '@src/dataStruct/chatRoom';
-import { ChatRoomRoleWithCridAaidBodyField } from '@src/dataStruct/chatRoom/body';
+import { ChatRoomRoleField } from '@src/datastruct/chat_room';
+import { ChatRoomRoleWithCridAaidBodyField } from '@src/datastruct/chat_room/body';
 import { MessageV1BodyField } from '@src/dataStruct/message_v1/body';
 import QueryDB_GetChatRoomRoleWithCridAaid from '../../queryDB/GetChatRoomRoleWithCridAaid';
 import { verifyRefreshToken } from '@src/token';
-import { CacheGetChatRoomRoleWithCridAaid } from '@src/const/redisKey/chatRoom';
+import { CacheGetChatRoomRoleWithCridAaid } from '@src/const/redisKey/chat_room';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_GetChatRoomRoleWithCridAaid {

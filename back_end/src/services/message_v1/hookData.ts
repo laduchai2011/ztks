@@ -20,8 +20,8 @@ import ServiceRedis from '@src/cache/cacheRedis';
 import { AccountReceiveMessageField } from '@src/dataStruct/account';
 import { GetAccountReceiveMessageBodyField } from '@src/dataStruct/account/body';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { ChatRoomField, ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
-import { UserTakeRoomToChatBodyField, ChatRoomBodyField } from '@src/dataStruct/chatRoom/body';
+import { ChatRoomField, ChatRoomRoleSchema } from '@src/datastruct/chat_room';
+import { UserTakeRoomToChatBodyField, ChatRoomBodyField } from '@src/datastruct/chat_room/body';
 import { CheckZaloAppWithAppIdBodyField, CheckZaloOaListWithZaloAppIdBodyField } from '@src/dataStruct/zalo/body';
 import QueryDB_CheckZaloAppWithAppId from './handleHookData/queryDB/CheckZaloAppWithAppId';
 import QueryDB_CheckZaloOaListWithZaloAppId from './handleHookData/queryDB/CheckZaloOaListWithZaloAppId';
@@ -30,7 +30,7 @@ import QueryDB_GetAccountReceiveMessage from './handleHookData/queryDB/GetAccoun
 import QueryDB_GetAllChatRoomRolesWithChatRoomId from './handleHookData/queryDB/GetAllChatRoomRolesWithChatRoomId';
 import MutateDB_CreateChatRoom from './handleHookData/mutateDB/CreateChatRoom';
 import { prefix_cache_zaloApp_with_appId, prefix_cache_zaloOa_list_with_zaloAppId } from '@src/const/redisKey';
-import { CacheGetAllChatRoomRoleWithCrid, CacheGetChatRoomWithZaloOaIdUserIdByApp } from '@src/const/redisKey/chatRoom';
+import { CacheGetAllChatRoomRoleWithCrid, CacheGetChatRoomWithZaloOaIdUserIdByApp } from '@src/const/redisKey/chat_room';
 import { IsPassField, WaitSessionField } from './type';
 import {
     HookDataField,
