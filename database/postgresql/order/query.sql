@@ -110,13 +110,18 @@ BEGIN
 END;
 $$;
 
+-- DROP FUNCTION IF EXISTS get_orders_with_phone(
+--     INT,
+--     INT,
+--     VARCHAR
+-- );
 CREATE OR REPLACE FUNCTION get_orders_with_phone (
     p_page INT,
     p_size INT,
     p_phone VARCHAR(255)
 )
 RETURNS TABLE (
-    data JSONB,
+    items JSONB,
     total_count BIGINT
 )
 LANGUAGE plpgsql
@@ -133,7 +138,7 @@ BEGIN
             WHERE o.is_delete = FALSE
               AND o.phone = p_phone
         )
-    INTO data, total_count
+    INTO items, total_count
     FROM (
         SELECT
             o.*,

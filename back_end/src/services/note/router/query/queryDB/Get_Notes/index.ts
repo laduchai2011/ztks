@@ -17,7 +17,7 @@ class QueryDB_Get_Notes {
                 const result = await pool.query<{
                     items: Note_Field[];
                     total_count: string;
-                }>(`SELECT * FROM get_orders($1, $2, $3, $4, $5, $6);`, [
+                }>(`SELECT * FROM get_my_notes($1, $2, $3, $4, $5, $6);`, [
                     this._get_notes_body.page,
                     this._get_notes_body.size,
                     this._get_notes_body.offset,
