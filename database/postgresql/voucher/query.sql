@@ -1,12 +1,18 @@
-﻿CREATE OR REPLACE FUNCTION get_vouchers (
+﻿-- DROP FUNCTION IF EXISTS get_vouchers(
+--     INT,
+--     INT,
+--     VARCHAR,
+-- 	BOOLEAN
+-- );
+CREATE OR REPLACE FUNCTION get_vouchers (
     p_page INT,
     p_size INT,
     p_phone VARCHAR(255),
 	p_is_used BOOLEAN DEFAULT NULL
 )
 RETURNS TABLE (
-    data JSONB,
-    total_count BIGINT
+    items JSONB,
+    total_count BIGINT 
 )
 LANGUAGE plpgsql
 AS $$
@@ -29,7 +35,7 @@ BEGIN
                 ) AS v
             ),
             '[]'::jsonb
-        ) AS data,
+        ) AS items,
         (
             SELECT COUNT(*)
             FROM voucher AS v
