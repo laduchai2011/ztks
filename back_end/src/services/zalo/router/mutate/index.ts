@@ -1,59 +1,64 @@
 import express, { Router } from 'express';
 import authentication from '@src/auth';
-import Handle_CreateZaloOa from './handle/CreateZaloOa';
-import Handle_EditZaloOa from './handle/EditZaloOa';
-import Handle_CreateZaloOaToken from './handle/CreateZaloOaToken';
-import Handle_UpdateRefreshTokenOfZaloOa from './handle/UpdateRefreshTokenOfZaloOa';
-import Handle_GenZaloOaToken from './handle/GenZaloOaToken';
-import Handle_CreateZnsTemplate from './handle/CreateZnsTemplate';
-import Handle_EditZnsTemplate from './handle/EditZnsTemplate';
-import Handle_CreateZnsMessage from './handle/CreateZnsMessage';
+import Handle_Create_Zalo_Oa from './handle/Create_Zalo_Oa';
+import Handle_Edit_Zalo_Oa from './handle/Edit_Zalo_Oa';
+import Handle_Create_Zalo_Oa_Token from './handle/Create_Zalo_Oa_Token';
+import Handle_Update_Refresh_Token_Of_Zalo_Oa from './handle/Update_Refresh_Token_Of_Zalo_Oa';
+import Handle_Gen_Zalo_Oa_Token from './handle/Gen_Zalo_Oa_Token';
+import Handle_Create_Zns_Template from './handle/Create_Zns_Template';
+import Handle_Edit_Zns_Template from './handle/Edit_Zns_Template';
+import Handle_Create_Zns_Message from './handle/Create_Zns_Message';
 
 const router_mutate_zalo: Router = express.Router();
 
-const handle_createZaloOa = new Handle_CreateZaloOa();
-const handle_editZaloOa = new Handle_EditZaloOa();
-const handle_createZaloOaToken = new Handle_CreateZaloOaToken();
-const handle_updateRefreshTokenOfZaloOa = new Handle_UpdateRefreshTokenOfZaloOa();
-const handle_genZaloOaToken = new Handle_GenZaloOaToken();
-const handle_createZnsTemplate = new Handle_CreateZnsTemplate();
-const handle_editZnsTemplate = new Handle_EditZnsTemplate();
-const handle_createZnsMessage = new Handle_CreateZnsMessage();
+const handle_create_zalo_oa = new Handle_Create_Zalo_Oa();
+const handle_edit_zalo_oa = new Handle_Edit_Zalo_Oa();
+const handle_create_zalo_oa_token = new Handle_Create_Zalo_Oa_Token();
+const handle_update_refresh_token_of_zalo_oa = new Handle_Update_Refresh_Token_Of_Zalo_Oa();
+const handle_gen_zalo_oa_token = new Handle_Gen_Zalo_Oa_Token();
+const handle_create_zns_template = new Handle_Create_Zns_Template();
+const handle_edit_zns_template = new Handle_Edit_Zns_Template();
+const handle_create_zns_message = new Handle_Create_Zns_Message();
 
-router_mutate_zalo.post('/createZaloOa', authentication, handle_createZaloOa.setup, handle_createZaloOa.main);
+router_mutate_zalo.post('/create_zalo_oa', authentication, handle_create_zalo_oa.setup, handle_create_zalo_oa.main);
 
-router_mutate_zalo.patch('/editZaloOa', authentication, handle_editZaloOa.setup, handle_editZaloOa.main);
+router_mutate_zalo.patch('/edit_zalo_oa', authentication, handle_edit_zalo_oa.setup, handle_edit_zalo_oa.main);
 
 router_mutate_zalo.post(
-    '/createZaloOaToken',
+    '/create_zalo_oa_token',
     authentication,
-    handle_createZaloOaToken.setup,
-    handle_createZaloOaToken.main
+    handle_create_zalo_oa_token.setup,
+    handle_create_zalo_oa_token.main
 );
 
 router_mutate_zalo.patch(
-    '/updateRefreshTokenOfZaloOa',
+    '/update_refresh_token_of_zalo_oa',
     authentication,
-    handle_updateRefreshTokenOfZaloOa.setup,
-    handle_updateRefreshTokenOfZaloOa.main
+    handle_update_refresh_token_of_zalo_oa.setup,
+    handle_update_refresh_token_of_zalo_oa.main
 );
 
-router_mutate_zalo.post('/genZaloOaToken', authentication, handle_genZaloOaToken.main);
+router_mutate_zalo.post('/gen_zalo_oa_token', authentication, handle_gen_zalo_oa_token.main);
 
 router_mutate_zalo.post(
-    '/createZnsTemplate',
+    '/create_zns_template',
     authentication,
-    handle_createZnsTemplate.setup,
-    handle_createZnsTemplate.main
+    handle_create_zns_template.setup,
+    handle_create_zns_template.main
 );
 
-router_mutate_zalo.patch('/editZnsTemplate', authentication, handle_editZnsTemplate.setup, handle_editZnsTemplate.main);
+router_mutate_zalo.patch(
+    '/edit_zns_template',
+    authentication,
+    handle_edit_zns_template.setup,
+    handle_edit_zns_template.main
+);
 
 router_mutate_zalo.post(
-    '/createZnsMessage',
+    '/create_zns_message',
     authentication,
-    handle_createZnsMessage.setup,
-    handle_createZnsMessage.main
+    handle_create_zns_message.setup,
+    handle_create_zns_message.main
 );
 
 export default router_mutate_zalo;

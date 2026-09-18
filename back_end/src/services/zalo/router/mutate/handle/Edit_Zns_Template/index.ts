@@ -1,19 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
 import { My_Response_Field } from '@src/data_struct/response';
-import { Wallet_Field } from '@src/data_struct/wallet';
-import { Get_My_Wallet_With_Type_Body_Field } from '@src/data_struct/wallet/body';
-import QueryDB_Get_My_Wallet_With_Type from '../../queryDB/Get_My_Wallet_With_Type';
+import { Zns_Template_Field } from '@src/data_struct/zalo';
+import { Edit_Zns_Template_Body_Field } from '@src/data_struct/zalo/body';
 import { verify_refresh_token } from '@src/token';
+import MutateDB_Edit_Zns_Template from '../../mutateDB/Edit_Zns_Template';
 import { getRefreshToken } from '@src/device/getDevice';
 
-class Handle_Get_My_Wallet_With_Type {
-    setup = (req: Request<any, any, Get_My_Wallet_With_Type_Body_Field>, res: Response, next: NextFunction) => {
-        const my_response: My_Response_Field<Wallet_Field> = {
+class Handle_Edit_Zns_Template {
+    setup = async (req: Request<any, any, Edit_Zns_Template_Body_Field>, res: Response, next: NextFunction) => {
+        const my_response: My_Response_Field<Zns_Template_Field> = {
             is_success: false,
-            message: 'Bắt đầu Handle_Get_My_Wallet_With_Type-setup',
+            message: 'Bắt đầu (Handle_Edit_Zns_Template-setup)',
         };
 
-        const get_my_wallet_with_type_body = req.body;
+        const edit_zns_template_body = req.body;
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
@@ -32,8 +32,8 @@ class Handle_Get_My_Wallet_With_Type {
             }
 
             const { id } = verify_refreshToken;
-            get_my_wallet_with_type_body.account_id = id;
-            res.locals.get_my_wallet_with_type_body = get_my_wallet_with_type_body;
+            edit_zns_template_body.account_id = id;
+            res.locals.edit_zns_template_body = edit_zns_template_body;
 
             next();
             return;
@@ -45,32 +45,31 @@ class Handle_Get_My_Wallet_With_Type {
     };
 
     main = async (_: Request, res: Response) => {
-        const get_my_wallet_with_type_body = res.locals
-            .get_my_wallet_with_type_body as Get_My_Wallet_With_Type_Body_Field;
+        const edit_zns_template_body = res.locals.edit_zns_template_body as Edit_Zns_Template_Body_Field;
 
-        const my_response: My_Response_Field<Wallet_Field> = {
+        const my_response: My_Response_Field<Zns_Template_Field> = {
             is_success: false,
-            message: 'Bắt đầu Handle_Get_My_Wallet_With_Type-main',
+            message: 'Bắt đầu (Handle_Edit_Zns_Template-main)',
         };
 
-        const queryDB = new QueryDB_Get_My_Wallet_With_Type();
-        queryDB.set_Get_My_Wallet_With_Type_Body(get_my_wallet_with_type_body);
+        const mutateDB = new MutateDB_Edit_Zns_Template();
+        mutateDB.set_Edit_Zns_Template_Body(edit_zns_template_body);
 
         try {
-            const result = await queryDB.run();
+            const result = await mutateDB.run();
             if (result) {
-                my_response.data = result;
-                my_response.message = 'Lấy ví thành công !';
+                my_response.message = 'Chỉnh sửa znsTemplate thành công !';
                 my_response.is_success = true;
+                my_response.data = result;
                 res.status(200).json(my_response);
                 return;
             } else {
-                my_response.message = 'Lấy ví KHÔNG thành công !';
-                res.status(204).json(my_response);
+                my_response.message = 'Chỉnh sửa znsTemplate KHÔNG thành công !';
+                res.status(200).json(my_response);
                 return;
             }
         } catch (error) {
-            my_response.message = 'Lấy ví KHÔNG thành công !!';
+            my_response.message = 'Chỉnh sửa znsTemplate KHÔNG thành công !!';
             my_response.err = error;
             res.status(500).json(my_response);
             return;
@@ -78,4 +77,4 @@ class Handle_Get_My_Wallet_With_Type {
     };
 }
 
-export default Handle_Get_My_Wallet_With_Type;
+export default Handle_Edit_Zns_Template;

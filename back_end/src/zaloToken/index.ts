@@ -1,18 +1,17 @@
 import axios from 'axios';
 import qs from 'qs';
-import LockError, { Lock } from 'redlock';
+import LockError from 'redlock';
 import { serviceRedlock } from '@src/connect';
-import { mssql_server } from '@src/connect';
+// import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { TokenResField } from '@src/data_struct/tokenZalo';
-import { ZaloOaTokenField, ZaloAppField, ZaloOaField } from '@src/data_struct/zalo';
-import { prefix_cache_zalo_accessToken_with_zaloOaId } from '@src/const/redisKey';
-import QueryDB_GetZaloOaTokenWithFk from './GetZaloOaTokenWithFk';
-// import MutateDB_CreateZaloOaTokenWithFk from './CreateZaloOaToken';
-import MutateDB_UpdateRefreshTokenOfZaloOa from './UpdateRefreshTokenOfZaloOa';
+import { Token_Res_Field } from '@src/data_struct/tokenZalo';
+import { Zalo_Oa_Token_Field, Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
+import { prefix_cache__zalo_access_token_with_zalo_oa_id } from '@src/const/redisKey';
+import QueryDB_Get_Zalo_Oa_Token_With_Fk from './Get_Zalo_Oa_Token_With_Fk';
+import MutateDB_Update_Refresh_Token_Of_Zalo_Oa from './Update_Refresh_Token_Of_Zalo_Oa';
 import { my_log } from '@src/log';
 
-mssql_server.init();
+// mssql_server.init();
 
 const serviceRedis = ServiceRedis.getInstance();
 serviceRedis.init();
@@ -21,27 +20,26 @@ const timeExpireat = 60 * 1; // 1p
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-export async function getAccessToken(zaloOa: ZaloOaField) {
-    const zaloOaId = zaloOa.id;
-    const zaloAccessToken = await serviceRedis.getData<string>(
-        `${prefix_cache_zalo_accessToken_with_zaloOaId}_${zaloOaId}`
+export async function get_Access_Token(zalo_oa: Zalo_Oa_Field) {
+    const zalo_oa_id = zalo_oa.id;
+    const zalo_access_token = await serviceRedis.getData<string>(
+        `${prefix_cache__zalo_access_token_with_zalo_oa_id}_${zalo_oa_id}`
     );
-    if (!zaloAccessToken) {
+    if (!zalo_access_token) {
         console.error('getAccessToken', 'Failed to get token in Redis');
         return;
     }
 
-    return zaloAccessToken;
-    // return undefined;
+    return zalo_access_token;
 }
 
-export async function refreshAccessToken(zaloApp: ZaloAppField, zaloOa: ZaloOaField, repeat: number) {
-    const app_id = zaloApp.appId;
-    const app_secret = zaloApp.appSecret;
-    const zaloOaId = zaloOa.id;
+export async function refresh_Access_Token(zalo_app: Zalo_App_Field, zalo_oa: Zalo_Oa_Field, repeat: number) {
+    const app_id = zalo_app.app_id;
+    const app_secret = zalo_app.app_secret;
+    const zalo_oa_id = zalo_oa.id;
 
-    const redisKey = `${prefix_cache_zalo_accessToken_with_zaloOaId}_${zaloOaId}`;
-    const lockKey = `${prefix_cache_zalo_accessToken_with_zaloOaId}_${zaloOaId}_lock`;
+    const redis_key = `${prefix_cache__zalo_access_token_with_zalo_oa_id}_${zalo_oa_id}`;
+    const lock_key = `${prefix_cache__zalo_access_token_with_zalo_oa_id}_${zalo_oa_id}_lock`;
     let lock: Lock | null = null;
     if (repeat === 0) {
         console.error('FINISH repeat REFRESH ERROR');
@@ -49,75 +47,66 @@ export async function refreshAccessToken(zaloApp: ZaloAppField, zaloOa: ZaloOaFi
     }
 
     try {
-        await serviceRedis.deleteData(redisKey);
+        await serviceRedis.deleteData(redis_key);
 
-        lock = await serviceRedlock.acquire([lockKey], 3000);
+        lock = await serviceRedlock.acquire([lock_key], 3000);
 
-        const connection_pool = mssql_server.get_connectionPool();
-        if (!connection_pool) {
-            my_log.withYellow('Kết nối cơ sở dữ liệu không thành công !');
-            return;
-        }
-
-        const queryDB = new QueryDB_GetZaloOaTokenWithFk();
-        queryDB.setGetZaloOaTokenWithFkBody({ zaloOaId: zaloOaId, accountId: zaloOa.accountId });
-        queryDB.set_connection_pool(connection_pool);
+        const queryDB = new QueryDB_Get_Zalo_Oa_Token_With_Fk();
+        queryDB.set_Get_Zalo_Oa_Token_With_Fk_Body({ zalo_oa_id: zalo_oa_id, account_id: zalo_oa.account_id });
 
         const result = await queryDB.run();
-        if (!(result?.recordset.length && result?.recordset.length > 0)) return;
+        if (!result) return;
 
-        const zaloOaToken: ZaloOaTokenField = result?.recordset[0];
+        const zalo_oa_token: Zalo_Oa_Token_Field = result;
 
         // console.log('zaloOaToken', zaloOaToken);
 
         const body = qs.stringify({
             app_id: app_id,
             grant_type: 'refresh_token',
-            refresh_token: zaloOaToken.refreshToken,
+            refresh_token: zalo_oa_token.refresh_token,
         });
 
-        const res = await axios.post<TokenResField>('https://oauth.zaloapp.com/v4/oa/access_token', body, {
+        const res = await axios.post<Token_Res_Field>('https://oauth.zaloapp.com/v4/oa/access_token', body, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 Secret_key: app_secret,
             },
         });
 
-        const newAccessToken = res.data.access_token;
-        const newRefreshToken = res.data.refresh_token;
+        const new_access_token = res.data.access_token;
+        const new_refresh_token = res.data.refresh_token;
 
-        if (!(newAccessToken && newRefreshToken)) {
+        if (!(new_access_token && new_refresh_token)) {
             console.error('Failed to get new access token and refresh token');
             return;
         }
 
-        const queryDB_u = new MutateDB_UpdateRefreshTokenOfZaloOa();
-        queryDB_u.setUpdateRefreshTokenOfZaloOaBody({
-            refreshToken: newRefreshToken,
-            zaloOaId: zaloOaId,
-            accountId: zaloOa.accountId,
+        const queryDB_u = new MutateDB_Update_Refresh_Token_Of_Zalo_Oa();
+        queryDB_u.set_Update_Refresh_Token_Of_Zalo_Oa_Body({
+            refresh_token: new_refresh_token,
+            zalo_oa_id: zalo_oa_id,
+            account_id: zalo_oa.account_id,
         });
-        queryDB_u.set_connection_pool(connection_pool);
 
         const result_u = await queryDB_u.run();
-        if (!(result_u?.recordset.length && result_u?.recordset.length > 0)) return;
+        if (!result_u) return;
 
-        const isSet = await serviceRedis.setData<string>(redisKey, newAccessToken, timeExpireat);
-        if (!isSet) {
+        const is_set = await serviceRedis.setData<string>(redis_key, new_access_token, timeExpireat);
+        if (!is_set) {
             console.error('Failed to set new token in cookie in Redis');
             return;
         }
 
-        return newAccessToken;
+        return new_access_token;
     } catch (err: any) {
         if (err instanceof LockError) {
-            console.log('LockError');
             await sleep(1000);
-            const accessToken = await getAccessToken(zaloOa);
-            if (accessToken) {
+            const access_token = await get_Access_Token(zalo_oa);
+            if (access_token) {
                 return;
             }
-            return refreshAccessToken(zaloApp, zaloOa, repeat - 1);
+            return refresh_Access_Token(zalo_app, zalo_oa, repeat - 1);
         } else {
             console.error('REFRESH ERROR:', err.response?.data || err);
             return;

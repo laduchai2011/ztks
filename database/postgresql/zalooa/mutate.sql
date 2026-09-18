@@ -155,12 +155,13 @@ BEGIN
 END;
 $$;
 
+-- DROP FUNCTION IF EXISTS create_zalo_oa_token(TEXT, UUID, UUID);
 CREATE OR REPLACE FUNCTION create_zalo_oa_token (
     p_refresh_token TEXT,
     p_zalo_oa_id UUID,
     p_account_id UUID
 )
-RETURNS SETOF chat_session
+RETURNS SETOF zalo_oa_token
 LANGUAGE plpgsql
 AS $$
 BEGIN
@@ -185,11 +186,11 @@ BEGIN
         p_zalo_oa_id
     );
 
-    -- Trả về chatSession
+    -- Trả về zalo_oa_toen
     RETURN QUERY
     SELECT *
-    FROM chat_session
-    WHERE zalo_oa_id = p_zalo_oa_id;
+    FROM zalo_oa_token
+    WHERE id = p_zalo_oa_id;
 END;
 $$;
 
@@ -245,7 +246,7 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION create_zns_template (
-    p_tem_id TEXT,
+    p_tem_id VARCHAR(255),
     p_images TEXT,
     p_data_fields TEXT,
     p_phone_cost DECIMAL(20,2),

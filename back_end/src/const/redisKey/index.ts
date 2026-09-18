@@ -16,9 +16,9 @@ export const prefix_cache_zaloOa_list_with_zaloAppId = isProduct
     ? 'prefix_cache_zaloOa_list_with_zaloAppId'
     : 'prefix_cache_zaloOa_list_with_zaloAppId_dev';
 
-export const prefix_cache_zalo_accessToken_with_zaloOaId = isProduct
-    ? 'prefix_cache_zalo_accessToken_with_zaloOaId'
-    : 'prefix_cache_zalo_accessToken_with_zaloOaId_dev';
+export const prefix_cache__zalo_access_token_with_zalo_oa_id = isProduct
+    ? 'prefix_cache__zalo_access_token_with_zalo_oa_id'
+    : 'prefix_cache__zalo_access_token_with_zalo_oa_id_dev';
 
 export const prefix_cache_zalo_message_wait_session_with_zaloOaId_userIdByApp = isProduct
     ? 'prefix_cache_zalo_message_wait_session_with_zaloOaId_userIdByApp'
