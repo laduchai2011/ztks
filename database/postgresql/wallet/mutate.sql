@@ -613,7 +613,7 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION delete_require_take_money(
+CREATE OR REPLACE FUNCTION delete_require_take_money (
     p_require_take_money_id UUID,
     p_account_id UUID
 )

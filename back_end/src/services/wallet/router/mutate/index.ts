@@ -1,50 +1,50 @@
 import express, { Router } from 'express';
 import dotenv from 'dotenv';
 import authentication from '@src/auth';
-import Handle_PayAgentFromWallet from './handle/PayAgentFromWallet';
-import Handle_CreateRequireTakeMoney from './handle/CreateRequireTakeMoney';
-import Handle_EditRequireTakeMoney from './handle/EditRequireTakeMoney';
-import Handle_DeleteRequireTakeMoney from './handle/DeleteRequireTakeMoney';
-import Handle_MemberZtksConfirmTakeMoney from './handle/MemberZtksConfirmTakeMoney';
+import Handle_Pay_Agent_From_Wallet from './handle/Pay_Agent_From_Wallet';
+import Handle_Create_Require_Take_Money from './handle/Create_Require_Take_Money';
+import Handle_Edit_Require_Take_Money from './handle/Edit_Require_Take_Money';
+import Handle_DeleteRequireTakeMoney from './handle/Delete_Require_Take_Money';
+import Handle_Member_Ztks_Confirm_Take_Money from './handle/Member_Ztks_Confirm_Take_Money';
 
 dotenv.config();
 
 const router_mutate_wallet: Router = express.Router();
 
-const handle_payAgentFromWallet = new Handle_PayAgentFromWallet();
-const handle_createRequireTakeMoney = new Handle_CreateRequireTakeMoney();
-const handle_editRequireTakeMoney = new Handle_EditRequireTakeMoney();
-const handle_deleteRequireTakeMoney = new Handle_DeleteRequireTakeMoney();
-const handle_memberZtksConfirmTakeMoney = new Handle_MemberZtksConfirmTakeMoney();
+const handle_pay_agent_from_wallet = new Handle_Pay_Agent_From_Wallet();
+const handle_create_require_take_money = new Handle_Create_Require_Take_Money();
+const handle_edit_require_take_money = new Handle_Edit_Require_Take_Money();
+const handle_delete_require_take_money = new Handle_DeleteRequireTakeMoney();
+const handle_member_ztks_confirm_take_money = new Handle_Member_Ztks_Confirm_Take_Money();
 
 router_mutate_wallet.post(
-    '/payAgentFromWallet',
+    '/pay_agent_from_wallet',
     authentication,
-    handle_payAgentFromWallet.setup,
-    handle_payAgentFromWallet.main
+    handle_pay_agent_from_wallet.setup,
+    handle_pay_agent_from_wallet.main
 );
 
 router_mutate_wallet.post(
-    '/createRequireTakeMoney',
+    '/create_require_take_money',
     authentication,
-    handle_createRequireTakeMoney.setup,
-    handle_createRequireTakeMoney.main
+    handle_create_require_take_money.setup,
+    handle_create_require_take_money.main
 );
 
 router_mutate_wallet.put(
-    '/editRequireTakeMoney',
+    '/edit_require_take_money',
     authentication,
-    handle_editRequireTakeMoney.setup,
-    handle_editRequireTakeMoney.main
+    handle_edit_require_take_money.setup,
+    handle_edit_require_take_money.main
 );
 
 router_mutate_wallet.put(
-    '/deleteRequireTakeMoney',
+    '/delete_require_take_money',
     authentication,
-    handle_deleteRequireTakeMoney.setup,
-    handle_deleteRequireTakeMoney.main
+    handle_delete_require_take_money.setup,
+    handle_delete_require_take_money.main
 );
 
-router_mutate_wallet.put('/memberZtksConfirmTakeMoney', authentication, handle_memberZtksConfirmTakeMoney.main);
+router_mutate_wallet.put('/member_ztks_confirm_take_money', authentication, handle_member_ztks_confirm_take_money.main);
 
 export default router_mutate_wallet;
