@@ -1,4 +1,4 @@
-import {  Wallet_Type } from '.';
+import { Wallet_Type } from '.';
 
 export interface Create_Wallet_Body_Field {
     amount: number;

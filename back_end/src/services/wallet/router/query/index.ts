@@ -1,38 +1,42 @@
 import express, { Router } from 'express';
 import dotenv from 'dotenv';
 import authentication from '@src/auth';
-import Handle_GetMyWalletWithType from './handle/GetMyWalletWithType';
-import Handle_GetBalanceFluctuations from './handle/GetBalanceFluctuations';
-import Handle_MemberGetRequireTakeMoneyOfWallet from './handle/MemberGetRequireTakeMoneyOfWallet';
-import Handle_MemberZtksGetRequiresTakeMoney from './handle/MemberZtksGetRequiresTakeMoney';
-import Handle_GetRequireWithId from './handle/GetRequireWithId';
+import Handle_Get_My_Wallet_With_Type from './handle/Get_My_Wallet_With_Type';
+import Handle_Get_Balance_Fluctuations from './handle/Get_Balance_Fluctuations';
+import Handle_Member_Get_Require_Take_Money_Of_Wallet from './handle/Member_Get_Require_Take_Money_Of_Wallet';
+import Handle_Member_Ztks_Get_Requires_Take_Money from './handle/Member_Ztks_Get_Requires_Take_Money';
+import Handle_Get_Require_With_Id from './handle/Get_Require_With_Id';
 
 dotenv.config();
 const router_query_wallet: Router = express.Router();
 
-const handle_getMyWalletWithType = new Handle_GetMyWalletWithType();
-const handle_getBalanceFluctuations = new Handle_GetBalanceFluctuations();
-const handle_memberGetRequireTakeMoneyOfWallet = new Handle_MemberGetRequireTakeMoneyOfWallet();
-const handle_memberZtksGetRequiresTakeMoney = new Handle_MemberZtksGetRequiresTakeMoney();
-const handle_getRequireWithId = new Handle_GetRequireWithId();
+const handle_get_my_wallet_with_type = new Handle_Get_My_Wallet_With_Type();
+const handle_get_balance_fluctuations = new Handle_Get_Balance_Fluctuations();
+const handle_member_get_require_take_money_of_wallet = new Handle_Member_Get_Require_Take_Money_Of_Wallet();
+const handle_member_ztks_get_requires_take_money = new Handle_Member_Ztks_Get_Requires_Take_Money();
+const handle_get_require_with_id = new Handle_Get_Require_With_Id();
 
 router_query_wallet.post(
-    '/getMyWalletWithType',
+    '/get_my_wallet_with_type',
     authentication,
-    handle_getMyWalletWithType.setup,
-    handle_getMyWalletWithType.main
+    handle_get_my_wallet_with_type.setup,
+    handle_get_my_wallet_with_type.main
 );
 
-router_query_wallet.post('/getBalanceFluctuations', authentication, handle_getBalanceFluctuations.main);
+router_query_wallet.post('/get_balance_fluctuations', authentication, handle_get_balance_fluctuations.main);
 
 router_query_wallet.post(
-    '/memberGetRequireTakeMoneyOfWallet',
+    '/member_get_require_take_money_of_wallet',
     authentication,
-    handle_memberGetRequireTakeMoneyOfWallet.main
+    handle_member_get_require_take_money_of_wallet.main
 );
 
-router_query_wallet.post('/memberZtksGetRequiresTakeMoney', authentication, handle_memberZtksGetRequiresTakeMoney.main);
+router_query_wallet.post(
+    '/member_ztks_get_requires_take_money',
+    authentication,
+    handle_member_ztks_get_requires_take_money.main
+);
 
-router_query_wallet.post('/getRequireWithId', authentication, handle_getRequireWithId.main);
+router_query_wallet.post('/get_require_with_id', authentication, handle_get_require_with_id.main);
 
 export default router_query_wallet;

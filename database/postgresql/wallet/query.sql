@@ -69,34 +69,18 @@ AS $$
     ORDER BY bf.create_time DESC;
 $$;
 
+-- DROP FUNCTION IF EXISTS member_get_require_take_money_of_wallet(UUID, UUID);
 CREATE OR REPLACE FUNCTION member_get_require_take_money_of_wallet (
     p_wallet_id UUID,
     p_account_id UUID
 )
-RETURNS TABLE (
-    id UUID,
-    amount DECIMAL(20, 2),
-    bank_id UUID,
-    wallet_id UUID,
-    account_id UUID,
-    is_delete BOOLEAN,
-    is_do BOOLEAN,
-    create_time TIMESTAMPTZ
-)
+RETURNS SETOF require_take_money
 LANGUAGE plpgsql
 AS $$
 BEGIN
     RETURN QUERY
-    SELECT
-        r.id,
-        r.amount,
-        r.bank_id,
-        r.wallet_id,
-        r.account_id,
-        r.is_delete,
-        r.is_do,
-        r.create_time
-    FROM require_take_money r
+    SELECT r.*
+    FROM require_take_money AS r
     WHERE r.wallet_id = p_wallet_id
       AND r.account_id = p_account_id
       AND r.is_delete = FALSE
@@ -105,6 +89,18 @@ BEGIN
 END;
 $$;
 
+-- DROP FUNCTION IF EXISTS member_ztks_get_requires_take_money(
+--     INT,
+--     INT,
+--     UUID,
+--     BOOLEAN,
+--     DECIMAL,
+--     DECIMAL,
+--     TIMESTAMP,
+--     TIMESTAMP,
+--     TIMESTAMP,
+--     TIMESTAMP
+-- );
 CREATE OR REPLACE FUNCTION member_ztks_get_requires_take_money (
     p_page INT,
     p_size INT,
@@ -117,13 +113,15 @@ CREATE OR REPLACE FUNCTION member_ztks_get_requires_take_money (
     p_from_date TIMESTAMP DEFAULT NULL,
     p_to_date TIMESTAMP DEFAULT NULL
 )
-RETURNS JSON
+RETURNS TABLE (
+    items JSONB,
+    total_count BIGINT
+)
 LANGUAGE plpgsql
 AS $$
-DECLARE
-    v_result JSON;
 BEGIN
 
+    RETURN QUERY
     WITH filtered AS (
         SELECT
             rtm.*,
@@ -175,35 +173,31 @@ BEGIN
                 OR rtm.create_time < p_to_date
             )
     ),
+
     paged AS (
         SELECT *
         FROM filtered
         WHERE rn BETWEEN
             ((p_page - 1) * p_size + 1)
             AND (p_page * p_size)
-    ),
-    total AS (
-        SELECT COUNT(*) AS total_count
-        FROM filtered
     )
-    SELECT json_build_object(
-        'data',
+
+    SELECT
         COALESCE(
             (
-                SELECT json_agg(
+                SELECT jsonb_agg(
                     to_jsonb(paged) - 'rn'
                     ORDER BY paged.rn
                 )
                 FROM paged
             ),
-            '[]'::json
-        ),
-        'total_count',
-        (SELECT total_count FROM total)
-    )
-    INTO v_result;
+            '[]'::jsonb
+        ) AS items,
 
-    RETURN v_result;
+        (
+            SELECT COUNT(*)
+            FROM filtered
+        ) AS total_count;
 
 END;
 $$;
