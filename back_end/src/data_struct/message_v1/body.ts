@@ -1,5 +1,5 @@
 import { Zalo_App_Field, Zalo_Oa_Field } from '../zalo';
-import { Hook_Data_Body_Field } from '../zalo/hookData/body';
+import { Hook_Data_Body_Field } from '../zalo/hook_data/body';
 
 export interface MessageV1BodyField {
     cursor: string | null;

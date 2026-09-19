@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
-export const MessageTextSchema = z.object({
+export const Message_Text_Schema = z.object({
     msg_id: z.string(),
     text: z.string(),
     quote_msg_id: z.string().optional(),
 });
 
-export const MessageImageSchema = z.object({
+export const Message_Image_Schema = z.object({
     msg_id: z.string(),
     text: z.string().optional(),
     attachments: z.array(
@@ -20,7 +20,7 @@ export const MessageImageSchema = z.object({
     ),
 });
 
-export const MessageMultiImageSchema = z.object({
+export const Message_Multi_Image_Schema = z.object({
     msg_id: z.string(),
     text: z.string().optional(),
     attachments: z.array(
@@ -37,7 +37,7 @@ export const MessageMultiImageSchema = z.object({
     ),
 });
 
-export const MessageVideoSchema = z.object({
+export const Message_Video_Schema = z.object({
     msg_id: z.string(),
     text: z.string().optional(),
     attachments: z.array(
@@ -52,7 +52,7 @@ export const MessageVideoSchema = z.object({
     ),
 });
 
-export const MessageAudioSchema = z.object({
+export const Message_Audio_Schema = z.object({
     msg_id: z.string(),
     text: z.string().optional(),
     attachments: z.array(
@@ -65,7 +65,7 @@ export const MessageAudioSchema = z.object({
     ),
 });
 
-export const MessageFileSchema = z.object({
+export const Message_File_Schema = z.object({
     msg_id: z.string(),
     text: z.string().optional(),
     attachments: z.array(
@@ -82,7 +82,7 @@ export const MessageFileSchema = z.object({
     ),
 });
 
-export const MessageStickerSchema = z.object({
+export const Message_Sticker_Schema = z.object({
     msg_id: z.string(),
     text: z.string().optional(),
     attachments: z.array(
@@ -96,7 +96,7 @@ export const MessageStickerSchema = z.object({
     ),
 });
 
-export const MessageLinkSchema = z.object({
+export const Message_Link_Schema = z.object({
     msg_id: z.string(),
     text: z.string().optional(),
     attachments: z.array(
@@ -112,6 +112,6 @@ export const MessageLinkSchema = z.object({
     ),
 });
 
-export const CallSchema = z.object({
+export const Call_Schema = z.object({
     call_type: z.literal('AUDIO'),
 });

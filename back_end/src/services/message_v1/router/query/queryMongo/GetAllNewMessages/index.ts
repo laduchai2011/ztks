@@ -1,7 +1,7 @@
 import { getDbMonggo } from '@src/connect/mongo';
 import { NewMessageV1Field } from '@src/data_struct/message_v1';
 import { AllNewMessagesBodyField } from '@src/data_struct/message_v1/body';
-import { ZaloMessageType } from '@src/data_struct/zalo/hookData';
+import { ZaloMessageType } from '@src/data_struct/zalo/hook_data';
 
 export async function getAllNewMessages(
     allNewMessagesBody: AllNewMessagesBodyField

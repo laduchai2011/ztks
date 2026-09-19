@@ -1,18 +1,18 @@
 import z from 'zod';
 import {
-    MessageTextSchema,
-    MessageImageSchema,
-    MessageMultiImageSchema,
-    MessageVideoSchema,
-    MessageAudioSchema,
-    MessageFileSchema,
-    MessageStickerSchema,
-    MessageLinkSchema,
-    CallSchema,
-} from './messageType';
-import { Zalo_Event_Name_Enum } from '@src/data_struct/zalo/hookData/common';
+    Message_Text_Schema,
+    Message_Image_Schema,
+    Message_Multi_Image_Schema,
+    Message_Video_Schema,
+    Message_Audio_Schema,
+    Message_File_Schema,
+    Message_Sticker_Schema,
+    Message_Link_Schema,
+    Call_Schema,
+} from './message_type';
+import { Zalo_Event_Name_Enum } from '@src/data_struct/zalo/hook_data/common';
 
-const BaseEventSchema = {
+const Base_Event_Schema = {
     app_id: z.string(),
     oa_id: z.string(),
     chat_room_id: z.number().int(),
@@ -48,7 +48,7 @@ const BaseEventSchema = {
     }, z.date()),
 };
 
-const BaseCallEventSchema = {
+const Base_Call_Event_Schema = {
     app_id: z.string(),
     oa_id: z.string(),
     chat_room_id: z.number().int(),
@@ -93,15 +93,15 @@ const BaseCallEventSchema = {
 //     ...BaseEventSchema,
 //     message: MessageTextSchema,
 // });
-const UserMessageTextZodSchema = z.object({
+const User_Message_Text_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_send_text),
-    ...BaseEventSchema,
-    message: MessageTextSchema,
+    ...Base_Event_Schema,
+    message: Message_Text_Schema,
 });
-const OaMessageTextZodSchema = z.object({
+const Oa_Message_Text_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_send_text),
-    ...BaseEventSchema,
-    message: MessageTextSchema,
+    ...Base_Event_Schema,
+    message: Message_Text_Schema,
 });
 
 // const MessageImageZodSchema = z.object({
@@ -112,15 +112,15 @@ const OaMessageTextZodSchema = z.object({
 //     ...BaseEventSchema,
 //     message: z.union([MessageImageSchema, MessageMultiImageSchema]),
 // });
-const UserMessageImageZodSchema = z.object({
+const User_Message_Image_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_send_image),
-    ...BaseEventSchema,
-    message: z.union([MessageImageSchema, MessageMultiImageSchema]),
+    ...Base_Event_Schema,
+    message: z.union([Message_Image_Schema, Message_Multi_Image_Schema]),
 });
-const OaMessageImageZodSchema = z.object({
+const Oa_Message_Image_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_send_image),
-    ...BaseEventSchema,
-    message: z.union([MessageImageSchema, MessageMultiImageSchema]),
+    ...Base_Event_Schema,
+    message: z.union([Message_Image_Schema, Message_Multi_Image_Schema]),
 });
 
 // const MessageVideoZodSchema = z.object({
@@ -131,15 +131,15 @@ const OaMessageImageZodSchema = z.object({
 //     ...BaseEventSchema,
 //     message: MessageVideoSchema,
 // });
-const UserMessageVideoZodSchema = z.object({
+const User_Message_Video_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_send_video),
-    ...BaseEventSchema,
-    message: MessageVideoSchema,
+    ...Base_Event_Schema,
+    message: Message_Video_Schema,
 });
-const OaMessageVideoZodSchema = z.object({
+const Oa_Message_Video_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_send_video),
-    ...BaseEventSchema,
-    message: MessageVideoSchema,
+    ...Base_Event_Schema,
+    message: Message_Video_Schema,
 });
 
 // const MessageAudioZodSchema = z.object({
@@ -150,15 +150,15 @@ const OaMessageVideoZodSchema = z.object({
 //     ...BaseEventSchema,
 //     message: MessageAudioSchema,
 // });
-const UserMessageAudioZodSchema = z.object({
+const User_Message_Audio_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_send_audio),
-    ...BaseEventSchema,
-    message: MessageAudioSchema,
+    ...Base_Event_Schema,
+    message: Message_Audio_Schema,
 });
-const OaMessageAudioZodSchema = z.object({
+const Oa_Message_Audio_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_send_audio),
-    ...BaseEventSchema,
-    message: MessageAudioSchema,
+    ...Base_Event_Schema,
+    message: Message_Audio_Schema,
 });
 
 // const MessageFileZodSchema = z.object({
@@ -166,15 +166,15 @@ const OaMessageAudioZodSchema = z.object({
 //     ...BaseEventSchema,
 //     message: MessageFileSchema,
 // });
-const UserMessageFileZodSchema = z.object({
+const User_Message_File_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_send_file),
-    ...BaseEventSchema,
-    message: MessageFileSchema,
+    ...Base_Event_Schema,
+    message: Message_File_Schema,
 });
-const OaMessageFileZodSchema = z.object({
+const Oa_Message_File_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_send_file),
-    ...BaseEventSchema,
-    message: MessageFileSchema,
+    ...Base_Event_Schema,
+    message: Message_File_Schema,
 });
 
 // const MessageStickerZodSchema = z.object({
@@ -185,15 +185,15 @@ const OaMessageFileZodSchema = z.object({
 //     ...BaseEventSchema,
 //     message: MessageStickerSchema,
 // });
-const UserMessageStickerZodSchema = z.object({
+const User_Message_Sticker_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_send_sticker),
-    ...BaseEventSchema,
-    message: MessageStickerSchema,
+    ...Base_Event_Schema,
+    message: Message_Sticker_Schema,
 });
-const OaMessageStickerZodSchema = z.object({
+const Oa_Message_Sticker_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_send_sticker),
-    ...BaseEventSchema,
-    message: MessageStickerSchema,
+    ...Base_Event_Schema,
+    message: Message_Sticker_Schema,
 });
 
 // const MessageLinkZodSchema = z.object({
@@ -201,15 +201,15 @@ const OaMessageStickerZodSchema = z.object({
 //     ...BaseEventSchema,
 //     message: MessageLinkSchema,
 // });
-const UserMessageLinkZodSchema = z.object({
+const User_Message_Link_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_send_link),
-    ...BaseEventSchema,
-    message: MessageLinkSchema,
+    ...Base_Event_Schema,
+    message: Message_Link_Schema,
 });
-const OaMessageLinkZodSchema = z.object({
+const Oa_Message_Link_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_send_link),
-    ...BaseEventSchema,
-    message: MessageLinkSchema,
+    ...Base_Event_Schema,
+    message: Message_Link_Schema,
 });
 
 // const CallZodSchema = z.object({
@@ -217,49 +217,38 @@ const OaMessageLinkZodSchema = z.object({
 //     ...BaseCallEventSchema,
 //     ...CallSchema,
 // });
-const UserCallOaZodSchema = z.object({
+const User_Call_Oa_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_call_oa),
-    ...BaseCallEventSchema,
-    ...CallSchema.shape,
+    ...Base_Call_Event_Schema,
+    ...Call_Schema.shape,
 });
-const OaCallUserZodSchema = z.object({
+const Oa_Call_User_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_call_user),
-    ...BaseCallEventSchema,
-    ...CallSchema.shape,
+    ...Base_Call_Event_Schema,
+    ...Call_Schema.shape,
 });
 
-export const MessageZodSchema = z.discriminatedUnion('event_name', [
-    // MessageTextZodSchema,
-    UserMessageTextZodSchema,
-    OaMessageTextZodSchema,
-    // MessageImageZodSchema,
-    UserMessageImageZodSchema,
-    OaMessageImageZodSchema,
-    // MessageVideoZodSchema,
-    UserMessageVideoZodSchema,
-    OaMessageVideoZodSchema,
-    // MessageAudioZodSchema,
-    UserMessageAudioZodSchema,
-    OaMessageAudioZodSchema,
-    // MessageFileZodSchema,
-    UserMessageFileZodSchema,
-    OaMessageFileZodSchema,
-    // MessageStickerZodSchema,
-    UserMessageStickerZodSchema,
-    OaMessageStickerZodSchema,
-    // MessageLinkZodSchema,
-    UserMessageLinkZodSchema,
-    OaMessageLinkZodSchema,
+export const Message_Zod_Schema = z.discriminatedUnion('event_name', [
+    User_Message_Text_Zod_Schema,
+    Oa_Message_Text_Zod_Schema,
+    User_Message_Image_Zod_Schema,
+    Oa_Message_Image_Zod_Schema,
+    User_Message_Video_Zod_Schema,
+    Oa_Message_Video_Zod_Schema,
+    User_Message_Audio_Zod_Schema,
+    Oa_Message_Audio_Zod_Schema,
+    User_Message_File_Zod_Schema,
+    Oa_Message_File_Zod_Schema,
+    User_Message_Sticker_Zod_Schema,
+    Oa_Message_Sticker_Zod_Schema,
+    User_Message_Link_Zod_Schema,
+    Oa_Message_Link_Zod_Schema,
 ]);
-export const CallZodSchema = z.discriminatedUnion('event_name', [
-    // CallZodSchema,
-    UserCallOaZodSchema,
-    OaCallUserZodSchema,
-]);
+export const Call_Zod_Schema = z.discriminatedUnion('event_name', [User_Call_Oa_Zod_Schema, Oa_Call_User_Zod_Schema]);
 
-export type MessageSchemaType = z.infer<typeof MessageZodSchema> | z.infer<typeof CallZodSchema>;
+export type Message_Schema_Type = z.infer<typeof Message_Zod_Schema> | z.infer<typeof Call_Zod_Schema>;
 
-const Base1EventSchema = {
+const Base1_Event_Schema = {
     app_id: z.string(),
     oa_id: z.string(),
     chat_room_id: z.number().int(),
@@ -319,7 +308,7 @@ const Base1EventSchema = {
     }, z.date()),
 };
 
-const BaseCall1EventSchema = {
+const Base_Call1_Event_Schema = {
     app_id: z.string(),
     oa_id: z.string(),
     chat_room_id: z.number().int(),
@@ -388,15 +377,15 @@ const BaseCall1EventSchema = {
 //     ...Base1EventSchema,
 //     message: MessageTextSchema,
 // });
-const NewUserMessageTextZodSchema = z.object({
+const New_User_Message_Text_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_send_text),
-    ...Base1EventSchema,
-    message: MessageTextSchema,
+    ...Base1_Event_Schema,
+    message: Message_Text_Schema,
 });
-const NewOaMessageTextZodSchema = z.object({
+const New_Oa_Message_Text_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_send_text),
-    ...Base1EventSchema,
-    message: MessageTextSchema,
+    ...Base1_Event_Schema,
+    message: Message_Text_Schema,
 });
 
 // const NewMessageImageZodSchema = z.object({
@@ -407,15 +396,15 @@ const NewOaMessageTextZodSchema = z.object({
 //     ...Base1EventSchema,
 //     message: z.union([MessageImageSchema, MessageMultiImageSchema]),
 // });
-const NewUserMessageImageZodSchema = z.object({
+const New_User_Message_Image_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_send_image),
-    ...Base1EventSchema,
-    message: z.union([MessageImageSchema, MessageMultiImageSchema]),
+    ...Base1_Event_Schema,
+    message: z.union([Message_Image_Schema, Message_Multi_Image_Schema]),
 });
-const NewOaMessageImageZodSchema = z.object({
+const New_Oa_Message_Image_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_send_image),
-    ...Base1EventSchema,
-    message: z.union([MessageImageSchema, MessageMultiImageSchema]),
+    ...Base1_Event_Schema,
+    message: z.union([Message_Image_Schema, Message_Multi_Image_Schema]),
 });
 
 // const NewMessageVideoZodSchema = z.object({
@@ -426,15 +415,15 @@ const NewOaMessageImageZodSchema = z.object({
 //     ...Base1EventSchema,
 //     message: MessageVideoSchema,
 // });
-const NewUserMessageVideoZodSchema = z.object({
+const New_User_Message_Video_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_send_video),
-    ...Base1EventSchema,
-    message: MessageVideoSchema,
+    ...Base1_Event_Schema,
+    message: Message_Video_Schema,
 });
-const NewOaMessageVideoZodSchema = z.object({
+const New_Oa_Message_Video_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_send_video),
-    ...Base1EventSchema,
-    message: MessageVideoSchema,
+    ...Base1_Event_Schema,
+    message: Message_Video_Schema,
 });
 
 // const NewMessageAudioZodSchema = z.object({
@@ -445,15 +434,15 @@ const NewOaMessageVideoZodSchema = z.object({
 //     ...Base1EventSchema,
 //     message: MessageAudioSchema,
 // });
-const NewUserMessageAudioZodSchema = z.object({
+const New_User_Message_Audio_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_send_audio),
-    ...Base1EventSchema,
-    message: MessageAudioSchema,
+    ...Base1_Event_Schema,
+    message: Message_Audio_Schema,
 });
-const NewOaMessageAudioZodSchema = z.object({
+const New_Oa_Message_Audio_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_send_audio),
-    ...Base1EventSchema,
-    message: MessageAudioSchema,
+    ...Base1_Event_Schema,
+    message: Message_Audio_Schema,
 });
 
 // const NewMessageFileZodSchema = z.object({
@@ -461,15 +450,15 @@ const NewOaMessageAudioZodSchema = z.object({
 //     ...Base1EventSchema,
 //     message: MessageFileSchema,
 // });
-const NewUserMessageFileZodSchema = z.object({
+const New_User_Message_File_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_send_file),
-    ...Base1EventSchema,
-    message: MessageFileSchema,
+    ...Base1_Event_Schema,
+    message: Message_File_Schema,
 });
-const NewOaMessageFileZodSchema = z.object({
+const New_Oa_Message_File_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_send_file),
-    ...Base1EventSchema,
-    message: MessageFileSchema,
+    ...Base1_Event_Schema,
+    message: Message_File_Schema,
 });
 
 // const NewMessageStickerZodSchema = z.object({
@@ -480,15 +469,15 @@ const NewOaMessageFileZodSchema = z.object({
 //     ...Base1EventSchema,
 //     message: MessageStickerSchema,
 // });
-const NewUserMessageStickerZodSchema = z.object({
+const New_User_Message_Sticker_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_send_sticker),
-    ...Base1EventSchema,
-    message: MessageStickerSchema,
+    ...Base1_Event_Schema,
+    message: Message_Sticker_Schema,
 });
-const NewOaMessageStickerZodSchema = z.object({
+const New_Oa_Message_Sticker_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_send_sticker),
-    ...Base1EventSchema,
-    message: MessageStickerSchema,
+    ...Base1_Event_Schema,
+    message: Message_Sticker_Schema,
 });
 
 // const NewMessageLinkZodSchema = z.object({
@@ -496,15 +485,15 @@ const NewOaMessageStickerZodSchema = z.object({
 //     ...Base1EventSchema,
 //     message: MessageLinkSchema,
 // });
-const NewUserMessageLinkZodSchema = z.object({
+const New_User_Message_Link_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_send_link),
-    ...Base1EventSchema,
-    message: MessageLinkSchema,
+    ...Base1_Event_Schema,
+    message: Message_Link_Schema,
 });
-const NewOaMessageLinkZodSchema = z.object({
+const New_Oa_Message_Link_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_send_link),
-    ...Base1EventSchema,
-    message: MessageLinkSchema,
+    ...Base1_Event_Schema,
+    message: Message_Link_Schema,
 });
 
 // const NewCallZodSchema = z.object({
@@ -512,54 +501,50 @@ const NewOaMessageLinkZodSchema = z.object({
 //     ...BaseCall1EventSchema,
 //     ...CallSchema,
 // });
-const NewUserCallOaZodSchema = z.object({
+const New_User_Call_Oa_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.user_call_oa),
-    ...BaseCall1EventSchema,
-    ...CallSchema.shape,
+    ...Base_Call1_Event_Schema,
+    ...Call_Schema.shape,
 });
-const NewOaCallUserZodSchema = z.object({
+const New_Oa_Call_User_Zod_Schema = z.object({
     event_name: z.literal(Zalo_Event_Name_Enum.oa_call_user),
-    ...BaseCall1EventSchema,
-    ...CallSchema.shape,
+    ...Base_Call1_Event_Schema,
+    ...Call_Schema.shape,
 });
 
-export const NewMessageZodSchema = z.discriminatedUnion('event_name', [
-    // NewMessageTextZodSchema,
-    NewUserMessageTextZodSchema,
-    NewOaMessageTextZodSchema,
-    // NewMessageImageZodSchema,
-    NewUserMessageImageZodSchema,
-    NewOaMessageImageZodSchema,
-    // NewMessageVideoZodSchema,
-    NewUserMessageVideoZodSchema,
-    NewOaMessageVideoZodSchema,
-    // NewMessageAudioZodSchema,
-    NewUserMessageAudioZodSchema,
-    NewOaMessageAudioZodSchema,
-    // NewMessageFileZodSchema,
-    NewUserMessageFileZodSchema,
-    NewOaMessageFileZodSchema,
-    // NewMessageStickerZodSchema,
-    NewUserMessageStickerZodSchema,
-    NewOaMessageStickerZodSchema,
-    // NewMessageLinkZodSchema,
-    NewUserMessageLinkZodSchema,
-    NewOaMessageLinkZodSchema,
+export const New_Message_Zod_Schema = z.discriminatedUnion('event_name', [
+    New_User_Message_Text_Zod_Schema,
+    New_Oa_Message_Text_Zod_Schema,
+    New_User_Message_Image_Zod_Schema,
+    New_Oa_Message_Image_Zod_Schema,
+    New_User_Message_Video_Zod_Schema,
+    New_Oa_Message_Video_Zod_Schema,
+    New_User_Message_Audio_Zod_Schema,
+    New_Oa_Message_Audio_Zod_Schema,
+    New_User_Message_File_Zod_Schema,
+    New_Oa_Message_File_Zod_Schema,
+    New_User_Message_Sticker_Zod_Schema,
+    New_Oa_Message_Sticker_Zod_Schema,
+    New_User_Message_Link_Zod_Schema,
+    New_Oa_Message_Link_Zod_Schema,
 ]);
-export const NewCallZodSchema = z.discriminatedUnion('event_name', [NewUserCallOaZodSchema, NewOaCallUserZodSchema]);
+export const New_Call_Zod_Schema = z.discriminatedUnion('event_name', [
+    New_User_Call_Oa_Zod_Schema,
+    New_Oa_Call_User_Zod_Schema,
+]);
 
-export type NewMessageSchemaType = z.infer<typeof NewMessageZodSchema> | z.infer<typeof NewCallZodSchema>;
+export type New_Message_Schema_Type = z.infer<typeof New_Message_Zod_Schema> | z.infer<typeof New_Call_Zod_Schema>;
 
 // helper
-function normalizeToUTCStartOfDay(d: Date) {
+function normalize_To_UTC_Start_Of_Day(d: Date) {
     d.setUTCHours(0, 0, 0, 0);
     return d;
 }
-export function getDateKeyVN(date: Date) {
+export function get_Date_Key_VN(date: Date) {
     const vn = new Date(date.getTime() + 7 * 60 * 60 * 1000);
     return vn.toISOString().slice(0, 10);
 }
-export const MessageAmountInDaySchema = z.object({
+export const Message_Amount_In_Day_Schema = z.object({
     amount: z.number().int(),
     account_id: z.number().int(),
 
@@ -574,8 +559,8 @@ export const MessageAmountInDaySchema = z.object({
         else if (typeof val === 'string' || typeof val === 'number') d = new Date(val);
         else return val;
 
-        return normalizeToUTCStartOfDay(d);
+        return normalize_To_UTC_Start_Of_Day(d);
     }, z.date()),
 });
 
-export type MessageAmountInDayType = z.infer<typeof MessageAmountInDaySchema>;
+export type Message_Amount_In_Day_Type = z.infer<typeof Message_Amount_In_Day_Schema>;

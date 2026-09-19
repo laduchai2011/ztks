@@ -1,7 +1,7 @@
 import type { ConsumeMessage } from '@src/types/amqp';
 import { rabbit_server } from '@src/connect';
 import { MessageZaloField } from '../type';
-import { Hook_Data_Field, Hook_Call_Field } from '@src/data_struct/zalo/hookData';
+import { Hook_Data_Field, Hook_Call_Field } from '@src/data_struct/zalo/hook_data';
 import { Video_Message_Body_Field } from '../../data_struct/message_v1/body';
 import { Update_Statistics_Body_Field } from '@src/data_struct/statistics/body';
 

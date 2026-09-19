@@ -1,6 +1,6 @@
 import { getDbMonggo } from '@src/connect/mongo';
 import { MessageV1Field, CallV1Field, PagedMessageV1Field } from '@src/data_struct/message_v1';
-import { ZaloMessageType, ZaloCallType } from '@src/data_struct/zalo/hookData';
+import { ZaloMessageType, ZaloCallType } from '@src/data_struct/zalo/hook_data';
 
 export async function getMessagesFirst(
     chat_room_id: number,

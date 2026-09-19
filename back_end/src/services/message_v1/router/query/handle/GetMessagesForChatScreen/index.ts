@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { MyResponse } from '@src/data_struct/response';
 import { PagedMessageV1Field } from '@src/data_struct/message_v1';
 import { MessageV1BodyField } from '@src/data_struct/message_v1/body';
-import { ZaloMessageType, ZaloCallType } from '@src/data_struct/zalo/hookData';
+import { ZaloMessageType, ZaloCallType } from '@src/data_struct/zalo/hook_data';
 import { getMessagesFirst, getMessagesMore } from '../../queryMongo/GetMessageForChatScreen';
 
 class Handle_GetMessagesForChatScreen {

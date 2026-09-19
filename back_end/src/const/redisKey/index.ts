@@ -8,18 +8,18 @@ export const redisKey_memberReceiveMessage = isProduct
     ? 'redisKey_memberReceiveMessage'
     : 'redisKey_memberReceiveMessage_dev';
 
-export const prefix_cache_zaloApp_with_appId = isProduct
-    ? 'prefix_cache_zaloApp_with_appId'
-    : 'prefix_cache_zaloApp_with_appId_dev';
+export const prefix_cache__zalo_app_with_app_id = isProduct
+    ? 'prefix_cache__zalo_app_with_app_id'
+    : 'prefix_cache__zalo_app_with_app_id_dev';
 
-export const prefix_cache_zaloOa_list_with_zaloAppId = isProduct
-    ? 'prefix_cache_zaloOa_list_with_zaloAppId'
-    : 'prefix_cache_zaloOa_list_with_zaloAppId_dev';
+export const prefix_cache__zalo_oa_list_with_zalo_app_id = isProduct
+    ? 'prefix_cache__zalo_oa_list_with_zalo_app_id'
+    : 'prefix_cache__zalo_oa_list_with_zalo_app_id_dev';
 
 export const prefix_cache__zalo_access_token_with_zalo_oa_id = isProduct
     ? 'prefix_cache__zalo_access_token_with_zalo_oa_id'
     : 'prefix_cache__zalo_access_token_with_zalo_oa_id_dev';
 
-export const prefix_cache_zalo_message_wait_session_with_zaloOaId_userIdByApp = isProduct
-    ? 'prefix_cache_zalo_message_wait_session_with_zaloOaId_userIdByApp'
-    : 'prefix_cache_zalo_message_wait_session_with_zaloOaId_userIdByApp_dev';
+export const prefix_cache__zalo_message_wait_session_with_zalo_oa_id_user_id_by_app = isProduct
+    ? 'prefix_cache__zalo_message_wait_session_with_zalo_oa_id_user_id_by_app'
+    : 'prefix_cache__zalo_message_wait_session_with_zalo_oa_id_user_id_by_app_dev';

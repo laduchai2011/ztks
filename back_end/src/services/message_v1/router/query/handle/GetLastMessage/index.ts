@@ -5,7 +5,7 @@ import { MyResponse } from '@src/data_struct/response';
 import { MessageV1Field } from '@src/data_struct/message_v1';
 import { ChatRoomRoleField } from '@src/data_struct/chat_room';
 import { ChatRoomRoleWithCridAaidBodyField } from '@src/data_struct/chat_room/body';
-import { ZaloMessageType } from '@src/data_struct/zalo/hookData';
+import { ZaloMessageType } from '@src/data_struct/zalo/hook_data';
 import { getLastMessage } from '../../queryMongo/GetLastMessage';
 import { verifyRefreshToken } from '@src/token';
 import { CacheGetChatRoomRoleWithCridAaid } from '@src/const/redisKey/chat_room';

@@ -1,4 +1,4 @@
-import { HookDataField } from '@src/data_struct/hookData';
+import { HookDataField } from '@src/data_struct/hook_data';
 
 export interface MessageZaloField {
     data: HookDataField;

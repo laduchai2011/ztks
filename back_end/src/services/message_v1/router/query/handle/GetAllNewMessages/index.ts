@@ -6,7 +6,7 @@ import { NewMessageV1Field } from '@src/data_struct/message_v1';
 import { AllNewMessagesBodyField } from '@src/data_struct/message_v1/body';
 import { ChatRoomRoleField } from '@src/data_struct/chat_room';
 import { ChatRoomRoleWithCridAaidBodyField } from '@src/data_struct/chat_room/body';
-import { ZaloMessageType } from '@src/data_struct/zalo/hookData';
+import { ZaloMessageType } from '@src/data_struct/zalo/hook_data';
 import { getAllNewMessages } from '../../queryMongo/GetAllNewMessages';
 import { verifyRefreshToken } from '@src/token';
 import { CacheGetChatRoomRoleWithCridAaid } from '@src/const/redisKey/chat_room';

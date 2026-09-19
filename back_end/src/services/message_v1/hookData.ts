@@ -1,73 +1,76 @@
-import { consumeHookData } from '@src/messageQueue/Consumer';
+import { consume_Hook_Data } from '@src/messageQueue/Consumer';
 import { sendStringMessage } from '@src/messageQueue/Producer';
 import {
-    MessageSchemaType,
-    MessageZodSchema,
-    NewMessageSchemaType,
-    NewMessageZodSchema,
-    MessageAmountInDaySchema,
-    MessageAmountInDayType,
-    CallZodSchema,
-    getDateKeyVN,
+    Message_Schema_Type,
+    Message_Zod_Schema,
+    New_Message_Schema_Type,
+    New_Message_Zod_Schema,
+    Message_Amount_In_Day_Schema,
+    Message_Amount_In_Day_Type,
+    Call_Zod_Schema,
+    get_Date_Key_VN,
 } from '@src/schema/message';
-import { NewMessageV1Field, MessageAmountInDayField, NewCallV1Field } from '@src/data_struct/message_v1';
-import { ChatRoomRoleZodSchema, ChatRoomRoleSchemaType } from '@src/schema/chatRoom';
-import { SocketMessageField, MessageV1Field } from '@src/data_struct/message_v1';
-import { getDbMonggo } from '@src/connect/mongo';
+import { New_Message_V1_Field, Message_Amount_In_Day_Field, New_Call_V1_Field } from '@src/data_struct/message_v1';
+import { Chat_Room_Role_Zod_Schema, Chat_Room_Role_Schema_Type } from '@src/schema/chatRoom';
+import { Socket_Message_Field, Message_V1_Field } from '@src/data_struct/message_v1';
+import { get_Db_Monggo } from '@src/connect/mongo';
 import { my_log } from '@src/log';
-import { mssql_server } from '@src/connect';
+// import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { AccountReceiveMessageField } from '@src/data_struct/account';
-import { GetAccountReceiveMessageBodyField } from '@src/data_struct/account/body';
-import { ZaloAppField, ZaloOaField } from '@src/data_struct/zalo';
-import { ChatRoomField, ChatRoomRoleSchema } from '@src/data_struct/chat_room';
-import { UserTakeRoomToChatBodyField, ChatRoomBodyField } from '@src/data_struct/chat_room/body';
-import { CheckZaloAppWithAppIdBodyField, CheckZaloOaListWithZaloAppIdBodyField } from '@src/data_struct/zalo/body';
-import QueryDB_CheckZaloAppWithAppId from './handleHookData/queryDB/CheckZaloAppWithAppId';
-import QueryDB_CheckZaloOaListWithZaloAppId from './handleHookData/queryDB/CheckZaloOaListWithZaloAppId';
-import QueryDB_UserTakeRoomToChat from './handleHookData/queryDB/UserTakeRoomToChat';
-import QueryDB_GetAccountReceiveMessage from './handleHookData/queryDB/GetAccountReceiveMessage';
-import QueryDB_GetAllChatRoomRolesWithChatRoomId from './handleHookData/queryDB/GetAllChatRoomRolesWithChatRoomId';
-import MutateDB_CreateChatRoom from './handleHookData/mutateDB/CreateChatRoom';
-import { prefix_cache_zaloApp_with_appId, prefix_cache_zaloOa_list_with_zaloAppId } from '@src/const/redisKey';
+import { Account_Receive_Message_Field } from '@src/data_struct/account';
+import { Get_Account_Receive_Message_Body_Field } from '@src/data_struct/account/body';
+import { Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
+import { Chat_Room_Field, Chat_Room_Role_Schema } from '@src/data_struct/chat_room';
+import { User_Take_Room_To_Chat_Body_Field, Chat_Room_Body_Field } from '@src/data_struct/chat_room/body';
 import {
-    CacheGetAllChatRoomRoleWithCrid,
-    CacheGetChatRoomWithZaloOaIdUserIdByApp,
+    Check_Zalo_App_With_App_Id_Body_Field,
+    Check_Zalo_Oa_List_With_Zalo_App_Id_Body_Field,
+} from '@src/data_struct/zalo/body';
+import QueryDB_Check_Zalo_App_With_App_Id from './handleHookData/queryDB/Check_Zalo_App_With_App_Id';
+import QueryDB_Check_Zalo_Oa_List_With_Zalo_App_Id from './handleHookData/queryDB/Check_Zalo_Oa_List_With_Zalo_App_Id';
+import QueryDB_User_Take_Room_To_Chat from './handleHookData/queryDB/User_Take_Room_To_Chat';
+import QueryDB_Get_Account_Receive_Message from './handleHookData/queryDB/Get_Account_Receive_Message';
+import QueryDB_Get_All_Chat_Room_Roles_With_Chat_Room_Id from './handleHookData/queryDB/Get_All_Chat_Room_Roles_With_Chat_Room_Id';
+import MutateDB_Create_Chat_Room from './handleHookData/mutateDB/Create_Chat_Room';
+import { prefix_cache__zalo_app_with_app_id, prefix_cache__zalo_oa_list_with_zalo_app_id } from '@src/const/redisKey';
+import {
+    Cache_Get_All_Chat_Room_Role_With_Crid,
+    Cache_Get_Chat_Room_With_Zalo_Oa_Id_User_Id_By_App,
 } from '@src/const/redisKey/chat_room';
-import { IsPassField, WaitSessionField } from './type';
+import { Is_Pass_Field, Wait_Session_Field } from './type';
 import {
-    HookDataField,
-    HookDataSchema,
-    ZaloMessageType,
-    MessageVideoField,
-    MessageTextField,
-    HookCallField,
-    HookCallSchema,
-    ZaloCallType,
-} from '@src/data_struct/zalo/hookData';
-import { feedbackToTakeChatSession } from './handleHookData/feedbackToTakeChatSession';
-import { ChatSessionField } from '@src/data_struct/chat_session';
-import { sendMessageToUser } from './sendMessageToUser';
+    Hook_Data_Field,
+    Hook_Data_Schema,
+    Zalo_Message_Type,
+    Message_Video_Field,
+    Message_Text_Field,
+    Hook_Call_Field,
+    Hook_Call_Schema,
+    Zalo_Call_Type,
+} from '@src/data_struct/zalo/hook_data';
+import { feedback_To_Take_Chat_Session } from './handleHookData/feedback_To_Take_Chat_Session';
+import { Chat_Session_Field } from '@src/data_struct/chat_session';
+import { send_Message_To_User } from './send_Message_To_User';
 import { ensureIndexes } from './handleHookData/ensureIndexes';
 import { getEnv } from '@src/mode';
 import { myEnv } from '@src/mode/type';
-import { Zalo_Event_Name_Enum } from '@src/data_struct/zalo/hookData/common';
+import { Zalo_Event_Name_Enum } from '@src/data_struct/zalo/hook_data/common';
 import handleCreateCallPermit from './handleCreateCallPermit';
 import { hookCall_getChatRoom, hookCall_feedbackToTakeChatSession } from './handleHookCall';
 
 const prefix = getEnv() === myEnv.Dev ? 'dev' : '';
 
-mssql_server.init();
+// mssql_server.init();
 
 const serviceRedis = ServiceRedis.getInstance();
 serviceRedis.init();
 
 ensureIndexes();
 
-const timeExpireat = 60 * 3; // 3p
+const time_expireat = 60 * 3; // 3p
 
 export function hookData() {
-    consumeHookData(`zalo_hook_data_queue_${prefix}`, async (data) => {
+    consume_Hook_Data(`zalo_hook_data_queue_${prefix}`, async (data) => {
         try {
             // const chatRommRoleSchema: ChatRoomRoleSchema = {
             //     authorized_account_id: 1,
@@ -97,7 +100,7 @@ export function hookData() {
                 if ('call_id' in data) {
                     const app_id = data.app_id;
                     const oa_id = data.oa_id;
-                    let chatRoom: ChatRoomField | undefined = undefined;
+                    let chat_room: Chat_Room_Field | undefined = undefined;
 
                     const { isPass, zaloApp, zaloOa } = await isPass_App_Oa(app_id, oa_id);
                     if (!isPass) return;
@@ -454,12 +457,12 @@ export function hookData() {
     });
 }
 
-async function isPass_App_Oa(app_id: string, oa_id: string): Promise<IsPassField> {
-    const checkZaloAppWithAppIdBody: CheckZaloAppWithAppIdBodyField = {
-        appId: app_id,
+async function is_Pass_App_Oa(app_id: string, oa_id: string): Promise<Is_Pass_Field> {
+    const check_zalo_app_with_app_id_body: Check_Zalo_App_With_App_Id_Body_Field = {
+        app_id: app_id,
     };
-    const zaloApp = await checkZaloApp(checkZaloAppWithAppIdBody);
-    if (!zaloApp) return { isPass: false, zaloApp: null, zaloOa: null };
+    const zalo_app = await checkZaloApp(checkZaloAppWithAppIdBody);
+    if (!zalo_app) return { isPass: false, zaloApp: null, zaloOa: null };
 
     const checkZaloOaListWithZaloAppIdBody: CheckZaloOaListWithZaloAppIdBodyField = {
         zaloAppId: zaloApp.id,
@@ -482,40 +485,32 @@ async function isPass_App_Oa(app_id: string, oa_id: string): Promise<IsPassField
     return { isPass: false, zaloApp: zaloApp, zaloOa: null };
 }
 
-async function checkZaloApp(
-    checkZaloAppWithAppIdBody: CheckZaloAppWithAppIdBodyField
-): Promise<ZaloAppField | undefined> {
-    const app_id = checkZaloAppWithAppIdBody.appId;
-    const keyRedis = `${prefix_cache_zaloApp_with_appId}_${app_id}`;
-    const zaloApp = await serviceRedis.getData<ZaloAppField>(keyRedis);
+async function check_Zalo_App(
+    check_zalo_app_with_app_id_body: Check_Zalo_App_With_App_Id_Body_Field
+): Promise<Zalo_App_Field | undefined> {
+    const app_id = check_zalo_app_with_app_id_body.app_id;
+    const key_redis = `${prefix_cache__zalo_app_with_app_id}_${app_id}`;
+    const zalo_app = await serviceRedis.getData<Zalo_App_Field>(key_redis);
 
-    if (zaloApp) {
-        return zaloApp;
+    if (zalo_app) {
+        return zalo_app;
     }
 
-    const queryDB = new QueryDB_CheckZaloAppWithAppId();
-    queryDB.setCheckZaloAppWithAppIdBody(checkZaloAppWithAppIdBody);
-
-    const connection_pool = mssql_server.get_connectionPool();
-    if (connection_pool) {
-        queryDB.set_connection_pool(connection_pool);
-    } else {
-        my_log.withYellow('Kết nối cơ sở dữ liệu không thành công !');
-        return;
-    }
+    const queryDB = new QueryDB_Check_Zalo_App_With_App_Id();
+    queryDB.set_Check_Zalo_App_With_App_Id_Body(check_zalo_app_with_app_id_body);
 
     try {
         const result = await queryDB.run();
-        if (result?.recordset.length && result?.recordset.length > 0) {
-            const zaloApp1: ZaloAppField = { ...result?.recordset[0] };
+        if (result) {
+            const zalo_app_1: Zalo_App_Field = { ...result };
 
-            const isSet = await serviceRedis.setData<ZaloAppField>(keyRedis, zaloApp1, timeExpireat);
-            if (!isSet) {
+            const is_set = await serviceRedis.setData<Zalo_App_Field>(key_redis, zalo_app_1, time_expireat);
+            if (!is_set) {
                 console.error('Failed to set zaloApp in cookie in Redis');
                 return;
             }
 
-            return zaloApp1;
+            return zalo_app_1;
         } else {
             return;
         }
@@ -525,40 +520,32 @@ async function checkZaloApp(
     }
 }
 
-async function checkZaloOa(
-    checkZaloOaListWithZaloAppIdBody: CheckZaloOaListWithZaloAppIdBodyField
-): Promise<ZaloOaField[] | undefined> {
-    const zaloAppId = checkZaloOaListWithZaloAppIdBody.zaloAppId;
-    const keyRedis = `${prefix_cache_zaloOa_list_with_zaloAppId}_${zaloAppId}`;
-    const zaloOaList = await serviceRedis.getData<ZaloOaField[]>(keyRedis);
+async function check_Zalo_Oa(
+    check_zalo_oa_list_with_zalo_app_id_body: Check_Zalo_Oa_List_With_Zalo_App_Id_Body_Field
+): Promise<Zalo_Oa_Field[] | undefined> {
+    const zalo_app_id = check_zalo_oa_list_with_zalo_app_id_body.zalo_app_id;
+    const key_redis = `${prefix_cache__zalo_oa_list_with_zalo_app_id}_${zalo_app_id}`;
+    const zalo_oa_list = await serviceRedis.getData<Zalo_Oa_Field[]>(key_redis);
 
-    if (zaloOaList) {
-        return zaloOaList;
+    if (zalo_oa_list) {
+        return zalo_oa_list;
     }
 
-    const queryDB = new QueryDB_CheckZaloOaListWithZaloAppId();
-    queryDB.setCheckZaloOaListWithZaloAppIdBody(checkZaloOaListWithZaloAppIdBody);
-
-    const connection_pool = mssql_server.get_connectionPool();
-    if (connection_pool) {
-        queryDB.set_connection_pool(connection_pool);
-    } else {
-        my_log.withYellow('Kết nối cơ sở dữ liệu không thành công !');
-        return;
-    }
+    const queryDB = new QueryDB_Check_Zalo_Oa_List_With_Zalo_App_Id();
+    queryDB.set_Check_Zalo_Oa_List_With_Zalo_App_Id_Body(check_zalo_oa_list_with_zalo_app_id_body);
 
     try {
         const result = await queryDB.run();
-        if (result?.recordset.length && result?.recordset.length > 0) {
-            const zaloOaList: ZaloOaField[] = result?.recordset;
+        if (result) {
+            const zalo_oa_list: Zalo_Oa_Field[] = result;
 
-            const isSet = await serviceRedis.setData<ZaloOaField[]>(keyRedis, zaloOaList, timeExpireat);
-            if (!isSet) {
+            const is_set = await serviceRedis.setData<Zalo_Oa_Field[]>(key_redis, zalo_oa_list, time_expireat);
+            if (!is_set) {
                 console.error('Failed to set zaloApp in cookie in Redis');
                 return;
             }
 
-            return zaloOaList;
+            return zalo_oa_list;
         } else {
             return;
         }
@@ -568,35 +555,35 @@ async function checkZaloOa(
     }
 }
 
-function determineOaId(hookData: HookDataField): string | null {
-    const eventName = hookData.event_name;
+function determine_Oa_Id(hook_data: Hook_Data_Field): string | null {
+    const event_name = hook_data.event_name;
     let oa_id: string | null = null;
-    const isUserSend = eventName.startsWith('user_send');
-    const isOaSend = eventName.startsWith('oa_send');
+    const is_user_send = event_name.startsWith('user_send');
+    const is_oa_send = event_name.startsWith('oa_send');
 
-    if (isUserSend) {
-        oa_id = hookData.recipient.id;
+    if (is_user_send) {
+        oa_id = hook_data.recipient.id;
     }
 
-    if (isOaSend) {
-        oa_id = hookData.sender.id;
+    if (is_oa_send) {
+        oa_id = hook_data.sender.id;
     }
 
     return oa_id;
 }
 
-function determineSenderIdOfUser(hookData: HookDataField): string | null {
-    const eventName = hookData.event_name;
+function determine_Sender_Id_Of_User(hook_data: Hook_Data_Field): string | null {
+    const event_name = hook_data.event_name;
     let oa_id: string | null = null;
-    const isUserSend = eventName.startsWith('user_send');
-    const isOaSend = eventName.startsWith('oa_send');
+    const is_user_send = event_name.startsWith('user_send');
+    const is_oa_send = event_name.startsWith('oa_send');
 
-    if (isUserSend) {
-        oa_id = hookData.sender.id;
+    if (is_user_send) {
+        oa_id = hook_data.sender.id;
     }
 
-    if (isOaSend) {
-        oa_id = hookData.recipient.id;
+    if (is_oa_send) {
+        oa_id = hook_data.recipient.id;
     }
 
     return oa_id;

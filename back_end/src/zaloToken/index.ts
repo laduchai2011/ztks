@@ -4,7 +4,7 @@ import LockError from 'redlock';
 import { serviceRedlock } from '@src/connect';
 // import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { Token_Res_Field } from '@src/data_struct/tokenZalo';
+import { Token_Res_Field } from '@src/data_struct/token_zalo';
 import { Zalo_Oa_Token_Field, Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
 import { prefix_cache__zalo_access_token_with_zalo_oa_id } from '@src/const/redisKey';
 import QueryDB_Get_Zalo_Oa_Token_With_Fk from './Get_Zalo_Oa_Token_With_Fk';

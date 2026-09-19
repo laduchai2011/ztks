@@ -1,18 +1,18 @@
-import { ZaloAppField, ZaloOaField } from '@src/data_struct/zalo';
-import { HookDataField } from '@src/data_struct/zalo/hookData';
-import { ChatSessionField } from '@src/data_struct/chat_session';
+import { Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
+import { Hook_Data_Field } from '@src/data_struct/zalo/hook_data';
+import { Chat_Session_Field } from '@src/data_struct/chat_session';
 
-export interface IsPassField {
-    isPass: boolean;
-    zaloApp: ZaloAppField | null;
-    zaloOa: ZaloOaField | null;
+export interface Is_Pass_Field {
+    is_pass: boolean;
+    zalo_app: Zalo_App_Field | null;
+    zalo_oa: Zalo_Oa_Field | null;
 }
 
-export interface WaitSessionField {
-    hookDatas: HookDataField[];
-    isSession: boolean;
+export interface Wait_Session_Field {
+    hook_datas: Hook_Data_Field[];
+    is_session: boolean;
     index: number;
-    maxIndex: number;
+    max_index: number;
     final: boolean;
-    chatSession?: ChatSessionField;
+    chat_session?: Chat_Session_Field;
 }

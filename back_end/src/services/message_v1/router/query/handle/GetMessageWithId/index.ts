@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { MyResponse } from '@src/data_struct/response';
 import { MessageV1Field } from '@src/data_struct/message_v1';
-import { ZaloMessageType } from '@src/data_struct/zalo/hookData';
+import { ZaloMessageType } from '@src/data_struct/zalo/hook_data';
 import { getMessageWithId } from '../../queryMongo/GetMessageWithId';
 
 class Handle_GetMessageWithId {
