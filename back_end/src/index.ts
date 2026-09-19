@@ -61,8 +61,8 @@ app.use(`${apiString}/hello`, (req, res) => {
     }
 
     if (services.includes('video')) {
-        const service_video = (await import('./services/video')).default;
-        app.use(`${prefix}/service_video`, service_video);
+        // const service_video = (await import('./services/video')).default;
+        // app.use(`${prefix}/service_video`, service_video);
         const service_video_v1 = (await import('./services/video_v1')).default;
         app.use(`${prefix}/service_video_v1`, service_video_v1);
     }

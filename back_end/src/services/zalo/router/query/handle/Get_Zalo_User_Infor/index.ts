@@ -50,14 +50,12 @@ class Handle_Get_Zalo_User_Infor {
         try {
             const result = await queryDB.run();
             if (result) {
-                const zalo_App: Zalo_App_Field = { ...result };
-
-                const is_set = await this._serviceRedis.setData<Zalo_App_Field>(key_redis, zalo_app, time_expireat);
+                const is_set = await this._serviceRedis.setData<Zalo_App_Field>(key_redis, result, time_expireat);
                 if (!is_set) {
                     console.error('Failed to set zaloApp in Redis', key_redis);
                 }
 
-                res.locals.zalo_app = zalo_app;
+                res.locals.zalo_app = result;
                 next();
                 return;
             } else {

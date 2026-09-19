@@ -1,22 +1,23 @@
 import { Request, Response, NextFunction } from 'express';
 import { My_Response_Field } from '@src/data_struct/response';
-import { Outbound_Body_Field } from '@src/data_struct/call/body';
+import { Check_Consent_Field } from '@src/data_struct/call';
+import { Check_Consent_Body_Field } from '@src/data_struct/call/body';
 import { verify_refresh_token } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 import axios from 'axios';
 import { get_Access_Token, refresh_Access_Token } from '@src/zaloToken';
 // import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 
-const API_OUTBOUND = 'https://openapi.zalo.me/v3.0/oa/call/outbound';
+const API_CHECK_CONSENT = 'https://openapi.zalo.me/v2.0/oa/call/checkconsent';
 
-class Handle_Outbound {
-    setup = async (req: Request<any, any, Outbound_Body_Field>, res: Response, next: NextFunction) => {
+class Handle_Check_Consent {
+    setup = async (req: Request<any, any, Check_Consent_Body_Field>, res: Response, next: NextFunction) => {
         const my_response: My_Response_Field<any> = {
             is_success: false,
-            message: 'Bắt đầu (Handle_Outbound-setup)',
+            message: 'Bắt đầu (Handle_Check_Consent-setup)',
         };
 
-        const outbound_body = req.body;
+        const check_consent_body = req.body;
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
@@ -35,8 +36,8 @@ class Handle_Outbound {
             }
 
             const { id } = verify_refreshToken;
-            outbound_body.account_id = id;
-            res.locals.outbound_body = outbound_body;
+            check_consent_body.account_id = id;
+            res.locals.check_consent_body = check_consent_body;
 
             next();
             return;
@@ -48,13 +49,13 @@ class Handle_Outbound {
     };
 
     main = async (_: Request, res: Response) => {
-        const outbound_body = res.locals.outbound_body as Outbound_Body_Field;
-        const zalo_app = outbound_body.zalo_app;
-        const zalo_oa = outbound_body.zalo_oa;
+        const check_consent_body = res.locals.check_consent_body as Check_Consent_Body_Field;
+        const zalo_app = check_consent_body.zalo_app;
+        const zalo_oa = check_consent_body.zalo_oa;
 
-        const my_response: My_Response_Field<any> = {
+        const my_response: My_Response_Field<Check_Consent_Field> = {
             is_success: false,
-            message: 'Bắt đầu (Handle_Outbound-main)',
+            message: 'Bắt đầu (Handle_Check_Consent-main)',
         };
 
         let token: string | undefined = undefined;
@@ -65,19 +66,28 @@ class Handle_Outbound {
             token = await refresh_Access_Token(zalo_app, zalo_oa, 10);
         }
 
-        const body = {
-            user_id: outbound_body.user_id,
-            agent_id: outbound_body.agent_id,
-            call_type: outbound_body.call_type,
-        };
+        // const body = {
+        //     phone: requestConsentBody.phone,
+        //     call_type: requestConsentBody.call_type,
+        //     reason_code: requestConsentBody.reason_code,
+        // };
 
-        const response = await axios.post(API_OUTBOUND, body, {
-            headers: {
-                'Content-Type': 'application/json',
-                access_token: token,
-            },
-        });
+        const response = await axios.get<Check_Consent_Field>(
+            `${API_CHECK_CONSENT}?data=${JSON.stringify({ phone: check_consent_body.phone })}`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    access_token: token,
+                },
+            }
+        );
+
+        my_response.data = response.data;
+        my_response.message = response.data.message;
+        my_response.is_success = true;
+        res.status(200).json(my_response);
+        return;
     };
 }
 
-export default Handle_Outbound;
+export default Handle_Check_Consent;
