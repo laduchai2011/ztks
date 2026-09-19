@@ -28,7 +28,7 @@ export interface Socket_Message_Field {
 
 export interface Message_Amount_In_Day_Field {
     amount: number;
-    dateKey: string;
+    date_key: string;
     account_id: string;
     timestamp: Date;
 }

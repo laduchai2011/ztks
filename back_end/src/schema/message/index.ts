@@ -15,11 +15,11 @@ import { Zalo_Event_Name_Enum } from '@src/data_struct/zalo/hook_data/common';
 const Base_Event_Schema = {
     app_id: z.string(),
     oa_id: z.string(),
-    chat_room_id: z.number().int(),
+    chat_room_id: z.string(),
     user_id_by_app: z.string(),
     sender_id: z.string(),
     recipient_id: z.string(),
-    reply_account_id: z.number().int(),
+    reply_account_id: z.string(),
     is_seen: z.boolean(),
     message_id: z.string(),
     // timestamp: z.coerce.date(),
@@ -51,7 +51,7 @@ const Base_Event_Schema = {
 const Base_Call_Event_Schema = {
     app_id: z.string(),
     oa_id: z.string(),
-    chat_room_id: z.number().int(),
+    chat_room_id: z.string(),
     user_id_by_app: z.string(),
     user_id: z.string(),
     call_id: z.string(),
@@ -60,7 +60,7 @@ const Base_Call_Event_Schema = {
     call_duration: z.string(),
     talk_time: z.string(),
     status_code: z.number(),
-    reply_account_id: z.number().int(),
+    reply_account_id: z.string(),
     is_seen: z.boolean(),
     // timestamp: z.coerce.date(),
     timestamp: z.preprocess((val) => {
@@ -251,11 +251,11 @@ export type Message_Schema_Type = z.infer<typeof Message_Zod_Schema> | z.infer<t
 const Base1_Event_Schema = {
     app_id: z.string(),
     oa_id: z.string(),
-    chat_room_id: z.number().int(),
+    chat_room_id: z.string(),
     user_id_by_app: z.string(),
     sender_id: z.string(),
     recipient_id: z.string(),
-    reply_account_id: z.number().int(),
+    reply_account_id: z.string(),
     is_seen: z.boolean(),
     message_id: z.string(),
     // timestamp: z.coerce.date(),
@@ -282,7 +282,7 @@ const Base1_Event_Schema = {
 
         return val;
     }, z.date()),
-    account_id: z.number().int(),
+    account_id: z.string(),
     created_at: z.preprocess((val) => {
         if (val instanceof Date) return val;
 
@@ -311,7 +311,7 @@ const Base1_Event_Schema = {
 const Base_Call1_Event_Schema = {
     app_id: z.string(),
     oa_id: z.string(),
-    chat_room_id: z.number().int(),
+    chat_room_id: z.string(),
     user_id_by_app: z.string(),
     user_id: z.string(),
     call_id: z.string(),
@@ -320,7 +320,7 @@ const Base_Call1_Event_Schema = {
     call_duration: z.string(),
     talk_time: z.string(),
     status_code: z.number(),
-    reply_account_id: z.number().int(),
+    reply_account_id: z.string(),
     is_seen: z.boolean(),
     // timestamp: z.coerce.date(),
     timestamp: z.preprocess((val) => {
@@ -346,7 +346,7 @@ const Base_Call1_Event_Schema = {
 
         return val;
     }, z.date()),
-    account_id: z.number().int(),
+    account_id: z.string(),
     created_at: z.preprocess((val) => {
         if (val instanceof Date) return val;
 
@@ -546,10 +546,10 @@ export function get_Date_Key_VN(date: Date) {
 }
 export const Message_Amount_In_Day_Schema = z.object({
     amount: z.number().int(),
-    account_id: z.number().int(),
+    account_id: z.string(),
 
     // ✅ thêm field này (QUAN TRỌNG)
-    dateKey: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    date_key: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
 
     // ✅ normalize timestamp
     timestamp: z.preprocess((val) => {

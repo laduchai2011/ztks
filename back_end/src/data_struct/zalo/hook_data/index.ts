@@ -1,14 +1,14 @@
-import { Zalo_Event_Name_Enum } from "./common";
+import { Zalo_Event_Name_Enum } from './common';
 
 export interface Hook_Data_Schema<T = Zalo_Message_Type> {
     event_name: Zalo_Event_Name_Enum;
     app_id: string;
     oa_id: string;
-    chat_room_id: number;
+    chat_room_id: string;
     user_id_by_app: string;
     sender_id: string;
     recipient_id: string;
-    reply_account_id: number;
+    reply_account_id: string;
     message_id: string;
     message: T;
     is_seen: boolean;
@@ -170,7 +170,7 @@ export interface Hook_Call_Schema<T = Zalo_Call_Type> {
     event_name: Zalo_Event_Name_Enum;
     app_id: string;
     oa_id: string;
-    chat_room_id: number;
+    chat_room_id: string;
     user_id_by_app: string;
     user_id: string;
     call_id: string;
@@ -180,7 +180,7 @@ export interface Hook_Call_Schema<T = Zalo_Call_Type> {
     call_duration: string;
     talk_time: string;
     status_code: number;
-    reply_account_id: number;
+    reply_account_id: string;
     is_seen: boolean;
     timestamp: Date;
 }

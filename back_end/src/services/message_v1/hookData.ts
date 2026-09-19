@@ -51,12 +51,12 @@ import {
 import { feedback_To_Take_Chat_Session } from './handleHookData/feedback_To_Take_Chat_Session';
 import { Chat_Session_Field } from '@src/data_struct/chat_session';
 import { send_Message_To_User } from './send_Message_To_User';
-import { ensureIndexes } from './handleHookData/ensureIndexes';
+import { ensure_Indexes } from './handleHookData/ensure_Indexes';
 import { getEnv } from '@src/mode';
 import { myEnv } from '@src/mode/type';
 import { Zalo_Event_Name_Enum } from '@src/data_struct/zalo/hook_data/common';
-import handleCreateCallPermit from './handleCreateCallPermit';
-import { hookCall_getChatRoom, hookCall_feedbackToTakeChatSession } from './handleHookCall';
+import handleCreateCallPermit from './handle_Create_Call_Permit';
+import { hook_Call_Get_Chat_Room, hook_Call_Feedback_To_Take_Chat_Session } from './handle_Hook_Call';
 
 const prefix = getEnv() === myEnv.Dev ? 'dev' : '';
 
@@ -65,7 +65,7 @@ const prefix = getEnv() === myEnv.Dev ? 'dev' : '';
 const serviceRedis = ServiceRedis.getInstance();
 serviceRedis.init();
 
-ensureIndexes();
+ensure_Indexes();
 
 const time_expireat = 60 * 3; // 3p
 
@@ -102,12 +102,12 @@ export function hookData() {
                     const oa_id = data.oa_id;
                     let chat_room: Chat_Room_Field | undefined = undefined;
 
-                    const { isPass, zaloApp, zaloOa } = await isPass_App_Oa(app_id, oa_id);
-                    if (!isPass) return;
-                    if (!zaloApp) return;
-                    if (!zaloOa) return;
+                    const { is_pass, zalo_app, zalo_oa } = await is_Pass_App_Oa(app_id, oa_id);
+                    if (!is_pass) return;
+                    if (!zalo_app) return;
+                    if (!zalo_oa) return;
 
-                    chatRoom = await hookCall_getChatRoom(data, zaloOa);
+                    chat_room = await hookCall_getChatRoom(data, zaloOa);
 
                     if (!chatRoom) {
                         hookCall_feedbackToTakeChatSession(zaloApp, zaloOa, data);
@@ -461,28 +461,28 @@ async function is_Pass_App_Oa(app_id: string, oa_id: string): Promise<Is_Pass_Fi
     const check_zalo_app_with_app_id_body: Check_Zalo_App_With_App_Id_Body_Field = {
         app_id: app_id,
     };
-    const zalo_app = await checkZaloApp(checkZaloAppWithAppIdBody);
-    if (!zalo_app) return { isPass: false, zaloApp: null, zaloOa: null };
+    const zalo_app = await check_Zalo_App(check_zalo_app_with_app_id_body);
+    if (!zalo_app) return { is_pass: false, zalo_app: null, zalo_oa: null };
 
-    const checkZaloOaListWithZaloAppIdBody: CheckZaloOaListWithZaloAppIdBodyField = {
-        zaloAppId: zaloApp.id,
+    const check_zalo_oa_list_with_zalo_app_id_body: Check_Zalo_Oa_List_With_Zalo_App_Id_Body_Field = {
+        zalo_app_id: zalo_app.id,
     };
-    const zaloOaList = await checkZaloOa(checkZaloOaListWithZaloAppIdBody);
-    if (!zaloOaList) return { isPass: false, zaloApp: zaloApp, zaloOa: null };
-    let existOA: boolean = false;
+    const zalo_oa_list = await check_Zalo_Oa(check_zalo_oa_list_with_zalo_app_id_body);
+    if (!zalo_oa_list) return { is_pass: false, zalo_app: zalo_app, zalo_oa: null };
+    let exist_oa: boolean = false;
     let oa_in_index: number = -1;
-    for (let i: number = 0; i < zaloOaList.length; i++) {
-        if (oa_id === zaloOaList[i].oaId) {
-            existOA = true;
+    for (let i: number = 0; i < zalo_oa_list.length; i++) {
+        if (oa_id === zalo_oa_list[i].oa_id) {
+            exist_oa = true;
             oa_in_index = i;
             break;
         }
     }
 
-    if (existOA) {
-        return { isPass: true, zaloApp: zaloApp, zaloOa: zaloOaList[oa_in_index] };
+    if (exist_oa) {
+        return { is_pass: true, zalo_app: zalo_app, zalo_oa: zalo_oa_list[oa_in_index] };
     }
-    return { isPass: false, zaloApp: zaloApp, zaloOa: null };
+    return { is_pass: false, zalo_app: zalo_app, zalo_oa: null };
 }
 
 async function check_Zalo_App(
@@ -589,43 +589,36 @@ function determine_Sender_Id_Of_User(hook_data: Hook_Data_Field): string | null 
     return oa_id;
 }
 
-async function getChatRoom(hookData: HookDataField, zaloOa: ZaloOaField): Promise<ChatRoomField | undefined> {
-    const userIdByApp = hookData.user_id_by_app;
-    const zaloOaId = zaloOa.id;
-    const userTakeRoomToChatBody: UserTakeRoomToChatBodyField = {
-        userIdByApp: userIdByApp,
-        zaloOaId: zaloOaId,
+async function get_Chat_Room(hook_data: Hook_Data_Field, zalo_oa: Zalo_Oa_Field): Promise<Chat_Room_Field | undefined> {
+    const user_id_by_app = hook_data.user_id_by_app;
+    const zalo_oa_id = zalo_oa.id;
+    const user_take_room_to_chat_body: User_Take_Room_To_Chat_Body_Field = {
+        user_id_by_app: user_id_by_app,
+        zalo_oa_id: zalo_oa_id,
     };
 
-    const cacheGetChatRoomWithZaloOaIdUserIdByApp = new CacheGetChatRoomWithZaloOaIdUserIdByApp();
-    await cacheGetChatRoomWithZaloOaIdUserIdByApp.init();
-    cacheGetChatRoomWithZaloOaIdUserIdByApp.setBody({ zaloOaId: zaloOaId, userIdByApp: userIdByApp });
+    const cache_get_chat_room_with_zalo_oa_id_user_id_by_app = new Cache_Get_Chat_Room_With_Zalo_Oa_Id_User_Id_By_App();
+    await cache_get_chat_room_with_zalo_oa_id_user_id_by_app.init();
+    cache_get_chat_room_with_zalo_oa_id_user_id_by_app.set_Body({
+        zalo_oa_id: zalo_oa_id,
+        user_id_by_app: user_id_by_app,
+    });
 
-    const chatRoom_cache = await cacheGetChatRoomWithZaloOaIdUserIdByApp.getData();
+    const chat_room_cache = await cache_get_chat_room_with_zalo_oa_id_user_id_by_app.get_Data();
 
-    if (chatRoom_cache) {
-        return chatRoom_cache;
+    if (chat_room_cache) {
+        return chat_room_cache;
     }
 
-    const queryDB = new QueryDB_UserTakeRoomToChat();
-    queryDB.setUserTakeRoomToChatBody(userTakeRoomToChatBody);
-
-    const connection_pool = mssql_server.get_connectionPool();
-    if (connection_pool) {
-        queryDB.set_connection_pool(connection_pool);
-    } else {
-        my_log.withYellow('Kết nối cơ sở dữ liệu không thành công !');
-        return;
-    }
+    const queryDB = new QueryDB_User_Take_Room_To_Chat();
+    queryDB.set_User_Take_Room_To_Chat_Body(user_take_room_to_chat_body);
 
     try {
         const result = await queryDB.run();
-        if (result?.recordset.length && result?.recordset.length > 0) {
-            const chatRoom1: ChatRoomField = result?.recordset[0];
+        if (result) {
+            cache_get_chat_room_with_zalo_oa_id_user_id_by_app.set_Data(result);
 
-            cacheGetChatRoomWithZaloOaIdUserIdByApp.setData(chatRoom1);
-
-            return chatRoom1;
+            return result;
         } else {
             return;
         }
@@ -635,34 +628,24 @@ async function getChatRoom(hookData: HookDataField, zaloOa: ZaloOaField): Promis
     }
 }
 
-async function createChatRoom(
-    zaloOa: ZaloOaField,
-    hookData: HookDataField | HookCallField,
-    chatSession: ChatSessionField
+async function create_Chat_Room(
+    zalo_oa: Zalo_Oa_Field,
+    hook_data: Hook_Data_Field | Hook_Call_Field,
+    chat_session: Chat_Session_Field
 ) {
-    const chatRoomBody: ChatRoomBodyField = {
-        userIdByApp: hookData.user_id_by_app,
-        zaloOaId: zaloOa.id,
-        accountId: chatSession.selectedAccountId,
+    const chat_room_body: Chat_Room_Body_Field = {
+        user_id_by_app: hook_data.user_id_by_app,
+        zalo_oa_id: zalo_oa.id,
+        account_id: chat_session.selected_account_id,
     };
 
-    const queryDB = new MutateDB_CreateChatRoom();
-    queryDB.setChatRoomBody(chatRoomBody);
-
-    const connection_pool = mssql_server.get_connectionPool();
-    if (connection_pool) {
-        queryDB.set_connection_pool(connection_pool);
-    } else {
-        my_log.withYellow('Kết nối cơ sở dữ liệu không thành công !');
-        return;
-    }
+    const queryDB = new MutateDB_Create_Chat_Room();
+    queryDB.set_Chat_Room_Body(chat_room_body);
 
     try {
         const result = await queryDB.run();
-        if (result?.recordset.length && result?.recordset.length > 0) {
-            const chatRoom: ChatRoomField = result?.recordset[0];
-
-            return chatRoom;
+        if (result) {
+            return result;
         } else {
             return;
         }
@@ -672,47 +655,38 @@ async function createChatRoom(
     }
 }
 
-async function createChatRoomRoleMongo(chatRoom: ChatRoomField, zaloOa: ZaloOaField) {
-    const chatRommRoleSchema: ChatRoomRoleSchema = {
-        authorized_account_id: chatRoom.accountId,
+async function create_Chat_Room_Role_Mongo(chat_room: Chat_Room_Field, zalo_oa: Zalo_Oa_Field) {
+    const chat_room_role_schema: Chat_Room_Role_Schema = {
+        authorized_account_id: chat_room.account_id,
         is_read: true,
         is_send: true,
-        chat_room_id: chatRoom.id,
-        zalo_oa_id: zaloOa.id,
-        account_id: chatRoom.accountId,
+        chat_room_id: chat_room.id,
+        zalo_oa_id: zalo_oa.id,
+        account_id: chat_room.account_id,
     };
-    const parsedChatRoomRole = ChatRoomRoleZodSchema.safeParse(chatRommRoleSchema);
-    if (!parsedChatRoomRole.success) {
-        console.error('Invalid chatRoomRole format:', parsedChatRoomRole.error);
+    const parsed_chat_room_role = Chat_Room_Role_Zod_Schema.safeParse(chat_room_role_schema);
+    if (!parsed_chat_room_role.success) {
+        console.error('Invalid chatRoomRole format:', parsed_chat_room_role.error);
     } else {
-        const dbMonggo = getDbMonggo();
-        const dataParse = parsedChatRoomRole.data;
-        await dbMonggo.collection<ChatRoomRoleSchemaType>('chatRoomRole').insertOne(dataParse);
+        const db_monggo = get_Db_Monggo();
+        const data_parse = parsed_chat_room_role.data;
+        await db_monggo.collection<Chat_Room_Role_Schema_Type>('chat_room_role').insertOne(data_parse);
     }
 }
 
-async function GetAccountReceiveMessage(selectedAccountId: number, zaloOaId: number) {
-    const getAccountReceiveMessageBody: GetAccountReceiveMessageBodyField = {
-        zaloOaId: zaloOaId,
-        accountId: selectedAccountId,
+async function get_Account_Receive_Message(selected_account_id: string, zalo_oa_id: string) {
+    const get_account_receive_message_body: Get_Account_Receive_Message_Body_Field = {
+        zalo_oa_id: zalo_oa_id,
+        account_id: selected_account_id,
     };
 
-    const queryDB = new QueryDB_GetAccountReceiveMessage();
-    queryDB.setGetAccountReceiveMessageBody(getAccountReceiveMessageBody);
-
-    const connection_pool = mssql_server.get_connectionPool();
-    if (connection_pool) {
-        queryDB.set_connection_pool(connection_pool);
-    } else {
-        my_log.withYellow('Kết nối cơ sở dữ liệu không thành công !');
-        return;
-    }
+    const queryDB = new QueryDB_Get_Account_Receive_Message();
+    queryDB.set_Get_Account_Receive_Message_Body(get_account_receive_message_body);
 
     try {
         const result = await queryDB.run();
-        if (result?.recordset.length && result?.recordset.length > 0) {
-            const accountReceiveMessage: AccountReceiveMessageField = result?.recordset[0];
-            return accountReceiveMessage;
+        if (result) {
+            return result;
         } else {
             return;
         }
@@ -722,36 +696,26 @@ async function GetAccountReceiveMessage(selectedAccountId: number, zaloOaId: num
     }
 }
 
-async function GetAllChatRoomRolesWithChatRoomId(chatRoomId: number) {
-    const cacheGetAllChatRoomRoleWithCrid = new CacheGetAllChatRoomRoleWithCrid();
-    await cacheGetAllChatRoomRoleWithCrid.init();
+async function get_All_Chat_Room_Roles_With_Chat_Room_Id(chat_room_id: string) {
+    const cache_get_all_chat_room_role_with_crid = new Cache_Get_All_Chat_Room_Role_With_Crid();
+    await cache_get_all_chat_room_role_with_crid.init();
 
-    cacheGetAllChatRoomRoleWithCrid.setBody({ chatRoomId: chatRoomId });
-    const allChatRoomRole_cache = await cacheGetAllChatRoomRoleWithCrid.getData();
+    cache_get_all_chat_room_role_with_crid.set_Body({ chat_room_id: chat_room_id });
+    const all_chat_room_role_cache = await cache_get_all_chat_room_role_with_crid.get_Data();
 
-    if (allChatRoomRole_cache) {
-        return allChatRoomRole_cache;
+    if (all_chat_room_role_cache) {
+        return all_chat_room_role_cache;
     }
 
-    const queryDB = new QueryDB_GetAllChatRoomRolesWithChatRoomId();
-    queryDB.setChatRoomId(chatRoomId);
-
-    const connection_pool = mssql_server.get_connectionPool();
-    if (connection_pool) {
-        queryDB.set_connection_pool(connection_pool);
-    } else {
-        my_log.withYellow('Kết nối cơ sở dữ liệu không thành công !');
-        return;
-    }
+    const queryDB = new QueryDB_Get_All_Chat_Room_Roles_With_Chat_Room_Id();
+    queryDB.set_Chat_Room_Id(chat_room_id);
 
     try {
         const result = await queryDB.run();
-        if (result?.recordset.length && result?.recordset.length > 0) {
-            const rAllData = result?.recordset;
+        if (result) {
+            cache_get_all_chat_room_role_with_crid.set_Data(result);
 
-            cacheGetAllChatRoomRoleWithCrid.setData(rAllData);
-
-            return rAllData;
+            return result;
         } else {
             return;
         }
@@ -761,7 +725,7 @@ async function GetAllChatRoomRolesWithChatRoomId(chatRoomId: number) {
     }
 }
 
-function parseTimestamp(ts: string) {
+function parse_Timestamp(ts: string) {
     const n = Number(ts);
 
     if (!Number.isNaN(n)) {
@@ -772,39 +736,41 @@ function parseTimestamp(ts: string) {
     return new Date(ts); // ISO string
 }
 
-async function updateMessageAmountInDay(account_id: number, amount: number) {
+async function update_Message_Amount_In_Day(account_id: string, amount: number) {
     const now = new Date();
-    const dateKey = getDateKeyVN(now);
+    const date_key = get_Date_Key_VN(now);
 
-    const db = getDbMonggo();
-    const col = db.collection<MessageAmountInDayType>('messageAmountInDay');
+    const db = get_Db_Monggo();
+    const col = db.collection<Message_Amount_In_Day_Type>('message_amount_in_day');
 
-    const existing = await col.findOne<MessageAmountInDayField>({
+    const existing = await col.findOne<Message_Amount_In_Day_Field>({
         account_id: account_id,
-        dateKey: dateKey,
+        date_key: date_key,
     });
 
     if (existing) {
-        const oldAmount = existing.amount;
-        await col.updateOne({ account_id: account_id, dateKey: dateKey }, { $set: { amount: oldAmount + 1 } });
+        const old_amount = existing.amount;
+        await col.updateOne({ account_id: account_id, date_key: date_key }, { $set: { amount: old_amount + 1 } });
     } else {
-        const newMessageAmountInDay: MessageAmountInDayField = {
+        const new_message_amount_in_day: Message_Amount_In_Day_Field = {
             account_id: account_id,
-            dateKey: dateKey,
+            date_key: date_key,
             timestamp: now,
             amount: amount,
         };
-        const parsed = MessageAmountInDaySchema.safeParse(newMessageAmountInDay);
+        const parsed = Message_Amount_In_Day_Schema.safeParse(new_message_amount_in_day);
 
         if (!parsed.success) {
-            console.error('Invalid newMessageAmountInDay format:', parsed.error);
+            console.error('Invalid new_message_amount_in_day format:', parsed.error);
         } else {
             await col.insertOne(parsed.data);
         }
     }
 }
 
-async function getWaitVideoMessage(reply_account_id: number): Promise<MessageV1Field<MessageVideoField> | undefined> {
+async function get_Wait_Video_Message(
+    reply_account_id: string
+): Promise<Message_V1_Field<Message_Video_Field> | undefined> {
     // const db = getDbMonggo();
     // const col = db.collection<MessageV1Field<MessageVideoField>>('waitVideoMessage');
 
@@ -815,8 +781,8 @@ async function getWaitVideoMessage(reply_account_id: number): Promise<MessageV1F
     //     .toArray();
 
     // return data.length > 0 ? data[0] : undefined;
-    const db = getDbMonggo();
-    const col = db.collection<MessageV1Field<MessageVideoField>>('waitVideoMessage');
+    const db = get_Db_Monggo();
+    const col = db.collection<Message_V1_Field<Message_Video_Field>>('wait_video_message');
 
     const result = await col.findOneAndDelete(
         { reply_account_id },
