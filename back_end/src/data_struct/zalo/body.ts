@@ -20,12 +20,12 @@ export interface Edit_Zalo_Oa_Body_Field {
     account_id: string;
 }
 
-export interface Zalo_App_With_Account_Id_Body_Field {
+export interface Get_Zalo_App_With_Account_Id_Body_Field {
     account_id: string;
     role: string;
 }
 
-export interface Zalo_Oa_List_With_2Fk_Body_Field {
+export interface Get_Zalo_Oa_List_With_2_Fk_Body_Field {
     page: number;
     size: number;
     zalo_app_id: string;
@@ -54,7 +54,7 @@ export interface Is_My_Oa_Body_Field {
     account_id: string;
 }
 
-export interface Zalo_Oa_With_Id_Body_Field {
+export interface Get_Zalo_Oa_With_Id_Body_Field {
     id: string;
     account_id: string; // to determine admin or member
 }

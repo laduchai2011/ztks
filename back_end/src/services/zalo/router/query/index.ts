@@ -1,72 +1,80 @@
 import express, { Router } from 'express';
 import authentication from '@src/auth';
-import Handle_GetZaloAppWithAccountId from './handle/GetZaloAppWithAccountId';
-import Handle_GetZaloOaListWith2Fk from './handle/GetZaloOaListWith2Fk';
-import Handle_GetZaloOaWithId from './handle/GetZaloOaWithId';
-import Handle_GetZaloOaWithOaId from './handle/GetZaloOaWithOaId';
-import Handle_GetZaloUserInfor from './handle/GetZaloUserInfor';
-import Handle_PlaywightGetZaloApp from './handle/PlaywightGetZaloApp';
-import Handle_GetZaloOaTokenWithFk from './handle/GetZaloOaTokenWithFk';
-import Handle_GetZnsTemplates from './handle/GetZnsTemplates';
-import Handle_GetZnsMessages from './handle/GetZnsMessages';
-import Handle_GetZnsTemplateWithId from './handle/GetZnsTemplateWithId';
+import Handle_Get_Zalo_App_With_Account_Id from './handle/Get_Zalo_App_With_Account_Id';
+import Handle_Get_Zalo_Oa_List_With_2_Fk from './handle/Get_Zalo_Oa_List_With_2_Fk';
+import Handle_Get_Zalo_Oa_With_Id from './handle/Get_Zalo_Oa_With_Id';
+import Handle_Get_Zalo_Oa_With_Oa_Id from './handle/Get_Zalo_Oa_With_Oa_Id';
+import Handle_Get_Zalo_User_Infor from './handle/Get_Zalo_User_Infor';
+import Handle_Playwight_Get_Zalo_App from './handle/Playwight_Get_Zalo_App';
+import Handle_Get_Zalo_Oa_Token_With_Fk from './handle/Get_Zalo_Oa_Token_With_Fk';
+import Handle_Get_Zns_Templates from './handle/Get_Zns_Templates';
+import Handle_Get_Zns_Messages from './handle/Get_Zns_Messages';
+import Handle_Get_Zns_Template_With_Id from './handle/Get_Zns_Template_With_Id';
 
 const router_query_zalo: Router = express.Router();
 
-const handle_getZaloAppWithAccountId = new Handle_GetZaloAppWithAccountId();
-const handle_getZaloOaListWith2Fk = new Handle_GetZaloOaListWith2Fk();
-const handle_getZaloOaWithId = new Handle_GetZaloOaWithId();
-const handle_getZaloOaWithOaId = new Handle_GetZaloOaWithOaId();
-const handle_getZaloUserInfor = new Handle_GetZaloUserInfor();
-const handle_playwightGetZaloApp = new Handle_PlaywightGetZaloApp();
-const handle_getZaloOaTokenWithFk = new Handle_GetZaloOaTokenWithFk();
-const handle_getZnsTemplates = new Handle_GetZnsTemplates();
-const handle_getZnsMessages = new Handle_GetZnsMessages();
-const handle_getZnsTemplateWithId = new Handle_GetZnsTemplateWithId();
+const handle_get_zalo_app_with_account_id = new Handle_Get_Zalo_App_With_Account_Id();
+const handle_get_zalo_oa_list_with_2_fk = new Handle_Get_Zalo_Oa_List_With_2_Fk();
+const handle_get_zalo_oa_with_id = new Handle_Get_Zalo_Oa_With_Id();
+const handle_get_zalo_oa_with_oa_id = new Handle_Get_Zalo_Oa_With_Oa_Id();
+const handle_get_zalo_user_infor = new Handle_Get_Zalo_User_Infor();
+const handle_playwight_get_zalo_app = new Handle_Playwight_Get_Zalo_App();
+const handle_get_zalo_oa_token_with_fk = new Handle_Get_Zalo_Oa_Token_With_Fk();
+const handle_get_zns_templates = new Handle_Get_Zns_Templates();
+const handle_get_zns_messages = new Handle_Get_Zns_Messages();
+const handle_get_zns_template_with_id = new Handle_Get_Zns_Template_With_Id();
 
 router_query_zalo.post(
-    '/getZaloAppWithAccountId',
+    '/get_zalo_app_with_account_id',
     authentication,
-    handle_getZaloAppWithAccountId.checkRole,
-    handle_getZaloAppWithAccountId.main
+    handle_get_zalo_app_with_account_id.checkRole,
+    handle_get_zalo_app_with_account_id.main
 );
 
 router_query_zalo.post(
-    '/getZaloOaListWith2Fk',
+    '/get_zalo_oa_list_with_2_fk',
     authentication,
-    handle_getZaloOaListWith2Fk.checkRole,
-    handle_getZaloOaListWith2Fk.main
+    handle_get_zalo_oa_list_with_2_fk.check_Role,
+    handle_get_zalo_oa_list_with_2_fk.main
 );
 
 router_query_zalo.post(
-    '/getZaloOaWithId',
+    '/get_zalo_oa_with_id',
     authentication,
-    handle_getZaloOaWithId.checkRole,
-    handle_getZaloOaWithId.main
+    handle_get_zalo_oa_with_id.check_Role,
+    handle_get_zalo_oa_with_id.main
 );
 
 router_query_zalo.post(
-    '/getZaloOaWithOaId',
+    '/get_zalo_oa_with_oa_id',
     authentication,
-    handle_getZaloOaWithOaId.checkRole,
-    handle_getZaloOaWithOaId.main
+    handle_get_zalo_oa_with_oa_id.check_Role,
+    handle_get_zalo_oa_with_oa_id.main
 );
 
 router_query_zalo.post(
-    '/getZaloUserInfor',
+    '/get_zalo_user_infor',
     authentication,
-    handle_getZaloUserInfor.getZaloApp,
-    handle_getZaloUserInfor.main
+    handle_get_zalo_user_infor.get_Zalo_App,
+    handle_get_zalo_user_infor.main
 );
 
-router_query_zalo.post('/playwightGetZaloApp', handle_playwightGetZaloApp.main);
+router_query_zalo.post('/playwight_get_zalo_app', handle_playwight_get_zalo_app.main);
 
-router_query_zalo.post('/getZaloOaTokenWithFk', handle_getZaloOaTokenWithFk.setup, handle_getZaloOaTokenWithFk.main);
+router_query_zalo.post(
+    '/get_zalo_oa_token_with_fk',
+    handle_get_zalo_oa_token_with_fk.setup,
+    handle_get_zalo_oa_token_with_fk.main
+);
 
-router_query_zalo.post('/getZnsTemplates', handle_getZnsTemplates.main);
+router_query_zalo.post('/get_zns_templates', handle_get_zns_templates.main);
 
-router_query_zalo.post('/getZnsMessages', handle_getZnsMessages.main);
+router_query_zalo.post('/get_zns_messages', handle_get_zns_messages.main);
 
-router_query_zalo.post('/getZnsTemplateWithId', handle_getZnsTemplateWithId.setup, handle_getZnsTemplateWithId.main);
+router_query_zalo.post(
+    '/get_zns_template_with_id',
+    handle_get_zns_template_with_id.setup,
+    handle_get_zns_template_with_id.main
+);
 
 export default router_query_zalo;

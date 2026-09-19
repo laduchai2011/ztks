@@ -306,7 +306,7 @@ $$;
 
 CREATE OR REPLACE FUNCTION edit_zns_template (
     p_id UUID,
-    p_tem_id TEXT,
+    p_tem_id VARCHAR(255),
     p_images TEXT,
     p_data_fields TEXT,
     p_phone_cost DECIMAL(20,2),
