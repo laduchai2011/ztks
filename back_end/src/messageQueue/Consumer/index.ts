@@ -1,11 +1,11 @@
 import type { ConsumeMessage } from '@src/types/amqp';
 import { rabbit_server } from '@src/connect';
-import { MessageZaloField } from '../type';
+import { Message_Zalo_Field } from '../type';
 import { Hook_Data_Field, Hook_Call_Field } from '@src/data_struct/zalo/hook_data';
 import { Video_Message_Body_Field } from '../../data_struct/message_v1/body';
 import { Update_Statistics_Body_Field } from '@src/data_struct/statistics/body';
 
-export async function consume_Message(queue: string, callback: (messageZalo: MessageZaloField) => void) {
+export async function consume_Message(queue: string, callback: (messageZalo: Message_Zalo_Field) => void) {
     await rabbit_server.init();
 
     const channel = await rabbit_server.getConsumerChannel(queue);

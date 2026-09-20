@@ -1,57 +1,57 @@
 import express, { Router } from 'express';
 import dotenv from 'dotenv';
 import authentication from '@src/auth';
-import Handle_GetChatRoomRoleWithCridAaid from './handle/GetChatRoomRoleWithCridAaid';
-import Handle_CreateMessageV1 from './handle/CreateMessageV1';
-import Handle_DelAllNewMessages from './handle/DelAllNewMessages';
-import Handle_VideoMessage from './handle/VideoMessage';
+import Handle_Get_Chat_Room_Role_With_Crid_Aaid from './handle/Get_Chat_Room_Role_With_Crid_Aaid';
+import Handle_Create_Message_V1 from './handle/Create_Message_V1';
+import Handle_Del_All_New_Messages from './handle/Del_All_New_Messages';
+import Handle_Video_Message from './handle/Video_Message';
 
 dotenv.config();
 
 const router_mutate_message_v1: Router = express.Router();
-const handle_getChatRoomRoleWithCridAaid = new Handle_GetChatRoomRoleWithCridAaid();
-const handle_createMessageV1 = new Handle_CreateMessageV1();
-const handle_delAllNewMessages = new Handle_DelAllNewMessages();
-const handle_videoMessage = new Handle_VideoMessage();
+const handle_get_chat_room_role_with_crid_aaid = new Handle_Get_Chat_Room_Role_With_Crid_Aaid();
+const handle_create_message_v1 = new Handle_Create_Message_V1();
+const handle_del_all_new_messages = new Handle_Del_All_New_Messages();
+const handle_video_message = new Handle_Video_Message();
 
 router_mutate_message_v1.post(
     '/createMessageV1',
     authentication,
-    handle_getChatRoomRoleWithCridAaid.setup,
-    handle_getChatRoomRoleWithCridAaid.main,
-    handle_getChatRoomRoleWithCridAaid.passRole,
-    handle_createMessageV1.setup,
-    handle_createMessageV1.getZaloApp,
-    handle_createMessageV1.getZaloOa,
-    handle_createMessageV1.getAgent,
-    handle_createMessageV1.checkLimitMessage,
-    handle_createMessageV1.main
+    handle_get_chat_room_role_with_crid_aaid.setup,
+    handle_get_chat_room_role_with_crid_aaid.main,
+    handle_get_chat_room_role_with_crid_aaid.pass_Role,
+    handle_create_message_v1.setup,
+    handle_create_message_v1.get_Zalo_App,
+    handle_create_message_v1.get_Zalo_Oa,
+    handle_create_message_v1.get_Agent,
+    handle_create_message_v1.check_Limit_Message,
+    handle_create_message_v1.main
 );
 
 router_mutate_message_v1.post(
     '/videoMessage',
     authentication,
-    handle_videoMessage.setup,
-    handle_videoMessage.getMyAccountInformation,
-    handle_videoMessage.isHasAdmin,
-    handle_videoMessage.getZaloApp,
-    handle_videoMessage.isPassZaloApp,
-    handle_videoMessage.getZaloOa,
-    handle_videoMessage.isPassZaloOa,
-    handle_videoMessage.getAgent,
-    handle_videoMessage.checkLimitMessage,
-    handle_videoMessage.getChatRoomRole,
-    handle_videoMessage.isPassRoom,
-    handle_videoMessage.main
+    handle_video_message.setup,
+    handle_video_message.get_My_Account_Information,
+    handle_video_message.is_Has_Admin,
+    handle_video_message.get_Zalo_App,
+    handle_video_message.is_Pass_Zalo_App,
+    handle_video_message.get_Zalo_Oa,
+    handle_video_message.is_Pass_Zalo_Oa,
+    handle_video_message.get_Agent,
+    handle_video_message.check_Limit_Message,
+    handle_video_message.get_Chat_Room_Role,
+    handle_video_message.is_Pass_Room,
+    handle_video_message.main
 );
 
 router_mutate_message_v1.get(
-    '/delAllNewMessages',
+    '/del_all_new_messages',
     authentication,
-    handle_delAllNewMessages.setup,
-    handle_delAllNewMessages.getRole,
-    handle_delAllNewMessages.isPassRole,
-    handle_delAllNewMessages.main
+    handle_del_all_new_messages.setup,
+    handle_del_all_new_messages.get_Role,
+    handle_del_all_new_messages.is_Pass_Role,
+    handle_del_all_new_messages.main
 );
 
 export default router_mutate_message_v1;

@@ -11,11 +11,11 @@ export const prefix_cache__account = {
     time: 60 * 5, // 5p
 };
 
-export const prefix_cache_accountInformation = {
+export const prefix_cache__account_information = {
     key: {
-        with_accountId: isProduct
-            ? 'prefix_cache_accountInformation_with_accountId'
-            : 'prefix_cache_accountInformation_with_accountId_dev',
+        with_account_id: isProduct
+            ? 'prefix_cache__account_information_with_account_id'
+            : 'prefix_cache__account_information_with_account_id_dev',
     },
     time: 60 * 5, // 5p
 };

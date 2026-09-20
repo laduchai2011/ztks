@@ -1,5 +1,5 @@
 import { consume_Hook_Data } from '@src/messageQueue/Consumer';
-import { sendStringMessage } from '@src/messageQueue/Producer';
+import { send_String_Message } from '@src/messageQueue/Producer';
 import {
     Message_Schema_Type,
     Message_Zod_Schema,
@@ -55,7 +55,7 @@ import { ensure_Indexes } from './handleHookData/ensure_Indexes';
 import { getEnv } from '@src/mode';
 import { myEnv } from '@src/mode/type';
 import { Zalo_Event_Name_Enum } from '@src/data_struct/zalo/hook_data/common';
-import handleCreateCallPermit from './handle_Create_Call_Permit';
+import handle_Create_Call_Permit from './handle_Create_Call_Permit';
 import { hook_Call_Get_Chat_Room, hook_Call_Feedback_To_Take_Chat_Session } from './handle_Hook_Call';
 
 const prefix = getEnv() === myEnv.Dev ? 'dev' : '';
@@ -107,18 +107,18 @@ export function hookData() {
                     if (!zalo_app) return;
                     if (!zalo_oa) return;
 
-                    chat_room = await hookCall_getChatRoom(data, zaloOa);
+                    chat_room = await hook_Call_Get_Chat_Room(data, zalo_oa);
 
-                    if (!chatRoom) {
-                        hookCall_feedbackToTakeChatSession(zaloApp, zaloOa, data);
+                    if (!chat_room) {
+                        hook_Call_Feedback_To_Take_Chat_Session(zalo_app, zalo_oa, data);
                         return;
                     }
 
-                    const hookCallSchema: HookCallSchema = {
+                    const hook_call_schema: Hook_Call_Schema = {
                         event_name: data.event_name,
                         app_id: data.app_id,
                         oa_id: oa_id,
-                        chat_room_id: chatRoom?.id || -1,
+                        chat_room_id: chat_room?.id || '',
                         user_id_by_app: data.user_id_by_app,
                         user_id: data.user_id,
                         call_id: data.call_id,
@@ -128,182 +128,186 @@ export function hookData() {
                         call_duration: data.call_duration,
                         talk_time: data.talk_time,
                         status_code: data.status_code,
-                        reply_account_id: chatRoom?.accountId || -1,
+                        reply_account_id: chat_room?.account_id || '',
                         is_seen: false,
-                        timestamp: parseTimestamp(data.timestamp),
+                        timestamp: parse_Timestamp(data.timestamp),
                     };
 
-                    const parsedCall = CallZodSchema.safeParse(hookCallSchema);
+                    const parsed_call = Call_Zod_Schema.safeParse(hook_call_schema);
 
-                    if (!parsedCall.success) {
-                        console.error('Invalid call format:', parsedCall.error);
+                    if (!parsed_call.success) {
+                        console.error('Invalid call format:', parsed_call.error);
                     } else {
-                        const dbMonggo = getDbMonggo();
-                        const dataParse = parsedCall.data;
-                        const kq_message = await dbMonggo.collection<MessageSchemaType>('message').insertOne(dataParse);
+                        const db_monggo = get_Db_Monggo();
+                        const data_parse = parsed_call.data;
+                        const kq_message = await db_monggo
+                            .collection<Message_Schema_Type>('message')
+                            .insertOne(data_parse);
 
-                        const { _id, ...doc } = dataParse as any;
+                        const { _id, ...doc } = data_parse as any;
 
-                        await dbMonggo
-                            .collection<MessageSchemaType>('lastMessage')
+                        await db_monggo
+                            .collection<Message_Schema_Type>('last_message')
                             .updateOne({ chat_room_id: doc.chat_room_id }, { $set: doc }, { upsert: true });
 
                         // phuc vu realtime
-                        const allChatRoomRoles = await GetAllChatRoomRolesWithChatRoomId(chatRoom.id);
-                        if (allChatRoomRoles) {
-                            const socketMsg: SocketMessageField = {
-                                chatRoomId: doc.chat_room_id,
+                        const all_chat_room_roles = await get_All_Chat_Room_Roles_With_Chat_Room_Id(chat_room.id);
+                        if (all_chat_room_roles) {
+                            const socket_msg: Socket_Message_Field = {
+                                chat_room_id: doc.chat_room_id,
                                 _id: kq_message.insertedId.toString(),
-                                allChatRoomRoles: allChatRoomRoles,
+                                all_chat_room_roles: all_chat_room_roles,
                             };
 
-                            sendStringMessage(`store_msg_success_${prefix}`, JSON.stringify(socketMsg));
+                            send_String_Message(`store_msg_success_${prefix}`, JSON.stringify(socket_msg));
                         }
                     }
 
                     // thiết lập newMessage để xem tin nhắn mới chưa xem
-                    const allChatRoomRoles = await GetAllChatRoomRolesWithChatRoomId(chatRoom.id);
-                    if (allChatRoomRoles) {
-                        for (let i: number = 0; i < allChatRoomRoles.length; i++) {
-                            const newCall: NewCallV1Field<ZaloCallType> = {
-                                ...hookCallSchema,
-                                account_id: allChatRoomRoles[i].authorizedAccountId,
+                    const all_chat_room_roles = await get_All_Chat_Room_Roles_With_Chat_Room_Id(chat_room.id);
+                    if (all_chat_room_roles) {
+                        for (let i: number = 0; i < all_chat_room_roles.length; i++) {
+                            const newCall: New_Call_V1_Field<Zalo_Call_Type> = {
+                                ...hook_call_schema,
+                                account_id: all_chat_room_roles[i].authorized_account_id,
                                 created_at: new Date(),
                             };
 
-                            const parsedNewMessage = NewMessageZodSchema.safeParse(newCall);
+                            const parsed_new_message = New_Message_Zod_Schema.safeParse(newCall);
 
-                            if (!parsedNewMessage.success) {
-                                console.error('Invalid message format:', parsedNewMessage.error);
+                            if (!parsed_new_message.success) {
+                                console.error('Invalid message format:', parsed_new_message.error);
                             } else {
-                                const dbMonggo = getDbMonggo();
-                                const dataNewMessageParse = parsedNewMessage.data;
-                                await dbMonggo
-                                    .collection<NewMessageSchemaType>('newMessage')
-                                    .insertOne(dataNewMessageParse);
+                                const db_monggo = get_Db_Monggo();
+                                const data_new_message_parse = parsed_new_message.data;
+                                await db_monggo
+                                    .collection<New_Message_Schema_Type>('new_message')
+                                    .insertOne(data_new_message_parse);
                             }
                         }
                     }
 
                     //cập nhật số lượng tin nhắn trong ngày
-                    const reply_account_id = chatRoom?.accountId;
-                    const isOaSend = data.event_name.startsWith('oa_call');
-                    if (isOaSend && reply_account_id && reply_account_id !== -1) {
-                        updateMessageAmountInDay(reply_account_id, 1);
+                    const reply_account_id = chat_room?.account_id;
+                    const is_oa_send = data.event_name.startsWith('oa_call');
+                    if (is_oa_send && reply_account_id && reply_account_id.length > 0) {
+                        update_Message_Amount_In_Day(reply_account_id, 1);
                     }
                 } else {
                     const app_id = data.app_id;
-                    const oa_id = determineOaId(data);
-                    const sender_id_of_user = determineSenderIdOfUser(data);
+                    const oa_id = determine_Oa_Id(data);
+                    const sender_id_of_user = determine_Sender_Id_Of_User(data);
                     if (!sender_id_of_user) return;
-                    let chatRoom: ChatRoomField | undefined;
+                    let chat_room: Chat_Room_Field | undefined = undefined;
 
                     if (!oa_id) return;
 
-                    const { isPass, zaloApp, zaloOa } = await isPass_App_Oa(app_id, oa_id);
+                    const { is_pass, zalo_app, zalo_oa } = await is_Pass_App_Oa(app_id, oa_id);
 
-                    if (!isPass) return;
-                    if (!zaloApp) return;
-                    if (!zaloOa) return;
+                    if (!is_pass) return;
+                    if (!zalo_app) return;
+                    if (!zalo_oa) return;
 
                     // get chat room
-                    chatRoom = await getChatRoom(data, zaloOa);
+                    chat_room = await get_Chat_Room(data, zalo_oa);
                     // console.log(1111, chatRoom);
-                    let isFeedback: boolean = false;
-                    let waitSession: WaitSessionField | undefined = undefined;
+                    let is_feedback: boolean = false;
+                    let wait_session: Wait_Session_Field | undefined = undefined;
 
-                    if (!chatRoom) {
+                    if (!chat_room) {
                         // feedback to take session-code
-                        waitSession = await feedbackToTakeChatSession(zaloApp, zaloOa, data);
-                        isFeedback = true;
+                        wait_session = await feedback_To_Take_Chat_Session(zalo_app, zalo_oa, data);
+                        is_feedback = true;
 
-                        if (!waitSession) {
+                        if (!wait_session) {
                             return;
                         }
                         // console.dir(waitSession, { depth: null });
-                        const chatSession = waitSession.chatSession;
-                        if (!chatSession) {
+                        const chat_session = wait_session.chat_session;
+                        if (!chat_session) {
                             // get default chat session
-                            const chatSessionAdmin: ChatSessionField = {
-                                id: -1,
+                            const chat_session_admin: Chat_Session_Field = {
+                                id: '',
                                 label: '',
                                 code: '',
-                                isReady: true,
+                                is_ready: true,
                                 status: '',
-                                selectedAccountId: zaloApp.accountId,
-                                zaloOaId: -1,
-                                accountId: -1,
-                                updateTime: '',
-                                createTime: '',
+                                selected_account_id: zalo_app.account_id,
+                                zalo_oa_id: '',
+                                account_id: '',
+                                update_time: '',
+                                create_time: '',
                             };
-                            const getAccountReceiveMessage = await GetAccountReceiveMessage(
-                                zaloApp.accountId,
-                                zaloOa.id
+                            const get_account_receive_message = await get_Account_Receive_Message(
+                                zalo_app.account_id,
+                                zalo_oa.id
                             );
-                            if (getAccountReceiveMessage?.accountIdReceiveMessage) {
-                                chatSessionAdmin.selectedAccountId = getAccountReceiveMessage.accountIdReceiveMessage;
+                            if (get_account_receive_message?.account_id_receive_message) {
+                                chat_session_admin.selected_account_id =
+                                    get_account_receive_message.account_id_receive_message;
                             }
-                            chatRoom = await createChatRoom(zaloOa, data, chatSessionAdmin);
+                            chat_room = await create_Chat_Room(zalo_oa, data, chat_session_admin);
                         } else {
-                            const getAccountReceiveMessage = await GetAccountReceiveMessage(
-                                zaloApp.accountId,
-                                zaloOa.id
+                            const get_account_receive_message = await get_Account_Receive_Message(
+                                zalo_app.account_id,
+                                zalo_oa.id
                             );
-                            if (getAccountReceiveMessage?.accountIdReceiveMessage) {
-                                chatSession.selectedAccountId = getAccountReceiveMessage.accountIdReceiveMessage;
+                            if (get_account_receive_message?.account_id_receive_message) {
+                                chat_session.selected_account_id =
+                                    get_account_receive_message.account_id_receive_message;
                             }
-                            chatRoom = await createChatRoom(zaloOa, data, chatSession);
+                            chat_room = await create_Chat_Room(zalo_oa, data, chat_session);
                         }
 
-                        if (chatRoom) {
-                            createChatRoomRoleMongo(chatRoom, zaloOa);
+                        if (chat_room) {
+                            create_Chat_Room_Role_Mongo(chat_room, zalo_oa);
                         }
                     }
 
                     // console.log(1111, chatRoom);
-                    if (!chatRoom) return;
+                    if (!chat_room) return;
 
                     // create callPermit
-                    handleCreateCallPermit(sender_id_of_user, zaloApp.appId, zaloOa.oaId, chatRoom.accountId);
+                    handle_Create_Call_Permit(sender_id_of_user, zalo_app.app_id, zalo_oa.oa_id, chat_room.account_id);
 
-                    if (isFeedback && waitSession) {
+                    if (is_feedback && wait_session) {
                         // store message then feedback
-                        const hookDatas = waitSession.hookDatas;
-                        const hookDataSchemas: HookDataSchema[] = [];
-                        for (let i: number = 0; i < hookDatas.length; i++) {
-                            const hookDataSchema: HookDataSchema = {
-                                event_name: hookDatas[i].event_name,
-                                app_id: hookDatas[i].app_id,
+                        const hook_datas = wait_session.hook_datas;
+                        const hook_data_schemas: Hook_Data_Schema[] = [];
+                        for (let i: number = 0; i < hook_datas.length; i++) {
+                            const hook_data_schema: Hook_Data_Schema = {
+                                event_name: hook_datas[i].event_name,
+                                app_id: hook_datas[i].app_id,
                                 oa_id: oa_id,
-                                chat_room_id: chatRoom?.id || -1,
-                                user_id_by_app: hookDatas[i].user_id_by_app,
-                                sender_id: hookDatas[i].sender.id,
-                                recipient_id: hookDatas[i].recipient.id,
-                                reply_account_id: chatRoom?.accountId || -1,
-                                message_id: hookDatas[i].message.msg_id,
-                                message: hookDatas[i].message,
+                                chat_room_id: chat_room?.id || '',
+                                user_id_by_app: hook_datas[i].user_id_by_app,
+                                sender_id: hook_datas[i].sender.id,
+                                recipient_id: hook_datas[i].recipient.id,
+                                reply_account_id: chat_room?.account_id || '',
+                                message_id: hook_datas[i].message.msg_id,
+                                message: hook_datas[i].message,
                                 is_seen: false,
-                                timestamp: parseTimestamp(hookDatas[i].timestamp),
+                                timestamp: parse_Timestamp(hook_datas[i].timestamp),
                             };
-                            hookDataSchemas.push(hookDataSchema);
+                            hook_data_schemas.push(hook_data_schema);
                         }
 
-                        const hookDatasMessage = MessageZodSchema.array().safeParse(hookDataSchemas);
+                        const hook_datas_message = Message_Zod_Schema.array().safeParse(hook_data_schemas);
 
-                        if (!hookDatasMessage.success) {
-                            console.error('Invalid message format:', hookDatasMessage.error);
+                        if (!hook_datas_message.success) {
+                            console.error('Invalid message format:', hook_datas_message.error);
                         } else {
-                            const ops = hookDatasMessage.data.map((doc) => ({
+                            const ops = hook_datas_message.data.map((doc) => ({
                                 insertOne: { document: doc },
                             }));
-                            const dbMonggo = getDbMonggo();
-                            const kq = await dbMonggo
-                                .collection<MessageSchemaType>('message')
+                            const db_monggo = get_Db_Monggo();
+                            const kq = await db_monggo
+                                .collection<Message_Schema_Type>('message')
                                 .bulkWrite(ops, { ordered: false });
                             // console.log(33333333, kq);
                             if (kq) {
                                 // if (!sender_id_of_user) return;
-                                sendMessageToUser(zaloApp, zaloOa, {
+                                send_Message_To_User(zalo_app, zalo_oa, {
                                     recipient: { user_id: sender_id_of_user },
                                     message: {
                                         text: 'Bây giờ bạn có thể bắt đầu cuộc hội thoại !',
@@ -312,58 +316,58 @@ export function hookData() {
                             }
                         }
                     } else {
-                        const keyRedis = `replyAccountId_with_message_id_${data.message.msg_id}`;
+                        const key_redis = `replyAccountId_with_message_id_${data.message.msg_id}`;
 
-                        let reply_account_id: number | null = null;
-                        reply_account_id = await serviceRedis.getData<number>(keyRedis);
+                        let reply_account_id: string | null = null;
+                        reply_account_id = await serviceRedis.getData<string>(key_redis);
 
                         if (!reply_account_id) {
-                            reply_account_id = -1; // phai dung truoc khi xu ly tin nhan, de tranh tinh trang bi thieu reply_account_id khi gui tin nhan video
+                            reply_account_id = ''; // phai dung truoc khi xu ly tin nhan, de tranh tinh trang bi thieu reply_account_id khi gui tin nhan video
                             // dùng khi gửi tin nhắn video
                             if (data.event_name === Zalo_Event_Name_Enum.oa_send_text) {
-                                const data1 = data as HookDataField<MessageTextField>;
-                                const messageText = data1.message.text;
-                                const [maPart, urlPart] = messageText.split(',duongdan:');
-                                const fileName = maPart.replace('ma:', '');
-                                const parts = fileName.split('-');
-                                const accountId = parts[1];
-                                const url = urlPart;
+                                const data1 = data as Hook_Data_Field<Message_Text_Field>;
+                                const message_text = data1.message.text;
+                                const [ma_part, url_part] = message_text.split(',duongdan:');
+                                const file_name = ma_part.replace('ma:', '');
+                                const parts = file_name.split('-');
+                                const account_id = parts[1];
+                                const url = url_part;
 
-                                reply_account_id = Number(accountId);
+                                reply_account_id = account_id;
 
-                                const hookDataSchema_sendVideo = await getWaitVideoMessage(reply_account_id);
-                                if (hookDataSchema_sendVideo && data1.message.quote_msg_id) {
-                                    hookDataSchema_sendVideo.message_id = data1.message.quote_msg_id;
-                                    hookDataSchema_sendVideo.message.msg_id = data1.message.quote_msg_id;
-                                    hookDataSchema_sendVideo.message.attachments[0].payload.url = url;
+                                const hook_data_schema__send_video = await get_Wait_Video_Message(reply_account_id);
+                                if (hook_data_schema__send_video && data1.message.quote_msg_id) {
+                                    hook_data_schema__send_video.message_id = data1.message.quote_msg_id;
+                                    hook_data_schema__send_video.message.msg_id = data1.message.quote_msg_id;
+                                    hook_data_schema__send_video.message.attachments[0].payload.url = url;
 
-                                    const parsedMessage = MessageZodSchema.safeParse(hookDataSchema_sendVideo);
-                                    if (!parsedMessage.success) {
-                                        console.error('Invalid message format:', parsedMessage.error);
+                                    const parsed_message = Message_Zod_Schema.safeParse(hook_data_schema__send_video);
+                                    if (!parsed_message.success) {
+                                        console.error('Invalid message format:', parsed_message.error);
                                     } else {
                                         try {
-                                            const dbMonggo = getDbMonggo();
-                                            const dataParse = parsedMessage.data;
-                                            const kq_message = await dbMonggo
-                                                .collection<MessageSchemaType>('message')
-                                                .insertOne(dataParse);
+                                            const db_monggo = get_Db_Monggo();
+                                            const data_parse = parsed_message.data;
+                                            const kq_message = await db_monggo
+                                                .collection<Message_Schema_Type>('message')
+                                                .insertOne(data_parse);
 
-                                            const { _id, ...doc } = dataParse as any;
+                                            const { _id, ...doc } = data_parse as any;
 
                                             // phuc vu realtime
-                                            const allChatRoomRoles = await GetAllChatRoomRolesWithChatRoomId(
-                                                chatRoom.id
+                                            const all_chat_room_roles = await get_All_Chat_Room_Roles_With_Chat_Room_Id(
+                                                chat_room.id
                                             );
-                                            if (allChatRoomRoles) {
-                                                const socketMsg: SocketMessageField = {
-                                                    chatRoomId: doc.chat_room_id,
+                                            if (all_chat_room_roles) {
+                                                const socket_msg: Socket_Message_Field = {
+                                                    chat_room_id: doc.chat_room_id,
                                                     _id: kq_message.insertedId.toString(),
-                                                    allChatRoomRoles: allChatRoomRoles,
+                                                    all_chat_room_roles: all_chat_room_roles,
                                                 };
 
-                                                sendStringMessage(
+                                                send_String_Message(
                                                     `store_msg_success_${prefix}`,
-                                                    JSON.stringify(socketMsg)
+                                                    JSON.stringify(socket_msg)
                                                 );
                                             }
                                         } catch (error) {
@@ -374,11 +378,11 @@ export function hookData() {
                             }
                         }
 
-                        const hookDataSchema: HookDataSchema = {
+                        const hook_data_schema: Hook_Data_Schema = {
                             event_name: data.event_name,
                             app_id: data.app_id,
                             oa_id: oa_id,
-                            chat_room_id: chatRoom?.id || -1,
+                            chat_room_id: chat_room?.id || '',
                             user_id_by_app: data.user_id_by_app,
                             sender_id: data.sender.id,
                             recipient_id: data.recipient.id,
@@ -386,67 +390,67 @@ export function hookData() {
                             message_id: data.message.msg_id,
                             message: data.message,
                             is_seen: false,
-                            timestamp: parseTimestamp(data.timestamp),
+                            timestamp: parse_Timestamp(data.timestamp),
                         };
 
-                        const parsedMessage = MessageZodSchema.safeParse(hookDataSchema);
+                        const parsed_message = Message_Zod_Schema.safeParse(hook_data_schema);
 
-                        if (!parsedMessage.success) {
-                            console.error('Invalid message format:', parsedMessage.error);
+                        if (!parsed_message.success) {
+                            console.error('Invalid message format:', parsed_message.error);
                         } else {
-                            const dbMonggo = getDbMonggo();
-                            const dataParse = parsedMessage.data;
-                            const kq_message = await dbMonggo
-                                .collection<MessageSchemaType>('message')
-                                .insertOne(dataParse);
+                            const db_monggo = get_Db_Monggo();
+                            const data_parse = parsed_message.data;
+                            const kq_message = await db_monggo
+                                .collection<Message_Schema_Type>('message')
+                                .insertOne(data_parse);
 
-                            const { _id, ...doc } = dataParse as any;
+                            const { _id, ...doc } = data_parse as any;
 
-                            await dbMonggo
-                                .collection<MessageSchemaType>('lastMessage')
+                            await db_monggo
+                                .collection<Message_Schema_Type>('last_message')
                                 .updateOne({ chat_room_id: doc.chat_room_id }, { $set: doc }, { upsert: true });
 
                             // phuc vu realtime
-                            const allChatRoomRoles = await GetAllChatRoomRolesWithChatRoomId(chatRoom.id);
-                            if (allChatRoomRoles) {
-                                const socketMsg: SocketMessageField = {
-                                    chatRoomId: doc.chat_room_id,
+                            const all_chat_room_roles = await get_All_Chat_Room_Roles_With_Chat_Room_Id(chat_room.id);
+                            if (all_chat_room_roles) {
+                                const socket_msg: Socket_Message_Field = {
+                                    chat_room_id: doc.chat_room_id,
                                     _id: kq_message.insertedId.toString(),
-                                    allChatRoomRoles: allChatRoomRoles,
+                                    all_chat_room_roles: all_chat_room_roles,
                                 };
 
-                                sendStringMessage(`store_msg_success_${prefix}`, JSON.stringify(socketMsg));
+                                send_String_Message(`store_msg_success_${prefix}`, JSON.stringify(socket_msg));
                             }
                         }
 
                         // thiết lập newMessage để xem tin nhắn mới chưa xem
-                        const allChatRoomRoles = await GetAllChatRoomRolesWithChatRoomId(chatRoom.id);
-                        if (allChatRoomRoles) {
-                            for (let i: number = 0; i < allChatRoomRoles.length; i++) {
-                                const newMessage: NewMessageV1Field<ZaloMessageType> = {
-                                    ...hookDataSchema,
-                                    account_id: allChatRoomRoles[i].authorizedAccountId,
+                        const all_chat_room_roles = await get_All_Chat_Room_Roles_With_Chat_Room_Id(chat_room.id);
+                        if (all_chat_room_roles) {
+                            for (let i: number = 0; i < all_chat_room_roles.length; i++) {
+                                const new_message: New_Message_V1_Field<Zalo_Message_Type> = {
+                                    ...hook_data_schema,
+                                    account_id: all_chat_room_roles[i].authorized_account_id,
                                     created_at: new Date(),
                                 };
 
-                                const parsedNewMessage = NewMessageZodSchema.safeParse(newMessage);
+                                const parsed_new_message = New_Message_Zod_Schema.safeParse(new_message);
 
-                                if (!parsedNewMessage.success) {
-                                    console.error('Invalid message format:', parsedNewMessage.error);
+                                if (!parsed_new_message.success) {
+                                    console.error('Invalid message format:', parsed_new_message.error);
                                 } else {
-                                    const dbMonggo = getDbMonggo();
-                                    const dataNewMessageParse = parsedNewMessage.data;
-                                    await dbMonggo
-                                        .collection<NewMessageSchemaType>('newMessage')
-                                        .insertOne(dataNewMessageParse);
+                                    const db_monggo = get_Db_Monggo();
+                                    const data_new_message_parse = parsed_new_message.data;
+                                    await db_monggo
+                                        .collection<New_Message_Schema_Type>('new_message')
+                                        .insertOne(data_new_message_parse);
                                 }
                             }
                         }
 
                         //cập nhật số lượng tin nhắn trong ngày
-                        const isOaSend = data.event_name.startsWith('oa_send');
-                        if (isOaSend && reply_account_id && reply_account_id !== -1) {
-                            updateMessageAmountInDay(reply_account_id, 1);
+                        const is_oa_send = data.event_name.startsWith('oa_send');
+                        if (is_oa_send && reply_account_id && reply_account_id.length > 0) {
+                            update_Message_Amount_In_Day(reply_account_id, 1);
                         }
                     }
                 }

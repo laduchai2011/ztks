@@ -1,5 +1,4 @@
-﻿-- DROP FUNCTION IF EXISTS get_zalo_app_with_account_id(UUID);
-CREATE OR REPLACE FUNCTION get_zalo_app_with_account_id (
+﻿CREATE OR REPLACE FUNCTION get_zalo_app_with_account_id (
     p_account_id UUID
 )
 RETURNS SETOF zalo_app
@@ -171,17 +170,18 @@ BEGIN
 END;
 $$;
 
--- DROP FUNCTION IF EXISTS playwright_get_zalo_app(VARCHAR, VARCHAR);
 CREATE OR REPLACE FUNCTION playwright_get_zalo_app (
     p_user_name VARCHAR(100),
     p_password VARCHAR(100)
 )
-RETURNS JSONB
+RETURNS TABLE (
+    items JSONB,
+    account_id UUID
+)
 LANGUAGE plpgsql
 AS $$
 DECLARE
     v_account_id UUID;
-    v_items JSONB;
 BEGIN
 
     -- Tìm account
@@ -199,18 +199,20 @@ BEGIN
             USING ERRCODE = 'P0001';
     END IF;
 
-    -- Trả danh sách Zalo App
+    -- Trả danh sách Zalo App + account_id
     SELECT COALESCE(
         jsonb_agg(to_jsonb(za)),
         '[]'::JSONB
     )
-    INTO v_items
+    INTO items
     FROM zalo_app AS za
     WHERE
         za.account_id = v_account_id
         AND za.status = 'normal';
 
-    RETURN v_items;
+    account_id := v_account_id;
+
+    RETURN NEXT;
 END;
 $$;
 
@@ -338,57 +340,33 @@ CREATE OR REPLACE FUNCTION get_zns_messages (
     p_zns_template_id UUID,
     p_account_id UUID
 )
-RETURNS TABLE (
-    items JSONB,
-    total_count BIGINT
-)
-LANGUAGE plpgsql
+RETURNS SETOF zns_message
+LANGUAGE sql
 AS $$
-BEGIN
-    RETURN QUERY
-    WITH all_dates AS (
+    WITH paged_dates AS (
         SELECT DISTINCT
             (zm.create_time AT TIME ZONE 'Asia/Ho_Chi_Minh')::DATE AS create_date
         FROM zns_message zm
         WHERE zm.account_id = p_account_id
           AND zm.zns_template_id = p_zns_template_id
-    ),
-    paged_dates AS (
-        SELECT create_date
-        FROM all_dates
         ORDER BY create_date DESC
         LIMIT p_size
         OFFSET (p_page - 1) * p_size
-    ),
-    filtered_messages AS (
-        SELECT
-            z.id,
-            z.type,
-            z.data,
-            z.cost,
-            z.zns_template_id,
-            z.account_id,
-            z.create_time
-        FROM zns_message z
-        INNER JOIN paged_dates d
-            ON (
-                z.create_time AT TIME ZONE 'Asia/Ho_Chi_Minh'
-            )::DATE = d.create_date
-        WHERE z.account_id = p_account_id
-          AND z.zns_template_id = p_zns_template_id
     )
     SELECT
-        COALESCE(
-            jsonb_agg(
-                to_jsonb(fm)
-                ORDER BY fm.create_time DESC
-            ),
-            '[]'::JSONB
-        ) AS items,
-        (
-            SELECT COUNT(*)
-            FROM all_dates
-        ) AS total_count
-    FROM filtered_messages fm;
-END;
+        z.id,
+        z.type,
+        z.data,
+        z.cost,
+        z.zns_template_id,
+        z.account_id,
+        z.create_time
+    FROM zns_message z
+    INNER JOIN paged_dates d
+        ON (
+            z.create_time AT TIME ZONE 'Asia/Ho_Chi_Minh'
+        )::DATE = d.create_date
+    WHERE z.account_id = p_account_id
+      AND z.zns_template_id = p_zns_template_id
+    ORDER BY z.create_time DESC;
 $$;

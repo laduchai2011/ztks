@@ -76,32 +76,28 @@ async function get_Call_Permit_With_Uid(uid: string) {
     }
 }
 
-async function createCallPermit(uid: string, appId: string, oaId: string, callAgentId: number, accountId: number) {
-    const createCallPermitRoomBody: CreateCallPermitBodyField = {
+async function create_Call_Permit(
+    uid: string,
+    app_id: string,
+    oa_id: string,
+    call_agent_id: string,
+    account_id: string
+) {
+    const create_call_permit_room_body: Create_Call_Permit_Body_Field = {
         uid: uid,
-        appId: appId,
-        oaId: oaId,
-        callAgentId: callAgentId,
-        accountId: accountId,
+        app_id: app_id,
+        oa_id: oa_id,
+        call_agent_id: call_agent_id,
+        account_id: account_id,
     };
 
-    const mutateDB = new MutateDB_CreateCallPermit();
-    mutateDB.setCreateCallPermitBody(createCallPermitRoomBody);
-
-    const connection_pool = mssql_server.get_connectionPool();
-    if (connection_pool) {
-        mutateDB.set_connection_pool(connection_pool);
-    } else {
-        my_log.withYellow('Kết nối cơ sở dữ liệu không thành công !');
-        return;
-    }
+    const mutateDB = new MutateDB_Create_Call_Permit();
+    mutateDB.set_Create_Call_Permit_Body(create_call_permit_room_body);
 
     try {
         const result = await mutateDB.run();
-        if (result?.recordset.length && result?.recordset.length > 0) {
-            const callPerMit: CallPerMitField = result?.recordset[0];
-
-            return callPerMit;
+        if (result) {
+            return result;
         } else {
             return;
         }
@@ -111,21 +107,21 @@ async function createCallPermit(uid: string, appId: string, oaId: string, callAg
     }
 }
 
-async function handleCreateCallPermit(uid: string, appId: string, oaId: string, accountId: number) {
-    const callPermit = await getCallPermitWithUid(uid);
-    if (callPermit) return;
+async function handle_Create_Call_Permit(uid: string, app_id: string, oa_id: string, account_id: string) {
+    const call_permit = await get_Call_Permit_With_Uid(uid);
+    if (call_permit) return;
 
-    const callAgent = await getCallAgentWithAccountId(accountId);
-    if (!callAgent) {
-        console.warn(`Không thấy callAgent của ${accountId} !`);
+    const call_agent = await get_Call_Agent_With_Account_Id(account_id);
+    if (!call_agent) {
+        console.warn(`Không thấy call_agent của ${account_id} !`);
         return;
     }
 
-    const newCallPermit = await createCallPermit(uid, appId, oaId, callAgent.id, accountId);
-    if (!newCallPermit) {
-        console.warn(`Tạo callPermit cho ${uid} không thành công !`);
+    const new_call_permit = await create_Call_Permit(uid, app_id, oa_id, call_agent.id, account_id);
+    if (!new_call_permit) {
+        console.warn(`Tạo call_permit cho ${uid} không thành công !`);
         return;
     }
 }
 
-export default handleCreateCallPermit;
+export default handle_Create_Call_Permit;
