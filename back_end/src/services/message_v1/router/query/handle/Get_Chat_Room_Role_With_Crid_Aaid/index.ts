@@ -5,7 +5,7 @@ import { Chat_Room_Role_Field } from '@src/data_struct/chat_room';
 import { Get_Chat_Room_Role_With_Crid_Aaid_Body_Field } from '@src/data_struct/chat_room/body';
 import { Message_V1_Body_Field } from '@src/data_struct/message_v1/body';
 import QueryDB_Get_Chat_Room_Role_With_Crid_Aaid from '../../queryDB/Get_Chat_Room_Role_With_Crid_Aaid';
-import { verify_refresh_token } from '@src/token';
+import { verify_Refresh_Token } from '@src/token';
 import { Cache_Get_Chat_Room_Role_With_Crid_Aaid } from '@src/const/redisKey/chat_room';
 import { getRefreshToken } from '@src/device/getDevice';
 
@@ -33,7 +33,7 @@ class Handle_Get_Chat_Room_Role_With_Crid_Aaid {
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verify_refresh_token(refreshToken);
+            const verify_refreshToken = verify_Refresh_Token(refreshToken);
 
             if (verify_refreshToken === 'invalid') {
                 myResponse.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';

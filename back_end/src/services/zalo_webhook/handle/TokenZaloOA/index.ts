@@ -5,7 +5,7 @@ import { serviceRedlock } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { TokenZaloField, TokenResField } from '@src/data_struct/token_zalo';
 import { redisKey_storeTokenZalo, redisKey_storeTokenZalo_lock } from '@src/const/zalo';
-import { mssqlGetValue, mssqlUpdateValue } from '@src/cache/cacheMssql';
+import { mssqlGetValue, mssqlUpdateValue } from '@src/cache/cache_postgresql';
 
 const serviceRedis = ServiceRedis.getInstance();
 serviceRedis.init();

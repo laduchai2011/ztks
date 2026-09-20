@@ -4,7 +4,7 @@ import { My_Response_Field } from '@src/data_struct/response';
 import { Chat_Room_Phone_Field } from '@src/data_struct/chat_room';
 import { Get_List_Chat_Room_Phones_Body_Field } from '@src/data_struct/chat_room/body';
 import QueryDB_Get_List_Chat_Room_Phones from '../../queryDB/Get_List_Chat_Room_Phones';
-import { verify_refresh_token } from '@src/token';
+import { verify_Refresh_Token } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Get_List_Chat_Room_Phones {
@@ -24,7 +24,7 @@ class Handle_Get_List_Chat_Room_Phones {
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verify_refresh_token(refreshToken);
+            const verify_refreshToken = verify_Refresh_Token(refreshToken);
 
             if (verify_refreshToken === 'invalid') {
                 my_response.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { My_Response_Field } from '@src/data_struct/response';
 import { Customer_Field } from '@src/data_struct/customer';
 import QueryDB_Customer_Get_Me from '../../queryDB/Get_Me';
-import { verify_refresh_token } from '@src/token';
+import { verify_Refresh_Token } from '@src/token';
 
 class Handle_Customer_Get_Me {
     setup = (req: Request, res: Response, next: NextFunction) => {
@@ -14,7 +14,7 @@ class Handle_Customer_Get_Me {
         const { refreshToken } = req.cookies;
 
         if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verify_refresh_token(refreshToken);
+            const verify_refreshToken = verify_Refresh_Token(refreshToken);
 
             if (verify_refreshToken === 'invalid') {
                 my_response.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';

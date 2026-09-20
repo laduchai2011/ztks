@@ -9,7 +9,6 @@ const SOCKET_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'SOCKET_TOKEN_SE
 // Ép kiểu để chắc chắn JWT_SECRET là Secret
 // const JWT_SECRET = (process.env.JWT_SECRET ?? 'your-secret-key') as Secret;
 
-
 export interface My_Jwt_Payload_Field {
     id: string;
     role?: string;
@@ -33,21 +32,21 @@ export function is_Jwt_Payload(obj: Token_State): obj is My_Jwt_Payload_Field {
 //     cp_signOptions.algorithm = 'RS256'
 //     return jwt.sign(payload as object, JWT_SECRET as Secret, cp_signOptions);
 // }
-export function generate_access_token(payload: My_Jwt_Payload_Field, signOptions: SignOptions): string {
+export function generate_Access_Token(payload: My_Jwt_Payload_Field, signOptions: SignOptions): string {
     const cp_signOptions = { ...signOptions };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { exp, iat, nbf, ...cleanPayload }: CleanPayload = payload as CleanPayload;
     cp_signOptions.algorithm = 'HS256';
     return jwt.sign(cleanPayload as object, ACCESS_TOKEN_SECRET as Secret, cp_signOptions);
 }
-export function generate_refresh_token(payload: My_Jwt_Payload_Field, signOptions: SignOptions): string {
+export function generate_Refresh_Token(payload: My_Jwt_Payload_Field, signOptions: SignOptions): string {
     const cp_signOptions = { ...signOptions };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { exp, iat, nbf, ...cleanPayload }: CleanPayload = payload as CleanPayload;
     cp_signOptions.algorithm = 'HS256';
     return jwt.sign(cleanPayload as object, REFRESH_TOKEN_SECRET as Secret, cp_signOptions);
 }
-export function generate_socket_token(payload: My_Jwt_Payload_Field, signOptions: SignOptions): string {
+export function generate_Socket_Token(payload: My_Jwt_Payload_Field, signOptions: SignOptions): string {
     const cp_signOptions = { ...signOptions };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { exp, iat, nbf, ...cleanPayload }: CleanPayload = payload as CleanPayload;
@@ -66,13 +65,11 @@ export function generate_socket_token(payload: My_Jwt_Payload_Field, signOptions
 // }
 // const timeExpireat = 60 * 60 * 24 * 30 * 12; // 1 year
 
-export function verify_access_token(token: string): Token_State {
+export function verify_Access_Token(token: string): Token_State {
     try {
         const result = jwt.verify(token, ACCESS_TOKEN_SECRET as Secret) as My_Jwt_Payload_Field;
-        // console.log(111111, result);
         return result;
     } catch (error: any) {
-        // console.error(11111, 'error', new TokenExpiredError('TokenExpiredError', error), error, error instanceof TokenExpiredError)
         if (error instanceof TokenExpiredError) {
             return 'expired';
         }
@@ -82,13 +79,11 @@ export function verify_access_token(token: string): Token_State {
         return 'invalid';
     }
 }
-export function verify_refresh_token(token: string): Token_State {
+export function verify_Refresh_Token(token: string): Token_State {
     try {
         const result = jwt.verify(token, REFRESH_TOKEN_SECRET as Secret) as My_Jwt_Payload_Field;
-        // console.log(222222, result);
         return result;
     } catch (error: any) {
-        // console.error(22222, 'error', new TokenExpiredError('TokenExpiredError', error), error, error instanceof TokenExpiredError)
         if (error instanceof TokenExpiredError) {
             return 'expired';
         }
@@ -98,7 +93,7 @@ export function verify_refresh_token(token: string): Token_State {
         return 'invalid';
     }
 }
-export function verify_socket_token(token: string): Token_State {
+export function verify_Socket_Token(token: string): Token_State {
     try {
         const result = jwt.verify(token, SOCKET_TOKEN_SECRET as Secret) as My_Jwt_Payload_Field;
         return result;

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { My_Response_Field } from '@src/data_struct/response';
 import { Wallet_Field } from '@src/data_struct/wallet';
 import { Pay_Agent_From_Wallet_Body_Field } from '@src/data_struct/wallet/body';
-import { verify_refresh_token } from '@src/token';
+import { verify_Refresh_Token } from '@src/token';
 import MutateDB_Pay_Agent_From_Wallet from '../../mutateDB/Pay_Agent_From_Wallet';
 import { getRefreshToken } from '@src/device/getDevice';
 
@@ -17,7 +17,7 @@ class Handle_Pay_Agent_From_Wallet {
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verify_refresh_token(refreshToken);
+            const verify_refreshToken = verify_Refresh_Token(refreshToken);
 
             if (verify_refreshToken === 'invalid') {
                 my_response.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';

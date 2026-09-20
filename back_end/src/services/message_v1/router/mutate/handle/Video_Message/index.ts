@@ -17,7 +17,7 @@ import QueryDB_Get_Zalo_Oa_With_Id from '../../queryDB/Get_Zalo_Oa_With_Id';
 import QueryDB_Get_Agent_With_Agent_Account_Id from '../../queryDB/Get_Agent_With_Agent_Account_Id';
 import QueryDB_Get_Chat_Room_Role_With_Crid_Aaid from '../../queryDB/Get_Chat_Room_Role_With_Crid_Aaid';
 import { get_Message_Amount_In_Day } from '../../queryMongo/Get_Message_Amount_In_Day';
-import { verify_refresh_token } from '@src/token';
+import { verify_Refresh_Token } from '@src/token';
 import { account_type_enum } from '@src/data_struct/account';
 import { prefix_cache__zalo_app, prefix_cache__zalo_oa } from '@src/const/redisKey/zalo';
 import { prefix_cache__account_information } from '@src/const/redisKey/account';
@@ -55,7 +55,7 @@ class Handle_Video_Message {
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verify_refresh_token(refreshToken);
+            const verify_refreshToken = verify_Refresh_Token(refreshToken);
 
             if (verify_refreshToken === 'invalid') {
                 my_response.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';

@@ -15,7 +15,7 @@ import { Chat_Room_Role_Schema_Type } from '@src/schema/chatRoom';
 import { get_Db_Monggo } from '@src/connect/mongo';
 import MutateDB_Create_Reply_Account from '../../mutateDB/Create_Reply_Account';
 import QueryDB_Get_Chat_Room_With_Id from '@src/services/chat_room/router/query/queryDB/Get_Chat_Room_With_Id';
-import { verify_refresh_token } from '@src/token';
+import { verify_Refresh_Token } from '@src/token';
 import { prefix_cache__not_reply_accounts, prefix_cache__reply_accounts } from '@src/const/redisKey/account';
 import { Cache_Get_Chat_Room_With_Id } from '@src/const/redisKey/chat_room';
 import { getRefreshToken } from '@src/device/getDevice';
@@ -43,7 +43,7 @@ class Handle_Create_Reply_Account {
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verify_refresh_token(refreshToken);
+            const verify_refreshToken = verify_Refresh_Token(refreshToken);
 
             if (verify_refreshToken === 'invalid') {
                 my_response.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';

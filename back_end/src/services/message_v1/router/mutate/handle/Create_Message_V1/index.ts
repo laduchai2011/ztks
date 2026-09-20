@@ -1,7 +1,7 @@
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
 import { My_Response_Field } from '@src/data_struct/response';
-import { verify_refresh_token } from '@src/token';
+import { verify_Refresh_Token } from '@src/token';
 import { send_Message_To_User } from '@src/services/message_v1/send_Message_To_User';
 import { Agent_Field } from '@src/data_struct/agent';
 import { Get_Agent_With_Agent_Account_Id_Body_Field } from '@src/data_struct/agent/body';
@@ -36,7 +36,7 @@ class Handle_Create_Message_V1 {
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verify_refresh_token(refreshToken);
+            const verify_refreshToken = verify_Refresh_Token(refreshToken);
 
             if (verify_refreshToken === 'invalid') {
                 my_response.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';

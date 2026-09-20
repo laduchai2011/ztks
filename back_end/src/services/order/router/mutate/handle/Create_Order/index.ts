@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import { My_Response_Field } from '@src/data_struct/response';
 import { Order_Field } from '@src/data_struct/order';
 import { Create_Order_Body_Field } from '@src/data_struct/order/body';
-import { verify_refresh_token } from '@src/token';
+import { verify_Refresh_Token } from '@src/token';
 import MutateDB_Create_Order from '../../mutateDB/Create_Order';
 import { Cache_Get_Chat_Room_With_Id } from '@src/const/redisKey/chat_room';
 import { getRefreshToken } from '@src/device/getDevice';
@@ -28,7 +28,7 @@ class Handle_Create_Order {
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verify_refresh_token(refreshToken);
+            const verify_refreshToken = verify_Refresh_Token(refreshToken);
 
             if (verify_refreshToken === 'invalid') {
                 my_response.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';

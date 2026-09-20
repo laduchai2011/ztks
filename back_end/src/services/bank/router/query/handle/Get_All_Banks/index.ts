@@ -3,7 +3,7 @@ import { My_Response_Field } from '@src/data_struct/response';
 import { Bank_Field } from '@src/data_struct/bank';
 import { Get_All_Banks_Body_Field } from '@src/data_struct/bank/body';
 import QueryDB_Get_All_Banks from '../../queryDB/Get_All_Banks';
-import { verify_refresh_token } from '@src/token';
+import { verify_Refresh_Token } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Get_All_Banks {
@@ -16,7 +16,7 @@ class Handle_Get_All_Banks {
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verify_refresh_token(refreshToken);
+            const verify_refreshToken = verify_Refresh_Token(refreshToken);
 
             if (verify_refreshToken === 'invalid') {
                 my_response.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';

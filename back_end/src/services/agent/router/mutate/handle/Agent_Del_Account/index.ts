@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { My_Response_Field } from '@src/data_struct/response';
 import { Agent_Field } from '@src/data_struct/agent';
 import { Agent_Del_Account_Body_Field } from '@src/data_struct/agent/body';
-import { verify_refresh_token } from '@src/token';
+import { verify_Refresh_Token } from '@src/token';
 import MutateDB_Agent_Del_Account from '../../mutateDB/Agent_Del_Account';
 import { getRefreshToken } from '@src/device/getDevice';
 
@@ -17,7 +17,7 @@ class Handle_Agent_Del_Account {
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verify_refresh_token(refreshToken);
+            const verify_refreshToken = verify_Refresh_Token(refreshToken);
 
             if (verify_refreshToken === 'invalid') {
                 my_Response.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';

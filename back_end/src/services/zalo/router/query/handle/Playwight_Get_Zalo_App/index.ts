@@ -4,7 +4,7 @@ import { Zalo_App_Field, Playwight_Get_Zalo_App_Field } from '@src/data_struct/z
 import { Playwight_Get_Zalo_App_Body_Field } from '@src/data_struct/zalo/body';
 import QueryDB_Playwight_Get_Zalo_App from '../../queryDB/Playwight_Get_Zalo_App';
 import { SignOptions } from 'jsonwebtoken';
-import { generate_socket_token, My_Jwt_Payload_Field } from '@src/token';
+import { generate_Socket_Token, My_Jwt_Payload_Field } from '@src/token';
 
 class Handle_Playwight_Get_Zalo_App {
     main = async (req: Request<any, any, Playwight_Get_Zalo_App_Body_Field>, res: Response) => {
@@ -29,7 +29,7 @@ class Handle_Playwight_Get_Zalo_App {
                 const signOptions_socket_token: SignOptions = {
                     expiresIn: '1y',
                 };
-                const socket_token = generate_socket_token(my_jwt_payload, signOptions_socket_token);
+                const socket_token = generate_Socket_Token(my_jwt_payload, signOptions_socket_token);
 
                 my_response.data = { zalo_app, token: socket_token };
                 my_response.message = 'Lấy thông tin zalo_app thành công !';

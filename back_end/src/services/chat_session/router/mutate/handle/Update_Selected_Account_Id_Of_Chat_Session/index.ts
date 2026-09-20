@@ -3,7 +3,7 @@ import { My_Response_Field } from '@src/data_struct/response';
 import { Chat_Session_Field } from '@src/data_struct/chat_session';
 import { Update_Selected_Account_Id_Of_Chat_Session_Body_Field } from '@src/data_struct/chat_session/body';
 import MutateDB_Update_Selected_Account_Id_Of_Chat_Session from '../../mutateDB/Update_Selected_Account_Id_Of_Chat_Session';
-import { verify_refresh_token } from '@src/token';
+import { verify_Refresh_Token } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Update_Selected_Account_Id_Of_Chat_Session {
@@ -21,7 +21,7 @@ class Handle_Update_Selected_Account_Id_Of_Chat_Session {
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verify_refresh_token(refreshToken);
+            const verify_refreshToken = verify_Refresh_Token(refreshToken);
 
             if (verify_refreshToken === 'invalid') {
                 my_response.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';

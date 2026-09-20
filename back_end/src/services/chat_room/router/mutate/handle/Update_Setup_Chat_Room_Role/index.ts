@@ -4,7 +4,7 @@ import { My_Response_Field } from '@src/data_struct/response';
 import { Chat_Room_Role_Field, Chat_Room_Role_Schema } from '@src/data_struct/chat_room';
 import { Update_Setup_Chat_Room_Role_Body_Field } from '@src/data_struct/chat_room/body';
 import MutateDB_Update_Setup_Chat_Room_Role from '../../mutateDB/Update_Setup_Chat_Room_Role';
-import { verify_refresh_token } from '@src/token';
+import { verify_Refresh_Token } from '@src/token';
 import {
     Cache_Get_Chat_Room_Role_With_Crid_Aaid,
     Cache_Get_All_Chat_Room_Role_With_Crid,
@@ -38,7 +38,7 @@ class Handle_Update_Setup_Chat_Room_Role {
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verify_refresh_token(refreshToken);
+            const verify_refreshToken = verify_Refresh_Token(refreshToken);
 
             if (verify_refreshToken === 'invalid') {
                 my_response.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';

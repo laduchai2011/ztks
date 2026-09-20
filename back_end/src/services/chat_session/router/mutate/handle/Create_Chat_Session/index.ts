@@ -4,7 +4,7 @@ import { Chat_Session_Field } from '@src/data_struct/chat_session';
 import { Chat_Session_Body_Field } from '@src/data_struct/chat_session/body';
 import { Zalo_Oa_Field } from '@src/data_struct/zalo';
 import { Is_My_Oa_Body_Field } from '@src/data_struct/zalo/body';
-import { verify_refresh_token } from '@src/token';
+import { verify_Refresh_Token } from '@src/token';
 import MutateDB_Create_Chat_Session from '../../mutateDB/Create_Chat_Session';
 import { getRefreshToken } from '@src/device/getDevice';
 
@@ -19,7 +19,7 @@ class Handle_Create_Chat_Session {
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verify_refresh_token(refreshToken);
+            const verify_refreshToken = verify_Refresh_Token(refreshToken);
 
             if (verify_refreshToken === 'invalid') {
                 my_response.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';

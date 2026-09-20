@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { My_Response_Field } from '@src/data_struct/response';
 import { Account_Field } from '@src/data_struct/account';
 import { Edit_Infor_Account_Body_Field } from '@src/data_struct/account/body';
-import { verify_refresh_token } from '@src/token';
+import { verify_Refresh_Token } from '@src/token';
 import MutateDB_Edit_Infor_Account from '../../mutateDB/Edit_Infor_Account';
 import { prefix_cache__account } from '@src/const/redisKey/account';
 import { getRefreshToken } from '@src/device/getDevice';
@@ -25,7 +25,7 @@ class Handle_Edit_Infor_Account {
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verify_refresh_token(refreshToken);
+            const verify_refreshToken = verify_Refresh_Token(refreshToken);
 
             if (verify_refreshToken === 'invalid') {
                 my_response.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';

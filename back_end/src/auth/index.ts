@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyAccessToken, verifyRefreshToken, generateAccessToken } from '@src/token';
+import { verify_Access_Token, verify_Refresh_Token, generate_Access_Token } from '@src/token';
 import { serviceRedlock } from '@src/connect';
 import { SignOptions } from 'jsonwebtoken';
 import ServiceRedis from '@src/cache/cacheRedis';
 import LockError from 'redlock';
-import { MyResponse } from '@src/data_struct/response';
-import { StoreAuthToken } from './type';
+import { My_Response_Field } from '@src/data_struct/response';
+import { Store_Auth_Token_Field } from './type';
 import { dev_prefix } from '@src/mode';
-import { mssqlGetValue, mssqlUpdateValue } from '@src/cache/cacheMssql';
+import { postgresql_Get_Value, postgresql_Update_Value } from '@src/cache/cache_postgresql';
 import { getDevice } from '@src/device/getDevice';
 import { DeviceEnum } from '@src/device/type';
 
@@ -24,49 +24,49 @@ const sameSite = process.env.NODE_ENV === 'development' ? 'lax' : 'none';
 const isProduct = process.env.NODE_ENV === 'production';
 const cookieDomain = isProduct ? '.taokosao.com' : 'localhost';
 
-const timeExpireat = 60 * 60 * 24 * 30 * 12; // 1 year
+const time_expireat = 60 * 60 * 24 * 30 * 12; // 1 year
 
 async function authentication(req: Request, res: Response, next: NextFunction) {
     const device = getDevice(req);
 
-    const myResponse: MyResponse<unknown> = {
-        isSuccess: false,
-        isAuth: false,
+    const my_response: My_Response_Field<unknown> = {
+        is_success: false,
+        is_auth: false,
         message: 'Bắt đầu xác đinh thiết bị !',
     };
 
     switch (device) {
         case DeviceEnum.WEB: {
-            authenticationWeb(req, res, next);
+            authentication_Web(req, res, next);
             break;
         }
         case DeviceEnum.MOBILE: {
-            authenticationMobile(req, res, next);
+            authentication_Mobile(req, res, next);
             break;
         }
         default: {
             console.log('Chưa xác định thiết bị !');
-            myResponse.message = 'Chưa xác định thiết bị !';
-            res.status(500).json(myResponse);
+            my_response.message = 'Chưa xác định thiết bị !';
+            res.status(500).json(my_response);
             return;
         }
     }
 }
 
-async function authenticationWeb(req: Request, res: Response, next: NextFunction) {
+async function authentication_Web(req: Request, res: Response, next: NextFunction) {
     const { refreshToken, accessToken, id } = req.cookies;
-    const keyServiceRedis = `web-token-storeAuthToken-${id}_${dev_prefix}`;
-    const lockKey = `web-redlock-for-refresh-accessToken-${id}_${dev_prefix}`;
+    const key_service_redis = `web-token-storeAuthToken-${id}_${dev_prefix}`;
+    const lock_key = `web-redlock-for-refresh-accessToken-${id}_${dev_prefix}`;
 
-    const myResponse: MyResponse<unknown> = {
-        isSuccess: false,
-        isAuth: false,
+    const my_response: My_Response_Field<unknown> = {
+        is_success: false,
+        is_auth: false,
         message: 'Bắt đầu xác thực !',
     };
 
     if (!refreshToken || !accessToken || !id) {
-        myResponse.message = 'Đầu vào không hợp lệ !';
-        res.json(myResponse);
+        my_response.message = 'Đầu vào không hợp lệ !';
+        res.json(my_response);
         return;
     }
 
@@ -74,77 +74,77 @@ async function authenticationWeb(req: Request, res: Response, next: NextFunction
         // await serviceRedis.init();
 
         // console.log("1. Bắt đầu middleware");
-        const verify_accessToken = verifyAccessToken(accessToken);
+        const verify_access_token = verify_Access_Token(accessToken);
 
-        const verify_refreshToken = verifyRefreshToken(refreshToken);
+        const verify_refresh_token = verify_Refresh_Token(refreshToken);
         // console.log("3. Đã verify refreshToken:", verify_refreshToken);
 
-        if (!verify_accessToken || !verify_refreshToken) {
-            myResponse.message = 'Xác thực token không thành công !';
-            res.json(myResponse);
+        if (!verify_access_token || !verify_refresh_token) {
+            my_response.message = 'Xác thực token không thành công !';
+            res.json(my_response);
             return;
         }
 
-        if (verify_accessToken === 'invalid') {
-            myResponse.message = 'Access-Token không hợp lệ, hãy đăng nhập lại !';
-            res.json(myResponse);
+        if (verify_access_token === 'invalid') {
+            my_response.message = 'Access-Token không hợp lệ, hãy đăng nhập lại !';
+            res.json(my_response);
             return;
         }
 
-        if (verify_refreshToken === 'invalid') {
-            myResponse.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';
-            res.json(myResponse);
+        if (verify_refresh_token === 'invalid') {
+            my_response.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';
+            res.json(my_response);
             return;
         }
 
-        if (verify_refreshToken === 'expired') {
-            myResponse.message = 'Refresh-Token hết hạn, hãy đăng nhập lại !';
-            res.json(myResponse);
+        if (verify_refresh_token === 'expired') {
+            my_response.message = 'Refresh-Token hết hạn, hãy đăng nhập lại !';
+            res.json(my_response);
             return;
         }
 
-        if (verify_accessToken !== 'expired') {
-            myResponse.isAuth = true;
-            myResponse.message = 'Xác thực thành công, access-token còn hạn !';
+        if (verify_access_token !== 'expired') {
+            my_response.is_auth = true;
+            my_response.message = 'Xác thực thành công, access-token còn hạn !';
             next();
             return;
         } else {
-            let storeAuthToken: StoreAuthToken | null = null;
-            storeAuthToken = await serviceRedis.getData<StoreAuthToken>(keyServiceRedis);
+            let store_auth_token: Store_Auth_Token_Field | null = null;
+            store_auth_token = await serviceRedis.getData<Store_Auth_Token_Field>(key_service_redis);
             // console.log('4. Lấy storeAuthToken từ Redis:', storeAuthToken);
-            if (!storeAuthToken) {
-                const resultget = await mssqlGetValue(keyServiceRedis);
+            if (!store_auth_token) {
+                const result_get = await postgresql_Get_Value(key_service_redis);
 
-                if (resultget?.isSuccess && resultget.data) {
-                    storeAuthToken = JSON.parse(resultget.data.value) as StoreAuthToken;
+                if (result_get?.is_success && result_get.data) {
+                    store_auth_token = JSON.parse(result_get.data.value) as Store_Auth_Token_Field;
                 } else {
-                    myResponse.isSignin = false;
-                    myResponse.message = 'Không tìm thấy thông tin phiên đăng nhập, hãy đăng nhập lại !';
-                    res.json(myResponse);
+                    my_response.is_signin = false;
+                    my_response.message = 'Không tìm thấy thông tin phiên đăng nhập, hãy đăng nhập lại !';
+                    res.json(my_response);
                     return;
                 }
             }
-            if (storeAuthToken.refreshToken === refreshToken) {
+            if (store_auth_token.refresh_token === refreshToken) {
                 let lock;
                 try {
                     //---------------------xử lý token hết han--------------------/
-                    lock = await serviceRedlock.acquire([lockKey], 3000);
+                    lock = await serviceRedlock.acquire([lock_key], 3000);
 
-                    let blackList = storeAuthToken.blackList;
-                    if (blackList.length < 50) {
-                        blackList.push(accessToken);
+                    let black_list = store_auth_token.black_list;
+                    if (black_list.length < 50) {
+                        black_list.push(accessToken);
                     } else {
-                        blackList = [accessToken];
+                        black_list = [accessToken];
                     }
-                    storeAuthToken.blackList = blackList;
-                    storeAuthToken.grayAccessToken = accessToken;
+                    store_auth_token.black_list = black_list;
+                    store_auth_token.gray_access_token = accessToken;
 
-                    const myJwtPayload = verify_refreshToken;
-                    const signOptions: SignOptions = {
+                    const my_jwt_payload = verify_refresh_token;
+                    const sign_options: SignOptions = {
                         expiresIn: '1m',
                     };
-                    const new_accessToken = generateAccessToken(myJwtPayload, signOptions);
-                    storeAuthToken.accessToken = new_accessToken;
+                    const new_access_token = generate_Access_Token(my_jwt_payload, sign_options);
+                    store_auth_token.access_token = new_access_token;
 
                     res.cookie('id', id, {
                         httpOnly: true,
@@ -153,7 +153,7 @@ async function authenticationWeb(req: Request, res: Response, next: NextFunction
                         expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
                         // signed: true
                         domain: cookieDomain,
-                    }).cookie('accessToken', new_accessToken, {
+                    }).cookie('accessToken', new_access_token, {
                         httpOnly: true,
                         secure: secure_cookie,
                         sameSite: sameSite,
@@ -161,39 +161,42 @@ async function authenticationWeb(req: Request, res: Response, next: NextFunction
                         domain: cookieDomain,
                     });
 
-                    const isSet = await serviceRedis.setData<StoreAuthToken>(
-                        keyServiceRedis,
-                        storeAuthToken,
-                        timeExpireat
+                    const is_set = await serviceRedis.setData<Store_Auth_Token_Field>(
+                        key_service_redis,
+                        store_auth_token,
+                        time_expireat
                     );
-                    if (!isSet) {
+                    if (!is_set) {
                         console.error('Failed to set new token in cookie in Redis');
                         return;
                     }
-                    const resultupdate = await mssqlUpdateValue(keyServiceRedis, JSON.stringify(storeAuthToken));
-                    if (!resultupdate?.isSuccess) {
-                        myResponse.message = 'Update storeAuthToken in auth successly !';
+                    const result_update = await postgresql_Update_Value(
+                        key_service_redis,
+                        JSON.stringify(store_auth_token)
+                    );
+                    if (!result_update?.is_success) {
+                        my_response.message = 'Update store_auth_token in auth successly !';
                     } else {
-                        myResponse.message = 'Update storeAuthToken in auth failure !';
+                        my_response.message = 'Update store_auth_token in auth failure !';
                     }
 
-                    myResponse.isAuth = true;
-                    myResponse.message = 'Xác thực thành công, access-token được cấp mới !';
+                    my_response.is_auth = true;
+                    my_response.message = 'Xác thực thành công, access-token được cấp mới !';
                     next();
                     return;
                     //----------------------------------------------------------/
                 } catch (err) {
                     if (err instanceof LockError) {
                         //--------------------Tiếp tục thực hiện những request cùng thời điểm------------------------//
-                        if (storeAuthToken.grayAccessToken === accessToken) {
-                            myResponse.isAuth = true;
-                            myResponse.message = 'Xác thực thành công, truy cập tạm access-token cũ !';
+                        if (store_auth_token.gray_access_token === accessToken) {
+                            my_response.is_auth = true;
+                            my_response.message = 'Xác thực thành công, truy cập tạm access-token cũ !';
                             next();
                             return;
                         } else {
-                            myResponse.isSignin = false;
-                            myResponse.message = 'Tài khoản của bạn bị tấn công, hãy đăng nhập lại !';
-                            res.json(myResponse);
+                            my_response.is_signin = false;
+                            my_response.message = 'Tài khoản của bạn bị tấn công, hãy đăng nhập lại !';
+                            res.json(my_response);
                             return;
                         }
                         //----------------------------------------------------------------------------------------//
@@ -211,35 +214,35 @@ async function authenticationWeb(req: Request, res: Response, next: NextFunction
                     }
                 }
             } else {
-                myResponse.isSignin = false;
-                myResponse.message = 'Tài khoản của bạn bị tấn công, hãy đăng nhập lại !';
-                res.json(myResponse);
+                my_response.is_signin = false;
+                my_response.message = 'Tài khoản của bạn bị tấn công, hãy đăng nhập lại !';
+                res.json(my_response);
                 return;
             }
         }
     } catch (error) {
-        myResponse.err = error;
-        res.json(myResponse);
+        my_response.err = error;
+        res.json(my_response);
         return;
     }
 }
 
-async function authenticationMobile(req: Request, res: Response, next: NextFunction) {
-    const accessToken = req.headers['x-access-token'] as string;
-    const refreshToken = req.headers['x-refresh-token'] as string;
+async function authentication_Mobile(req: Request, res: Response, next: NextFunction) {
+    const access_token = req.headers['x-access-token'] as string;
+    const refresh_token = req.headers['x-refresh-token'] as string;
     const id = req.headers['x-account-id'] as string;
-    const keyServiceRedis = `mobile-token-storeAuthToken-${id}_${dev_prefix}`;
-    const lockKey = `mobile-redlock-for-refresh-accessToken-${id}_${dev_prefix}`;
+    const key_service_redis = `mobile-token-storeAuthToken-${id}_${dev_prefix}`;
+    const lock_key = `mobile-redlock-for-refresh-accessToken-${id}_${dev_prefix}`;
 
-    const myResponse: MyResponse<unknown> = {
-        isSuccess: false,
-        isAuth: false,
+    const my_response: My_Response_Field<unknown> = {
+        is_success: false,
+        is_auth: false,
         message: 'Bắt đầu xác thực !',
     };
 
-    if (!refreshToken || !accessToken || !id) {
-        myResponse.message = 'Đầu vào không hợp lệ !';
-        res.json(myResponse);
+    if (!refresh_token || !access_token || !id) {
+        my_response.message = 'Đầu vào không hợp lệ !';
+        res.json(my_response);
         return;
     }
 
@@ -247,116 +250,119 @@ async function authenticationMobile(req: Request, res: Response, next: NextFunct
         // await serviceRedis.init();
 
         // console.log("1. Bắt đầu middleware");
-        const verify_accessToken = verifyAccessToken(accessToken);
+        const verify_access_token = verify_Access_Token(access_token);
 
-        const verify_refreshToken = verifyRefreshToken(refreshToken);
+        const verify_refresh_token = verify_Refresh_Token(refresh_token);
         // console.log("3. Đã verify refreshToken:", verify_refreshToken);
 
-        if (!verify_accessToken || !verify_refreshToken) {
-            myResponse.message = 'Xác thực token không thành công !';
-            res.json(myResponse);
+        if (!verify_access_token || !verify_refresh_token) {
+            my_response.message = 'Xác thực token không thành công !';
+            res.json(my_response);
             return;
         }
 
-        if (verify_accessToken === 'invalid') {
-            myResponse.message = 'Access-Token không hợp lệ, hãy đăng nhập lại !';
-            res.json(myResponse);
+        if (verify_access_token === 'invalid') {
+            my_response.message = 'Access-Token không hợp lệ, hãy đăng nhập lại !';
+            res.json(my_response);
             return;
         }
 
-        if (verify_refreshToken === 'invalid') {
-            myResponse.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';
-            res.json(myResponse);
+        if (verify_refresh_token === 'invalid') {
+            my_response.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';
+            res.json(my_response);
             return;
         }
 
-        if (verify_refreshToken === 'expired') {
-            myResponse.message = 'Refresh-Token hết hạn, hãy đăng nhập lại !';
-            res.json(myResponse);
+        if (verify_refresh_token === 'expired') {
+            my_response.message = 'Refresh-Token hết hạn, hãy đăng nhập lại !';
+            res.json(my_response);
             return;
         }
 
-        if (verify_accessToken !== 'expired') {
-            myResponse.isAuth = true;
-            myResponse.message = 'Xác thực thành công, access-token còn hạn !';
+        if (verify_access_token !== 'expired') {
+            my_response.is_auth = true;
+            my_response.message = 'Xác thực thành công, access-token còn hạn !';
             next();
             return;
         } else {
-            let storeAuthToken: StoreAuthToken | null = null;
-            storeAuthToken = await serviceRedis.getData<StoreAuthToken>(keyServiceRedis);
+            let store_auth_token: Store_Auth_Token_Field | null = null;
+            store_auth_token = await serviceRedis.getData<Store_Auth_Token_Field>(key_service_redis);
             // console.log('4. Lấy storeAuthToken từ Redis:', storeAuthToken);
-            if (!storeAuthToken) {
-                const resultget = await mssqlGetValue(keyServiceRedis);
+            if (!store_auth_token) {
+                const result_get = await postgresql_Get_Value(key_service_redis);
 
-                if (resultget?.isSuccess && resultget.data) {
-                    storeAuthToken = JSON.parse(resultget.data.value) as StoreAuthToken;
+                if (result_get?.is_success && result_get.data) {
+                    store_auth_token = JSON.parse(result_get.data.value) as Store_Auth_Token_Field;
                 } else {
-                    myResponse.isSignin = false;
-                    myResponse.message = 'Không tìm thấy thông tin phiên đăng nhập, hãy đăng nhập lại !';
-                    res.json(myResponse);
+                    my_response.is_signin = false;
+                    my_response.message = 'Không tìm thấy thông tin phiên đăng nhập, hãy đăng nhập lại !';
+                    res.json(my_response);
                     return;
                 }
             }
-            if (storeAuthToken.refreshToken === refreshToken) {
+            if (store_auth_token.refresh_token === refresh_token) {
                 let lock;
                 try {
                     //---------------------xử lý token hết han--------------------/
-                    lock = await serviceRedlock.acquire([lockKey], 3000);
+                    lock = await serviceRedlock.acquire([lock_key], 3000);
 
-                    let blackList = storeAuthToken.blackList;
-                    if (blackList.length < 50) {
-                        blackList.push(accessToken);
+                    let black_list = store_auth_token.black_list;
+                    if (black_list.length < 50) {
+                        black_list.push(access_token);
                     } else {
-                        blackList = [accessToken];
+                        black_list = [access_token];
                     }
-                    storeAuthToken.blackList = blackList;
-                    storeAuthToken.grayAccessToken = accessToken;
+                    store_auth_token.black_list = black_list;
+                    store_auth_token.gray_access_token = access_token;
 
-                    const myJwtPayload = verify_refreshToken;
-                    const signOptions: SignOptions = {
+                    const my_jwt_payload = verify_refresh_token;
+                    const sign_options: SignOptions = {
                         expiresIn: '1m',
                     };
-                    const new_accessToken = generateAccessToken(myJwtPayload, signOptions);
-                    storeAuthToken.accessToken = new_accessToken;
+                    const new_access_token = generate_Access_Token(my_jwt_payload, sign_options);
+                    store_auth_token.access_token = new_access_token;
 
                     res.setHeader('x-account-id', id);
-                    res.setHeader('x-access-token', new_accessToken);
-                    res.setHeader('x-refresh-token', refreshToken);
+                    res.setHeader('x-access-token', new_access_token);
+                    res.setHeader('x-refresh-token', refresh_token);
                     res.setHeader('x-isRefresh', '1');
 
-                    const isSet = await serviceRedis.setData<StoreAuthToken>(
-                        keyServiceRedis,
-                        storeAuthToken,
-                        timeExpireat
+                    const is_set = await serviceRedis.setData<Store_Auth_Token_Field>(
+                        key_service_redis,
+                        store_auth_token,
+                        time_expireat
                     );
-                    if (!isSet) {
+                    if (!is_set) {
                         console.error('Failed to set new token in cookie in Redis');
                         return;
                     }
-                    const resultupdate = await mssqlUpdateValue(keyServiceRedis, JSON.stringify(storeAuthToken));
-                    if (!resultupdate?.isSuccess) {
-                        myResponse.message = 'Update storeAuthToken in auth successly !';
+                    const result_update = await postgresql_Update_Value(
+                        key_service_redis,
+                        JSON.stringify(store_auth_token)
+                    );
+                    if (!result_update?.is_success) {
+                        my_response.message = 'Update storeAuthToken in auth successly !';
                     } else {
-                        myResponse.message = 'Update storeAuthToken in auth failure !';
+                        my_response.message = 'Update storeAuthToken in auth failure !';
                     }
 
-                    myResponse.isAuth = true;
-                    myResponse.message = 'Xác thực thành công, access-token được cấp mới !';
+                    my_response.is_auth = true;
+                    my_response.message = 'Xác thực thành công, access-token được cấp mới !';
                     next();
                     return;
                     //----------------------------------------------------------/
                 } catch (err) {
                     if (err instanceof LockError) {
                         //--------------------Tiếp tục thực hiện những request cùng thời điểm------------------------//
-                        if (storeAuthToken.grayAccessToken === accessToken) {
-                            myResponse.isAuth = true;
-                            myResponse.message = 'Xác thực thành công, truy cập tạm access-token cũ !';
+                        if (store_auth_token.gray_access_token === access_token) {
+                            my_response.is_auth = true;
+                            my_response.message = 'Xác thực thành công, truy cập tạm access-token cũ !';
                             next();
                             return;
                         } else {
-                            myResponse.isSignin = false;
-                            myResponse.message = 'Tài khoản của bạn bị tấn công, hãy đăng nhập lại !';
-                            res.json(myResponse);
+                            my_response.is_signin = false;
+                            my_response.message = 'Tài khoản của bạn bị tấn công, hãy đăng nhập lại !';
+                            res.json(my_response);
                             return;
                         }
                         //----------------------------------------------------------------------------------------//
@@ -374,15 +380,15 @@ async function authenticationMobile(req: Request, res: Response, next: NextFunct
                     }
                 }
             } else {
-                myResponse.isSignin = false;
-                myResponse.message = 'Tài khoản của bạn bị tấn công, hãy đăng nhập lại !';
-                res.json(myResponse);
+                my_response.is_signin = false;
+                my_response.message = 'Tài khoản của bạn bị tấn công, hãy đăng nhập lại !';
+                res.json(my_response);
                 return;
             }
         }
     } catch (error) {
-        myResponse.err = error;
-        res.json(myResponse);
+        my_response.err = error;
+        res.json(my_response);
         return;
     }
 }
