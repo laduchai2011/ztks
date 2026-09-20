@@ -6,7 +6,7 @@ minioService.ensureBucket().catch((err) => {
     console.error('Error ensuring bucket exists ( images ):', err);
 });
 
-export async function getAImageFromMinio(req: Request, res: Response) {
+export async function get_A_Image_From_Minio(req: Request, res: Response) {
     try {
         const objectName = req.params.name;
         const stat = await minioService.stat(objectName);

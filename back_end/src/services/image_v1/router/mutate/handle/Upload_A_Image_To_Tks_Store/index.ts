@@ -2,8 +2,7 @@ import { Request, Response } from 'express';
 import multer from 'multer';
 import { PassThrough } from 'stream';
 import { MinioServiceV1 } from '@src/connect/minio/service';
-// import { pipeline } from 'stream/promises';
-import { MyResponse } from '@src/data_struct/response';
+import { My_Response_Field } from '@src/data_struct/response';
 import fs from 'fs';
 
 const CHUNK_SIZE = 5 * 1024 * 1024;
@@ -13,9 +12,7 @@ minioService.ensureBucket().catch((err) => {
     console.error('Error ensuring bucket exists ( images ):', err);
 });
 
-class Handle_UploadAImageToTksStore {
-    constructor() {}
-
+class Handle_Upload_A_Image_To_Tks_Store {
     upload = (): multer.Multer => {
         const storage = multer.diskStorage({
             destination: 'tmp/chunks',
@@ -28,13 +25,11 @@ class Handle_UploadAImageToTksStore {
         return upload;
     };
 
-    uploadChunk = async (req: Request, res: Response) => {
-        const myResponse: MyResponse<unknown> = {
-            isSuccess: false,
+    upload_Chunk = async (req: Request, res: Response) => {
+        const my_response: My_Response_Field<unknown> = {
+            is_success: false,
             message: 'Khởi tạo upload chunk !',
         };
-
-        // let stream: fs.ReadStream | null = null;
 
         try {
             if (!req.file) {
@@ -66,14 +61,14 @@ class Handle_UploadAImageToTksStore {
             // fs.unlinkSync(filePath);
             await fs.promises.unlink(filePath);
 
-            myResponse.isSuccess = true;
-            myResponse.message = 'Upload chunk thành công';
-            myResponse.data = {
-                chunkIndex: index,
+            my_response.is_success = true;
+            my_response.message = 'Upload chunk thành công';
+            my_response.data = {
+                chunk_index: index,
                 etag: result.etag,
             };
 
-            res.json(myResponse);
+            res.json(my_response);
             return;
         } catch (error) {
             console.error(error);
@@ -82,65 +77,65 @@ class Handle_UploadAImageToTksStore {
         }
     };
 
-    mergeChunks = async (req: Request, res: Response) => {
-        const { fileId, totalChunks, finalFileName } = req.body;
+    merge_Chunks = async (req: Request, res: Response) => {
+        const { file_id, total_chunks, final_file_name } = req.body;
 
-        const myResponse: MyResponse<unknown> = {
-            isSuccess: false,
+        const my_response: My_Response_Field<unknown> = {
+            is_success: false,
             message: 'Khởi tạo Merge Chunks !',
         };
 
-        if (!fileId || !totalChunks || !finalFileName) {
+        if (!file_id || !total_chunks || !final_file_name) {
             res.status(400).json({ message: 'Missing params' });
             return;
         }
 
-        const finalObjectName = `${finalFileName}`;
-        const mergedStream = new PassThrough();
+        const final_object_name = `${final_file_name}`;
+        const merged_stream = new PassThrough();
 
         try {
             // 🚀 1. TÍNH SIZE SONG SONG
             const stats = await Promise.all(
-                Array.from({ length: totalChunks }, (_, i) => minioService.stat(`chunks/${fileId}/${i}`))
+                Array.from({ length: total_chunks }, (_, i) => minioService.stat(`chunks/${file_id}/${i}`))
             );
 
-            const totalSize = stats.reduce((sum, s) => sum + s.size, 0);
+            const total_size = stats.reduce((sum, s) => sum + s.size, 0);
 
             // 🚀 2. upload ngay
-            const uploadPromise = minioService.uploadStream(finalObjectName, mergedStream, totalSize);
+            const upload_promise = minioService.uploadStream(final_object_name, merged_stream, total_size);
 
             // 🚀 3. merge chunk bằng pipeline (an toàn)
-            for (let i = 0; i < totalChunks; i++) {
-                const objectName = `chunks/${fileId}/${i}`;
-                const chunkStream = await minioService.getStream(objectName);
+            for (let i = 0; i < total_chunks; i++) {
+                const object_name = `chunks/${file_id}/${i}`;
+                const chunk_stream = await minioService.getStream(object_name);
 
                 await new Promise<void>((resolve, reject) => {
-                    chunkStream.once('error', reject).once('end', resolve).pipe(mergedStream, { end: false });
+                    chunk_stream.once('error', reject).once('end', resolve).pipe(merged_stream, { end: false });
                 });
             }
 
             // kết thúc stream
-            mergedStream.end();
+            merged_stream.end();
 
             // chờ upload hoàn tất
-            await uploadPromise;
+            await upload_promise;
 
             // 🚀 4. cleanup song song
             await Promise.all(
-                Array.from({ length: totalChunks }, (_, i) => minioService.remove(`chunks/${fileId}/${i}`))
+                Array.from({ length: total_chunks }, (_, i) => minioService.remove(`chunks/${file_id}/${i}`))
             );
 
-            myResponse.message = 'Đăng tải thước phim thành công !';
-            myResponse.isSuccess = true;
-            myResponse.data = finalObjectName;
-            res.json(myResponse);
+            my_response.message = 'Đăng tải thước phim thành công !';
+            my_response.is_success = true;
+            my_response.data = final_object_name;
+            res.json(my_response);
             return;
         } catch (error: any) {
             console.error(error);
 
             // ❗ cleanup nếu fail
             await Promise.allSettled(
-                Array.from({ length: totalChunks }, (_, i) => minioService.remove(`chunks/${fileId}/${i}`))
+                Array.from({ length: total_chunks }, (_, i) => minioService.remove(`chunks/${file_id}/${i}`))
             );
 
             console.error(error.response?.data || error);
@@ -150,4 +145,4 @@ class Handle_UploadAImageToTksStore {
     };
 }
 
-export default Handle_UploadAImageToTksStore;
+export default Handle_Upload_A_Image_To_Tks_Store;

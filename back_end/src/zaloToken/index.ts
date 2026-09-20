@@ -2,14 +2,12 @@ import axios from 'axios';
 import qs from 'qs';
 import LockError from 'redlock';
 import { serviceRedlock } from '@src/connect';
-// import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Token_Res_Field } from '@src/data_struct/token_zalo';
 import { Zalo_Oa_Token_Field, Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
 import { prefix_cache__zalo_access_token_with_zalo_oa_id } from '@src/const/redisKey';
 import QueryDB_Get_Zalo_Oa_Token_With_Fk from './Get_Zalo_Oa_Token_With_Fk';
 import MutateDB_Update_Refresh_Token_Of_Zalo_Oa from './Update_Refresh_Token_Of_Zalo_Oa';
-import { my_log } from '@src/log';
 
 // mssql_server.init();
 
@@ -40,7 +38,7 @@ export async function refresh_Access_Token(zalo_app: Zalo_App_Field, zalo_oa: Za
 
     const redis_key = `${prefix_cache__zalo_access_token_with_zalo_oa_id}_${zalo_oa_id}`;
     const lock_key = `${prefix_cache__zalo_access_token_with_zalo_oa_id}_${zalo_oa_id}_lock`;
-    let lock: Lock | null = null;
+    let lock: Awaited<ReturnType<typeof serviceRedlock.acquire>> | null = null;
     if (repeat === 0) {
         console.error('FINISH repeat REFRESH ERROR');
         return;

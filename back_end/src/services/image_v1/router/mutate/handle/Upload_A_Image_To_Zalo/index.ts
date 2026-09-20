@@ -2,24 +2,22 @@ import { Request, Response } from 'express';
 import multer from 'multer';
 import axios from 'axios';
 import FormData from 'form-data';
-import { getAccessToken, refreshAccessToken } from '@src/zaloToken';
-import { ZaloAppField, ZaloOaField } from '@src/data_struct/zalo';
+import { get_Access_Token, refresh_Access_Token } from '@src/zaloToken';
+import { Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
 import sharp from 'sharp';
 import { Readable } from 'stream';
 
 const API_UPLOAD = 'https://openapi.zalo.me/v2.0/oa/upload/image';
 
-class Handle_UploadAImageToZalo {
-    constructor() {}
-
+class Handle_Upload_A_Image_To_Zalo {
     upload = (): multer.Multer => {
         return multer();
     };
 
     main = async (req: Request, res: Response) => {
         const file = req.file as Express.Multer.File;
-        const zaloApp = JSON.parse(req.body.zaloApp) as ZaloAppField;
-        const zaloOa = JSON.parse(req.body.zaloOa) as ZaloOaField;
+        const zalo_app = JSON.parse(req.body.zalo_app) as Zalo_App_Field;
+        const zalo_oa = JSON.parse(req.body.zalo_oa) as Zalo_Oa_Field;
 
         if (!req.file) {
             res.status(400).json({ message: 'No file uploaded' });
@@ -43,10 +41,10 @@ class Handle_UploadAImageToZalo {
 
         let token: string | undefined = undefined;
 
-        token = await getAccessToken(zaloOa);
+        token = await get_Access_Token(zalo_oa);
 
         if (!token) {
-            token = await refreshAccessToken(zaloApp, zaloOa, 10);
+            token = await refresh_Access_Token(zalo_app, zalo_oa, 10);
         }
 
         const response = await axios.post(API_UPLOAD, form, {
@@ -60,4 +58,4 @@ class Handle_UploadAImageToZalo {
     };
 }
 
-export default Handle_UploadAImageToZalo;
+export default Handle_Upload_A_Image_To_Zalo;

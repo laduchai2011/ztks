@@ -12,40 +12,40 @@ minioService.ensureBucket().catch((err) => {
 //     stream.pipe(res);
 // }
 
-export async function getAVideoFromMinio(req: Request, res: Response) {
+export async function get_A_Video_From_Minio(req: Request, res: Response) {
     try {
-        const fileName = req.params.name;
+        const file_name = req.params.name;
 
-        const stat = await minioService.stat(fileName);
-        const fileSize = stat.size;
+        const stat = await minioService.stat(file_name);
+        const file_size = stat.size;
 
         const range = req.headers.range;
 
-        const contentType = mime.lookup(fileName) || 'video/mp4';
+        const content_type = mime.lookup(file_name) || 'video/mp4';
 
         if (range) {
             const parts = range.replace(/bytes=/, '').split('-');
             const start = parseInt(parts[0], 10);
-            const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+            const end = parts[1] ? parseInt(parts[1], 10) : file_size - 1;
 
-            const chunkSize = end - start + 1;
+            const chunk_size = end - start + 1;
 
-            const stream = await minioService.getStreamVideo(fileName, start, chunkSize);
+            const stream = await minioService.getStreamVideo(file_name, start, chunk_size);
 
             res.writeHead(206, {
-                'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+                'Content-Range': `bytes ${start}-${end}/${file_size}`,
                 'Accept-Ranges': 'bytes',
-                'Content-Length': chunkSize,
-                'Content-Type': contentType,
+                'Content-Length': chunk_size,
+                'Content-Type': content_type,
             });
 
             stream.pipe(res);
         } else {
-            const stream = await minioService.getStream(fileName);
+            const stream = await minioService.getStream(file_name);
 
             res.writeHead(200, {
-                'Content-Length': fileSize,
-                'Content-Type': contentType,
+                'Content-Length': file_size,
+                'Content-Type': content_type,
             });
 
             stream.pipe(res);
@@ -56,25 +56,25 @@ export async function getAVideoFromMinio(req: Request, res: Response) {
     }
 }
 
-export async function downloadVideoFromMinio(req: Request, res: Response) {
+export async function download_Video_From_Minio(req: Request, res: Response) {
     try {
-        const fileName = req.params.name;
+        const file_name = req.params.name;
 
-        const stat = await minioService.stat(fileName);
-        const contentType = mime.lookup(fileName) || 'video/mp4';
+        const stat = await minioService.stat(file_name);
+        const content_type = mime.lookup(file_name) || 'video/mp4';
 
-        const stream = await minioService.getStream(fileName);
+        const stream = await minioService.getStream(file_name);
 
         // // ✅ CORS (QUAN TRỌNG NHẤT)
         // res.setHeader('Access-Control-Allow-Origin', 'https://oa.zalo.me');
         // res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
         // res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Range');
 
-        res.setHeader('Content-Type', contentType);
+        res.setHeader('Content-Type', content_type);
         res.setHeader('Content-Length', stat.size);
 
         // QUAN TRỌNG: để browser/extension hiểu là download
-        res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+        res.setHeader('Content-Disposition', `attachment; filename="${file_name}"`);
 
         stream.pipe(res);
     } catch (err) {
