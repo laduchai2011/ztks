@@ -3,16 +3,12 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { createClient } from 'redis';
 import { createAdapter } from '@socket.io/redis-adapter';
-import { consumeStringMessage, consumeVideoMessage } from '@src/messageQueue/Consumer';
-// import { sendMessage } from '@src/messageQueue/Producer';
-// import { MessageZaloField } from './messageQueue/type';
+import { consume_String_Message, consume_Video_Message } from '@src/messageQueue/Consumer';
 import process from 'process';
-// import { customerSend_sendToMember, memberSend_sendToCustomer } from '@src/const/keyRabbitMQ';
-import { SocketMessageField } from './dataStruct/message_v1';
-import { AgentPayField } from './dataStruct/agent';
-import { OrderField } from './dataStruct/order';
-import { verifySocketToken } from './token';
-// import { VideoMessageBodyField } from './dataStruct/message_v1/body';
+import { Socket_Message_Field } from './data_struct/message_v1';
+import { Agent_Pay_Field } from './data_struct/agent';
+import { Order_Field } from './data_struct/order';
+import { verify_Socket_Token } from './token';
 import { redis_config } from '@src/config';
 
 dotenv.config();
@@ -53,44 +49,44 @@ async function bootstrap() {
         adapter: createAdapter(pubClient, subClient),
     });
 
-    consumeStringMessage(`store_msg_success_${prefix}`, (msg) => {
-        const socketMsg = JSON.parse(msg) as SocketMessageField;
-        const allChatRoomRole = socketMsg.allChatRoomRoles;
-        io.to(`chatRoomId_${socketMsg.chatRoomId}`).emit('socketMessage', socketMsg);
-        for (let i: number = 0; i < allChatRoomRole.length; i++) {
-            io.to(`accountId_${allChatRoomRole[i].authorizedAccountId}`).emit('socketMessageAllRoom', socketMsg);
+    consume_String_Message(`store_msg_success_${prefix}`, (msg) => {
+        const socket_msg = JSON.parse(msg) as Socket_Message_Field;
+        const all_chat_room_roles = socket_msg.all_chat_room_roles;
+        io.to(`chatRoomId_${socket_msg.chat_room_id}`).emit('socketMessage', socket_msg);
+        for (let i: number = 0; i < all_chat_room_roles.length; i++) {
+            io.to(`accountId_${all_chat_room_roles[i].authorized_account_id}`).emit('socketMessageAllRoom', socket_msg);
         }
     });
 
-    consumeVideoMessage(`sendVideoMessage_${prefix}`, (videoMessageBody) => {
-        io.to(`playwright_${videoMessageBody.zaloAppId}`).emit('sendVideo_with_zalo_app_id', videoMessageBody);
+    consume_Video_Message(`sendVideoMessage_${prefix}`, (video_message_body) => {
+        io.to(`playwright_${video_message_body.zalo_app_id}`).emit('sendVideo_with_zalo_app_id', video_message_body);
     });
 
-    consumeStringMessage(`agentPay_${prefix}`, (data) => {
-        const agentPay = JSON.parse(data) as AgentPayField;
-        io.to(`accountId_${agentPay.accountId}`).emit('agentPay', agentPay);
+    consume_String_Message(`agentPay_${prefix}`, (data) => {
+        const agent_pay = JSON.parse(data) as Agent_Pay_Field;
+        io.to(`accountId_${agent_pay.account_id}`).emit('agentPay', agent_pay);
     });
 
-    consumeStringMessage(`orderPay_${prefix}`, (payload) => {
+    consume_String_Message(`orderPay_${prefix}`, (payload) => {
         const data = JSON.parse(payload);
-        const accountId = data.accountId as number;
-        const order = data.order as OrderField;
-        io.to(`accountId_${accountId}`).emit('orderPay', order);
+        const account_id = data.account_id as string;
+        const order = data.order as Order_Field;
+        io.to(`accountId_${account_id}`).emit('orderPay', order);
     });
 
     io.use((socket, next) => {
         const token = socket.handshake.auth.token;
 
         try {
-            const verify_socketToken = verifySocketToken(token);
+            const verify_socket_token = verify_Socket_Token(token);
 
-            if (verify_socketToken === 'invalid') {
+            if (verify_socket_token === 'invalid') {
                 return next(new Error('Token invalid'));
             }
-            if (verify_socketToken === 'expired') {
+            if (verify_socket_token === 'expired') {
                 return next(new Error('Token expired'));
             }
-            socket.data.verify_socketToken = verify_socketToken;
+            socket.data.verify_socket_token = verify_socket_token;
             next();
         } catch (err) {
             console.error(err);
@@ -104,34 +100,34 @@ async function bootstrap() {
         // console.log(1111, socket.data.verify_socketToken);
 
         // Tham gia phòng
-        socket.on('joinRoom', (roomName: string) => {
-            socket.join(roomName);
-            console.log(`User ${socket.id} joined room ${roomName}`);
+        socket.on('joinRoom', (room_name: string) => {
+            socket.join(room_name);
+            console.log(`User ${socket.id} joined room ${room_name}`);
 
             // Thông báo cho tất cả trong phòng
             // io.to(roomName).emit('systemMessage', `User ${socket.id} joined the room`);
         });
 
-        socket.on('playwrightOnline-onApp', ({ zaloAppId, accountId }) => {
+        socket.on('playwrightOnline-onApp', ({ zalo_app_id, account_id }) => {
             // console.log('Playwright is online on app, zaloAppId:', zaloAppId, 'accountId:', accountId);
-            io.to(`playwright_${zaloAppId}`).emit('playwrightOnline-playwightOn', {
-                zaloAppId: zaloAppId,
-                accountId: accountId,
+            io.to(`playwright_${zalo_app_id}`).emit('playwrightOnline-playwightOn', {
+                zalo_app_id: zalo_app_id,
+                account_id: account_id,
             });
         });
 
-        socket.on('playwrightOnline-onPlaywright', ({ zaloAppId, accountId }) => {
+        socket.on('playwrightOnline-onPlaywright', ({ zalo_app_id, account_id }) => {
             // console.log('Playwright is online on playwright, zaloAppId:', zaloAppId, 'accountId:', accountId);
-            io.to(`accountId_${accountId}`).emit('playwrightOnline-appOn', {
-                zaloAppId: zaloAppId,
-                accountId: accountId,
+            io.to(`accountId_${account_id}`).emit('playwrightOnline-appOn', {
+                zalo_app_id: zalo_app_id,
+                account_id: account_id,
             });
         });
 
         // Rời phòng
-        socket.on('leaveRoom', (roomName: string) => {
-            socket.leave(roomName);
-            io.to(roomName).emit('systemMessage', `User ${socket.id} left the room`);
+        socket.on('leaveRoom', (room_name: string) => {
+            socket.leave(room_name);
+            io.to(room_name).emit('systemMessage', `User ${socket.id} left the room`);
         });
 
         socket.on('disconnect', () => {
