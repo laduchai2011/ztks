@@ -2,7 +2,7 @@ import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response } from 'express';
 import { My_Response_Field } from '@src/data_struct/response';
 import { Chat_Room_Role_Field } from '@src/data_struct/chat_room';
-import { Chat_Room_Role_With_Crid_Aaid_Body_Field } from '@src/data_struct/chat_room/body';
+import { Get_Chat_Room_Role_With_Crid_Aaid_Body_Field } from '@src/data_struct/chat_room/body';
 import QueryDB_Get_Chat_Room_Role_With_Crid_Aaid from '../../queryDB/Get_Chat_Room_Role_With_Crid_Aaid';
 import { Cache_Get_Chat_Room_Role_With_Crid_Aaid } from '@src/const/redisKey/chat_room';
 
@@ -15,10 +15,10 @@ class Handle_Get_Chat_Room_Role_With_Crid_Aaid {
         this._cache_get_chat_room_role_with_crid_aaid.init();
     }
 
-    main = async (req: Request<any, any, Chat_Room_Role_With_Crid_Aaid_Body_Field>, res: Response) => {
-        const chat_room_role_with_crid_aaid_body = req.body;
+    main = async (req: Request<any, any, Get_Chat_Room_Role_With_Crid_Aaid_Body_Field>, res: Response) => {
+        const get_chat_room_role_with_crid_aaid_body = req.body;
 
-        this._cache_get_chat_room_role_with_crid_aaid.set_Body(chat_room_role_with_crid_aaid_body);
+        this._cache_get_chat_room_role_with_crid_aaid.set_Body(get_chat_room_role_with_crid_aaid_body);
 
         const my_response: My_Response_Field<Chat_Room_Role_Field> = {
             is_success: false,
@@ -35,7 +35,7 @@ class Handle_Get_Chat_Room_Role_With_Crid_Aaid {
         }
 
         const queryDB = new QueryDB_Get_Chat_Room_Role_With_Crid_Aaid();
-        queryDB.set_Chat_Room_Role_With_Crid_Aaid_Body(chat_room_role_with_crid_aaid_body);
+        queryDB.set_Get_Chat_Room_Role_With_Crid_Aaid_Body(get_chat_room_role_with_crid_aaid_body);
 
         try {
             const result = await queryDB.run();

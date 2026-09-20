@@ -8,7 +8,7 @@ import { Get_Zalo_App_With_Account_Id_Body_Field, Get_Zalo_Oa_With_Id_Body_Field
 import { Agent_Field } from '@src/data_struct/agent';
 import { Get_Agent_With_Agent_Account_Id_Body_Field } from '@src/data_struct/agent/body';
 import { Chat_Room_Role_Field } from '@src/data_struct/chat_room';
-import { Chat_Room_Role_With_Crid_Aaid_Body_Field } from '@src/data_struct/chat_room/body';
+import { Get_Chat_Room_Role_With_Crid_Aaid_Body_Field } from '@src/data_struct/chat_room/body';
 import { Message_Amount_In_Day_Field } from '@src/data_struct/message_v1';
 import { Video_Message_Body_Field } from '@src/data_struct/message_v1/body';
 import QueryDB_Get_My_Account_Information from '../../queryDB/Get_My_Account_Information';
@@ -383,7 +383,7 @@ class Handle_Video_Message {
     get_Chat_Room_Role = async (_: Request, res: Response, next: NextFunction) => {
         const video_message_body = res.locals.video_message_body as Video_Message_Body_Field;
 
-        const chat_room_role_with_crid_aaid_body: Chat_Room_Role_With_Crid_Aaid_Body_Field = {
+        const get_chat_room_role_with_crid_aaid_body: Get_Chat_Room_Role_With_Crid_Aaid_Body_Field = {
             authorized_account_id: video_message_body.account_id,
             chat_room_id: video_message_body.chat_room_id,
         };
@@ -401,7 +401,7 @@ class Handle_Video_Message {
         }
 
         const queryDB = new QueryDB_Get_Chat_Room_Role_With_Crid_Aaid();
-        queryDB.set_Chat_Room_Role_With_Crid_Aaid_Body(chat_room_role_with_crid_aaid_body);
+        queryDB.set_Get_Chat_Room_Role_With_Crid_Aaid_Body(get_chat_room_role_with_crid_aaid_body);
 
         try {
             const result = await queryDB.run();

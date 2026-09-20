@@ -14,10 +14,7 @@ import { New_Message_V1_Field, Message_Amount_In_Day_Field, New_Call_V1_Field } 
 import { Chat_Room_Role_Zod_Schema, Chat_Room_Role_Schema_Type } from '@src/schema/chatRoom';
 import { Socket_Message_Field, Message_V1_Field } from '@src/data_struct/message_v1';
 import { get_Db_Monggo } from '@src/connect/mongo';
-import { my_log } from '@src/log';
-// import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
-import { Account_Receive_Message_Field } from '@src/data_struct/account';
 import { Get_Account_Receive_Message_Body_Field } from '@src/data_struct/account/body';
 import { Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
 import { Chat_Room_Field, Chat_Room_Role_Schema } from '@src/data_struct/chat_room';
@@ -26,12 +23,12 @@ import {
     Check_Zalo_App_With_App_Id_Body_Field,
     Check_Zalo_Oa_List_With_Zalo_App_Id_Body_Field,
 } from '@src/data_struct/zalo/body';
-import QueryDB_Check_Zalo_App_With_App_Id from './handleHookData/queryDB/Check_Zalo_App_With_App_Id';
-import QueryDB_Check_Zalo_Oa_List_With_Zalo_App_Id from './handleHookData/queryDB/Check_Zalo_Oa_List_With_Zalo_App_Id';
-import QueryDB_User_Take_Room_To_Chat from './handleHookData/queryDB/User_Take_Room_To_Chat';
-import QueryDB_Get_Account_Receive_Message from './handleHookData/queryDB/Get_Account_Receive_Message';
-import QueryDB_Get_All_Chat_Room_Roles_With_Chat_Room_Id from './handleHookData/queryDB/Get_All_Chat_Room_Roles_With_Chat_Room_Id';
-import MutateDB_Create_Chat_Room from './handleHookData/mutateDB/Create_Chat_Room';
+import QueryDB_Check_Zalo_App_With_App_Id from './handle_Hook_Data/queryDB/Check_Zalo_App_With_App_Id';
+import QueryDB_Check_Zalo_Oa_List_With_Zalo_App_Id from './handle_Hook_Data/queryDB/Check_Zalo_Oa_List_With_Zalo_App_Id';
+import QueryDB_User_Take_Room_To_Chat from './handle_Hook_Data/queryDB/User_Take_Room_To_Chat';
+import QueryDB_Get_Account_Receive_Message from './handle_Hook_Data/queryDB/Get_Account_Receive_Message';
+import QueryDB_Get_All_Chat_Room_Roles_With_Chat_Room_Id from './handle_Hook_Data/queryDB/Get_All_Chat_Room_Roles_With_Chat_Room_Id';
+import MutateDB_Create_Chat_Room from './handle_Hook_Data/mutateDB/Create_Chat_Room';
 import { prefix_cache__zalo_app_with_app_id, prefix_cache__zalo_oa_list_with_zalo_app_id } from '@src/const/redisKey';
 import {
     Cache_Get_All_Chat_Room_Role_With_Crid,
@@ -48,10 +45,10 @@ import {
     Hook_Call_Schema,
     Zalo_Call_Type,
 } from '@src/data_struct/zalo/hook_data';
-import { feedback_To_Take_Chat_Session } from './handleHookData/feedback_To_Take_Chat_Session';
+import { feedback_To_Take_Chat_Session } from './handle_Hook_Data/feedback_To_Take_Chat_Session';
 import { Chat_Session_Field } from '@src/data_struct/chat_session';
 import { send_Message_To_User } from './send_Message_To_User';
-import { ensure_Indexes } from './handleHookData/ensure_Indexes';
+import { ensure_Indexes } from './handle_Hook_Data/ensure_Indexes';
 import { getEnv } from '@src/mode';
 import { myEnv } from '@src/mode/type';
 import { Zalo_Event_Name_Enum } from '@src/data_struct/zalo/hook_data/common';
@@ -60,8 +57,6 @@ import { hook_Call_Get_Chat_Room, hook_Call_Feedback_To_Take_Chat_Session } from
 
 const prefix = getEnv() === myEnv.Dev ? 'dev' : '';
 
-// mssql_server.init();
-
 const serviceRedis = ServiceRedis.getInstance();
 serviceRedis.init();
 
@@ -69,7 +64,7 @@ ensure_Indexes();
 
 const time_expireat = 60 * 3; // 3p
 
-export function hookData() {
+export function hook_Data() {
     consume_Hook_Data(`zalo_hook_data_queue_${prefix}`, async (data) => {
         try {
             // const chatRommRoleSchema: ChatRoomRoleSchema = {

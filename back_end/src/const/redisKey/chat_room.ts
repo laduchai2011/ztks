@@ -3,7 +3,7 @@ import ServiceRedis from '@src/cache/cacheRedis';
 import { Chat_Room_Field, Chat_Room_Role_Field } from '@src/data_struct/chat_room';
 import {
     Get_Chat_Room_With_Id_Body_Field,
-    Chat_Room_Role_With_Crid_Aaid_Body_Field,
+    Get_Chat_Room_Role_With_Crid_Aaid_Body_Field,
     Get_All_Chat_Room_Role_With_Crid_Body_Field,
     Get_Chat_Room_With_Zalo_Oa_Id_User_Id_By_App_Body_Field,
 } from '@src/data_struct/chat_room/body';
@@ -131,7 +131,7 @@ export class Cache_Get_Chat_Room_With_Id {
 }
 
 export class Cache_Get_Chat_Room_Role_With_Crid_Aaid {
-    private _body: Chat_Room_Role_With_Crid_Aaid_Body_Field | undefined;
+    private _body: Get_Chat_Room_Role_With_Crid_Aaid_Body_Field | undefined;
     private _serviceRedis = ServiceRedis.getInstance();
     private _fk_crid: string | undefined;
 
@@ -141,7 +141,7 @@ export class Cache_Get_Chat_Room_Role_With_Crid_Aaid {
         this._serviceRedis.init();
     }
 
-    set_Body(body: Chat_Room_Role_With_Crid_Aaid_Body_Field) {
+    set_Body(body: Get_Chat_Room_Role_With_Crid_Aaid_Body_Field) {
         this._body = body;
     }
 

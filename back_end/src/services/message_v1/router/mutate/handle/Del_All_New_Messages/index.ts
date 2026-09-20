@@ -4,7 +4,7 @@ import { My_Response_Field } from '@src/data_struct/response';
 import { New_Message_V1_Field } from '@src/data_struct/message_v1';
 import { Del_New_Messages_Body_Field } from '@src/data_struct/message_v1/body';
 import { Chat_Room_Role_Field } from '@src/data_struct/chat_room';
-import { Chat_Room_Role_With_Crid_Aaid_Body_Field } from '@src/data_struct/chat_room/body';
+import { Get_Chat_Room_Role_With_Crid_Aaid_Body_Field } from '@src/data_struct/chat_room/body';
 import { Zalo_Message_Type } from '@src/data_struct/zalo/hook_data';
 import { del_All_New_Messages } from '../../mutateMongo/Del_All_New_Messages';
 import { verify_refresh_token } from '@src/token';
@@ -28,7 +28,7 @@ class Handle_Del_All_New_Messages {
         };
 
         const chat_room_id = req.query.chat_room_id;
-        const chat_room_role_with_crid_aaid_body: Chat_Room_Role_With_Crid_Aaid_Body_Field = {
+        const get_chat_room_role_with_crid_aaid_body: Get_Chat_Room_Role_With_Crid_Aaid_Body_Field = {
             chat_room_id: chat_room_id,
             authorized_account_id: '',
         };
@@ -51,8 +51,8 @@ class Handle_Del_All_New_Messages {
             }
 
             const { id } = verify_refreshToken;
-            chat_room_role_with_crid_aaid_body.authorized_account_id = id;
-            res.locals.chat_room_role_with_crid_aaid_body = chat_room_role_with_crid_aaid_body;
+            get_chat_room_role_with_crid_aaid_body.authorized_account_id = id;
+            res.locals.get_chat_room_role_with_crid_aaid_body = get_chat_room_role_with_crid_aaid_body;
             res.locals.my_account_id = id;
             next();
             return;
@@ -64,10 +64,10 @@ class Handle_Del_All_New_Messages {
     };
 
     get_Role = async (_: Request, res: Response, next: NextFunction) => {
-        const chat_room_role_with_crid_aaid_body = res.locals
-            .chat_room_role_with_crid_aaid_body as Chat_Room_Role_With_Crid_Aaid_Body_Field;
-        const crid = chat_room_role_with_crid_aaid_body.chat_room_id;
-        const aaid = chat_room_role_with_crid_aaid_body.authorized_account_id;
+        const get_chat_room_role_with_crid_aaid_body = res.locals
+            .get_chat_room_role_with_crid_aaid_body as Get_Chat_Room_Role_With_Crid_Aaid_Body_Field;
+        const crid = get_chat_room_role_with_crid_aaid_body.chat_room_id;
+        const aaid = get_chat_room_role_with_crid_aaid_body.authorized_account_id;
 
         this._cache_get_chat_room_role_with_crid_aaid.set_Body({ chat_room_id: crid, authorized_account_id: aaid });
 
@@ -84,7 +84,7 @@ class Handle_Del_All_New_Messages {
         }
 
         const queryDB = new QueryDB_Get_Chat_Room_Role_With_Crid_Aaid();
-        queryDB.set_Chat_Room_Role_With_Crid_Aaid_Body(chat_room_role_with_crid_aaid_body);
+        queryDB.set_Get_Chat_Room_Role_With_Crid_Aaid_Body(get_chat_room_role_with_crid_aaid_body);
 
         try {
             const result = await queryDB.run();

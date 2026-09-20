@@ -75,8 +75,8 @@ app.use(`${apiString}/hello`, (req, res) => {
     if (services.includes('message')) {
         const service_message_v1 = (await import('./services/message_v1')).default;
         app.use(`${prefix}/service_message_v1`, service_message_v1);
-        const hookData = (await import('./services/message_v1/hookData')).hookData;
-        hookData();
+        const hook_Data = (await import('./services/message_v1/hook_data')).hook_Data;
+        hook_Data();
     }
 
     if (services.includes('call')) {

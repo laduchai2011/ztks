@@ -19,7 +19,7 @@ export interface Get_My_Chat_Rooms_Body_Field {
     account_id: string;
 }
 
-export interface Chat_Room_Role_With_Crid_Aaid_Body_Field {
+export interface Get_Chat_Room_Role_With_Crid_Aaid_Body_Field {
     authorized_account_id: string;
     chat_room_id: string;
 }

@@ -15,7 +15,7 @@ const handle_del_all_new_messages = new Handle_Del_All_New_Messages();
 const handle_video_message = new Handle_Video_Message();
 
 router_mutate_message_v1.post(
-    '/createMessageV1',
+    '/create_message_v1',
     authentication,
     handle_get_chat_room_role_with_crid_aaid.setup,
     handle_get_chat_room_role_with_crid_aaid.main,
@@ -29,7 +29,7 @@ router_mutate_message_v1.post(
 );
 
 router_mutate_message_v1.post(
-    '/videoMessage',
+    '/video_message',
     authentication,
     handle_video_message.setup,
     handle_video_message.get_My_Account_Information,

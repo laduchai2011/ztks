@@ -1,7 +1,7 @@
 import { Zalo_App_Field, Zalo_Oa_Field } from '../zalo';
 import { Hook_Data_Body_Field } from '../zalo/hook_data/body';
 
-export interface MessageV1BodyField {
+export interface Message_V1_Body_Field {
     cursor: string | null;
     size: number;
     chat_room_id: string;

@@ -4,7 +4,7 @@ import { Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
 import { Chat_Room_Field } from '@src/data_struct/chat_room';
 import { User_Take_Room_To_Chat_Body_Field } from '@src/data_struct/chat_room/body';
 import { Cache_Get_Chat_Room_With_Zalo_Oa_Id_User_Id_By_App } from '@src/const/redisKey/chat_room';
-import QueryDB_User_Take_Room_To_Chat from '../handleHookData/queryDB/User_Take_Room_To_Chat';
+import QueryDB_User_Take_Room_To_Chat from '../handle_Hook_Data/queryDB/User_Take_Room_To_Chat';
 
 import { send_Message_To_User } from '../send_Message_To_User';
 
