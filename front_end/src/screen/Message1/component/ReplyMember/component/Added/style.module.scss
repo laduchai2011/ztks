@@ -1,0 +1,125 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 5px;
+
+    cursor: pointer;
+
+    &:hover {
+        background-color: rgb(240, 240, 240);
+    }
+
+    > .indexContainer {
+        height: 40px;
+        @include center-of-rectangle;
+    }
+
+    > .nameContainer {
+        @include center-of-row;
+        height: 50px;
+
+        > img {
+            height: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 50%;
+            box-sizing: border-box;
+            padding: 5px;
+            border: 1px solid gray;
+        }
+
+        > .you {
+            box-sizing: border-box;
+            padding: 0 5px;
+            color: blue;
+            font-style: italic;
+            font-size: 0.9rem;
+            @include center-of-rectangle;
+        }
+
+        > .name {
+            @include line-clamp(1);
+            box-sizing: border-box;
+            padding: 5px;
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+    }
+
+    > .setupContainer {
+        @include center-of-rectangle;
+
+        > .setupMain {
+            @include center-of-row;
+
+            > div {
+                box-sizing: border-box;
+                padding: 0 10px;
+                height: 20px;
+                @include center-of-row;
+
+                > div:nth-child(2) {
+                    margin: 0 5px;
+                }
+            }
+
+            > .read {
+                > input {
+                    accent-color: red;
+                }
+                > div {
+                    color: red;
+                }
+            }
+
+            > .send {
+                > input {
+                    accent-color: blue;
+                }
+                > div {
+                    color: blue;
+                }
+            }
+
+            > .colorSelect {
+                position: relative;
+
+                > div:nth-child(1) {
+                    height: 100%;
+                    aspect-ratio: 1/1;
+                    box-sizing: border-box;
+                    border: 1px solid gray;
+                }
+
+                > .colorFrame {
+                    position: absolute;
+                    top: 25px;
+                    right: 0;
+                    z-index: 1;
+                }
+            }
+        }
+    }
+
+    > .btnContainer {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 15px 5px;
+
+        > button {
+            border: none;
+            box-sizing: border-box;
+            padding: 5px 10px;
+            border: 1px solid greenyellow;
+            border-radius: 5px;
+
+            &:hover {
+                background-color: greenyellow;
+            }
+
+            &:active {
+                background-color: white;
+            }
+        }
+    }
+}

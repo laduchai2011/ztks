@@ -1,0 +1,78 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    height: max-content;
+
+    > .connecting {
+        box-sizing: border-box;
+        padding: 5px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: gray;
+    }
+
+    > .ring {
+        box-sizing: border-box;
+        padding: 5px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: gray;
+    }
+
+    > .avatarContainer {
+        @include center-of-rectangle;
+
+        > img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+    }
+
+    > .userName {
+        box-sizing: border-box;
+        padding: 5px;
+        text-align: center;
+        font-size: 1.05rem;
+        font-weight: 500;
+        color: black;
+    }
+
+    > .callIn {
+        box-sizing: border-box;
+        padding: 5px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: gray;
+    }
+
+    > .text {
+        box-sizing: border-box;
+        padding: 5px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: gray;
+    }
+
+    > .icon1 {
+        box-sizing: border-box;
+        padding: 10px;
+        @include center-of-rectangle;
+    }
+
+    > .icon2 {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 10px;
+
+        > div {
+            @include center-of-row;
+            justify-content: space-around;
+            width: 80%;
+
+            > svg {
+                box-sizing: border-box;
+            }
+        }
+    }
+}

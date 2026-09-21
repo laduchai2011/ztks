@@ -1,0 +1,55 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 5px;
+    @include center-of-row;
+
+    > .main {
+        width: 100%;
+        @include center-of-row;
+        justify-content: space-between;
+
+        > .checkbox1,
+        .checkbox2 {
+            @include center-of-row;
+
+            > div {
+                font-size: 0.8rem;
+            }
+        }
+
+        > .checkbox1 {
+            > div {
+                color: red;
+                text-decoration: line-through;
+            }
+        }
+
+        > .checkbox2 {
+            > div {
+                color: blue;
+            }
+        }
+
+        > .searchContainer {
+            @include center-of-row;
+            box-shadow: 0 0 15px rgba(107, 107, 107, 0.15);
+            border-radius: 15px;
+            background-color: rgb(241, 241, 241);
+            box-sizing: border-box;
+            padding: 5px;
+
+            > input {
+                border: none;
+                outline: none;
+                width: 120px;
+                background-color: rgb(241, 241, 241);
+            }
+
+            > svg {
+                cursor: default;
+            }
+        }
+    }
+}

@@ -1,0 +1,54 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { state_props } from '@src/screen/Oa/type';
+import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
+import { ZaloOaField } from '@src/dataStruct/zalo';
+
+const initialState: state_props = {
+    isLoading: false,
+    toastMessage: {
+        data: { type: undefined, message: '' },
+    },
+    takeTokenDialog: {
+        isShow: false,
+        zaloOa: undefined,
+    },
+    createOa: {
+        isShow: false,
+        newZaloOa: undefined,
+    },
+};
+
+const OaSlice = createSlice({
+    name: 'OaSlice',
+    initialState,
+    reducers: {
+        set_isLoading: (state, action: PayloadAction<boolean>) => {
+            state.isLoading = action.payload;
+        },
+        setData_toastMessage: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
+            state.toastMessage.data = action.payload;
+        },
+        setIsShow_takeTokenDialog: (state, action: PayloadAction<boolean>) => {
+            state.takeTokenDialog.isShow = action.payload;
+        },
+        setZaloOa_takeTokenDialog: (state, action: PayloadAction<ZaloOaField | undefined>) => {
+            state.takeTokenDialog.zaloOa = action.payload;
+        },
+        setIsShow_createOa: (state, action: PayloadAction<boolean>) => {
+            state.createOa.isShow = action.payload;
+        },
+        setNewZaloOa_createOa: (state, action: PayloadAction<ZaloOaField | undefined>) => {
+            state.createOa.newZaloOa = action.payload;
+        },
+    },
+});
+
+export const {
+    set_isLoading,
+    setData_toastMessage,
+    setIsShow_takeTokenDialog,
+    setZaloOa_takeTokenDialog,
+    setIsShow_createOa,
+    setNewZaloOa_createOa,
+} = OaSlice.actions;
+export default OaSlice.reducer;

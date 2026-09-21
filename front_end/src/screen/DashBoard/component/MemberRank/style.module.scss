@@ -1,0 +1,11 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+
+    > .header {
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+}

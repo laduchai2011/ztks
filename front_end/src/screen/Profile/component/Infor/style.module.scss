@@ -1,0 +1,95 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 5px 15px -4px rgba(201, 201, 201, 0.15);
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    background-color: rgb(241, 241, 241);
+    box-sizing: border-box;
+    padding: 10px;
+
+    > .avatarContainer {
+        position: relative;
+
+        > .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        > svg {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    > .admin {
+        color: blue;
+        font-size: 0.9rem;
+        margin-top: 5px;
+    }
+
+    > .selectType {
+        margin-top: 10px;
+
+        > .text {
+            color: red;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            padding: 5px;
+        }
+
+        > .selections {
+            margin-top: 10px;
+            @include center-of-row;
+            justify-content: space-around;
+
+            > div {
+                padding: 5px 10px;
+                border: 1px solid gray;
+                border-radius: 5px;
+                cursor: pointer;
+                user-select: none;
+
+                &:hover {
+                    background-color: #f0f0f0;
+                }
+            }
+        }
+
+        > .text1 {
+            @include center-of-rectangle;
+            color: blue;
+            margin-top: 5px;
+        }
+    }
+
+    > .idContainer,
+    .recommendContainer {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding-top: 10px;
+
+        > div {
+            @include center-of-row;
+
+            > div {
+                @include center-of-rectangle;
+            }
+
+            > div:nth-child(1) {
+                width: 90px;
+
+                > div {
+                    @include center-of-row;
+                }
+            }
+        }
+    }
+}

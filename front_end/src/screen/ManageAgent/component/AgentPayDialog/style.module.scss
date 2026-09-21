@@ -1,0 +1,109 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(161, 161, 161, 0.3);
+    @include center-of-rectangle;
+    opacity: 0;
+    display: none;
+    transition: opacity 0.5s ease-in-out;
+
+    &.opacity {
+        opacity: 1;
+    }
+
+    &.display {
+        display: flex;
+    }
+
+    > .main {
+        background-color: white;
+        width: 300px;
+        border-radius: 15px;
+        overflow: hidden;
+
+        @include responsive(sm) {
+            width: 80%;
+        }
+
+        > .closeContainer {
+            display: flex;
+            justify-content: flex-end;
+            box-sizing: border-box;
+            padding: 5px;
+
+            > svg {
+                cursor: pointer;
+            }
+        }
+
+        > .header {
+            @include center-of-rectangle;
+
+            > div {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: blue;
+            }
+        }
+
+        > .qrContainer {
+            > div {
+                @include center-of-rectangle;
+            }
+
+            > div:nth-child(1) {
+                font-size: 0.9rem;
+                font-style: italic;
+            }
+
+            > div:nth-child(2) {
+                > img {
+                    width: 80%;
+                    aspect-ratio: 1/1;
+                }
+            }
+        }
+
+        > .contentContainer {
+            @include center-of-rectangle;
+            box-sizing: border-box;
+            padding: 10px 0;
+
+            > div {
+                color: red;
+            }
+        }
+
+        > .text {
+            @include center-of-rectangle;
+            box-sizing: border-box;
+            padding: 10px;
+        }
+
+        > .btnContainer {
+            @include center-of-rectangle;
+
+            > div {
+                box-sizing: border-box;
+                padding: 5px 10px;
+                border: 1px solid green;
+                user-select: none;
+                cursor: pointer;
+                margin: 10px 0;
+
+                &:hover {
+                    background-color: greenyellow;
+                }
+
+                &:active {
+                    background-color: white;
+                }
+            }
+        }
+    }
+}

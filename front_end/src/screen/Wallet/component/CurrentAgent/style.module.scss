@@ -1,0 +1,52 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+
+    > .main {
+        @include center-of-row;
+        justify-content: space-between;
+
+        > div:nth-child(2) {
+            font-size: 0.9rem;
+
+            > .co {
+                color: blue;
+            }
+
+            > .ko {
+                color: red;
+            }
+        }
+
+        > div:nth-child(3) {
+            @include center-of-rectangle;
+
+            > div {
+                box-sizing: border-box;
+                border: 1px solid greenyellow;
+                border-radius: 10px;
+                padding: 5px;
+                cursor: pointer;
+                user-select: none;
+                font-size: 0.9rem;
+
+                &:active {
+                    background-color: greenyellow;
+                }
+
+                > div {
+                    @include center-of-rectangle;
+                }
+            }
+        }
+    }
+
+    > .note {
+        @include center-of-rectangle;
+        font-style: italic;
+        color: blue;
+        margin: 5px 0;
+    }
+}

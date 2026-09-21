@@ -1,0 +1,46 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 5px;
+    margin: 10px 5px;
+    box-shadow: 0 0 15px rgba(107, 107, 107, 0.15);
+    border-radius: 15px;
+    background-color: rgb(241, 241, 241);
+
+    > div {
+        box-sizing: border-box;
+        padding: 5px;
+    }
+
+    > .index {
+        @include center-of-row;
+        justify-content: space-between;
+
+        > div:nth-child(1) {
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            @include center-of-rectangle;
+            background-color: blue;
+            color: white;
+        }
+
+        > div:nth-child(2) {
+            > svg {
+                cursor: default;
+            }
+
+            > svg:nth-child(2) {
+                margin-left: 10px;
+            }
+        }
+    }
+
+    > .time {
+        @include center-of-row;
+        justify-content: flex-end;
+        color: gray;
+        font-style: italic;
+    }
+}

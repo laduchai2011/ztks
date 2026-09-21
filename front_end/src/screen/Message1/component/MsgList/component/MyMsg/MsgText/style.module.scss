@@ -1,0 +1,13 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    font-weight: 400;
+    font-size: 1rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+
+    > a {
+        color: blue;
+    }
+}

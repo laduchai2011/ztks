@@ -57,31 +57,31 @@ app.use(`${apiString}/hello`, (req, res) => {
         // const service_image = (await import('./services/image')).default;
         // app.use(`${prefix}/service_image`, service_image);
         const service_image_v1 = (await import('./services/image_v1')).default;
-        app.use(`${prefix}/service_image_v1`, service_image_v1);
+        app.use(`${prefix}/service__image_v1`, service_image_v1);
     }
 
     if (services.includes('video')) {
         // const service_video = (await import('./services/video')).default;
         // app.use(`${prefix}/service_video`, service_video);
         const service_video_v1 = (await import('./services/video_v1')).default;
-        app.use(`${prefix}/service_video_v1`, service_video_v1);
+        app.use(`${prefix}/service__video_v1`, service_video_v1);
     }
 
     if (services.includes('account')) {
         const service_account = (await import('@src/services/account')).default;
-        app.use(`${prefix}/service_account`, service_account);
+        app.use(`${prefix}/service__account`, service_account);
     }
 
     if (services.includes('message')) {
         const service_message_v1 = (await import('./services/message_v1')).default;
-        app.use(`${prefix}/service_message_v1`, service_message_v1);
+        app.use(`${prefix}/service__message_v1`, service_message_v1);
         const hook_Data = (await import('./services/message_v1/hook_data')).hook_Data;
         hook_Data();
     }
 
     if (services.includes('call')) {
         const service_call = (await import('./services/call')).default;
-        app.use(`${prefix}/service_call`, service_call);
+        app.use(`${prefix}/service__call`, service_call);
     }
 
     if (services.includes('call_agent')) {
@@ -91,12 +91,12 @@ app.use(`${apiString}/hello`, (req, res) => {
 
     if (services.includes('note')) {
         const service_note = (await import('@src/services/note')).default;
-        app.use(`${prefix}/service_note`, service_note);
+        app.use(`${prefix}/service__note`, service_note);
     }
 
     if (services.includes('zalo')) {
         const service_zalo = (await import('@src/services/zalo')).default;
-        app.use(`${prefix}/service_zalo`, service_zalo);
+        app.use(`${prefix}/service__zalo`, service_zalo);
     }
 
     if (services.includes('chat_session')) {
@@ -111,49 +111,49 @@ app.use(`${apiString}/hello`, (req, res) => {
 
     if (services.includes('order')) {
         const service_order = (await import('@src/services/order')).default;
-        app.use(`${prefix}/service_order`, service_order);
+        app.use(`${prefix}/service__order`, service_order);
     }
 
     if (services.includes('agent')) {
         const service_agent = (await import('@src/services/agent')).default;
-        app.use(`${prefix}/service_agent`, service_agent);
+        app.use(`${prefix}/service__agent`, service_agent);
     }
 
     if (services.includes('wallet')) {
         const service_wallet = (await import('@src/services/wallet')).default;
-        app.use(`${prefix}/service_wallet`, service_wallet);
+        app.use(`${prefix}/service__wallet`, service_wallet);
     }
 
     if (services.includes('voucher')) {
         const service_voucher = (await import('@src/services/voucher')).default;
-        app.use(`${prefix}/service_voucher`, service_voucher);
+        app.use(`${prefix}/service__voucher`, service_voucher);
     }
 
     if (services.includes('customer')) {
         const service_customer = (await import('@src/services/customer')).default;
-        app.use(`${prefix}/service_customer`, service_customer);
+        app.use(`${prefix}/service__customer`, service_customer);
     }
 
     if (services.includes('bank')) {
         const service_bank = (await import('@src/services/bank')).default;
-        app.use(`${prefix}/service_bank`, service_bank);
+        app.use(`${prefix}/service__bank`, service_bank);
     }
 
     if (services.includes('post')) {
         const service_post = (await import('@src/services/post')).default;
-        app.use(`${prefix}/service_post`, service_post);
+        app.use(`${prefix}/service__post`, service_post);
     }
 
     if (services.includes('statistics')) {
         const service_statistics = (await import('./services/statistics')).default;
-        app.use(`${prefix}/service_statistics`, service_statistics);
+        app.use(`${prefix}/service__statistics`, service_statistics);
         const handleStatistics = (await import('./services/statistics/queue')).handleStatistics;
         handleStatistics();
     }
 
     if (services.includes('post')) {
         const service_post = (await import('@src/services/post')).default;
-        app.use(`${prefix}/service_post`, service_post);
+        app.use(`${prefix}/service__post`, service_post);
     }
 
     if (services.includes('check_in_out')) {
@@ -163,7 +163,7 @@ app.use(`${apiString}/hello`, (req, res) => {
 
     if (services.includes('shop')) {
         const service_shop = (await import('@src/services/shop')).default;
-        app.use(`${prefix}/service_shop`, service_shop);
+        app.use(`${prefix}/service__shop`, service_shop);
     }
 })();
 

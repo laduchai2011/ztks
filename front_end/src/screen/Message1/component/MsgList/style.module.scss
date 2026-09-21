@@ -1,0 +1,20 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: #eff6ff;
+    @include small-scroll-yy(1px);
+
+    > .loading {
+        @include center-of-rectangle;
+        color: rgb(0, 204, 255);
+        margin: 10px 0;
+    }
+}

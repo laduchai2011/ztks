@@ -1,0 +1,64 @@
+import { useEffect } from 'react';
+import style from './style.module.scss';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@src/redux';
+import { NOTE } from '@src/const/text';
+import MyLoading from './component/MyLoading';
+import MyToastMessage from './component/MyToastMessage';
+import Header from '@src/screen/Header';
+import CreateNote from './component/CreateNote';
+import NoteList from './component/NoteList';
+import EditNote from './component/EditNote';
+import DeleteNoteDialog from './component/DeleteNoteDialog';
+import { IoChevronBack } from 'react-icons/io5';
+import { select_enum } from '@src/router/type';
+import { setData_toastMessage, clear_newNotes } from '@src/redux/slice/Note';
+import { route_enum } from '@src/router/type';
+
+const Note = () => {
+    const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
+    const myId = sessionStorage.getItem('myId');
+
+    useEffect(() => {
+        if (myId === null) {
+            navigate(route_enum.SIGNIN);
+        }
+    }, [navigate, myId]);
+
+    useEffect(() => {
+        return () => {
+            dispatch(setData_toastMessage({ type: undefined, message: '' }));
+            dispatch(clear_newNotes());
+        };
+    }, [dispatch]);
+
+    const handleBack = () => {
+        navigate(-1);
+    };
+
+    return (
+        <div className={style.parent}>
+            <div className={style.main}>
+                <div className={style.header}>
+                    <div>{NOTE}</div>
+                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                </div>
+                <CreateNote />
+                <NoteList />
+                <div className={style.headerTab}>
+                    <Header selected={select_enum.NOTE} />
+                </div>
+            </div>
+            <div>
+                <MyToastMessage />
+                <MyLoading />
+                <EditNote />
+                <DeleteNoteDialog />
+            </div>
+        </div>
+    );
+};
+
+export default Note;

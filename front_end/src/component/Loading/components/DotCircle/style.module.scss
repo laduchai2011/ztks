@@ -1,0 +1,41 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    --dot-index: 0;
+    --dotSize: 0;
+    --dotBackgroundColor: 0;
+    --dotAmount: 0;
+    --circleSize: 0;
+}
+
+.parent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+
+    > div {
+        width: 50px;
+        height: 50px;
+        /* background-color: antiquewhite; */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        > span {
+            position: absolute;
+            aspect-ratio: 1 / 1;
+            height: calc(5px * (var(--dot-index) / var(--dotSize)));
+            background-color: var(--dotBackgroundColor);
+            border-radius: 50%;
+            transform: rotate(calc(var(--dot-index) * (360deg / var(--dotAmount)))) translateY(var(--circleSize));
+            /* box-shadow: 0 0 100px brown,
+                0 0 120px brown,
+                0 0 130px brown,
+                0 0 140px brown,
+                0 0 150px brown,
+                0 0 160px brown; */
+        }
+    }
+}

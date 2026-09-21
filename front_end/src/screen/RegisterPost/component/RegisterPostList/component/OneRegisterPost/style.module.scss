@@ -1,0 +1,58 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    @include center-of-row;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid rgb(221, 221, 221);
+    margin: 5px;
+    border-radius: 15px;
+    position: relative;
+
+    > .name {
+        width: 55%;
+    }
+
+    > .infor {
+        > .type {
+            > .free {
+                color: gray;
+            }
+            > .upgrade {
+                color: aqua;
+            }
+        }
+
+        > .time {
+            color: gray;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+    }
+
+    > .status {
+        position: absolute;
+        top: 0;
+        left: 3px;
+        font-size: 0.8rem;
+
+        > .ed {
+            color: red;
+        }
+
+        > .not {
+            color: greenyellow;
+        }
+    }
+
+    > .icons {
+        @include center-of-row;
+        position: absolute;
+        top: 0;
+        right: 3px;
+
+        > svg {
+            margin: 0 2px;
+        }
+    }
+}

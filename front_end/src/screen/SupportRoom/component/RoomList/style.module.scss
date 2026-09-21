@@ -1,0 +1,24 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    width: 100%;
+    flex: 1;
+    overflow-y: scroll;
+    @include small-scroll-yy(3px);
+
+    > .seeMore {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 10px;
+        height: 50px;
+
+        > div {
+            color: blue;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}

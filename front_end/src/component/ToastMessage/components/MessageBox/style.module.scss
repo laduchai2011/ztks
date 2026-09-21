@@ -1,0 +1,64 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    --message-color: ;
+    --show-time: 1;
+}
+
+.parent {
+    background-color: white;
+    height: 50px;
+    margin: 5px 0;
+    border: 1px solid gray;
+    box-sizing: border-box;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    width: 300px;
+    right: -300px;
+    top: 0;
+    position: fixed;
+    opacity: 1;
+    z-index: 1000000;
+    transition:
+        right calc(var(--show-time) * 1s) linear,
+        top 1s linear,
+        opacity 1s linear;
+
+    &.parent_show {
+        right: 0;
+    }
+
+    > div:nth-child(1) {
+        height: 100%;
+        width: 10px;
+        background-color: var(--message-color);
+    }
+
+    > div:nth-child(2),
+    div:nth-child(4) {
+        margin: 5px;
+        display: flex;
+        align-items: center;
+        height: 100%;
+        width: max-content;
+    }
+
+    > div:nth-child(3) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 1;
+    }
+
+    > div:nth-child(4) {
+        > svg {
+            cursor: pointer;
+
+            &:hover {
+                background-color: rgb(201, 201, 201);
+            }
+        }
+    }
+}

@@ -1,0 +1,48 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+
+    > div:nth-child(1) {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 10px;
+
+        > input {
+            border: none;
+            outline: none;
+            background-color: rgb(240, 240, 240);
+            border-radius: 10px;
+            box-sizing: border-box;
+            padding: 5px;
+            font-size: 1.05rem;
+        }
+    }
+
+    > div:nth-child(2) {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 10px;
+
+        > div {
+            background-color: blue;
+            border: 1px solid blue;
+            color: white;
+            box-sizing: border-box;
+            padding: 5px;
+            border-radius: 10px;
+            user-select: none;
+            cursor: default;
+
+            &:hover {
+                scale: 1.05;
+            }
+
+            &:active {
+                background-color: white;
+                color: blue;
+            }
+        }
+    }
+}

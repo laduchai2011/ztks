@@ -1,0 +1,80 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    background-color: #eee;
+    @include center-of-column;
+
+    > .main {
+        background-color: white;
+        width: 350px;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+
+        @include responsive(sm) {
+            width: 100%;
+        }
+
+        > .header {
+            box-sizing: border-box;
+            padding: 10px;
+            @include center-of-row;
+            justify-content: space-between;
+            background-color: #27a4f2;
+            position: sticky;
+            top: 0;
+            z-index: 1000000;
+
+            > div {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: white;
+            }
+        }
+
+        > .list {
+            width: 100%;
+            flex: 1;
+            overflow-y: auto;
+            @include small-scroll-yy(1px);
+
+            > .options {
+                box-sizing: border-box;
+                padding: 20px 5px;
+
+                > .optionGroup {
+                    box-shadow: 0 0 25px rgba(201, 201, 201, 0.15);
+                    border-radius: 10px;
+                    background-color: rgb(241, 241, 241);
+                    box-sizing: border-box;
+                    padding: 5px;
+                    margin: 5px 0;
+
+                    > .optionGroupName {
+                        font-weight: 600;
+                    }
+
+                    > .option {
+                        box-sizing: border-box;
+                        padding: 5px;
+                        margin: 5px;
+                        border-radius: 15px;
+                        font-size: 0.9rem;
+                        font-weight: 500;
+                        cursor: pointer;
+                        user-select: none;
+
+                        &:hover {
+                            background-color: #e0e0e0;
+                        }
+                    }
+                }
+            }
+        }
+
+        > .headerTab {
+            position: sticky;
+            bottom: 0;
+        }
+    }
+}

@@ -1,0 +1,40 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    @include center-of-row;
+    box-sizing: border-box;
+    padding: 5px;
+    height: 80px;
+    background-color: rgb(228, 228, 228);
+    cursor: pointer;
+
+    > div:nth-child(1) {
+        width: 2px;
+        background-color: blue;
+        height: 100%;
+    }
+
+    > div:nth-child(2) {
+        height: 100%;
+        flex: 1;
+        box-sizing: border-box;
+        padding: 0 5px;
+
+        > div:nth-child(1) {
+            font-weight: 600;
+            font-size: 0.9rem;
+            align-self: flex-start;
+            height: 30%;
+            box-sizing: border-box;
+            padding: 2px;
+            @include center-of-row;
+        }
+
+        > div:nth-child(2) {
+            height: 70%;
+            box-sizing: border-box;
+            padding: 2px;
+            @include center-of-row;
+        }
+    }
+}

@@ -1,0 +1,92 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    // background-color: rgb(78, 78, 255, 0.1);
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 10px;
+
+    > .avatarContainer {
+        width: 35px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        box-sizing: border-box;
+        padding: 5px;
+
+        > img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 50%;
+            box-sizing: border-box;
+            border: 1px solid gray;
+        }
+    }
+
+    > .msgContainer {
+        max-width: 70%;
+        box-sizing: border-box;
+        padding: 5px;
+        background-color: white;
+        border-radius: 10px;
+
+        > .name {
+            @include line-clamp(1);
+            font-weight: 700;
+            font-size: 0.8rem;
+            box-sizing: border-box;
+            padding: 5px;
+            line-height: 24px;
+        }
+
+        > .moreInfor {
+            box-sizing: border-box;
+            padding: 5px;
+            color: gray;
+            @include center-of-row;
+            justify-content: flex-end;
+            font-size: 0.9rem;
+        }
+    }
+
+    > .iconContainer {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 5px;
+        position: relative;
+
+        > svg {
+            cursor: pointer;
+            border-radius: 50%;
+            box-sizing: border-box;
+            padding: 3px;
+
+            &:hover {
+                background-color: rgb(233, 233, 233);
+            }
+        }
+
+        > .moreContainer {
+            background-color: white;
+            position: absolute;
+            right: 0;
+            top: 60%;
+            box-sizing: border-box;
+            border-radius: 10px;
+            width: 70px;
+            overflow: hidden;
+
+            > div {
+                width: 100%;
+                user-select: none;
+                cursor: pointer;
+                box-sizing: border-box;
+                padding: 5px;
+
+                &:hover {
+                    background-color: rgb(241, 241, 241);
+                }
+            }
+        }
+    }
+}

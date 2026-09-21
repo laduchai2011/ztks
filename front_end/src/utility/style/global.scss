@@ -1,0 +1,19 @@
+@font-face {
+    font-family: 'Prompt', sans-serif;
+    src: url('../../asset/text_font/Prompt/Prompt-Thin.ttf') format('ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+// Thiết lập global styles
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Prompt', sans-serif;
+    font-optical-sizing: auto;
+    // font-weight: 300;
+}

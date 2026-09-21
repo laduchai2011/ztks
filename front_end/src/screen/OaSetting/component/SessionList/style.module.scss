@@ -1,0 +1,35 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 5px 10px;
+
+    > .main {
+        > .header {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        > .list {
+            margin: 5px 0;
+        }
+
+        > .more {
+            @include center-of-rectangle;
+            box-sizing: border-box;
+            padding: 10px;
+            height: 40px;
+            width: 100%;
+
+            > div {
+                user-select: none;
+                color: blue;
+                cursor: pointer;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}

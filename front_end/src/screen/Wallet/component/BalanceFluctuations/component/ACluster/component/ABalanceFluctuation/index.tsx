@@ -1,0 +1,61 @@
+import { FC, memo, useEffect, useState } from 'react';
+import style from './style.module.scss';
+import { BalanceFluctuationField, BalanceFluctuationEnum } from '@src/dataStruct/wallet';
+import { formatMoney } from '@src/utility/string';
+import { detailTime } from '@src/utility/time';
+
+const ABalanceFluctuation: FC<{ balanceFluctuation: BalanceFluctuationField }> = ({ balanceFluctuation }) => {
+    const payHookId = balanceFluctuation.payHookId;
+    const [typeText, setTypeText] = useState<string>('');
+
+    useEffect(() => {
+        const type = balanceFluctuation.type;
+        if (type === BalanceFluctuationEnum.PAY_ORDER) {
+            setTypeText('Thanh toán đơn hàng');
+        }
+        if (type === BalanceFluctuationEnum.PAY_AGENT) {
+            setTypeText('Thanh toán dịch vụ');
+        }
+        if (type === BalanceFluctuationEnum.RECOMMEND) {
+            setTypeText('Giới thiệu thành công');
+        }
+        if (type === BalanceFluctuationEnum.VOUCHER) {
+            setTypeText('Hoàn tiền voucher');
+        }
+        if (type === BalanceFluctuationEnum.COST1) {
+            setTypeText('Khấu trừ 1%');
+        }
+        if (type === BalanceFluctuationEnum.TAKE_MONEY) {
+            setTypeText('Rút tiền');
+        }
+        if (type === BalanceFluctuationEnum.COST_TAKE_MONEY5) {
+            setTypeText('Phí rút tiền');
+        }
+    }, [balanceFluctuation]);
+
+    const handleAmountColor = () => {
+        const amount = balanceFluctuation.amount;
+        if (amount > 0) {
+            return style.iColor;
+        } else {
+            return style.dColor;
+        }
+    };
+
+    return (
+        <div className={style.parent}>
+            <div className={style.main}>
+                <div className={`${style.amount} ${handleAmountColor()}`}>{formatMoney(balanceFluctuation.amount)}</div>
+                <div className={style.infor}>
+                    <div className={style.type}>{typeText}</div>
+                    {payHookId && <div className={style.hook}>{payHookId}</div>}
+                </div>
+            </div>
+            <div className={style.timeAgo}>
+                <div>{detailTime(balanceFluctuation.createTime)}</div>
+            </div>
+        </div>
+    );
+};
+
+export default memo(ABalanceFluctuation);

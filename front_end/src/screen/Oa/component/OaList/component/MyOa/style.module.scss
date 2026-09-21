@@ -1,0 +1,104 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    width: 100%;
+    background-color: rgb(247, 247, 247);
+    box-sizing: border-box;
+    border: 1px solid rgb(200, 200, 200);
+
+    > .index {
+        @include center-of-row;
+        justify-content: flex-start;
+
+        > div {
+            @include center-of-rectangle;
+            width: 25px;
+            height: 25px;
+            background-color: blue;
+            color: white;
+        }
+    }
+
+    > .main {
+        @include center-of-rectangle;
+
+        > div {
+            > div {
+                @include center-of-rectangle;
+                margin: 10px 0;
+
+                > div {
+                    display: flex;
+                    flex-direction: column;
+
+                    > div:nth-child(1) {
+                        @include center-of-row;
+
+                        > div:nth-child(2) {
+                            @include center-of-rectangle;
+                            height: 100%;
+                            padding: 0 5px;
+
+                            > svg {
+                                cursor: default;
+
+                                &:hover {
+                                    scale: 1.1;
+                                }
+                            }
+                        }
+                    }
+
+                    > div:nth-child(2) {
+                        font-style: italic;
+                        height: 25px;
+                        @include center-of-rectangle;
+                    }
+                }
+            }
+
+            > .label {
+                font-size: 1.1rem;
+                font-weight: 600;
+            }
+
+            > .btnContainer {
+                @include center-of-row;
+                height: 50px;
+
+                > .refresh {
+                    margin: 0 5px;
+                    font-size: 0.95rem;
+                    font-weight: 500;
+                    background-color: blue;
+                    box-sizing: border-box;
+                    border: 1px solid blue;
+                    padding: 5px 10px;
+                    border-radius: 15px;
+                    color: white;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: white;
+                        color: blue;
+                    }
+                }
+
+                > .setting {
+                    @include center-of-rectangle;
+                    margin: 0 5px;
+
+                    > svg {
+                        cursor: pointer;
+                    }
+                }
+            }
+
+            > .warn {
+                color: red;
+                font-style: italic;
+                font-size: 0.9rem;
+            }
+        }
+    }
+}

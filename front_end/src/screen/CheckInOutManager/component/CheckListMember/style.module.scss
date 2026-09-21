@@ -1,0 +1,35 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+
+    > .checkGroup {
+        border-radius: 15px;
+        background-color: rgb(243, 243, 243);
+        margin: 10px 0;
+        overflow: hidden;
+
+        > .header {
+            background-color: #c4c4c4;
+            box-sizing: border-box;
+            padding: 10px;
+        }
+    }
+
+    > .seeMore {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 10px;
+
+        > div {
+            color: blue;
+            user-select: none;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}

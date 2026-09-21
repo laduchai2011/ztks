@@ -1,0 +1,20 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    cursor: pointer;
+
+    &:hover {
+        background-color: rgb(230, 230, 255);
+    }
+
+    > div {
+        overflow-wrap: break-word;
+        word-break: break-word;
+        white-space: normal;
+        @include line-clamp(2);
+    }
+
+    > .image {
+        border-radius: 10px;
+    }
+}
