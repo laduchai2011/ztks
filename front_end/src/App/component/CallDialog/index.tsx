@@ -13,7 +13,7 @@ import {
     useLazyCheckConsentQuery,
     useRequestConsentMutation,
     useOutboundMutation,
-} from '@src/redux/query/callRTK';
+} from '@src/redux/query/call_RTK';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import {
     CallInStateEnum,

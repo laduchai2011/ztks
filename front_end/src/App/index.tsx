@@ -7,8 +7,8 @@ import { AppDispatch, RootState } from '@src/redux';
 import { set_account, set_accountInformation, set_myAdmin, set_zaloApp } from '@src/redux/slice/App';
 import { AccountField, AccountInformationField } from '@src/dataStruct/account';
 import { useGetZaloAppWithAccountIdQuery } from '@src/redux/query/zaloRTK';
-import { useLazyGetCallAgentWithAccountIdQuery } from '@src/redux/query/callAgentRTK';
-import { useLazyGetLastMessageWithUidQuery } from '@src/redux/query/messageV1RTK';
+import { useLazyGetCallAgentWithAccountIdQuery } from '@src/redux/query/call_agent_RTK';
+import { useLazyGetLastMessageWithUidQuery } from '@src/redux/query/message_v1_RTK';
 import { getSocket } from '@src/socketIo';
 import { MySip } from '@src/call';
 import {

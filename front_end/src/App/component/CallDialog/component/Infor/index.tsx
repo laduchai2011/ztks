@@ -12,7 +12,7 @@ import {
     CallInStateEnum,
     CallOutStateEnum,
 } from '@src/dataStruct/call';
-import { useLazyCheckConsentQuery } from '@src/redux/query/callRTK';
+import { useLazyCheckConsentQuery } from '@src/redux/query/call_RTK';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 
 const Infor: FC<{

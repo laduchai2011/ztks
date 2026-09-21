@@ -14,9 +14,9 @@ import {
     CallOutStateType,
     RequestConsentField,
 } from '@src/dataStruct/call';
-import { useRequestConsentMutation } from '@src/redux/query/callRTK';
+import { useRequestConsentMutation } from '@src/redux/query/call_RTK';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { useLazyGetLatestChatRoomPhoneQuery, useCreateChatRoomPhoneMutation } from '@src/redux/query/chatRoomRTK';
+import { useLazyGetLatestChatRoomPhoneQuery, useCreateChatRoomPhoneMutation } from '@src/redux/query/chat_room_RTK';
 import { formatPhone } from '@src/utility/string';
 import { set_isLoading, setData_toastMessage } from '@src/redux/slice/App';
 import { messageType_enum } from '@src/component/ToastMessage/type';

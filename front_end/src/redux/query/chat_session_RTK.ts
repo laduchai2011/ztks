@@ -1,18 +1,18 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ChatSessionField, PagedChatSessionField } from '@src/dataStruct/chatSession';
+import { Chat_Session_Field, Paged_Chat_Session_Field } from '@src/data_struct/chat_session';
 import {
-    ChatSessionWithAccountIdBodyField,
-    ChatSessionBodyField,
-    UpdateSelectedAccountIdOfChatSessionBodyField,
-    UpdateIsReadyOfChatSessionBodyField,
-    LeaveAllChatSessionBodyField,
-} from '@src/dataStruct/chatSession/body';
+    Chat_Session_With_Account_Id_Body_Field,
+    Chat_Session_Body_Field,
+    Update_Selected_Account_Id_Of_Chat_Session_Body_Field,
+    Update_Is_Ready_Of_Chat_Session_Body_Field,
+    Leave_All_Chat_Session_Body_Field,
+} from '@src/data_struct/chat_session/body';
 import { CHAT_SESSION_API } from '@src/const/api/chat_session';
-import { MyResponse } from '@src/dataStruct/response';
+import { My_Response_Field } from '@src/data_struct/response';
 import { DeviceEnum } from '@src/device/type';
 
-export const chatSessionRTK = createApi({
-    reducerPath: 'chatSessionRTK',
+export const chat_session_RTK = createApi({
+    reducerPath: 'chat_session_RTK',
     baseQuery: fetchBaseQuery({
         baseUrl: '',
         credentials: 'include',
@@ -21,11 +21,11 @@ export const chatSessionRTK = createApi({
             return headers;
         },
     }),
-    tagTypes: ['ChatSession'],
+    tagTypes: ['Chat_Session'],
     endpoints: (builder) => ({
-        getChatSessionsWithAccountId: builder.query<
-            MyResponse<PagedChatSessionField>,
-            ChatSessionWithAccountIdBodyField
+        _get_Chat_Sessions_With_Account_Id_: builder.query<
+            My_Response_Field<Paged_Chat_Session_Field>,
+            Chat_Session_With_Account_Id_Body_Field
         >({
             query: (body) => ({
                 url: CHAT_SESSION_API.GET_CHAT_SESSION_WITH_ACCOUNT_ID,
@@ -43,7 +43,7 @@ export const chatSessionRTK = createApi({
             //           ]
             //         : [{ type: 'ChatSession', id: 'LIST' }],
         }),
-        createChatSession: builder.mutation<MyResponse<ChatSessionField>, ChatSessionBodyField>({
+        _create_Chat_Session_: builder.mutation<My_Response_Field<Chat_Session_Field>, Chat_Session_Body_Field>({
             query: (body) => ({
                 url: CHAT_SESSION_API.CREATE_CHAT_SESSION,
                 method: 'POST',
@@ -52,9 +52,9 @@ export const chatSessionRTK = createApi({
             // invalidatesTags: [{ type: 'ChatSessionList', id: 'LIST' }],
             // invalidatesTags: [{ type: 'ChatSession', id: 'LIST' }],
         }),
-        updateSelectedAccountIdOfChatSession: builder.mutation<
-            MyResponse<ChatSessionField>,
-            UpdateSelectedAccountIdOfChatSessionBodyField
+        _update_Selected_Account_Id_Of_Chat_Session_: builder.mutation<
+            My_Response_Field<Chat_Session_Field>,
+            Update_Selected_Account_Id_Of_Chat_Session_Body_Field
         >({
             query: (body) => ({
                 url: CHAT_SESSION_API.UPDATE_SELECTED_ACCOUNT_ID,
@@ -63,7 +63,10 @@ export const chatSessionRTK = createApi({
             }),
             // invalidatesTags: (result) => [{ type: 'ChatSession', id: result?.data?.id }],
         }),
-        updateIsReayOfChatSession: builder.mutation<MyResponse<ChatSessionField>, UpdateIsReadyOfChatSessionBodyField>({
+        _update_Is_Reay_Of_Chat_Session_: builder.mutation<
+            My_Response_Field<Chat_Session_Field>,
+            Update_Is_Ready_Of_Chat_Session_Body_Field
+        >({
             query: (body) => ({
                 url: CHAT_SESSION_API.UPDATE_ISREADY_ID,
                 method: 'PATCH',
@@ -71,7 +74,7 @@ export const chatSessionRTK = createApi({
             }),
             // invalidatesTags: (result) => [{ type: 'ChatSession', id: result?.data?.id }],
         }),
-        leaveAllChatSession: builder.mutation<MyResponse<boolean>, LeaveAllChatSessionBodyField>({
+        _leave_All_Chat_Session_: builder.mutation<My_Response_Field<boolean>, Leave_All_Chat_Session_Body_Field>({
             query: (body) => ({
                 url: CHAT_SESSION_API.LEAVE_ALL_CHAT_SESSION,
                 method: 'PATCH',
@@ -82,9 +85,9 @@ export const chatSessionRTK = createApi({
 });
 
 export const {
-    useCreateChatSessionMutation,
-    useLazyGetChatSessionsWithAccountIdQuery,
-    useUpdateSelectedAccountIdOfChatSessionMutation,
-    useUpdateIsReayOfChatSessionMutation,
-    useLeaveAllChatSessionMutation,
-} = chatSessionRTK;
+    use_create_Chat_Session_Mutation,
+    useLazy_get_Chat_Sessions_With_Account_Id_Query,
+    use_update_Selected_Account_Id_Of_Chat_Session_Mutation,
+    use_update_Is_Reay_Of_Chat_Session_Mutation,
+    use_leave_All_Chat_Session_Mutation,
+} = chat_session_RTK;

@@ -7,7 +7,7 @@ import { CLOSE, AGREE, EXIT } from '@src/const/text';
 import { set_isLoading, setData_toastMessage, setIsShow_createZaloTrunkDialog } from '@src/redux/slice/OaSetting';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { CreateZaloTrunkBodyField } from '@src/dataStruct/callAgent/body';
-import { useCreateZaloTrunkMutation } from '@src/redux/query/callAgentRTK';
+import { useCreateZaloTrunkMutation } from '@src/redux/query/call_agent_RTK';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const CreateZaloTrunkDialog = () => {

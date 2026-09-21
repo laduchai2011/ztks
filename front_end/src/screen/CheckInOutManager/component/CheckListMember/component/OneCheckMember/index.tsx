@@ -6,7 +6,7 @@ import { AccountField } from '@src/dataStruct/account';
 import {
     useLazyGetCheckInOutsWithDateQuery,
     useLazyGetCheckInOutInspectWithFkQuery,
-} from '@src/redux/query/checkInOutRTK';
+} from '@src/redux/query/check_in_out_RTK';
 import { useLazyGetAccountWithIdQuery } from '@src/redux/query/account_RTK';
 import { CheckInOutEnum, CheckInOutField, CheckInOutInspectField } from '@src/dataStruct/checkInOut';
 import { GetCheckInOutsWithDateBodyField } from '@src/dataStruct/checkInOut/body';

@@ -10,7 +10,7 @@ import { setData_toastMessage, set_isLoading, setIsShow_changeChatRoomMasterDial
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { avatarnull } from '@src/utility/string';
 import { useLazyGetMembersQuery } from '@src/redux/query/account_RTK';
-import { useChangeChatRoomMasterMutation } from '@src/redux/query/chatRoomRTK';
+import { useChangeChatRoomMasterMutation } from '@src/redux/query/chat_room_RTK';
 import { AccountField, AccountInformationField } from '@src/dataStruct/account';
 import { handleSrcImage } from '@src/utility/string';
 

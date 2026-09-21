@@ -13,7 +13,7 @@ import {
     useLazyGetLastMessageQuery,
     useLazyGetAllNewMessagesQuery,
     useLazyGetMessageWithIdQuery,
-} from '@src/redux/query/messageV1RTK';
+} from '@src/redux/query/message_v1_RTK';
 import { useGetZaloUserQuery } from '@src/redux/query/zaloRTK';
 import { timeAgoSmart } from '@src/utility/time';
 import { MEMBER, YOU, USER, OA, IMAGE, VIDEO, FILE, STICKER, AUDIO, OA_CALL_USER, USER_CALL_OA } from '@src/const/text';

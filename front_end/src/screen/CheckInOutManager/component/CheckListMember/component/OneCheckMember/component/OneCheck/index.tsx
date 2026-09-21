@@ -10,7 +10,7 @@ import { CreateCheckInOutInspectBodyField } from '@src/dataStruct/checkInOut/bod
 import {
     useLazyGetCheckInOutInspectWithFkQuery,
     useCreateCheckInOutInspectMutation,
-} from '@src/redux/query/checkInOutRTK';
+} from '@src/redux/query/check_in_out_RTK';
 import { useLazyGetAccountWithIdQuery } from '@src/redux/query/account_RTK';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { set_isLoading, setData_toastMessage } from '@src/redux/slice/CheckInOutManager';

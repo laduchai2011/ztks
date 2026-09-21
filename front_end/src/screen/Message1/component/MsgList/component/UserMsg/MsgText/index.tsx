@@ -4,7 +4,7 @@ import { MessageV1Field } from '@src/dataStruct/message_v1';
 import { ZaloMessageType, MessageTextField } from '@src/dataStruct/zalo/hookData';
 import { parseTextToParts } from '@src/utility/string';
 import RepliedMsg from '../RepliedMsg';
-import { useLazyGetMessageWithMsgIdQuery } from '@src/redux/query/messageV1RTK';
+import { useLazyGetMessageWithMsgIdQuery } from '@src/redux/query/message_v1_RTK';
 
 const MsgText: FC<{ data: MessageV1Field<MessageTextField> }> = ({ data }) => {
     const text = data.message.text;

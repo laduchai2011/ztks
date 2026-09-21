@@ -5,8 +5,8 @@ import { RootState, AppDispatch } from '@src/redux';
 import { LEAVE } from '@src/const/text';
 import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Leave';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { useLazyGetMyChatRoomsQuery } from '@src/redux/query/chatRoomRTK';
-import { useChangeChatRoomMasterMutation } from '@src/redux/query/chatRoomRTK';
+import { useLazyGetMyChatRoomsQuery } from '@src/redux/query/chat_room_RTK';
+import { useChangeChatRoomMasterMutation } from '@src/redux/query/chat_room_RTK';
 import { AccountField, AccountInformationField } from '@src/dataStruct/account';
 
 const LeaveAllChatRoom = () => {

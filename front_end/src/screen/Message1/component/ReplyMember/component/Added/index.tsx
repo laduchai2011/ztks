@@ -8,7 +8,10 @@ import { AccountField } from '@src/dataStruct/account';
 import { ChatRoomRoleField } from '@src/dataStruct/chatRoom';
 import { UpdateSetupChatRoomRoleBodyField } from '@src/dataStruct/chatRoom/body';
 import { avatarnull } from '@src/utility/string';
-import { useGetChatRoomRoleWithCridAaidQuery, useUpdateSetupChatRoomRoleMutation } from '@src/redux/query/chatRoomRTK';
+import {
+    useGetChatRoomRoleWithCridAaidQuery,
+    useUpdateSetupChatRoomRoleMutation,
+} from '@src/redux/query/chat_room_RTK';
 import { setData_toastMessage, set_isLoading } from '@src/redux/slice/MessageV1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { handleSrcImage } from '@src/utility/string';

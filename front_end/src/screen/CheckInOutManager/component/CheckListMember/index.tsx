@@ -7,7 +7,7 @@ import { set_isLoading, setData_toastMessage } from '@src/redux/slice/CheckInOut
 import { route_enum } from '@src/router/type';
 import { select_enum } from '@src/router/type';
 import { useGetAllMembersQuery } from '@src/redux/query/account_RTK';
-import { useLazyGetCheckInOutsQuery } from '@src/redux/query/checkInOutRTK';
+import { useLazyGetCheckInOutsQuery } from '@src/redux/query/check_in_out_RTK';
 import OneCheckMember from './component/OneCheckMember';
 import { AccountField } from '@src/dataStruct/account';
 import { GetMyCheckInOutsBodyField } from '@src/dataStruct/checkInOut/body';

@@ -3,7 +3,7 @@ import style from './style.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { CREATE_NEW_SESSION } from '@src/const/text';
-import { useCreateChatSessionMutation } from '@src/redux/query/chatSessionRTK';
+import { useCreateChatSessionMutation } from '@src/redux/query/chat_session_RTK';
 import { ChatSessionBodyField } from '@src/dataStruct/chatSession/body';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { set_isLoading, setData_toastMessage, set_chatSessions } from '@src/redux/slice/OaSetting';

@@ -1,12 +1,15 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { CallAgentField, ZaloTrunkField } from '@src/dataStruct/callAgent';
-import { GetCallAgentWithAccountIdBodyField, CreateZaloTrunkBodyField } from '@src/dataStruct/callAgent/body';
+import { Call_Agent_Field, Zalo_Trunk_Field } from '@src/data_struct/call_agent';
+import {
+    Get_Call_Agent_With_Account_Id_Body_Field,
+    Create_Zalo_Trunk_Body_Field,
+} from '@src/data_struct/call_agent/body';
 import { CALL_AGENT_API } from '@src/const/api/call_agent';
-import { MyResponse } from '@src/dataStruct/response';
+import { My_Response_Field } from '@src/data_struct/response';
 import { DeviceEnum } from '@src/device/type';
 
-export const callAgentRTK = createApi({
-    reducerPath: 'callAgentRTK',
+export const call_agent_RTK = createApi({
+    reducerPath: 'call_agent_RTK',
     baseQuery: fetchBaseQuery({
         baseUrl: '',
         credentials: 'include',
@@ -17,7 +20,10 @@ export const callAgentRTK = createApi({
     }),
     tagTypes: [],
     endpoints: (builder) => ({
-        getCallAgentWithAccountId: builder.query<MyResponse<CallAgentField>, GetCallAgentWithAccountIdBodyField>({
+        _get_Call_Agent_With_Account_Id_: builder.query<
+            My_Response_Field<Call_Agent_Field>,
+            Get_Call_Agent_With_Account_Id_Body_Field
+        >({
             query: (body) => ({
                 url: CALL_AGENT_API.GET_CALL_AGENT_WITH_ACCOUNT_ID,
                 method: 'POST',
@@ -31,7 +37,7 @@ export const callAgentRTK = createApi({
         //         body,
         //     }),
         // }),
-        createZaloTrunk: builder.mutation<MyResponse<ZaloTrunkField>, CreateZaloTrunkBodyField>({
+        _create_Zalo_Trunk_: builder.mutation<My_Response_Field<Zalo_Trunk_Field>, Create_Zalo_Trunk_Body_Field>({
             query: (body) => ({
                 url: CALL_AGENT_API.CREATE_ZALO_TRUNK,
                 method: 'POST',
@@ -41,4 +47,4 @@ export const callAgentRTK = createApi({
     }),
 });
 
-export const { useLazyGetCallAgentWithAccountIdQuery, useCreateZaloTrunkMutation } = callAgentRTK;
+export const { useLazy_get_Call_Agent_With_Account_Id_Query, use_create_Zalo_Trunk_Mutation } = call_agent_RTK;

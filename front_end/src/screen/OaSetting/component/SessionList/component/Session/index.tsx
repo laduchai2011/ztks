@@ -14,7 +14,7 @@ import { useGetAllMembersQuery } from '@src/redux/query/account_RTK';
 import {
     useUpdateSelectedAccountIdOfChatSessionMutation,
     useUpdateIsReayOfChatSessionMutation,
-} from '@src/redux/query/chatSessionRTK';
+} from '@src/redux/query/chat_session_RTK';
 import { handleSrcImage } from '@src/utility/string';
 
 const Session: FC<{ index: number; data: ChatSessionField }> = ({ index, data }) => {

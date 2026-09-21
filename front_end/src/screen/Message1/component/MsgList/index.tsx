@@ -7,7 +7,7 @@ import {
     useLazyGetMessagesForChatScreenQuery,
     useLazyGetMessageWithIdQuery,
     useLazyDelAllNewMessagesQuery,
-} from '@src/redux/query/messageV1RTK';
+} from '@src/redux/query/message_v1_RTK';
 import { MessageV1Field, CallV1Field } from '@src/dataStruct/message_v1';
 import { ZaloMessageType, ZaloCallType } from '@src/dataStruct/zalo/hookData';
 import { getSocket } from '@src/socketIo';

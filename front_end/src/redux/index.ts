@@ -25,12 +25,12 @@ import DashBoardReducer from '@src/redux/slice/DashBoard';
 import CheckInOutReducer from '@src/redux/slice/CheckInOut';
 import CheckInOutManagerReducer from '@src/redux/slice/CheckInOutManager';
 import { account_RTK } from './query/account_RTK';
-import { callRTK } from './query/callRTK';
-import { callAgentRTK } from './query/callAgentRTK';
-import { messageV1RTK } from './query/messageV1RTK';
+import { call_RTK } from './query/call_RTK';
+import { call_agent_RTK } from './query/call_agent_RTK';
+import { message_v1_RTK } from './query/message_v1_RTK';
 import { zaloRTK } from './query/zaloRTK';
-import { chatSessionRTK } from './query/chatSessionRTK';
-import { chatRoomRTK } from './query/chatRoomRTK';
+import { chat_session_RTK } from './query/chat_session_RTK';
+import { chat_room_RTK } from './query/chat_room_RTK';
 import { orderRTK } from './query/orderRTK';
 import { agent_RTK } from './query/agent_RTK';
 import { noteRTK } from './query/noteRTK';
@@ -39,7 +39,7 @@ import { voucherRTK } from './query/voucherRTK';
 import { bank_RTK } from './query/bank_RTK';
 import { postRTK } from './query/postRTK';
 import { statisticsRTK } from './query/statisticsRTK';
-import { checkInOutRTK } from './query/checkInOutRTK';
+import { check_in_out_RTK } from './query/check_in_out_RTK';
 
 export const store = configureStore({
     reducer: {
@@ -70,12 +70,12 @@ export const store = configureStore({
         CheckInOutSlice: CheckInOutReducer,
         CheckInOutManagerSlice: CheckInOutManagerReducer,
         [account_RTK.reducerPath]: account_RTK.reducer,
-        [callRTK.reducerPath]: callRTK.reducer,
-        [callAgentRTK.reducerPath]: callAgentRTK.reducer,
-        [messageV1RTK.reducerPath]: messageV1RTK.reducer,
+        [call_RTK.reducerPath]: call_RTK.reducer,
+        [call_agent_RTK.reducerPath]: call_agent_RTK.reducer,
+        [message_v1_RTK.reducerPath]: message_v1_RTK.reducer,
         [zaloRTK.reducerPath]: zaloRTK.reducer,
-        [chatSessionRTK.reducerPath]: chatSessionRTK.reducer,
-        [chatRoomRTK.reducerPath]: chatRoomRTK.reducer,
+        [chat_session_RTK.reducerPath]: chat_session_RTK.reducer,
+        [chat_room_RTK.reducerPath]: chat_room_RTK.reducer,
         [orderRTK.reducerPath]: orderRTK.reducer,
         [agent_RTK.reducerPath]: agent_RTK.reducer,
         [noteRTK.reducerPath]: noteRTK.reducer,
@@ -84,17 +84,17 @@ export const store = configureStore({
         [bank_RTK.reducerPath]: bank_RTK.reducer,
         [postRTK.reducerPath]: postRTK.reducer,
         [statisticsRTK.reducerPath]: statisticsRTK.reducer,
-        [checkInOutRTK.reducerPath]: checkInOutRTK.reducer,
+        [check_in_out_RTK.reducerPath]: check_in_out_RTK.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
             account_RTK.middleware,
-            callRTK.middleware,
-            callAgentRTK.middleware,
-            messageV1RTK.middleware,
+            call_RTK.middleware,
+            call_agent_RTK.middleware,
+            message_v1_RTK.middleware,
             zaloRTK.middleware,
-            chatSessionRTK.middleware,
-            chatRoomRTK.middleware,
+            chat_session_RTK.middleware,
+            chat_room_RTK.middleware,
             orderRTK.middleware,
             agent_RTK.middleware,
             noteRTK.middleware,
@@ -103,7 +103,7 @@ export const store = configureStore({
             bank_RTK.middleware,
             postRTK.middleware,
             statisticsRTK.middleware,
-            checkInOutRTK.middleware
+            check_in_out_RTK.middleware
         ),
 });
 

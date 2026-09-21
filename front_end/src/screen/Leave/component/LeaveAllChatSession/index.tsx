@@ -5,7 +5,7 @@ import { RootState, AppDispatch } from '@src/redux';
 import { LEAVE } from '@src/const/text';
 import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Leave';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { useLeaveAllChatSessionMutation } from '@src/redux/query/chatSessionRTK';
+import { useLeaveAllChatSessionMutation } from '@src/redux/query/chat_session_RTK';
 import { AccountField } from '@src/dataStruct/account';
 
 const LeaveAllChatSession = () => {

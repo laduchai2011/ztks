@@ -2,7 +2,7 @@ import { memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
-import { useLazyGetChatRoomsMongoQuery } from '@src/redux/query/chatRoomRTK';
+import { useLazyGetChatRoomsMongoQuery } from '@src/redux/query/chat_room_RTK';
 import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Home1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountField } from '@src/dataStruct/account';

@@ -3,7 +3,7 @@ import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { SEE_MORE } from '@src/const/text';
-import { useLazyGetCheckInOutsQuery } from '@src/redux/query/checkInOutRTK';
+import { useLazyGetCheckInOutsQuery } from '@src/redux/query/check_in_out_RTK';
 import { CheckInOutWithDateField, CheckInOutType, CheckInOutEnum } from '@src/dataStruct/checkInOut';
 import { GetMyCheckInOutsBodyField } from '@src/dataStruct/checkInOut/body';
 import { set_isLoading } from '@src/redux/slice/Note';

@@ -17,7 +17,7 @@ import {
     useCreateMessageV1Mutation,
     useGetLastMessageQuery,
     useVideoMessageMutation,
-} from '@src/redux/query/messageV1RTK';
+} from '@src/redux/query/message_v1_RTK';
 import { CreateMessageV1BodyField, VideoMessageBodyField } from '@src/dataStruct/message_v1/body';
 import { MessageV1Field, CallV1Field } from '@src/dataStruct/message_v1';
 import { ZaloMessageType, ZaloCallType } from '@src/dataStruct/zalo/hookData';
