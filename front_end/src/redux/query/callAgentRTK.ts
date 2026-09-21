@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { CallAgentField, ZaloTrunkField } from '@src/dataStruct/callAgent';
 import { GetCallAgentWithAccountIdBodyField, CreateZaloTrunkBodyField } from '@src/dataStruct/callAgent/body';
-import { CALL_AGENT_API } from '@src/const/api/callAgent';
+import { CALL_AGENT_API } from '@src/const/api/call_agent';
 import { MyResponse } from '@src/dataStruct/response';
 import { DeviceEnum } from '@src/device/type';
 

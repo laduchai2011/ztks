@@ -17,7 +17,7 @@ import {
     CreateChatRoomPhoneBodyField,
     GetListChatRoomPhonesBodyField,
 } from '@src/dataStruct/chatRoom/body';
-import { CHAT_ROOM_API } from '@src/const/api/chatRoom';
+import { CHAT_ROOM_API } from '@src/const/api/chat_room';
 import { MyResponse } from '@src/dataStruct/response';
 import { DeviceEnum } from '@src/device/type';
 

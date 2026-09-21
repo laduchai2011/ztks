@@ -1,7 +1,7 @@
 import { memo, FC } from 'react';
 import style from './style.module.scss';
 import { IoIosCloseCircle } from 'react-icons/io';
-import { BASE_URL_API } from '@src/const/api/baseUrl';
+import { BASE_URL_API } from '@src/const/api/base_url';
 
 const OneImageUrl: FC<{ fileName: string; index: number; handleCloseImage: (index: number) => void }> = ({
     fileName,

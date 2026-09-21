@@ -7,7 +7,7 @@ import {
     useLazyGetCheckInOutsWithDateQuery,
     useLazyGetCheckInOutInspectWithFkQuery,
 } from '@src/redux/query/checkInOutRTK';
-import { useLazyGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
+import { useLazyGetAccountWithIdQuery } from '@src/redux/query/account_RTK';
 import { CheckInOutEnum, CheckInOutField, CheckInOutInspectField } from '@src/dataStruct/checkInOut';
 import { GetCheckInOutsWithDateBodyField } from '@src/dataStruct/checkInOut/body';
 import OneCheck from './component/OneCheck';

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux';
 import { avatarnull } from '@src/utility/string';
 import { AccountField, AccountReceiveMessageField } from '@src/dataStruct/account';
-import { useGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
+import { useGetAccountWithIdQuery } from '@src/redux/query/account_RTK';
 import { handleSrcImage } from '@src/utility/string';
 
 const Selected = () => {

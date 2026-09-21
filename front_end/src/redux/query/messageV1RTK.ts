@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { PagedMessageV1Field, MessageV1Field, NewMessageV1Field, CallV1Field } from '@src/dataStruct/message_v1';
 import { MessageV1BodyField, CreateMessageV1BodyField, VideoMessageBodyField } from '@src/dataStruct/message_v1/body';
 import { ZaloMessageType, ZaloCallType } from '@src/dataStruct/zalo/hookData';
-import { MESSAGEV1_API } from '@src/const/api/messageV1';
+import { MESSAGEV1_API } from '@src/const/api/message_v1';
 import { MyResponse } from '@src/dataStruct/response';
 import { ResultSendToZaloField } from '@src/dataStruct/zalo/hookData';
 import { DeviceEnum } from '@src/device/type';

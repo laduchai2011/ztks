@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { AccountField, RecommendField } from '@src/dataStruct/account';
 import { WalletField, WalletEnum } from '@src/dataStruct/wallet';
-import { useAddYourRecommendMutation, useLazyGetMyRecommendQuery } from '@src/redux/query/accountRTK';
+import { useAddYourRecommendMutation, useLazyGetMyRecommendQuery } from '@src/redux/query/account_RTK';
 import { AGREE } from '@src/const/text';
 import { set_isLoading, setData_toastMessage } from '@src/redux/slice/Wallet';
 import { messageType_enum } from '@src/component/ToastMessage/type';

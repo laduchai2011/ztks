@@ -10,7 +10,7 @@ import {
 } from '@src/redux/slice/ManageAgent';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { IoIosAddCircle } from 'react-icons/io';
-import { useCreateAgentMutation } from '@src/redux/query/agentRTK';
+import { useCreateAgentMutation } from '@src/redux/query/agent_RTK';
 
 const CreateService = () => {
     const dispatch = useDispatch<AppDispatch>();

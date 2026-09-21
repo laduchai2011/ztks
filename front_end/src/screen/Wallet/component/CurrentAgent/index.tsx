@@ -11,7 +11,7 @@ import {
     useLazyGetAgentWithAgentAccountIdQuery,
     useCreateAgentPayMutation,
     useLazyGetLastAgentPayQuery,
-} from '@src/redux/query/agentRTK';
+} from '@src/redux/query/agent_RTK';
 import { usePayAgentFromWalletMutation } from '@src/redux/query/walletRTK';
 import { PAY } from '@src/const/text';
 import { set_isLoading, setData_toastMessage } from '@src/redux/slice/Wallet';

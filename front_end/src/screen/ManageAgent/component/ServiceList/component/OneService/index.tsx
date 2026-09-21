@@ -8,7 +8,7 @@ import { IoMdAdd } from 'react-icons/io';
 import { AccountField } from '@src/dataStruct/account';
 import { AgentField, AgentPayField } from '@src/dataStruct/agent';
 import { setIsShow_memberListDialog, set_agent_memberListDialog } from '@src/redux/slice/ManageAgent';
-import { useLazyGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
+import { useLazyGetAccountWithIdQuery } from '@src/redux/query/account_RTK';
 import {
     set_isLoading,
     setData_toastMessage,
@@ -16,7 +16,7 @@ import {
     set_agent_agentPayDialog,
 } from '@src/redux/slice/ManageAgent';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { useAgentDelAccountMutation, useLazyGetAgentWithIdQuery } from '@src/redux/query/agentRTK';
+import { useAgentDelAccountMutation, useLazyGetAgentWithIdQuery } from '@src/redux/query/agent_RTK';
 import { getSocket } from '@src/socketIo';
 import { handleSrcImage } from '@src/utility/string';
 

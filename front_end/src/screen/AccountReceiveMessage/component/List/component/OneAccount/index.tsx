@@ -5,7 +5,7 @@ import { RootState, AppDispatch } from '@src/redux';
 import { set_isLoading, setData_toastMessage, set_accountReceiveMessage } from '@src/redux/slice/AccountReceiveMessage';
 import { avatarnull } from '@src/utility/string';
 import { AccountField, AccountReceiveMessageField } from '@src/dataStruct/account';
-import { useUpdateAccountReceiveMessageMutation } from '@src/redux/query/accountRTK';
+import { useUpdateAccountReceiveMessageMutation } from '@src/redux/query/account_RTK';
 import { ZaloOaField } from '@src/dataStruct/zalo';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { handleSrcImage } from '@src/utility/string';

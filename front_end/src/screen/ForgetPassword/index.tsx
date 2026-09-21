@@ -18,7 +18,7 @@ import {
     set_isLoading,
     setData_toastMessage,
 } from '@src/redux/slice/ForgetPassword';
-import { useForgetPasswordMutation, useLazyCheckForgetPasswordQuery } from '@src/redux/query/accountRTK';
+import { useForgetPasswordMutation, useLazyCheckForgetPasswordQuery } from '@src/redux/query/account_RTK';
 import { isSpace, containsSpecialCharacters } from '@src/utility/string';
 
 const ForgetPassword = () => {

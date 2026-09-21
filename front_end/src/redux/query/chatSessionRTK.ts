@@ -7,7 +7,7 @@ import {
     UpdateIsReadyOfChatSessionBodyField,
     LeaveAllChatSessionBodyField,
 } from '@src/dataStruct/chatSession/body';
-import { CHAT_SESSION_API } from '@src/const/api/chatSession';
+import { CHAT_SESSION_API } from '@src/const/api/chat_session';
 import { MyResponse } from '@src/dataStruct/response';
 import { DeviceEnum } from '@src/device/type';
 

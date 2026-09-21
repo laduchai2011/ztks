@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { setNewBank_addBank, setDeletedBank_deleteBankDialog } from '@src/redux/slice/Bank';
 import { BankField } from '@src/dataStruct/bank';
-import { useLazyGetAllBanksQuery } from '@src/redux/query/bankRTK';
+import { useLazyGetAllBanksQuery } from '@src/redux/query/bank_RTK';
 import OneBank from './component/OneBank';
 
 const BankList = () => {

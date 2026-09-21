@@ -12,7 +12,7 @@ import {
 } from '@src/redux/slice/Bank';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { BankField } from '@src/dataStruct/bank';
-import { useEditBankMutation } from '@src/redux/query/bankRTK';
+import { useEditBankMutation } from '@src/redux/query/bank_RTK';
 
 const EditBankDialog = () => {
     const dispatch = useDispatch<AppDispatch>();

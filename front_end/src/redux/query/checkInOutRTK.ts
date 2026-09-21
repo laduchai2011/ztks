@@ -7,7 +7,7 @@ import {
     GetCheckInOutInspectWithFkBodyField,
     CreateCheckInOutInspectBodyField,
 } from '@src/dataStruct/checkInOut/body';
-import { CHECK_IN_OUT_API } from '@src/const/api/checkInOut';
+import { CHECK_IN_OUT_API } from '@src/const/api/check_in_out';
 import { MyResponse } from '@src/dataStruct/response';
 import { DeviceEnum } from '@src/device/type';
 

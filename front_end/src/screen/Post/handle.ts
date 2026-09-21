@@ -1,6 +1,6 @@
 // import axiosInstance from '@src/api/axiosInstance';
 // import { VIDEO_API } from '@src/const/api/video';
-import { IMAGEV1_API } from '@src/const/api/imageV1';
+import { IMAGEV1_API } from '@src/const/api/image_v1';
 // import { MyResponse } from '@src/dataStruct/response';
 // import { MessageField, SendVideoTdFailureBodyField, SendVideoTdSuccessBodyField } from '@src/dataStruct/message';
 

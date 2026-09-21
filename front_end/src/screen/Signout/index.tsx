@@ -5,7 +5,7 @@ import { SIGNOUT, SIGNIN } from '@src/const/text';
 import Loading from '@src/component/Loading';
 import { LoadProps, LineCircleLoadProps } from '@src/component/Loading/type';
 import { LOAD_COMPONENTS_CONST } from '@src/component/Loading/const';
-import { useSignoutMutation } from '@src/redux/query/accountRTK';
+import { useSignoutMutation } from '@src/redux/query/account_RTK';
 import { route_enum } from '@src/router/type';
 import { handleSrcImage } from '@src/utility/string';
 

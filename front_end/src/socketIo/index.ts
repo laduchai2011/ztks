@@ -1,4 +1,4 @@
-import { SOCKET_URL } from '@src/const/api/socketUrl';
+import { SOCKET_URL } from '@src/const/api/socket_url';
 import { SocketType } from '@src/dataStruct/socketIo';
 import io from 'socket.io-client';
 import { getCookie } from '@src/utility/cookie';

@@ -9,7 +9,7 @@ import {
     useGetAccountReceiveMessageQuery,
     useCreateAccountReceiveMessageMutation,
     useGetAllMembersQuery,
-} from '@src/redux/query/accountRTK';
+} from '@src/redux/query/account_RTK';
 import { AccountField, AccountReceiveMessageField } from '@src/dataStruct/account';
 import { ZaloOaField } from '@src/dataStruct/zalo';
 import { ACTIVATE } from '@src/const/text';

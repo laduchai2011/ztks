@@ -21,7 +21,7 @@ import { messageType_enum } from '@src/component/ToastMessage/type';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import { IoIosEye, IoIosEyeOff } from 'react-icons/io';
 import { GoDotFill } from 'react-icons/go';
-import { useLazyGetMyRecommendQuery } from '@src/redux/query/accountRTK';
+import { useLazyGetMyRecommendQuery } from '@src/redux/query/account_RTK';
 import { handleSrcImage } from '@src/utility/string';
 
 const Infor = () => {

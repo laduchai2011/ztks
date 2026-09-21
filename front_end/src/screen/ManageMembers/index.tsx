@@ -3,7 +3,7 @@ import style from './style.module.scss';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { MANAGE_MEMBERS, ADD_MEMBER, ADD } from '@src/const/text';
-import { useAddMemberMutation, useGetAllMembersQuery } from '@src/redux/query/accountRTK';
+import { useAddMemberMutation, useGetAllMembersQuery } from '@src/redux/query/account_RTK';
 import { AddMemberBodyField, AccountField, AccountInformationField, accountType_enum } from '@src/dataStruct/account';
 import { member_enum, member_field_type } from './type';
 import { isSpace, isFirstNumber, containsSpecialCharacters, isValidPhoneNumber } from '@src/utility/string';

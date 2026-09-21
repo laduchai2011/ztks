@@ -1,7 +1,7 @@
 import axiosInstance from '@src/api/axiosInstance';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { IMAGEV1_API } from '@src/const/api/imageV1';
-import { VIDEOV1_API } from '@src/const/api/videoV1';
+import { IMAGEV1_API } from '@src/const/api/image_v1';
+import { VIDEOV1_API } from '@src/const/api/video_v1';
 import { MyResponse } from '@src/dataStruct/response';
 import { DeviceEnum } from '@src/device/type';
 

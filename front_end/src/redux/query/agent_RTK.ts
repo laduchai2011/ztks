@@ -1,20 +1,20 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { AgentField, PagedAgentField, AgentPayField } from '@src/dataStruct/agent';
+import { Agent_Field, Paged_Agent_Field, Agent_Pay_Field } from '@src/data_struct/agent';
 import {
-    CreateAgentBodyField,
-    AgentAddAccountBodyField,
-    AgentDelAccountBodyField,
-    GetAgentsBodyField,
-    GetLastAgentPayBodyField,
-    CreateAgentPayBodyField,
-    GetAgentWithAgentAccountIdBodyField,
-} from '@src/dataStruct/agent/body';
+    Create_Agent_Body_Field,
+    Agent_Add_Account_Body_Field,
+    Agent_Del_Account_Body_Field,
+    Get_Agents_Body_Field,
+    Get_Last_Agent_Pay_Body_Field,
+    Create_Agent_Pay_Body_Field,
+    Get_Agent_With_Agent_Account_Id_Body_Field,
+} from '@src/data_struct/agent/body';
 import { AGENT_API } from '@src/const/api/agent';
-import { MyResponse } from '@src/dataStruct/response';
+import { My_Response_Field } from '@src/data_struct/response';
 import { DeviceEnum } from '@src/device/type';
 
-export const agentRTK = createApi({
-    reducerPath: 'agentRTK',
+export const agent_RTK = createApi({
+    reducerPath: 'agent_RTK',
     baseQuery: fetchBaseQuery({
         baseUrl: '',
         credentials: 'include',
@@ -23,20 +23,23 @@ export const agentRTK = createApi({
             return headers;
         },
     }),
-    tagTypes: ['Agent', 'Agents', 'AgentPay'],
+    tagTypes: ['Agent', 'Agents', 'Agent_Pay'],
     endpoints: (builder) => ({
-        getAgentWithId: builder.query<MyResponse<AgentField>, { id: number }>({
+        _get_Agent_With_Id_: builder.query<My_Response_Field<Agent_Field>, { id: string }>({
             query: ({ id }) => `${AGENT_API.GET_AGENT_WITH_ID}?id=${id}`,
             providesTags: (result, error, arg) => [{ type: 'Agent', id: arg.id }],
         }),
-        getAgentWithAgentAccountId: builder.query<MyResponse<AgentField>, GetAgentWithAgentAccountIdBodyField>({
+        _get_Agent_With_Agent_Account_Id_: builder.query<
+            My_Response_Field<Agent_Field>,
+            Get_Agent_With_Agent_Account_Id_Body_Field
+        >({
             query: (body) => ({
                 url: AGENT_API.GET_AGENT_WITH_AGENT_ACCOUNT_ID,
                 method: 'POST',
                 body,
             }),
         }),
-        getAgents: builder.query<MyResponse<PagedAgentField>, GetAgentsBodyField>({
+        _get_Agents_: builder.query<My_Response_Field<Paged_Agent_Field>, Get_Agents_Body_Field>({
             query: (body) => ({
                 url: AGENT_API.GET_AGENTS,
                 method: 'POST',
@@ -44,15 +47,15 @@ export const agentRTK = createApi({
             }),
             providesTags: ['Agents'],
         }),
-        getLastAgentPay: builder.query<MyResponse<AgentPayField>, GetLastAgentPayBodyField>({
+        _get_Last_Agent_Pay_: builder.query<My_Response_Field<Agent_Pay_Field>, Get_Last_Agent_Pay_Body_Field>({
             query: (body) => ({
                 url: AGENT_API.GET_LAST_AGENT_PAY,
                 method: 'POST',
                 body,
             }),
-            providesTags: (result, error, arg) => [{ type: 'AgentPay', id: arg.agentId }],
+            providesTags: (result, error, arg) => [{ type: 'Agent_Pay', id: arg.agent_id }],
         }),
-        createAgent: builder.mutation<MyResponse<AgentField>, CreateAgentBodyField>({
+        _create_Agent_: builder.mutation<My_Response_Field<Agent_Field>, Create_Agent_Body_Field>({
             query: (body) => ({
                 url: AGENT_API.CREATE_AGENT,
                 method: 'POST',
@@ -60,7 +63,7 @@ export const agentRTK = createApi({
             }),
             invalidatesTags: ['Agents'],
         }),
-        agentAddAccount: builder.mutation<MyResponse<AgentField>, AgentAddAccountBodyField>({
+        _agent_Add_Account_: builder.mutation<My_Response_Field<Agent_Field>, Agent_Add_Account_Body_Field>({
             query: (body) => ({
                 url: AGENT_API.AGENT_ADD_ACCOUNT,
                 method: 'PATCH',
@@ -72,13 +75,13 @@ export const agentRTK = createApi({
 
                 const state = getState() as any;
 
-                const queries = agentRTK.util.selectInvalidatedBy(state, [{ type: 'Agents' }]);
+                const queries = agent_RTK.util.selectInvalidatedBy(state, [{ type: 'Agents' }]);
 
                 for (const query of queries) {
-                    if (query.endpointName !== 'getAgents') continue;
+                    if (query.endpointName !== '_get_Agents_') continue;
 
                     const patchResult = dispatch(
-                        agentRTK.util.updateQueryData('getAgents', query.originalArgs, (draft) => {
+                        agent_RTK.util.updateQueryData('_get_Agents_', query.originalArgs, (draft) => {
                             if (!draft.data?.items) return;
 
                             const agent = draft.data.items.find((a) => a.id === arg.id);
@@ -99,7 +102,7 @@ export const agentRTK = createApi({
                 }
             },
         }),
-        agentDelAccount: builder.mutation<MyResponse<AgentField>, AgentDelAccountBodyField>({
+        _agent_Del_Account_: builder.mutation<My_Response_Field<Agent_Field>, Agent_Del_Account_Body_Field>({
             query: (body) => ({
                 url: AGENT_API.AGENT_DEL_ACCOUNT,
                 method: 'PATCH',
@@ -111,13 +114,13 @@ export const agentRTK = createApi({
 
                 const state = getState() as any;
 
-                const queries = agentRTK.util.selectInvalidatedBy(state, [{ type: 'Agents' }]);
+                const queries = agent_RTK.util.selectInvalidatedBy(state, [{ type: 'Agents' }]);
 
                 for (const query of queries) {
-                    if (query.endpointName !== 'getAgents') continue;
+                    if (query.endpointName !== '_get_Agents_') continue;
 
                     const patchResult = dispatch(
-                        agentRTK.util.updateQueryData('getAgents', query.originalArgs, (draft) => {
+                        agent_RTK.util.updateQueryData('_get_Agents_', query.originalArgs, (draft) => {
                             if (!draft.data?.items) return;
 
                             const agent = draft.data.items.find((a) => a.id === arg.id);
@@ -138,24 +141,24 @@ export const agentRTK = createApi({
                 }
             },
         }),
-        createAgentPay: builder.mutation<MyResponse<AgentPayField>, CreateAgentPayBodyField>({
+        _create_Agent_Pay_: builder.mutation<My_Response_Field<Agent_Pay_Field>, Create_Agent_Pay_Body_Field>({
             query: (body) => ({
                 url: AGENT_API.CREATE_AGENT_PAY,
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: (result, error, arg) => [{ type: 'AgentPay', id: arg.agentId }],
+            invalidatesTags: (result, error, arg) => [{ type: 'Agent_Pay', id: arg.agent_id }],
         }),
     }),
 });
 
 export const {
-    useLazyGetAgentWithIdQuery,
-    useLazyGetAgentWithAgentAccountIdQuery,
-    useLazyGetAgentsQuery,
-    useLazyGetLastAgentPayQuery,
-    useCreateAgentMutation,
-    useAgentAddAccountMutation,
-    useAgentDelAccountMutation,
-    useCreateAgentPayMutation,
-} = agentRTK;
+    useLazy_get_Agent_With_Id_Query,
+    useLazy_get_Agent_With_Agent_Account_Id_Query,
+    useLazy_get_Agents_Query,
+    useLazy_get_Last_Agent_Pay_Query,
+    use_create_Agent_Mutation,
+    use_agent_Add_Account_Mutation,
+    use_agent_Del_Account_Mutation,
+    use_create_Agent_Pay_Mutation,
+} = agent_RTK;

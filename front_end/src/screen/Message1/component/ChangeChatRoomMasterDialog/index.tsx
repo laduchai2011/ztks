@@ -9,7 +9,7 @@ import { CLOSE, AGREE, EXIT, CHANGE_CHAT_ROOM_MASTER, SEE_MORE } from '@src/cons
 import { setData_toastMessage, set_isLoading, setIsShow_changeChatRoomMasterDialog } from '@src/redux/slice/MessageV1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { avatarnull } from '@src/utility/string';
-import { useLazyGetMembersQuery } from '@src/redux/query/accountRTK';
+import { useLazyGetMembersQuery } from '@src/redux/query/account_RTK';
 import { useChangeChatRoomMasterMutation } from '@src/redux/query/chatRoomRTK';
 import { AccountField, AccountInformationField } from '@src/dataStruct/account';
 import { handleSrcImage } from '@src/utility/string';

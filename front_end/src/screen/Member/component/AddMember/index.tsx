@@ -3,7 +3,7 @@ import style from './style.module.scss';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { ADD } from '@src/const/text';
-import { useLazyGetAccountWithIdQuery, useAddMemberV1Mutation } from '@src/redux/query/accountRTK';
+import { useLazyGetAccountWithIdQuery, useAddMemberV1Mutation } from '@src/redux/query/account_RTK';
 import { set_isLoading, setData_toastMessage, setData_newMember } from '@src/redux/slice/Member';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 

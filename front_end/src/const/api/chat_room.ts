@@ -1,4 +1,4 @@
-import { BASE_URL } from './baseUrl';
+import { BASE_URL } from './base_url';
 
 const isProduct = process.env.NODE_ENV === 'production';
 const apiString = isProduct ? '' : '/api';

@@ -7,7 +7,7 @@ import { SIGNIN, SIGNUP, ACCOUNT, PASSWORD, PHONE_NUMBER, FIRST_NAME, LAST_NAME 
 import { AccountField } from '@src/dataStruct/account';
 import { account_field_type, account_enum } from './type';
 import { isSpace, isFirstNumber, containsSpecialCharacters, isValidPhoneNumber } from '@src/utility/string';
-import { useSignupMutation } from '@src/redux/query/accountRTK';
+import { useSignupMutation } from '@src/redux/query/account_RTK';
 import { router_res_type } from '@src/interface';
 import { route_enum } from '@src/router/type';
 import { sendOtp } from '@src/otp/handle';

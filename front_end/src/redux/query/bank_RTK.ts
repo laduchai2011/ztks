@@ -1,18 +1,18 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { BankField } from '@src/dataStruct/bank';
+import { Bank_Field } from '@src/data_struct/bank';
 import {
-    AddBankBodyField,
-    EditBankBodyField,
-    DeleteBankBodyField,
-    GetBankWithIdBodyField,
-    GetAllBanksBodyField,
-} from '@src/dataStruct/bank/body';
+    Add_Bank_Body_Field,
+    Edit_Bank_Body_Field,
+    Delete_Bank_Body_Field,
+    Get_Bank_With_Id_Body_Field,
+    Get_All_Banks_Body_Field,
+} from '@src/data_struct/bank/body';
 import { BANK_API } from '@src/const/api/bank';
-import { MyResponse } from '@src/dataStruct/response';
+import { My_Response_Field } from '@src/data_struct/response';
 import { DeviceEnum } from '@src/device/type';
 
-export const bankRTK = createApi({
-    reducerPath: 'bankRTK',
+export const bank_RTK = createApi({
+    reducerPath: 'bank_RTK',
     baseQuery: fetchBaseQuery({
         baseUrl: '',
         credentials: 'include',
@@ -21,9 +21,9 @@ export const bankRTK = createApi({
             return headers;
         },
     }),
-    tagTypes: ['AllBank', 'Bank'],
+    tagTypes: ['All_Bank', 'Bank'],
     endpoints: (builder) => ({
-        getBankWithId: builder.query<MyResponse<BankField>, GetBankWithIdBodyField>({
+        _get_Bank_With_Id_: builder.query<My_Response_Field<Bank_Field>, Get_Bank_With_Id_Body_Field>({
             query: (body) => ({
                 url: BANK_API.GET_BANK_WITH_ID,
                 method: 'POST',
@@ -31,23 +31,23 @@ export const bankRTK = createApi({
             }),
             providesTags: (result, error, arg) => [{ type: 'Bank', id: arg.id }],
         }),
-        getAllBanks: builder.query<MyResponse<BankField[]>, GetAllBanksBodyField>({
+        _get_All_Banks_: builder.query<My_Response_Field<Bank_Field[]>, Get_All_Banks_Body_Field>({
             query: (body) => ({
                 url: BANK_API.GET_ALL_BANKS,
                 method: 'POST',
                 body,
             }),
-            providesTags: [{ type: 'AllBank' }],
+            providesTags: [{ type: 'All_Bank' }],
         }),
-        addBank: builder.mutation<MyResponse<BankField>, AddBankBodyField>({
+        _add_Bank_: builder.mutation<My_Response_Field<Bank_Field>, Add_Bank_Body_Field>({
             query: (body) => ({
                 url: BANK_API.ADD_BANK,
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: [{ type: 'AllBank' }],
+            invalidatesTags: [{ type: 'All_Bank' }],
         }),
-        editBank: builder.mutation<MyResponse<BankField>, EditBankBodyField>({
+        _edit_Bank_: builder.mutation<My_Response_Field<Bank_Field>, Edit_Bank_Body_Field>({
             query: (body) => ({
                 url: BANK_API.EDIT_BANK,
                 method: 'PATCH',
@@ -55,21 +55,21 @@ export const bankRTK = createApi({
             }),
             invalidatesTags: (result) => [{ type: 'Bank', id: result?.data?.id }],
         }),
-        deleteBank: builder.mutation<MyResponse<BankField>, DeleteBankBodyField>({
+        _delete_Bank_: builder.mutation<My_Response_Field<Bank_Field>, Delete_Bank_Body_Field>({
             query: (body) => ({
                 url: BANK_API.DELETE_BANK,
                 method: 'DELETE',
                 body,
             }),
-            invalidatesTags: [{ type: 'AllBank' }],
+            invalidatesTags: [{ type: 'All_Bank' }],
         }),
     }),
 });
 
 export const {
-    useLazyGetAllBanksQuery,
-    useLazyGetBankWithIdQuery,
-    useAddBankMutation,
-    useEditBankMutation,
-    useDeleteBankMutation,
-} = bankRTK;
+    useLazy_get_All_Banks_Query,
+    useLazy_get_Bank_With_Id_Query,
+    use_add_Bank_Mutation,
+    use_edit_Bank_Mutation,
+    use_delete_Bank_Mutation,
+} = bank_RTK;

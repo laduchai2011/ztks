@@ -28,7 +28,7 @@ import { ChatRoomRoleField } from '@src/dataStruct/chatRoom';
 import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 import { timeAgoSmart } from '@src/utility/time';
 import { useGetChatRoomRoleWithCridAaidQuery } from '@src/redux/query/chatRoomRTK';
-import { useGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
+import { useGetAccountWithIdQuery } from '@src/redux/query/account_RTK';
 import { set_repliedMessage } from '@src/redux/slice/MessageV1';
 import { avatarnull } from '@src/utility/string';
 import { handleSrcImage } from '@src/utility/string';

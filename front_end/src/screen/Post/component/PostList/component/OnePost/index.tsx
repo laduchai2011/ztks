@@ -5,7 +5,7 @@ import { AppDispatch, RootState } from '@src/redux';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { CiEdit } from 'react-icons/ci';
 import { PostField, PostTypeEnum } from '@src/dataStruct/post';
-import { BASE_URL_API } from '@src/const/api/baseUrl';
+import { BASE_URL_API } from '@src/const/api/base_url';
 import { setIsShow_editPostDialog, setPost_editPostDialog, setNewPost_editPostDialog } from '@src/redux/slice/Post';
 import { handleSrcImage } from '@src/utility/string';
 

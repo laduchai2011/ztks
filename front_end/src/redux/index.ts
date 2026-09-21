@@ -24,7 +24,7 @@ import LeaveReducer from '@src/redux/slice/Leave';
 import DashBoardReducer from '@src/redux/slice/DashBoard';
 import CheckInOutReducer from '@src/redux/slice/CheckInOut';
 import CheckInOutManagerReducer from '@src/redux/slice/CheckInOutManager';
-import { accountRTK } from './query/accountRTK';
+import { account_RTK } from './query/account_RTK';
 import { callRTK } from './query/callRTK';
 import { callAgentRTK } from './query/callAgentRTK';
 import { messageV1RTK } from './query/messageV1RTK';
@@ -32,11 +32,11 @@ import { zaloRTK } from './query/zaloRTK';
 import { chatSessionRTK } from './query/chatSessionRTK';
 import { chatRoomRTK } from './query/chatRoomRTK';
 import { orderRTK } from './query/orderRTK';
-import { agentRTK } from './query/agentRTK';
+import { agent_RTK } from './query/agent_RTK';
 import { noteRTK } from './query/noteRTK';
 import { walletRTK } from './query/walletRTK';
 import { voucherRTK } from './query/voucherRTK';
-import { bankRTK } from './query/bankRTK';
+import { bank_RTK } from './query/bank_RTK';
 import { postRTK } from './query/postRTK';
 import { statisticsRTK } from './query/statisticsRTK';
 import { checkInOutRTK } from './query/checkInOutRTK';
@@ -69,7 +69,7 @@ export const store = configureStore({
         DashBoardSlice: DashBoardReducer,
         CheckInOutSlice: CheckInOutReducer,
         CheckInOutManagerSlice: CheckInOutManagerReducer,
-        [accountRTK.reducerPath]: accountRTK.reducer,
+        [account_RTK.reducerPath]: account_RTK.reducer,
         [callRTK.reducerPath]: callRTK.reducer,
         [callAgentRTK.reducerPath]: callAgentRTK.reducer,
         [messageV1RTK.reducerPath]: messageV1RTK.reducer,
@@ -77,18 +77,18 @@ export const store = configureStore({
         [chatSessionRTK.reducerPath]: chatSessionRTK.reducer,
         [chatRoomRTK.reducerPath]: chatRoomRTK.reducer,
         [orderRTK.reducerPath]: orderRTK.reducer,
-        [agentRTK.reducerPath]: agentRTK.reducer,
+        [agent_RTK.reducerPath]: agent_RTK.reducer,
         [noteRTK.reducerPath]: noteRTK.reducer,
         [walletRTK.reducerPath]: walletRTK.reducer,
         [voucherRTK.reducerPath]: voucherRTK.reducer,
-        [bankRTK.reducerPath]: bankRTK.reducer,
+        [bank_RTK.reducerPath]: bank_RTK.reducer,
         [postRTK.reducerPath]: postRTK.reducer,
         [statisticsRTK.reducerPath]: statisticsRTK.reducer,
         [checkInOutRTK.reducerPath]: checkInOutRTK.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
-            accountRTK.middleware,
+            account_RTK.middleware,
             callRTK.middleware,
             callAgentRTK.middleware,
             messageV1RTK.middleware,
@@ -96,11 +96,11 @@ export const store = configureStore({
             chatSessionRTK.middleware,
             chatRoomRTK.middleware,
             orderRTK.middleware,
-            agentRTK.middleware,
+            agent_RTK.middleware,
             noteRTK.middleware,
             walletRTK.middleware,
             voucherRTK.middleware,
-            bankRTK.middleware,
+            bank_RTK.middleware,
             postRTK.middleware,
             statisticsRTK.middleware,
             checkInOutRTK.middleware

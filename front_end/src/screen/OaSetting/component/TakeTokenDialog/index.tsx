@@ -19,7 +19,7 @@ import {
     useCreateZaloOaTokenMutation,
     useUpdateRefreshTokenOfZaloOaMutation,
 } from '@src/redux/query/zaloRTK';
-import { isProduct } from '@src/const/api/baseUrl';
+import { isProduct } from '@src/const/api/base_url';
 
 const TakeTokenDialog = () => {
     const dispatch = useDispatch<AppDispatch>();

@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { IoCloseOutline } from 'react-icons/io5';
 import { ADD_BANK } from '@src/const/text';
-import { useAddBankMutation } from '@src/redux/query/bankRTK';
+import { useAddBankMutation } from '@src/redux/query/bank_RTK';
 import { setData_toastMessage, set_isLoading, setNewBank_addBank } from '@src/redux/slice/Bank';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 

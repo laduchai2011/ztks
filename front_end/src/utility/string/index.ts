@@ -1,4 +1,4 @@
-import { BASE_URL_API } from '@src/const/api/baseUrl';
+import { BASE_URL_API } from '@src/const/api/base_url';
 
 // export function isString(value: unknown): boolean {
 //     return typeof value === 'string' || value instanceof String;

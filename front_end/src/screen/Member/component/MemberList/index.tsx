@@ -5,7 +5,7 @@ import { RootState, AppDispatch } from '@src/redux';
 import { SEE_MORE } from '@src/const/text';
 import Filter from './component/Filter';
 import OneMember from './component/OneMember';
-import { useLazyGetMembersQuery } from '@src/redux/query/accountRTK';
+import { useLazyGetMembersQuery } from '@src/redux/query/account_RTK';
 import { set_isLoading, setData_toastMessage } from '@src/redux/slice/Member';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountField, AccountInformationField } from '@src/dataStruct/account';

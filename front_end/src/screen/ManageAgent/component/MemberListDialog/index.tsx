@@ -13,8 +13,8 @@ import {
 } from '@src/redux/slice/ManageAgent';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { avatarnull } from '@src/utility/string';
-import { useLazyGetMembersQuery } from '@src/redux/query/accountRTK';
-import { useAgentAddAccountMutation } from '@src/redux/query/agentRTK';
+import { useLazyGetMembersQuery } from '@src/redux/query/account_RTK';
+import { useAgentAddAccountMutation } from '@src/redux/query/agent_RTK';
 import { AccountField, AccountInformationField } from '@src/dataStruct/account';
 import { AgentField } from '@src/dataStruct/agent';
 import { handleSrcImage } from '@src/utility/string';

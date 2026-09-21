@@ -16,7 +16,7 @@ import {
     useLazyGetMessageWithIdQuery,
 } from '@src/redux/query/messageV1RTK';
 import { useGetZaloUserQuery } from '@src/redux/query/zaloRTK';
-import { useGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
+import { useGetAccountWithIdQuery } from '@src/redux/query/account_RTK';
 import { timeAgoSmart } from '@src/utility/time';
 import { handleNewMsgAmount } from './handle';
 import { getSocket } from '@src/socketIo';

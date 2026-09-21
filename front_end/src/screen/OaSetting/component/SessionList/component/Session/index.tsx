@@ -6,11 +6,11 @@ import { MdDelete } from 'react-icons/md';
 import { GoDotFill } from 'react-icons/go';
 import { avatarnull } from '@src/utility/string';
 import { ChatSessionField } from '@src/dataStruct/chatSession';
-import { useGetAccountWithIdQuery } from '@src/redux/query/accountRTK';
+import { useGetAccountWithIdQuery } from '@src/redux/query/account_RTK';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { set_isLoading, setData_toastMessage, setIsShow_delDialog } from '@src/redux/slice/OaSetting';
 import { AccountField } from '@src/dataStruct/account';
-import { useGetAllMembersQuery } from '@src/redux/query/accountRTK';
+import { useGetAllMembersQuery } from '@src/redux/query/account_RTK';
 import {
     useUpdateSelectedAccountIdOfChatSessionMutation,
     useUpdateIsReayOfChatSessionMutation,

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { BASE_URL } from '@src/const/api/baseUrl';
+import { BASE_URL } from '@src/const/api/base_url';
 import { DeviceEnum } from '@src/device/type';
 
 const isProduct = process.env.NODE_ENV === 'production';

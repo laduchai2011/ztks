@@ -9,7 +9,7 @@ import Added from './component/Added';
 import NotAdded from './component/NotAdded';
 import { AccountField } from '@src/dataStruct/account';
 import { ChatRoomField } from '@src/dataStruct/chatRoom';
-import { useGetReplyAccountsQuery, useGetNotReplyAccountsQuery } from '@src/redux/query/accountRTK';
+import { useGetReplyAccountsQuery, useGetNotReplyAccountsQuery } from '@src/redux/query/account_RTK';
 
 const ReplyMember = () => {
     const { id } = useParams<{ id: string }>();
