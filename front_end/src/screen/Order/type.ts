@@ -1,44 +1,44 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { OrderField, OrderStatusField } from '@src/dataStruct/order';
+import { Order_Field, Order_Status_Field } from '@src/data_struct/order';
 
 export interface state_props {
-    isLoading: boolean;
-    toastMessage: {
+    is_loading: boolean;
+    toast_message: {
         data: ToastMessage_Data_Props;
     };
-    createOrder: {
-        newOrder?: OrderField;
+    create_order: {
+        new_order?: Order_Field;
     };
-    editOrderDialog: {
-        isShow: boolean;
-        order?: OrderField;
-        newOrder?: OrderField;
+    edit_order_dialog: {
+        is_show: boolean;
+        order?: Order_Field;
+        new_order?: Order_Field;
     };
-    payDialog: {
-        isShow: boolean;
-        order?: OrderField;
-        newOrder?: OrderField;
+    pay_dialog: {
+        is_show: boolean;
+        order?: Order_Field;
+        new_order?: Order_Field;
     };
-    voucherDialog: {
-        isShow: boolean;
-        order?: OrderField;
+    voucher_dialog: {
+        is_show: boolean;
+        order?: Order_Field;
     };
-    addOrderStatusDialog: {
-        isShow: boolean;
-        order?: OrderField;
-        newOrderStatus?: OrderStatusField;
-        defaultOrderStatusType?: orderStatusType_type;
+    add_order_status_dialog: {
+        is_show: boolean;
+        order?: Order_Field;
+        new_order_status?: Order_Status_Field;
+        default_order_status_type?: Order_Status_Type_Type;
     };
 }
 
-export enum orderStatusType_enum {
+export enum Order_Status_Type_Enum {
     FREEDOM = 'freedom',
     DEFAULT = 'default',
 }
 
-export type orderStatusType_type = orderStatusType_enum.FREEDOM | orderStatusType_enum.DEFAULT;
+export type Order_Status_Type_Type = Order_Status_Type_Enum.FREEDOM | Order_Status_Type_Enum.DEFAULT;
 
-export enum defaultContents {
+export enum Default_Contents_Enum {
     NOT_PAY = 'not_pay',
     PAID = 'paid',
     NOT_SEND = 'not_send',
@@ -46,9 +46,9 @@ export enum defaultContents {
     RETURN = 'return',
 }
 
-export type defaultContent_type =
-    | defaultContents.NOT_PAY
-    | defaultContents.PAID
-    | defaultContents.NOT_SEND
-    | defaultContents.SENT
-    | defaultContents.RETURN;
+export type Default_Contents_Type =
+    | Default_Contents_Enum.NOT_PAY
+    | Default_Contents_Enum.PAID
+    | Default_Contents_Enum.NOT_SEND
+    | Default_Contents_Enum.SENT
+    | Default_Contents_Enum.RETURN;

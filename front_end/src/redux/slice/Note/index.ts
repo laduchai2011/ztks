@@ -1,69 +1,72 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { state_props } from '@src/screen/Note/type';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { NoteField } from '@src/dataStruct/note';
+import { Note_Field } from '@src/data_struct/note';
 
 const initialState: state_props = {
-    isLoading: false,
-    toastMessage: {
+    is_loading: false,
+    toast_message: {
         data: { type: undefined, message: '' },
     },
-    editNoteDialog: {
-        isShow: false,
+    edit_note_dialog: {
+        is_show: false,
         note: undefined,
-        newNote: undefined,
+        new_note: undefined,
     },
-    newNotes: [],
-    deleteNoteDialog: {
-        isShow: false,
+    new_notes: [],
+    delete_note_dialog: {
+        is_show: false,
         note: undefined,
-        deletedNote: undefined,
+        deleted_note: undefined,
     },
 };
 
-const NoteSlice = createSlice({
-    name: 'NoteSlice',
+const Note_Slice = createSlice({
+    name: 'Note_Slice',
     initialState,
     reducers: {
-        set_isLoading: (state, action: PayloadAction<boolean>) => {
-            state.isLoading = action.payload;
+        set__is_loading: (state, action: PayloadAction<boolean>) => {
+            state.is_loading = action.payload;
         },
-        setData_toastMessage: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
-            state.toastMessage.data = action.payload;
+        set__data__toast_message: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
+            state.toast_message.data = action.payload;
         },
-        set_editNoteDialog: (state, action: PayloadAction<{ isShow: boolean; note: NoteField | undefined }>) => {
-            state.editNoteDialog = action.payload;
+        set__edit_note_dialog: (state, action: PayloadAction<{ is_show: boolean; note: Note_Field | undefined }>) => {
+            state.edit_note_dialog = action.payload;
         },
-        setFinal_editNoteDialog: (state, action: PayloadAction<{ isShow: false; newNote: NoteField | undefined }>) => {
-            state.editNoteDialog = action.payload;
+        set__final__edit_note_dialog: (
+            state,
+            action: PayloadAction<{ is_show: false; new_note: Note_Field | undefined }>
+        ) => {
+            state.edit_note_dialog = action.payload;
         },
-        setData_addNewNote: (state, action: PayloadAction<NoteField>) => {
-            state.newNotes = [...state.newNotes, action.payload];
+        set__data__add_new_note: (state, action: PayloadAction<Note_Field>) => {
+            state.new_notes = [...state.new_notes, action.payload];
         },
-        clear_newNotes: (state) => {
-            state.newNotes = [];
+        clear__new_notes: (state) => {
+            state.new_notes = [];
         },
-        setIsShow_deleteNoteDialog: (state, action: PayloadAction<boolean>) => {
-            state.deleteNoteDialog.isShow = action.payload;
+        set__is_show__delete_note_dialog: (state, action: PayloadAction<boolean>) => {
+            state.delete_note_dialog.is_show = action.payload;
         },
-        setNote_deleteNoteDialog: (state, action: PayloadAction<NoteField | undefined>) => {
-            state.deleteNoteDialog.note = action.payload;
+        set__note__delete_note_dialog: (state, action: PayloadAction<Note_Field | undefined>) => {
+            state.delete_note_dialog.note = action.payload;
         },
-        setDeletedNote_deleteNoteDialog: (state, action: PayloadAction<NoteField | undefined>) => {
-            state.deleteNoteDialog.deletedNote = action.payload;
+        set__deleted_note__delete_note_dialog: (state, action: PayloadAction<Note_Field | undefined>) => {
+            state.delete_note_dialog.deleted_note = action.payload;
         },
     },
 });
 
 export const {
-    set_isLoading,
-    setData_toastMessage,
-    set_editNoteDialog,
-    setFinal_editNoteDialog,
-    setData_addNewNote,
-    clear_newNotes,
-    setIsShow_deleteNoteDialog,
-    setNote_deleteNoteDialog,
-    setDeletedNote_deleteNoteDialog,
-} = NoteSlice.actions;
-export default NoteSlice.reducer;
+    set__is_loading,
+    set__data__toast_message,
+    set__edit_note_dialog,
+    set__final__edit_note_dialog,
+    set__data__add_new_note,
+    clear__new_notes,
+    set__is_show__delete_note_dialog,
+    set__note__delete_note_dialog,
+    set__deleted_note__delete_note_dialog,
+} = Note_Slice.actions;
+export default Note_Slice.reducer;

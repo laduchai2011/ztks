@@ -3,7 +3,7 @@ import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
-import { set_isLoading, setData_toastMessage } from '@src/redux/slice/CheckInOutManager';
+import { set_isLoading, setData_toastMessage } from '@src/redux/slice/Check_In_Out_Manager';
 import { route_enum } from '@src/router/type';
 import { select_enum } from '@src/router/type';
 import { useGetAllMembersQuery } from '@src/redux/query/account_RTK';

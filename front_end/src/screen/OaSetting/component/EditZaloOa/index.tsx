@@ -9,7 +9,7 @@ import {
     setData_toastMessage,
     setIsShow_editZaloOa,
     setNewZaloOa_editZaloOa,
-} from '@src/redux/slice/OaSetting';
+} from '@src/redux/slice/Oa_Setting';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountField } from '@src/dataStruct/account';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';

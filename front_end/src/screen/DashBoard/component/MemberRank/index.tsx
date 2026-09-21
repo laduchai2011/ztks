@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { route_enum } from '@src/router/type';
 import OneMember from './component/OneMember';
-import { setData_toastMessage } from '@src/redux/slice/DashBoard';
+import { setData_toastMessage } from '@src/redux/slice/Dash_Board';
 
 const MemberRank = () => {
     const [memberList, setMemberList] = useState<string[]>(['', '', '', '']);

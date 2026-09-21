@@ -6,7 +6,7 @@ import { CREATE_NEW_SESSION } from '@src/const/text';
 import { useCreateChatSessionMutation } from '@src/redux/query/chat_session_RTK';
 import { ChatSessionBodyField } from '@src/dataStruct/chatSession/body';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { set_isLoading, setData_toastMessage, set_chatSessions } from '@src/redux/slice/OaSetting';
+import { set_isLoading, setData_toastMessage, set_chatSessions } from '@src/redux/slice/Oa_Setting';
 import { ZaloOaField } from '@src/dataStruct/zalo';
 import { Crud_Enum } from '../../type';
 

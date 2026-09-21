@@ -3,24 +3,24 @@ import { state_props } from '@src/screen/Leave/type';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
 
 const initialState: state_props = {
-    isLoading: false,
-    toastMessage: {
+    is_loading: false,
+    toast_message: {
         data: { type: undefined, message: '' },
     },
 };
 
-const LeaveSlice = createSlice({
-    name: 'LeaveSlice',
+const Leave_Slice = createSlice({
+    name: 'Leave_Slice',
     initialState,
     reducers: {
-        set_isLoading: (state, action: PayloadAction<boolean>) => {
-            state.isLoading = action.payload;
+        set__is_loading: (state, action: PayloadAction<boolean>) => {
+            state.is_loading = action.payload;
         },
-        setData_toastMessage: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
-            state.toastMessage.data = action.payload;
+        set__data__toast_message: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
+            state.toast_message.data = action.payload;
         },
     },
 });
 
-export const { set_isLoading, setData_toastMessage } = LeaveSlice.actions;
-export default LeaveSlice.reducer;
+export const { set__is_loading, set__data__toast_message } = Leave_Slice.actions;
+export default Leave_Slice.reducer;

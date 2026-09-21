@@ -17,7 +17,7 @@ import {
     setToken_otpDialog,
     set_isLoading,
     setData_toastMessage,
-} from '@src/redux/slice/ForgetPassword';
+} from '@src/redux/slice/Forget_Password';
 import { useForgetPasswordMutation, useLazyCheckForgetPasswordQuery } from '@src/redux/query/account_RTK';
 import { isSpace, containsSpecialCharacters } from '@src/utility/string';
 

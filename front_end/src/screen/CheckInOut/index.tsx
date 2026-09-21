@@ -9,7 +9,7 @@ import CreateCheckInOut from './component/CreateCheckInOut';
 import CheckList from './component/CheckList';
 import { IoChevronBack } from 'react-icons/io5';
 import { route_enum } from '@src/router/type';
-import { setData_toastMessage } from '@src/redux/slice/DashBoard';
+import { setData_toastMessage } from '@src/redux/slice/Dash_Board';
 
 const CheckInOut = () => {
     const dispatch = useDispatch<AppDispatch>();

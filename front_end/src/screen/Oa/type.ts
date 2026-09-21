@@ -1,17 +1,17 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { ZaloOaField } from '@src/dataStruct/zalo';
+import { Zalo_Oa_Field } from '@src/data_struct/zalo';
 
 export interface state_props {
-    isLoading: boolean;
-    toastMessage: {
+    is_loading: boolean;
+    toast_message: {
         data: ToastMessage_Data_Props;
     };
-    takeTokenDialog: {
-        isShow: boolean;
-        zaloOa?: ZaloOaField;
+    take_token_dialog: {
+        is_show: boolean;
+        zalo_oa?: Zalo_Oa_Field;
     };
-    createOa: {
-        isShow: boolean;
-        newZaloOa?: ZaloOaField;
+    create_oa: {
+        is_show: boolean;
+        new_zalo_oa?: Zalo_Oa_Field;
     };
 }

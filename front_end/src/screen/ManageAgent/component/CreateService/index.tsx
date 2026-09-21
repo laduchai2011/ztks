@@ -7,7 +7,7 @@ import {
     setData_toastMessage,
     setData_addNewAgent,
     clear_newAgents,
-} from '@src/redux/slice/ManageAgent';
+} from '@src/redux/slice/Manage_Agent';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { IoIosAddCircle } from 'react-icons/io';
 import { useCreateAgentMutation } from '@src/redux/query/agent_RTK';

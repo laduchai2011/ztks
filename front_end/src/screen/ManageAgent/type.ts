@@ -1,19 +1,19 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { AgentField } from '@src/dataStruct/agent';
+import { Agent_Field } from '@src/data_struct/agent';
 
 export interface state_props {
-    isLoading: boolean;
-    toastMessage: {
+    is_loading: boolean;
+    toast_message: {
         data: ToastMessage_Data_Props;
     };
-    newAgents: AgentField[];
-    memberListDialog: {
-        isShow: boolean;
-        agent?: AgentField;
+    new_agents: Agent_Field[];
+    member_list_dialog: {
+        is_show: boolean;
+        agent?: Agent_Field;
     };
-    agentPayDialog: {
-        isShow: boolean;
-        agent?: AgentField;
+    agent_pay_dialog: {
+        is_show: boolean;
+        agent?: Agent_Field;
         // agentPay?: AgentPayField;
     };
 }

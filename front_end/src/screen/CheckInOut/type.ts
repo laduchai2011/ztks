@@ -1,10 +1,10 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { CheckInOutField } from '@src/dataStruct/checkInOut';
+import { Check_In_Out_Field } from '@src/data_struct/check_in_out';
 
 export interface state_props {
-    isLoading: boolean;
-    toastMessage: {
+    is_loading: boolean;
+    toast_message: {
         data: ToastMessage_Data_Props;
     };
-    checkInOuts: CheckInOutField[];
+    check_in_outs: Check_In_Out_Field[];
 }

@@ -6,7 +6,7 @@ import { SESSION_LIST, SEE_MORE } from '@src/const/text';
 import Session from './component/Session';
 import { useLazyGetChatSessionsWithAccountIdQuery } from '@src/redux/query/chat_session_RTK';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { set_isLoading, setData_toastMessage, set_chatSessions } from '@src/redux/slice/OaSetting';
+import { set_isLoading, setData_toastMessage, set_chatSessions } from '@src/redux/slice/Oa_Setting';
 import { ZaloOaField } from '@src/dataStruct/zalo';
 import { AccountField } from '@src/dataStruct/account';
 import { ChatSessionField } from '@src/dataStruct/chatSession';

@@ -6,7 +6,7 @@ import { IoCloseOutline } from 'react-icons/io5';
 import { CREATE_CHECK_IN_OUT } from '@src/const/text';
 import { CheckInOutType, CheckInOutEnum } from '@src/dataStruct/checkInOut';
 import { CreateCheckInOutBodyField } from '@src/dataStruct/checkInOut/body';
-import { setData_toastMessage, set_isLoading, setAddData_checkInOuts } from '@src/redux/slice/CheckInOut';
+import { setData_toastMessage, set_isLoading, setAddData_checkInOuts } from '@src/redux/slice/Check_In_Out';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { useCreateCheckInOutMutation } from '@src/redux/query/check_in_out_RTK';
 import { FaImage } from 'react-icons/fa';

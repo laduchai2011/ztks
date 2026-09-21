@@ -1,12 +1,12 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { ZaloOaField } from '@src/dataStruct/zalo';
-import { StatisticsOaField } from '@src/dataStruct/statistics';
+import { Zalo_Oa_Field } from '@src/data_struct/zalo';
+import { Statistics_Oa_Field } from '@src/data_struct/statistics';
 
 export interface state_props {
-    isLoading: boolean;
-    toastMessage: {
+    is_loading: boolean;
+    toast_message: {
         data: ToastMessage_Data_Props;
     };
-    selectedOa?: ZaloOaField;
-    statisticsOaArray: StatisticsOaField[];
+    selected_oa?: Zalo_Oa_Field;
+    statistics_oa_array: Statistics_Oa_Field[];
 }

@@ -8,7 +8,7 @@ import MyLoading from './component/MyLoading';
 import ToolBar from '@src/screen/ToolBar';
 import CheckListMember from './component/CheckListMember';
 import { route_enum } from '@src/router/type';
-import { setData_toastMessage } from '@src/redux/slice/DashBoard';
+import { setData_toastMessage } from '@src/redux/slice/Dash_Board';
 import { select_enum } from '@src/router/type';
 
 const CheckInOutManager = () => {

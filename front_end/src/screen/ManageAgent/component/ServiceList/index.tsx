@@ -7,7 +7,7 @@ import { CiSearch } from 'react-icons/ci';
 import OneService from './component/OneService';
 import { useLazyGetAgentsQuery } from '@src/redux/query/agent_RTK';
 import { AgentField } from '@src/dataStruct/agent';
-import { set_isLoading, setData_toastMessage } from '@src/redux/slice/ManageAgent';
+import { set_isLoading, setData_toastMessage } from '@src/redux/slice/Manage_Agent';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const ServiceList = () => {

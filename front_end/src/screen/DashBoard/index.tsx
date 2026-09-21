@@ -10,7 +10,7 @@ import Filter from './component/Filter';
 import Overview from './component/Overview';
 import MemberRank from './component/MemberRank';
 import { route_enum } from '@src/router/type';
-import { setData_toastMessage } from '@src/redux/slice/DashBoard';
+import { setData_toastMessage } from '@src/redux/slice/Dash_Board';
 import { select_enum } from '@src/router/type';
 
 const DashBoard = () => {

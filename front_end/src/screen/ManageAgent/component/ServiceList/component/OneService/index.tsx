@@ -7,14 +7,14 @@ import { avatarnull } from '@src/utility/string';
 import { IoMdAdd } from 'react-icons/io';
 import { AccountField } from '@src/dataStruct/account';
 import { AgentField, AgentPayField } from '@src/dataStruct/agent';
-import { setIsShow_memberListDialog, set_agent_memberListDialog } from '@src/redux/slice/ManageAgent';
+import { setIsShow_memberListDialog, set_agent_memberListDialog } from '@src/redux/slice/Manage_Agent';
 import { useLazyGetAccountWithIdQuery } from '@src/redux/query/account_RTK';
 import {
     set_isLoading,
     setData_toastMessage,
     setIsShow_agentPayDialog,
     set_agent_agentPayDialog,
-} from '@src/redux/slice/ManageAgent';
+} from '@src/redux/slice/Manage_Agent';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { useAgentDelAccountMutation, useLazyGetAgentWithIdQuery } from '@src/redux/query/agent_RTK';
 import { getSocket } from '@src/socketIo';

@@ -1,20 +1,20 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { NoteField } from '@src/dataStruct/note';
+import { Note_Field } from '@src/data_struct/note';
 
 export interface state_props {
-    isLoading: boolean;
-    toastMessage: {
+    is_loading: boolean;
+    toast_message: {
         data: ToastMessage_Data_Props;
     };
-    editNoteDialog: {
-        isShow: boolean;
-        note?: NoteField;
-        newNote?: NoteField;
+    edit_note_dialog: {
+        is_show: boolean;
+        note?: Note_Field;
+        new_note?: Note_Field;
     };
-    newNotes: NoteField[];
-    deleteNoteDialog: {
-        isShow: boolean;
-        note?: NoteField;
-        deletedNote?: NoteField;
+    new_notes: Note_Field[];
+    delete_note_dialog: {
+        is_show: boolean;
+        note?: Note_Field;
+        deleted_note?: Note_Field;
     };
 }

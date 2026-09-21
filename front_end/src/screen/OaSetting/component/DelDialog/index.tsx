@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE, AGREE, EXIT } from '@src/const/text';
-import { setIsShow_delDialog, setShow_dialogLoading, setData_toastMessage } from '@src/redux/slice/OaSetting';
+import { setIsShow_delDialog, setShow_dialogLoading, setData_toastMessage } from '@src/redux/slice/Oa_Setting';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const DelDialog = () => {

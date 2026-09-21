@@ -9,7 +9,7 @@ import {
     setToken_otpDialog,
     set_isLoading,
     setData_toastMessage,
-} from '@src/redux/slice/ForgetPassword';
+} from '@src/redux/slice/Forget_Password';
 import { verifyOtp } from '@src/otp/handle';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 

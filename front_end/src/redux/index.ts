@@ -1,29 +1,28 @@
 import { configureStore } from '@reduxjs/toolkit';
 import App_Reducer from '@src/redux/slice/App';
-import Home1Reducer from '@src/redux/slice/Home1';
-import MessageV1Reducer from '@src/redux/slice/MessageV1';
-import ManageMembersReducer from '@src/redux/slice/ManageMembers';
-import OaReducer from '@src/redux/slice/Oa';
-import OaSettingReducer from '@src/redux/slice/OaSetting';
+import Home_V1_Reducer from '@src/redux/slice/Home_V1';
+import Message_V1_Reducer from '@src/redux/slice/Message_V1';
+import Oa_Reducer from '@src/redux/slice/Oa';
+import Oa_Setting_Reducer from '@src/redux/slice/Oa_Setting';
 import SupportRoomReducer from '@src/redux/slice/SupportRoom';
-import OrderReducer from '@src/redux/slice/Order';
+import Order_Reducer from '@src/redux/slice/Order';
 import AccountReceiveMessageReducer from '@src/redux/slice/AccountReceiveMessage';
-import ManageAgentReducer from '@src/redux/slice/ManageAgent';
-import MemberReducer from '@src/redux/slice/Member';
-import NoteReducer from '@src/redux/slice/Note';
+import Manage_Agent_Reducer from '@src/redux/slice/Manage_Agent';
+import Member_Reducer from '@src/redux/slice/Member';
+import Note_Reducer from '@src/redux/slice/Note';
 import SignupReducer from '@src/redux/slice/Signup';
 import ProfileReducer from '@src/redux/slice/Profile';
-import ForgetPasswordReducer from '@src/redux/slice/ForgetPassword';
+import Forget_Password_Reducer from '@src/redux/slice/Forget_Password';
 import WalletReducer from '@src/redux/slice/Wallet';
 import ZnsReducer from '@src/redux/slice/Zns';
 import ZnsDetailReducer from '@src/redux/slice/ZnsDetail';
-import BankReducer from '@src/redux/slice/Bank';
+import Bank_Reducer from '@src/redux/slice/Bank';
 import PostReducer from '@src/redux/slice/Post';
 import RegisterPostReducer from '@src/redux/slice/RegisterPost';
-import LeaveReducer from '@src/redux/slice/Leave';
-import DashBoardReducer from '@src/redux/slice/DashBoard';
-import CheckInOutReducer from '@src/redux/slice/CheckInOut';
-import CheckInOutManagerReducer from '@src/redux/slice/CheckInOutManager';
+import Leave_Reducer from '@src/redux/slice/Leave';
+import Dash_Board_Reducer from '@src/redux/slice/Dash_Board';
+import Check_In_Out_Reducer from '@src/redux/slice/Check_In_Out';
+import Check_In_Out_Manager_Reducer from '@src/redux/slice/Check_In_Out_Manager';
 import { account_RTK } from './query/account_RTK';
 import { call_RTK } from './query/call_RTK';
 import { call_agent_RTK } from './query/call_agent_RTK';
@@ -45,30 +44,29 @@ export const store = configureStore({
     reducer: {
         dummy: (state = {}) => state,
         App_Slice: App_Reducer,
-        Home1Slice: Home1Reducer,
-        MessageV1Slice: MessageV1Reducer,
-        ManageMembersSlice: ManageMembersReducer,
-        OaSlice: OaReducer,
-        OaSettingSlice: OaSettingReducer,
+        Home_V1_Slice: Home_V1_Reducer,
+        Message_V1_Slice: Message_V1_Reducer,
+        Oa_Slice: Oa_Reducer,
+        Oa_Setting_Slice: Oa_Setting_Reducer,
         SupportRoomSlice: SupportRoomReducer,
-        OrderSlice: OrderReducer,
+        Order_Slice: Order_Reducer,
         AccountReceiveMessageSlice: AccountReceiveMessageReducer,
-        ManageAgentSlice: ManageAgentReducer,
-        MemberSlice: MemberReducer,
-        NoteSlice: NoteReducer,
+        Manage_Agent_Slice: Manage_Agent_Reducer,
+        Member_Slice: Member_Reducer,
+        Note_Slice: Note_Reducer,
         SignupSlice: SignupReducer,
         ProfileSlice: ProfileReducer,
-        ForgetPasswordSlice: ForgetPasswordReducer,
+        Forget_Password_Slice: Forget_Password_Reducer,
         WalletSlice: WalletReducer,
         ZnsSlice: ZnsReducer,
         ZnsDetailSlice: ZnsDetailReducer,
-        BankSlice: BankReducer,
+        Bank_Slice: Bank_Reducer,
         PostSlice: PostReducer,
         RegisterPostSlice: RegisterPostReducer,
-        LeaveSlice: LeaveReducer,
-        DashBoardSlice: DashBoardReducer,
-        CheckInOutSlice: CheckInOutReducer,
-        CheckInOutManagerSlice: CheckInOutManagerReducer,
+        Leave_Slice: Leave_Reducer,
+        Dash_Board_Slice: Dash_Board_Reducer,
+        Check_In_Out_Slice: Check_In_Out_Reducer,
+        Check_In_Out_Manager_Slice: Check_In_Out_Manager_Reducer,
         [account_RTK.reducerPath]: account_RTK.reducer,
         [call_RTK.reducerPath]: call_RTK.reducer,
         [call_agent_RTK.reducerPath]: call_agent_RTK.reducer,

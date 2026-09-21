@@ -5,67 +5,67 @@ import { Bank_Field } from '@src/data_struct/bank';
 
 const initialState: state_props = {
     is_loading: false,
-    toastMessage: {
+    toast_message: {
         data: { type: undefined, message: '' },
     },
-    addBank: {
-        newBank: undefined,
+    add_bank: {
+        new_bank: undefined,
     },
-    editBankDialog: {
-        isShow: false,
+    edit_bank_dialog: {
+        is_show: false,
         bank: undefined,
-        newBank: undefined,
+        new_bank: undefined,
     },
-    deleteBankDialog: {
-        isShow: false,
+    delete_bank_dialog: {
+        is_show: false,
         bank: undefined,
-        deletedBank: undefined,
+        deleted_bank: undefined,
     },
 };
 
-const BankSlice = createSlice({
-    name: 'BankSlice',
+const Bank_Slice = createSlice({
+    name: 'Bank_Slice',
     initialState,
     reducers: {
-        set_isLoading: (state, action: PayloadAction<boolean>) => {
-            state.isLoading = action.payload;
+        set__is_loading: (state, action: PayloadAction<boolean>) => {
+            state.is_loading = action.payload;
         },
-        setData_toastMessage: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
-            state.toastMessage.data = action.payload;
+        set__data__toast_message: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
+            state.toast_message.data = action.payload;
         },
-        setNewBank_addBank: (state, action: PayloadAction<BankField | undefined>) => {
-            state.addBank.newBank = action.payload;
+        set__new_bank__add_bank: (state, action: PayloadAction<Bank_Field | undefined>) => {
+            state.add_bank.new_bank = action.payload;
         },
-        setIsShow_editBankDialog: (state, action: PayloadAction<boolean>) => {
-            state.editBankDialog.isShow = action.payload;
+        set__is_show__edit_bank_dialog: (state, action: PayloadAction<boolean>) => {
+            state.edit_bank_dialog.is_show = action.payload;
         },
-        setBank_editBankDialog: (state, action: PayloadAction<BankField | undefined>) => {
-            state.editBankDialog.bank = action.payload;
+        set__bank__edit_bank_dialog: (state, action: PayloadAction<Bank_Field | undefined>) => {
+            state.edit_bank_dialog.bank = action.payload;
         },
-        setNewBank_editBankDialog: (state, action: PayloadAction<BankField | undefined>) => {
-            state.editBankDialog.newBank = action.payload;
+        set__new_bank__edit_bank_dialog: (state, action: PayloadAction<Bank_Field | undefined>) => {
+            state.edit_bank_dialog.new_bank = action.payload;
         },
-        setIsShow_deleteBankDialog: (state, action: PayloadAction<boolean>) => {
-            state.deleteBankDialog.isShow = action.payload;
+        set__is_show__delete_bank_dialog: (state, action: PayloadAction<boolean>) => {
+            state.delete_bank_dialog.is_show = action.payload;
         },
-        setBank_deleteBankDialog: (state, action: PayloadAction<BankField | undefined>) => {
-            state.deleteBankDialog.bank = action.payload;
+        set__bank__delete_bank_dialog: (state, action: PayloadAction<Bank_Field | undefined>) => {
+            state.delete_bank_dialog.bank = action.payload;
         },
-        setDeletedBank_deleteBankDialog: (state, action: PayloadAction<BankField | undefined>) => {
-            state.deleteBankDialog.deletedBank = action.payload;
+        set__deleted_bank__delete_bank_dialog: (state, action: PayloadAction<Bank_Field | undefined>) => {
+            state.delete_bank_dialog.deleted_bank = action.payload;
         },
     },
 });
 
 export const {
-    set_isLoading,
-    setData_toastMessage,
-    setNewBank_addBank,
-    setIsShow_editBankDialog,
-    setBank_editBankDialog,
-    setNewBank_editBankDialog,
-    setIsShow_deleteBankDialog,
-    setBank_deleteBankDialog,
-    setDeletedBank_deleteBankDialog,
-} = BankSlice.actions;
-export default BankSlice.reducer;
+    set__is_loading,
+    set__data__toast_message,
+    set__new_bank__add_bank,
+    set__is_show__edit_bank_dialog,
+    set__bank__edit_bank_dialog,
+    set__new_bank__edit_bank_dialog,
+    set__is_show__delete_bank_dialog,
+    set__bank__delete_bank_dialog,
+    set__deleted_bank__delete_bank_dialog,
+} = Bank_Slice.actions;
+export default Bank_Slice.reducer;

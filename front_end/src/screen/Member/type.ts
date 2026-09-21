@@ -1,11 +1,11 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { AccountField } from '@src/dataStruct/account';
+import { Account_Field } from '@src/data_struct/account';
 
 export interface state_props {
-    isLoading: boolean;
-    toastMessage: {
+    is_loading: boolean;
+    toast_message: {
         data: ToastMessage_Data_Props;
     };
-    searchedAccountId: string;
-    newMember?: AccountField;
+    searched_account_id: string;
+    new_member?: Account_Field;
 }

@@ -1,54 +1,54 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { state_props } from '@src/screen/Oa/type';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { ZaloOaField } from '@src/dataStruct/zalo';
+import { Zalo_Oa_Field } from '@src/data_struct/zalo';
 
 const initialState: state_props = {
-    isLoading: false,
-    toastMessage: {
+    is_loading: false,
+    toast_message: {
         data: { type: undefined, message: '' },
     },
-    takeTokenDialog: {
-        isShow: false,
-        zaloOa: undefined,
+    take_token_dialog: {
+        is_show: false,
+        zalo_oa: undefined,
     },
-    createOa: {
-        isShow: false,
-        newZaloOa: undefined,
+    create_oa: {
+        is_show: false,
+        new_zalo_oa: undefined,
     },
 };
 
-const OaSlice = createSlice({
-    name: 'OaSlice',
+const Oa_Slice = createSlice({
+    name: 'Oa_Slice',
     initialState,
     reducers: {
-        set_isLoading: (state, action: PayloadAction<boolean>) => {
-            state.isLoading = action.payload;
+        set__is_loading: (state, action: PayloadAction<boolean>) => {
+            state.is_loading = action.payload;
         },
-        setData_toastMessage: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
-            state.toastMessage.data = action.payload;
+        set__data__toast_message: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
+            state.toast_message.data = action.payload;
         },
-        setIsShow_takeTokenDialog: (state, action: PayloadAction<boolean>) => {
-            state.takeTokenDialog.isShow = action.payload;
+        set__is_show__take_token_dialog: (state, action: PayloadAction<boolean>) => {
+            state.take_token_dialog.is_show = action.payload;
         },
-        setZaloOa_takeTokenDialog: (state, action: PayloadAction<ZaloOaField | undefined>) => {
-            state.takeTokenDialog.zaloOa = action.payload;
+        set__zalo_oa__take_token_dialog: (state, action: PayloadAction<Zalo_Oa_Field | undefined>) => {
+            state.take_token_dialog.zalo_oa = action.payload;
         },
-        setIsShow_createOa: (state, action: PayloadAction<boolean>) => {
-            state.createOa.isShow = action.payload;
+        set__is_show__create_oa: (state, action: PayloadAction<boolean>) => {
+            state.create_oa.is_show = action.payload;
         },
-        setNewZaloOa_createOa: (state, action: PayloadAction<ZaloOaField | undefined>) => {
-            state.createOa.newZaloOa = action.payload;
+        set__new_zalo_oa__create_oa: (state, action: PayloadAction<Zalo_Oa_Field | undefined>) => {
+            state.create_oa.new_zalo_oa = action.payload;
         },
     },
 });
 
 export const {
-    set_isLoading,
-    setData_toastMessage,
-    setIsShow_takeTokenDialog,
-    setZaloOa_takeTokenDialog,
-    setIsShow_createOa,
-    setNewZaloOa_createOa,
-} = OaSlice.actions;
-export default OaSlice.reducer;
+    set__is_loading,
+    set__data__toast_message,
+    set__is_show__take_token_dialog,
+    set__zalo_oa__take_token_dialog,
+    set__is_show__create_oa,
+    set__new_zalo_oa__create_oa,
+} = Oa_Slice.actions;
+export default Oa_Slice.reducer;

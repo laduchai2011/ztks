@@ -5,7 +5,7 @@ import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE, PAY, CREATE_PAY } from '@src/const/text';
 import { AgentField, AgentPayField } from '@src/dataStruct/agent';
-import { setIsShow_agentPayDialog, set_isLoading, setData_toastMessage } from '@src/redux/slice/ManageAgent';
+import { setIsShow_agentPayDialog, set_isLoading, setData_toastMessage } from '@src/redux/slice/Manage_Agent';
 import { useLazyGetLastAgentPayQuery, useCreateAgentPayMutation } from '@src/redux/query/agent_RTK';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { formatMoney } from '@src/utility/string';

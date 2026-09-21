@@ -4,7 +4,7 @@ import Signin from '@src/screen/Signin';
 import Signout from '@src/screen/Signout';
 import ForgetPassword from '@src/screen/ForgetPassword';
 import Home1 from '@src/screen/Home1';
-import Message1 from '@src/screen/Message1';
+import Message1 from '@src/screen/Message_V1';
 import SupportRoom from '@src/screen/SupportRoom';
 import Note from '@src/screen/Note';
 import Profile from '@src/screen/Profile';

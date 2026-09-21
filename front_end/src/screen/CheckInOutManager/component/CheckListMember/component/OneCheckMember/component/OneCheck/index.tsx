@@ -13,7 +13,7 @@ import {
 } from '@src/redux/query/check_in_out_RTK';
 import { useLazyGetAccountWithIdQuery } from '@src/redux/query/account_RTK';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { set_isLoading, setData_toastMessage } from '@src/redux/slice/CheckInOutManager';
+import { set_isLoading, setData_toastMessage } from '@src/redux/slice/Check_In_Out_Manager';
 
 const OneCheck: FC<{ data: CheckInOutField }> = ({ data }) => {
     const dispatch = useDispatch<AppDispatch>();

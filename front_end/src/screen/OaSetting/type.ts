@@ -1,32 +1,32 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { ZaloOaField } from '@src/dataStruct/zalo';
-import { ChatSessionField } from '@src/dataStruct/chatSession';
+import { Zalo_Oa_Field } from '@src/data_struct/zalo';
+import { Chat_Session_Field } from '@src/data_struct/chat_session';
 
 export interface state_props {
-    isLoading: boolean;
-    toastMessage: {
+    is_loading: boolean;
+    toast_message: {
         data: ToastMessage_Data_Props;
     };
-    delDialog: {
-        isShow: boolean;
+    del_dialog: {
+        is_show: boolean;
     };
-    dialogLoading: {
-        isShow: boolean;
+    dialog_loading: {
+        is_show: boolean;
     };
-    zaloOa?: ZaloOaField;
-    chatSessions: ChatSessionField[];
-    takeTokenDialog: {
-        isShow: boolean;
-        zaloOa?: ZaloOaField;
+    zalo_oa?: Zalo_Oa_Field;
+    chat_sessions: Chat_Session_Field[];
+    take_token_dialog: {
+        is_show: boolean;
+        zalo_oa?: Zalo_Oa_Field;
     };
-    editZaloOa: {
-        isShow: boolean;
-        zaloOa?: ZaloOaField;
-        newZaloOa?: ZaloOaField;
+    edit_zalo_oa: {
+        is_show: boolean;
+        zalo_oa?: Zalo_Oa_Field;
+        new_zalo_oa?: Zalo_Oa_Field;
     };
-    createZaloTrunkDialog: {
-        isShow: boolean;
-        zaloOa?: ZaloOaField;
+    create_zalo_trunk_dialog: {
+        is_show: boolean;
+        zalo_oa?: Zalo_Oa_Field;
     };
 }
 

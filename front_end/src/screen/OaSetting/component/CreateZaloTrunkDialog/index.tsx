@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE, AGREE, EXIT } from '@src/const/text';
-import { set_isLoading, setData_toastMessage, setIsShow_createZaloTrunkDialog } from '@src/redux/slice/OaSetting';
+import { set_isLoading, setData_toastMessage, setIsShow_createZaloTrunkDialog } from '@src/redux/slice/Oa_Setting';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { CreateZaloTrunkBodyField } from '@src/dataStruct/callAgent/body';
 import { useCreateZaloTrunkMutation } from '@src/redux/query/call_agent_RTK';

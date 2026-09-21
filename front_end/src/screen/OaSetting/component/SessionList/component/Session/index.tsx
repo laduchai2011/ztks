@@ -8,7 +8,7 @@ import { avatarnull } from '@src/utility/string';
 import { ChatSessionField } from '@src/dataStruct/chatSession';
 import { useGetAccountWithIdQuery } from '@src/redux/query/account_RTK';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { set_isLoading, setData_toastMessage, setIsShow_delDialog } from '@src/redux/slice/OaSetting';
+import { set_isLoading, setData_toastMessage, setIsShow_delDialog } from '@src/redux/slice/Oa_Setting';
 import { AccountField } from '@src/dataStruct/account';
 import { useGetAllMembersQuery } from '@src/redux/query/account_RTK';
 import {

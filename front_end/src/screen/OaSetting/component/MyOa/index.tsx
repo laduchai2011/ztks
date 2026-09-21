@@ -21,7 +21,7 @@ import {
     setNewZaloOa_editZaloOa,
     setIsShow_createZaloTrunkDialog,
     setZaloOa_createZaloTrunkDialog,
-} from '@src/redux/slice/OaSetting';
+} from '@src/redux/slice/Oa_Setting';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const MyOa = () => {
