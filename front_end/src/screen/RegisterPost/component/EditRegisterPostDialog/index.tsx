@@ -14,8 +14,8 @@ import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { RegisterPostField } from '@src/dataStruct/post';
-import { useEditRegisterPostMutation } from '@src/redux/query/postRTK';
-import { useLazyGetZaloOaListWith2FkQuery } from '@src/redux/query/zaloRTK';
+import { useEditRegisterPostMutation } from '@src/redux/query/post_RTK';
+import { useLazyGetZaloOaListWith2FkQuery } from '@src/redux/query/zalo_RTK';
 
 const EditRegisterPostDialog = () => {
     const dispatch = useDispatch<AppDispatch>();

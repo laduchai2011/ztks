@@ -1,21 +1,21 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { PagedRegisterPostField, PagedPostField, PostField, RegisterPostField } from '@src/dataStruct/post';
+import { Paged_Register_Post_Field, Paged_Post_Field, Post_Field, Register_Post_Field } from '@src/data_struct/post';
 import {
-    GetRegisterPostsBodyField,
-    GetPostsBodyField,
+    Get_Register_Posts_Body_Field,
+    Get_Posts_Body_Field,
     // GetPostWithIdBodyField,
-    CreateRegisterPostBodyField,
-    EditRegisterPostBodyField,
-    DeleteRegisterPostBodyField,
-    CreatePostBodyField,
-    EditPostBodyField,
-} from '@src/dataStruct/post/body';
+    Create_Register_Post_Body_Field,
+    Edit_Register_Post_Body_Field,
+    Delete_Register_Post_Body_Field,
+    Create_Post_Body_Field,
+    Edit_Post_Body_Field,
+} from '@src/data_struct/post/body';
 import { POST_API } from '@src/const/api/post';
-import { MyResponse } from '@src/dataStruct/response';
+import { My_Response_Field } from '@src/data_struct/response';
 import { DeviceEnum } from '@src/device/type';
 
-export const postRTK = createApi({
-    reducerPath: 'postRTK',
+export const post_RTK = createApi({
+    reducerPath: 'post_RTK',
     baseQuery: fetchBaseQuery({
         baseUrl: '',
         credentials: 'include',
@@ -26,14 +26,17 @@ export const postRTK = createApi({
     }),
     tagTypes: [],
     endpoints: (builder) => ({
-        getRegisterPosts: builder.query<MyResponse<PagedRegisterPostField>, GetRegisterPostsBodyField>({
+        _get_Register_Posts_: builder.query<
+            My_Response_Field<Paged_Register_Post_Field>,
+            Get_Register_Posts_Body_Field
+        >({
             query: (body) => ({
                 url: POST_API.GET_REGISTER_POSTS,
                 method: 'POST',
                 body,
             }),
         }),
-        getPosts: builder.query<MyResponse<PagedPostField>, GetPostsBodyField>({
+        _get_Posts_: builder.query<My_Response_Field<Paged_Post_Field>, Get_Posts_Body_Field>({
             query: (body) => ({
                 url: POST_API.GET_POSTS,
                 method: 'POST',
@@ -47,35 +50,41 @@ export const postRTK = createApi({
         //         body,
         //     }),
         // }),
-        createRegisterPost: builder.mutation<MyResponse<RegisterPostField>, CreateRegisterPostBodyField>({
+        _create_Register_Post_: builder.mutation<
+            My_Response_Field<Register_Post_Field>,
+            Create_Register_Post_Body_Field
+        >({
             query: (body) => ({
                 url: POST_API.CREATE_REGISTER_POST,
                 method: 'POST',
                 body,
             }),
         }),
-        editRegisterPost: builder.mutation<MyResponse<RegisterPostField>, EditRegisterPostBodyField>({
+        _edit_Register_Post_: builder.mutation<My_Response_Field<Register_Post_Field>, Edit_Register_Post_Body_Field>({
             query: (body) => ({
                 url: POST_API.EDIT_REGISTER_POST,
                 method: 'POST',
                 body,
             }),
         }),
-        deleteRegisterPost: builder.mutation<MyResponse<RegisterPostField>, DeleteRegisterPostBodyField>({
+        _delete_Register_Post_: builder.mutation<
+            My_Response_Field<Register_Post_Field>,
+            Delete_Register_Post_Body_Field
+        >({
             query: (body) => ({
                 url: POST_API.DELETE_REGISTER_POST,
                 method: 'POST',
                 body,
             }),
         }),
-        createPost: builder.mutation<MyResponse<PostField>, CreatePostBodyField>({
+        _create_Post_: builder.mutation<My_Response_Field<Post_Field>, Create_Post_Body_Field>({
             query: (body) => ({
                 url: POST_API.CREATE_POST,
                 method: 'POST',
                 body,
             }),
         }),
-        editPost: builder.mutation<MyResponse<PostField>, EditPostBodyField>({
+        _edit_Post_: builder.mutation<My_Response_Field<Post_Field>, Edit_Post_Body_Field>({
             query: (body) => ({
                 url: POST_API.EDIT_POST,
                 method: 'POST',
@@ -86,12 +95,12 @@ export const postRTK = createApi({
 });
 
 export const {
-    useLazyGetRegisterPostsQuery,
-    useLazyGetPostsQuery,
+    useLazy_get_Register_Posts_Query,
+    useLazy_get_Posts_Query,
     // useLazyGetPostWithIdQuery,
-    useCreateRegisterPostMutation,
-    useEditRegisterPostMutation,
-    useDeleteRegisterPostMutation,
-    useCreatePostMutation,
-    useEditPostMutation,
-} = postRTK;
+    use_create_Register_Post_Mutation,
+    use_edit_Register_Post_Mutation,
+    use_delete_Register_Post_Mutation,
+    use_create_Post_Mutation,
+    use_edit_Post_Mutation,
+} = post_RTK;

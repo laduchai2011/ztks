@@ -12,7 +12,7 @@ import MyLoading from './component/MyLoading';
 import ChangeChatRoomMasterDialog from './component/ChangeChatRoomMasterDialog';
 import { IoChevronBack } from 'react-icons/io5';
 import { useGetChatRoomsWithIdQuery } from '@src/redux/query/chat_room_RTK';
-import { useGetZaloOaWithIdQuery } from '@src/redux/query/zaloRTK';
+import { useGetZaloOaWithIdQuery } from '@src/redux/query/zalo_RTK';
 import { useLazyGetLastMessageQuery } from '@src/redux/query/message_v1_RTK';
 import {
     setData_chatRoom,

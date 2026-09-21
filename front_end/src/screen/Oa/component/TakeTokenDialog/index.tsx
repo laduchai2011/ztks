@@ -18,7 +18,7 @@ import {
     useLazyGetZaloOaTokenWithFkQuery,
     useCreateZaloOaTokenMutation,
     useUpdateRefreshTokenOfZaloOaMutation,
-} from '@src/redux/query/zaloRTK';
+} from '@src/redux/query/zalo_RTK';
 import { isProduct } from '@src/const/api/base_url';
 
 const TakeTokenDialog = () => {

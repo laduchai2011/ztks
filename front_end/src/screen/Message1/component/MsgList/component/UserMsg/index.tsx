@@ -29,7 +29,7 @@ import { ZaloUserField } from '@src/dataStruct/zalo/user';
 import { ChatRoomField } from '@src/dataStruct/chatRoom';
 import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 import { timeAgoSmart } from '@src/utility/time';
-import { useGetZaloUserQuery } from '@src/redux/query/zaloRTK';
+import { useGetZaloUserQuery } from '@src/redux/query/zalo_RTK';
 import { set_repliedMessage } from '@src/redux/slice/MessageV1';
 import { avatarnull } from '@src/utility/string';
 

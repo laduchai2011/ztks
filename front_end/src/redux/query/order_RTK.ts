@@ -1,19 +1,19 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { OrderField, PagedOrderField, OrderStatusField } from '@src/dataStruct/order';
+import { Order_Field, Paged_Order_Field, Order_Status_Field } from '@src/data_struct/order';
 import {
-    CreateOrderBodyField,
-    OrdersFilterBodyField,
-    UpdateOrderBodyField,
-    CreateOrderStatusBodyField,
-    GetAllOrderStatusBodyField,
+    Create_Order_Body_Field,
+    Orders_Filter_Body_Field,
+    Update_Order_Body_Field,
+    Create_Order_Status_Body_Field,
+    Get_All_Order_Status_Body_Field,
     // GetOrderWithIdBodyField,
-} from '@src/dataStruct/order/body';
+} from '@src/data_struct/order/body';
 import { ORDER_API } from '@src/const/api/order';
-import { MyResponse } from '@src/dataStruct/response';
+import { My_Response_Field } from '@src/data_struct/response';
 import { DeviceEnum } from '@src/device/type';
 
-export const orderRTK = createApi({
-    reducerPath: 'orderRTK',
+export const order_RTK = createApi({
+    reducerPath: 'order_RTK',
     baseQuery: fetchBaseQuery({
         baseUrl: '',
         credentials: 'include',
@@ -22,9 +22,9 @@ export const orderRTK = createApi({
             return headers;
         },
     }),
-    tagTypes: ['Orders', 'Order', 'AllOrderStatus'],
+    tagTypes: ['Orders', 'Order', 'All_Order_Status'],
     endpoints: (builder) => ({
-        getOrders: builder.query<MyResponse<PagedOrderField>, OrdersFilterBodyField>({
+        _get_Orders_: builder.query<My_Response_Field<Paged_Order_Field>, Orders_Filter_Body_Field>({
             query: (body) => ({
                 url: ORDER_API.GET_ORDERS,
                 method: 'POST',
@@ -33,19 +33,21 @@ export const orderRTK = createApi({
             keepUnusedDataFor: 15,
             providesTags: ['Orders'], // dùng nếu muốn refetch sau khi xóa/sửa
         }),
-        getAllOrderStatus: builder.query<MyResponse<OrderStatusField[]>, GetAllOrderStatusBodyField>({
-            query: (body) => ({
-                url: ORDER_API.GET_ALL_ORDER_STATUS,
-                method: 'POST',
-                body,
-            }),
-            providesTags: ['Orders'], // dùng nếu muốn refetch sau khi xóa/sửa
-        }),
-        getOrderWithId: builder.query<MyResponse<OrderField>, { id: number }>({
+        _get_All_Order_Status_: builder.query<My_Response_Field<Order_Status_Field[]>, Get_All_Order_Status_Body_Field>(
+            {
+                query: (body) => ({
+                    url: ORDER_API.GET_ALL_ORDER_STATUS,
+                    method: 'POST',
+                    body,
+                }),
+                providesTags: ['Orders'], // dùng nếu muốn refetch sau khi xóa/sửa
+            }
+        ),
+        _get_Order_With_Id_: builder.query<My_Response_Field<Order_Field>, { id: string }>({
             query: ({ id }) => `${ORDER_API.GET_ORDER_WITH_ID}?id=${id}`,
             // keepUnusedDataFor: 15,
         }),
-        createOrder: builder.mutation<MyResponse<OrderField>, CreateOrderBodyField>({
+        _create_Order_: builder.mutation<My_Response_Field<Order_Field>, Create_Order_Body_Field>({
             query: (body) => ({
                 url: ORDER_API.CREATE_ORDER,
                 method: 'POST',
@@ -53,7 +55,7 @@ export const orderRTK = createApi({
             }),
             invalidatesTags: ['Orders'], // dùng nếu muốn refetch danh sách sau khi thêm
         }),
-        updateOrder: builder.mutation<MyResponse<OrderField>, UpdateOrderBodyField>({
+        _update_Order_: builder.mutation<My_Response_Field<Order_Field>, Update_Order_Body_Field>({
             query: (body) => ({
                 url: ORDER_API.UPDATE_ORDER,
                 method: 'PATCH',
@@ -65,13 +67,13 @@ export const orderRTK = createApi({
 
                 const state = getState() as any;
 
-                const queries = orderRTK.util.selectInvalidatedBy(state, [{ type: 'Orders' }]);
+                const queries = order_RTK.util.selectInvalidatedBy(state, [{ type: 'Orders' }]);
 
                 for (const query of queries) {
-                    if (query.endpointName !== 'getOrders') continue;
+                    if (query.endpointName !== '_get_Orders_') continue;
 
                     const patchResult = dispatch(
-                        orderRTK.util.updateQueryData('getOrders', query.originalArgs, (draft) => {
+                        order_RTK.util.updateQueryData('_get_Orders_', query.originalArgs, (draft) => {
                             if (!draft.data?.items) return;
 
                             const order = draft.data.items.find((o) => o.id === arg.id);
@@ -92,22 +94,22 @@ export const orderRTK = createApi({
                 }
             },
         }),
-        createOrderStatus: builder.mutation<MyResponse<OrderStatusField>, CreateOrderStatusBodyField>({
+        _create_Order_Status_: builder.mutation<My_Response_Field<Order_Status_Field>, Create_Order_Status_Body_Field>({
             query: (body) => ({
                 url: ORDER_API.CREATE_ORDER_STATUS,
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: ['AllOrderStatus'], // dùng nếu muốn refetch danh sách sau khi thêm
+            invalidatesTags: ['All_Order_Status'], // dùng nếu muốn refetch danh sách sau khi thêm
         }),
     }),
 });
 
 export const {
-    useLazyGetOrdersQuery,
-    useLazyGetAllOrderStatusQuery,
-    useLazyGetOrderWithIdQuery,
-    useCreateOrderMutation,
-    useUpdateOrderMutation,
-    useCreateOrderStatusMutation,
-} = orderRTK;
+    useLazy_get_Orders_Query,
+    useLazy_get_All_Order_Status_Query,
+    useLazy_get_Order_With_Id_Query,
+    use_create_Order_Mutation,
+    use_update_Order_Mutation,
+    use_create_Order_Status_Mutation,
+} = order_RTK;

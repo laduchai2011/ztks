@@ -1,12 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { StatisticsOaField } from '@src/dataStruct/statistics';
-import { GetStatisticsOaBodyField } from '@src/dataStruct/statistics/body';
+import { Statistics_Oa_Field } from '@src/data_struct/statistics';
+import { Get_Statistics_Oa_Body_Field } from '@src/data_struct/statistics/body';
 import { STATISTICS_API } from '@src/const/api/statistics';
-import { MyResponse } from '@src/dataStruct/response';
+import { My_Response_Field } from '@src/data_struct/response';
 import { DeviceEnum } from '@src/device/type';
 
-export const statisticsRTK = createApi({
-    reducerPath: 'statisticsRTK',
+export const statistics_RTK = createApi({
+    reducerPath: 'statistics_RTK',
     baseQuery: fetchBaseQuery({
         baseUrl: '',
         credentials: 'include',
@@ -17,7 +17,7 @@ export const statisticsRTK = createApi({
     }),
     tagTypes: [],
     endpoints: (builder) => ({
-        getStatisticsOa: builder.query<MyResponse<StatisticsOaField[]>, GetStatisticsOaBodyField>({
+        _get_Statistics_Oa_: builder.query<My_Response_Field<Statistics_Oa_Field[]>, Get_Statistics_Oa_Body_Field>({
             query: (body) => ({
                 url: STATISTICS_API.GET_STATISTICS_OA,
                 method: 'POST',
@@ -27,4 +27,4 @@ export const statisticsRTK = createApi({
     }),
 });
 
-export const { useLazyGetStatisticsOaQuery } = statisticsRTK;
+export const { useLazy_get_Statistics_Oa_Query } = statistics_RTK;

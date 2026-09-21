@@ -6,7 +6,7 @@ import { AppDispatch, RootState } from '@src/redux';
 import { FiChevronUp, FiChevronDown } from 'react-icons/fi';
 import { CiSettings } from 'react-icons/ci';
 import { SEE_MORE } from '@src/const/text';
-import { useLazyGetRegisterPostsQuery } from '@src/redux/query/postRTK';
+import { useLazyGetRegisterPostsQuery } from '@src/redux/query/post_RTK';
 import { AccountField } from '@src/dataStruct/account';
 import { RegisterPostField } from '@src/dataStruct/post';
 import { set_isLoading, setData_toastMessage, set_selectedRegisterPost } from '@src/redux/slice/Post';

@@ -1,4 +1,4 @@
-export function setCookie(key: string, value: string, days?: number): void {
+export function set_Cookie(key: string, value: string, days?: number): void {
     let expires = '';
     if (days) {
         const date = new Date();
@@ -13,7 +13,7 @@ export function setCookie(key: string, value: string, days?: number): void {
     }
 }
 
-export function getCookie(key: string): string | null {
+export function get_Cookie(key: string): string | null {
     const nameEQ = key + '=';
     const cookies = document.cookie.split(';');
 

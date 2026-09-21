@@ -7,7 +7,7 @@ import { CiImageOn } from 'react-icons/ci';
 import OneImage from './component/OneImage';
 import { CREATE_POST } from '@src/const/text';
 import TextEditor from '@src/component/TextEditor';
-import { useCreatePostMutation } from '@src/redux/query/postRTK';
+import { useCreatePostMutation } from '@src/redux/query/post_RTK';
 import { AccountField } from '@src/dataStruct/account';
 import { set_isLoading, setData_toastMessage, add_postList } from '@src/redux/slice/Post';
 import { messageType_enum } from '@src/component/ToastMessage/type';

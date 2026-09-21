@@ -5,7 +5,7 @@ import { AppDispatch, RootState } from '@src/redux';
 import { SEE_MORE } from '@src/const/text';
 import Filter from './component/Filter';
 import OneOrder from './component/OneOrder';
-import { useLazyGetOrdersQuery } from '@src/redux/query/orderRTK';
+import { useLazyGetOrdersQuery } from '@src/redux/query/order_RTK';
 import { OrderField } from '@src/dataStruct/order';
 import { OrdersFilterBodyField } from '@src/dataStruct/order/body';
 import { set_isLoading, setNewOrder_createOrder } from '@src/redux/slice/Order';

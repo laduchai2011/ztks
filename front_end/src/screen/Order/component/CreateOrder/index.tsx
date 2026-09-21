@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { IoCloseOutline } from 'react-icons/io5';
 import { CREATE_ORDER, TITLE } from '@src/const/text';
-import { useCreateOrderMutation } from '@src/redux/query/orderRTK';
+import { useCreateOrderMutation } from '@src/redux/query/order_RTK';
 import { CreateOrderBodyField } from '@src/dataStruct/order/body';
 import { setData_toastMessage, set_isLoading, setNewOrder_createOrder } from '@src/redux/slice/Order';
 import { messageType_enum } from '@src/component/ToastMessage/type';

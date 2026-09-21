@@ -17,7 +17,7 @@ import { OrderField } from '@src/dataStruct/order';
 import { UpdateOrderBodyField } from '@src/dataStruct/order/body';
 import { isValidPhoneNumber } from '@src/utility/string';
 import { formatMoney } from '@src/utility/string';
-import { useUpdateOrderMutation } from '@src/redux/query/orderRTK';
+import { useUpdateOrderMutation } from '@src/redux/query/order_RTK';
 
 const EditOrder = () => {
     const dispatch = useDispatch<AppDispatch>();

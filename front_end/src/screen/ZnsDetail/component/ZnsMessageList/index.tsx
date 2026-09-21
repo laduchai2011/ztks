@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { SEE_MORE } from '@src/const/text';
-import { useLazyGetZnsMessagesQuery } from '@src/redux/query/zaloRTK';
+import { useLazyGetZnsMessagesQuery } from '@src/redux/query/zalo_RTK';
 import { AccountField } from '@src/dataStruct/account';
 import { ZnsMessageField } from '@src/dataStruct/zalo';
 import { setData_toastMessage, set_isLoading } from '@src/redux/slice/ZnsDetail';

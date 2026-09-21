@@ -12,7 +12,7 @@ import {
 } from '@src/redux/slice/Note';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { NoteField } from '@src/dataStruct/note';
-import { useDeleteNoteMutation } from '@src/redux/query/noteRTK';
+import { useDeleteNoteMutation } from '@src/redux/query/note_RTK';
 
 const DeleteNoteDialog = () => {
     const dispatch = useDispatch<AppDispatch>();

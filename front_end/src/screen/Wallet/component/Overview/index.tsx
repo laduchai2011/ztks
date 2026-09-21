@@ -5,7 +5,7 @@ import { AppDispatch, RootState } from '@src/redux';
 import { formatMoney } from '@src/utility/string';
 import { WalletField, RequireTakeMoneyField } from '@src/dataStruct/wallet';
 import { AccountField } from '@src/dataStruct/account';
-import { useLazyMemberGetRequireTakeMoneyOfWalletQuery } from '@src/redux/query/walletRTK';
+import { useLazyMemberGetRequireTakeMoneyOfWalletQuery } from '@src/redux/query/wallet_RTK';
 import {
     set_isLoading,
     setData_toastMessage,
@@ -15,7 +15,7 @@ import {
     setNewRequireTakeMoney_takeMoneyDialog,
 } from '@src/redux/slice/Wallet';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { useDeleteRequireTakeMoneyMutation } from '@src/redux/query/walletRTK';
+import { useDeleteRequireTakeMoneyMutation } from '@src/redux/query/wallet_RTK';
 import { DELETE } from '@src/const/text';
 
 const Overview: FC<{ wallet: WalletField }> = ({ wallet }) => {

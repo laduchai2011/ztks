@@ -1,53 +1,55 @@
 import { useEffect, useState, useRef } from 'react';
 import AppRouter from '@src/router';
 import axiosInstance from '@src/api/axiosInstance';
-import { MyResponse } from '@src/dataStruct/response';
+import { My_Response_Field } from '@src/data_struct/response';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
-import { set_account, set_accountInformation, set_myAdmin, set_zaloApp } from '@src/redux/slice/App';
-import { AccountField, AccountInformationField } from '@src/dataStruct/account';
-import { useGetZaloAppWithAccountIdQuery } from '@src/redux/query/zaloRTK';
-import { useLazyGetCallAgentWithAccountIdQuery } from '@src/redux/query/call_agent_RTK';
-import { useLazyGetLastMessageWithUidQuery } from '@src/redux/query/message_v1_RTK';
-import { getSocket } from '@src/socketIo';
-import { MySip } from '@src/call';
+import { set__account, set__account_information, set__my_admin, set__zalo_app } from '@src/redux/slice/App';
+import { Account_Field, Account_Information_Field } from '@src/data_struct/account';
+import { use_get_Zalo_App_With_Account_Id_Query } from '@src/redux/query/zalo_RTK';
+import { useLazy_get_Call_Agent_With_Account_Id_Query } from '@src/redux/query/call_agent_RTK';
+import { useLazy_get_Last_Message_With_Uid_Query } from '@src/redux/query/message_v1_RTK';
+import { get_Socket } from '@src/socketIo';
+import { My_Sip } from '@src/call';
 import {
-    CallInStateEnum,
-    CallOutStateEnum,
-    CallInStateType,
-    CallOutStateType,
-    CallInCmdType,
-    CallOutCmdType,
-    CallInCmdEnum,
-    CallOutCmdEnum,
-} from '@src/dataStruct/call';
+    Call_In_State_Enum,
+    Call_Out_State_Enum,
+    Call_In_State_Type,
+    Call_Out_State_Type,
+    Call_In_Cmd_Type,
+    Call_Out_Cmd_Type,
+    Call_In_Cmd_Enum,
+    Call_Out_Cmd_Enum,
+} from '@src/data_struct/call';
 import {
-    setIsShow_callDialog,
-    setZaloOa_callDialog,
-    setZaloUser_callDialog,
-    setCallInCmdType_callDialog,
-    setCallOutCmdType_callDialog,
-    setCallOutState_callDialog,
-    setCallInState_callDialog,
+    set__is_show__call_dialog,
+    set__zalo_oa__call_dialog,
+    set__zalo_user__call_dialog,
+    set__call_in_cmd_type__call_dialog,
+    set__call_out_cmd_type__call_dialog,
+    set__call_out_state__call_dialog,
+    set__call_in_state__call_dialog,
 } from '@src/redux/slice/App';
 import { SessionState } from 'sip.js';
 import CallDialog from './component/CallDialog';
-import { useLazyGetZaloUserQuery, useLazyGetZaloOaWithOaIdQuery } from '@src/redux/query/zaloRTK';
-import { ZaloAppField } from '@src/dataStruct/zalo';
+import { useLazy_get_Zalo_User_Query, useLazy_get_Zalo_Oa_With_Oa_Id_Query } from '@src/redux/query/zalo_RTK';
+import { Zalo_App_Field } from '@src/data_struct/zalo';
 // import { ZaloUserField } from '@src/dataStruct/zalo/user';
 
 const App = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const accountInformation: AccountInformationField | undefined = useSelector(
-        (state: RootState) => state.AppSlice.accountInformation
+    const account_information: Account_Information_Field | undefined = useSelector(
+        (state: RootState) => state.App_Slice.account_information
     );
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
-    const myAdmin: number | undefined = useSelector((state: RootState) => state.AppSlice.myAdmin);
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
+    const zalo_app: Zalo_App_Field | undefined = useSelector((state: RootState) => state.App_Slice.zalo_app);
+    const my_admin: string | undefined = useSelector((state: RootState) => state.App_Slice.my_admin);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
-    const isShow_callDialog: boolean | undefined = useSelector((state: RootState) => state.AppSlice.callDialog.isShow);
-    const uid_callDialog: string | undefined = useSelector((state: RootState) => state.AppSlice.callDialog.uid);
+    const is_show__call_dialog: boolean | undefined = useSelector(
+        (state: RootState) => state.App_Slice.call_dialog.is_show
+    );
+    const uid__call_dialog: string | undefined = useSelector((state: RootState) => state.App_Slice.call_dialog.uid);
     // const chatRoomId_callDialog: number | undefined = useSelector(
     //     (state: RootState) => state.AppSlice.callDialog.chatRoomId
     // );
@@ -57,30 +59,30 @@ const App = () => {
     // const zaloUser_callDialog: ZaloUserField | undefined = useSelector(
     //     (state: RootState) => state.AppSlice.callDialog.zaloUser
     // );
-    const callInCmdType_callDialog: CallInCmdType = useSelector(
-        (state: RootState) => state.AppSlice.callDialog.callInCmdType
+    const call_in_cmd_type__call_dialog: Call_In_Cmd_Type = useSelector(
+        (state: RootState) => state.App_Slice.call_dialog.call_in_cmd_type
     );
-    const callOutCmdType_callDialog: CallOutCmdType = useSelector(
-        (state: RootState) => state.AppSlice.callDialog.callOutCmdType
+    const call_out_cmd_type__call_dialog: Call_Out_Cmd_Type = useSelector(
+        (state: RootState) => state.App_Slice.call_dialog.call_out_cmd_type
     );
-    const callInState_callDialog: CallInStateType = useSelector(
-        (state: RootState) => state.AppSlice.callDialog.callInState
+    const call_in_state__call_dialog: Call_In_State_Type = useSelector(
+        (state: RootState) => state.App_Slice.call_dialog.call_in_state
     );
-    const callOutState_callDialog: CallOutStateType = useSelector(
-        (state: RootState) => state.AppSlice.callDialog.callOutState
+    const call_out_state__call_dialog: Call_Out_State_Type = useSelector(
+        (state: RootState) => state.App_Slice.call_dialog.call_out_state
     );
 
-    const [getCallAgentWithAccountId] = useLazyGetCallAgentWithAccountIdQuery();
-    const [getLastMessageWithUid] = useLazyGetLastMessageWithUidQuery();
-    const [getZaloUser] = useLazyGetZaloUserQuery();
-    const [getZaloOaWithOaId] = useLazyGetZaloOaWithOaIdQuery();
+    const [get_Call_Agent_With_Account_Id] = useLazy_get_Call_Agent_With_Account_Id_Query();
+    const [get_Last_Message_With_Uid] = useLazy_get_Last_Message_With_Uid_Query();
+    const [get_Zalo_User] = useLazy_get_Zalo_User_Query();
+    const [get_Zalo_Oa_With_Oa_Id] = useLazy_get_Zalo_Oa_With_Oa_Id_Query();
 
-    const [mySip, setMySip] = useState<MySip | null>(null);
+    const [my_sip, set_My_Sip] = useState<My_Sip | null>(null);
 
     useEffect(() => {
         if (!account) return;
 
-        const socket = getSocket();
+        const socket = get_Socket();
         const room = `accountId_${account.id}`;
 
         const onConnect = () => {
@@ -101,16 +103,18 @@ const App = () => {
     }, [account]);
 
     useEffect(() => {
-        const myId = sessionStorage.getItem('myId');
+        const my_id = sessionStorage.getItem('myId');
 
-        if (myId === null) {
-            const fetchCheckSignin = async () => {
+        if (my_id === null) {
+            const fetch_Check_Signin = async () => {
                 try {
-                    const response = await axiosInstance.get<MyResponse<number>>(`/service_account/query/isSignin`);
-                    const resData = response.data;
-                    if (resData.isSuccess) {
-                        if (resData.data) {
-                            sessionStorage.setItem('myId', `${resData.data}`);
+                    const response = await axiosInstance.get<My_Response_Field<string>>(
+                        `/service__account/query/is_signin`
+                    );
+                    const res_data = response.data;
+                    if (res_data.is_success) {
+                        if (res_data.data) {
+                            sessionStorage.setItem('myId', `${res_data.data}`);
                         } else {
                             sessionStorage.removeItem('myId');
                         }
@@ -120,23 +124,23 @@ const App = () => {
                 }
             };
 
-            fetchCheckSignin();
+            fetch_Check_Signin();
         }
     }, []);
 
     useEffect(() => {
-        const getAccountInformation = async () => {
+        const get_Account_Information = async () => {
             try {
-                const response = await axiosInstance.get<MyResponse<AccountInformationField>>(
-                    `/service_account/query/getAccountInformation`
+                const response = await axiosInstance.get<My_Response_Field<Account_Information_Field>>(
+                    `/service__account/query/get_account_information`
                 );
-                const resData = response.data;
+                const res_data = response.data;
                 // console.log('getAccountInformation', resData);
-                if (resData.isSuccess) {
-                    if (resData.data) {
-                        dispatch(set_accountInformation(resData.data));
-                        dispatch(set_myAdmin(resData.data.addedById || -1));
-                        sessionStorage.setItem('accountInformation', `${JSON.stringify(resData.data)}`);
+                if (res_data.is_success) {
+                    if (res_data.data) {
+                        dispatch(set__account_information(res_data.data));
+                        dispatch(set__my_admin(res_data.data.added_by_id || ''));
+                        sessionStorage.setItem('accountInformation', `${JSON.stringify(res_data.data)}`);
                     } else {
                         sessionStorage.removeItem('accountInformation');
                     }
@@ -146,19 +150,20 @@ const App = () => {
             }
         };
 
-        getAccountInformation();
+        get_Account_Information();
     }, [dispatch]);
 
     useEffect(() => {
-        const getAccount = async () => {
+        const get_Account = async () => {
             try {
-                const response = await axiosInstance.get<MyResponse<AccountField>>(`/service_account/query/getMe`);
-                const resData = response.data;
+                const response =
+                    await axiosInstance.get<My_Response_Field<Account_Field>>(`/service__account/query/get_me`);
+                const res_data = response.data;
                 // console.log('getAccount', resData);
-                if (resData.isSuccess) {
-                    if (resData.data) {
-                        dispatch(set_account(resData.data));
-                        sessionStorage.setItem('account', `${JSON.stringify(resData.data)}`);
+                if (res_data.is_success) {
+                    if (res_data.data) {
+                        dispatch(set__account(res_data.data));
+                        sessionStorage.setItem('account', `${JSON.stringify(res_data.data)}`);
                     } else {
                         sessionStorage.removeItem('account');
                     }
@@ -168,77 +173,71 @@ const App = () => {
             }
         };
 
-        getAccount();
+        get_Account();
     }, [dispatch]);
 
     const {
-        data: data_zaloApp,
+        data: data__zalo_app,
         // isFetching,
-        isLoading: isLoading_zaloApp,
-        isError: isError_zaloApp,
-        error: error_zaloApp,
-    } = useGetZaloAppWithAccountIdQuery(
-        { role: accountInformation?.accountType || '', accountId: myAdmin || 0 },
-        { skip: myAdmin === undefined || accountInformation === undefined }
+        isLoading: is_loading__zalo_app,
+        isError: is_error__zalo_app,
+        error: error__zalo_app,
+    } = use_get_Zalo_App_With_Account_Id_Query(
+        { role: account_information?.account_type || '', account_id: my_admin || '' },
+        { skip: my_admin === undefined || account_information === undefined }
     );
     useEffect(() => {
-        if (isError_zaloApp && error_zaloApp) {
-            console.error(error_zaloApp);
-            // dispatch(
-            //     setData_toastMessage({
-            //         type: messageType_enum.ERROR,
-            //         message: 'Lấy dữ liệu zalo-app KHÔNG thành công !',
-            //     })
-            // );
+        if (is_error__zalo_app && error__zalo_app) {
+            console.error(error__zalo_app);
         }
-    }, [dispatch, isError_zaloApp, error_zaloApp]);
+    }, [dispatch, is_error__zalo_app, error__zalo_app]);
     useEffect(() => {
         // dispatch(set_isLoading(isLoading_zaloApp));
-    }, [dispatch, isLoading_zaloApp]);
+    }, [dispatch, is_loading__zalo_app]);
     useEffect(() => {
-        const resData = data_zaloApp;
-        if (resData?.isSuccess && resData.data) {
-            dispatch(set_zaloApp(resData.data));
+        const res_data = data__zalo_app;
+        if (res_data?.is_success && res_data.data) {
+            dispatch(set__zalo_app(res_data.data));
         }
-    }, [dispatch, data_zaloApp]);
+    }, [dispatch, data__zalo_app]);
 
     // connect call-center
     useEffect(() => {
-        let sip: MySip | null = null;
+        let sip: My_Sip | null = null;
         let mounted = true;
 
         (async () => {
-            const res = await getCallAgentWithAccountId({ accountId: -1 });
+            const res = await get_Call_Agent_With_Account_Id({ account_id: '' });
 
-            if (!(res.data?.isSuccess && res.data.data)) {
+            if (!(res.data?.is_success && res.data.data)) {
                 console.error('Failed to get call agent');
                 return;
             }
 
             if (!mounted) return;
 
-            sip = new MySip(res.data.data.agentCode, res.data.data.password);
+            sip = new My_Sip(res.data.data.agent_code, res.data.data.password);
 
-            sip.createUserAgent();
-            sip.createRegisterer();
+            sip.create_User_Agent();
+            sip.create_Registerer();
 
-            await sip.connectSip();
+            await sip.connect_Sip();
 
-            setMySip(sip);
+            set_My_Sip(sip);
         })();
 
         return () => {
             mounted = false;
 
             if (sip) {
-                void sip.disconnectSip();
+                void sip.disconnect_Sip();
             }
         };
-    }, [dispatch, getCallAgentWithAccountId]);
+    }, [dispatch, get_Call_Agent_With_Account_Id]);
 
     useEffect(() => {
-        if (!mySip) return;
-        mySip.handleIncomingCall(
+        if (!my_sip) return;
+        my_sip.handle_Incoming_Call(
             (stream: MediaStream) => {
                 console.log('Receive remote stream');
 
@@ -256,15 +255,15 @@ const App = () => {
                         break;
 
                     case SessionState.Established:
-                        dispatch(setCallInState_callDialog(CallInStateEnum.CALL_IN));
+                        dispatch(set__call_in_state__call_dialog(Call_In_State_Enum.CALL_IN));
                         break;
 
                     case SessionState.Terminating:
-                        dispatch(setCallInState_callDialog(CallInStateEnum.CALL_END));
+                        dispatch(set__call_in_state__call_dialog(Call_In_State_Enum.CALL_END));
                         break;
 
                     case SessionState.Terminated:
-                        dispatch(setCallInState_callDialog(CallInStateEnum.CALL_END));
+                        dispatch(set__call_in_state__call_dialog(Call_In_State_Enum.CALL_END));
                         break;
                 }
             },
@@ -273,33 +272,33 @@ const App = () => {
                 // console.log('Incoming call from uid:', uid);
 
                 if (!uid) return;
-                if (!zaloApp) return;
-                if (!accountInformation) return;
+                if (!zalo_app) return;
+                if (!account_information) return;
 
                 try {
-                    const resLastMessage = await getLastMessageWithUid({ uid });
-                    const resDataLastMessage = resLastMessage.data;
+                    const res__last_message = await get_Last_Message_With_Uid({ uid });
+                    const res_data__last_message = res__last_message.data;
 
-                    if (resDataLastMessage?.isSuccess && resDataLastMessage.data) {
-                        const resZaloOa = await getZaloOaWithOaId({
-                            oaId: resDataLastMessage.data.oa_id,
-                            accountId: accountInformation.addedById || -1,
+                    if (res_data__last_message?.is_success && res_data__last_message.data) {
+                        const res__zalo_oa = await get_Zalo_Oa_With_Oa_Id({
+                            oa_id: res_data__last_message.data.oa_id,
+                            account_id: account_information.added_by_id || '',
                         });
-                        const resDataZaloOa = resZaloOa.data;
-                        if (resDataZaloOa?.isSuccess && resDataZaloOa.data) {
-                            const resZaloUser = await getZaloUser({
-                                zaloApp: zaloApp,
-                                zaloOa: resDataZaloOa.data,
-                                userIdByApp: resDataLastMessage.data.user_id_by_app,
+                        const res_data__zalo_oa = res__zalo_oa.data;
+                        if (res_data__zalo_oa?.is_success && res_data__zalo_oa.data) {
+                            const res__zalo_user = await get_Zalo_User({
+                                zalo_app: zalo_app,
+                                zalo_oa: res_data__zalo_oa.data,
+                                user_id_by_app: res_data__last_message.data.user_id_by_app,
                             });
 
-                            const resDataZaloUser = resZaloUser.data;
+                            const res_data__zalo_user = res__zalo_user.data;
 
                             if (invitation) {
-                                dispatch(setIsShow_callDialog(true));
-                                dispatch(setZaloOa_callDialog(resDataZaloOa.data));
-                                dispatch(setZaloUser_callDialog(resDataZaloUser?.data));
-                                dispatch(setCallInState_callDialog(CallInStateEnum.RINGING));
+                                dispatch(set__is_show__call_dialog(true));
+                                dispatch(set__zalo_oa__call_dialog(res_data__zalo_oa.data));
+                                dispatch(set__zalo_user__call_dialog(res_data__zalo_user?.data));
+                                dispatch(set__call_in_state__call_dialog(Call_In_State_Enum.RINGING));
                             }
                         }
                     }
@@ -308,24 +307,32 @@ const App = () => {
                 }
             }
         );
-    }, [dispatch, mySip, zaloApp, accountInformation, getLastMessageWithUid, getZaloOaWithOaId, getZaloUser]);
+    }, [
+        dispatch,
+        my_sip,
+        zalo_app,
+        account_information,
+        get_Last_Message_With_Uid,
+        get_Zalo_Oa_With_Oa_Id,
+        get_Zalo_User,
+    ]);
     useEffect(() => {
-        if (!mySip) return;
+        if (!my_sip) return;
 
-        switch (callInCmdType_callDialog) {
-            case CallInCmdEnum.ACCEPT: {
-                mySip.accept();
+        switch (call_in_cmd_type__call_dialog) {
+            case Call_In_Cmd_Enum.ACCEPT: {
+                my_sip.accept();
                 break;
             }
-            case CallInCmdEnum.CANCEl: {
-                mySip.destroyCallIn();
+            case Call_In_Cmd_Enum.CANCEl: {
+                my_sip.destroy_Call_In();
                 break;
             }
-            case CallInCmdEnum.EMPTY: {
+            case Call_In_Cmd_Enum.EMPTY: {
                 break;
             }
-            case CallInCmdEnum.FINISH: {
-                mySip.destroyCallIn();
+            case Call_In_Cmd_Enum.FINISH: {
+                my_sip.destroy_Call_In();
                 break;
             }
             default: {
@@ -333,28 +340,28 @@ const App = () => {
                 break;
             }
         }
-    }, [mySip, callInCmdType_callDialog]);
+    }, [my_sip, call_in_cmd_type__call_dialog]);
     useEffect(() => {
-        if (callInState_callDialog === CallInStateEnum.CALL_END) {
-            dispatch(setCallInCmdType_callDialog(CallInCmdEnum.EMPTY));
+        if (call_in_state__call_dialog === Call_In_State_Enum.CALL_END) {
+            dispatch(set__call_in_cmd_type__call_dialog(Call_In_Cmd_Enum.EMPTY));
         }
-    }, [dispatch, callInState_callDialog]);
+    }, [dispatch, call_in_state__call_dialog]);
 
     useEffect(() => {
-        if (!mySip) return;
+        if (!my_sip) return;
 
-        switch (callOutCmdType_callDialog) {
-            case CallOutCmdEnum.BEGIN: {
-                if (isShow_callDialog) {
-                    if (uid_callDialog) {
+        switch (call_out_cmd_type__call_dialog) {
+            case Call_Out_Cmd_Enum.BEGIN: {
+                if (is_show__call_dialog) {
+                    if (uid__call_dialog) {
                         let isTimeout = true;
-                        dispatch(setCallOutState_callDialog(CallOutStateEnum.CONNECTING));
+                        dispatch(set__call_out_state__call_dialog(Call_Out_State_Enum.CONNECTING));
                         setTimeout(() => {
                             if (!isTimeout) return;
-                            dispatch(setCallOutState_callDialog(CallOutStateEnum.CALL_END));
-                            mySip.destroyCallOut();
+                            dispatch(set__call_out_state__call_dialog(Call_Out_State_Enum.CALL_END));
+                            my_sip.destroy_Call_Out();
                         }, 6000);
-                        mySip.callUid(`99${uid_callDialog}`, false, (state) => {
+                        my_sip.call_Uid(`99${uid__call_dialog}`, false, (state) => {
                             // console.log('callUid state', state);
                             isTimeout = false;
                             switch (state) {
@@ -364,19 +371,19 @@ const App = () => {
                                     break;
 
                                 case SessionState.Establishing:
-                                    dispatch(setCallOutState_callDialog(CallOutStateEnum.RINGING));
+                                    dispatch(set__call_out_state__call_dialog(Call_Out_State_Enum.RINGING));
                                     break;
 
                                 case SessionState.Established:
-                                    dispatch(setCallOutState_callDialog(CallOutStateEnum.CALL_IN));
+                                    dispatch(set__call_out_state__call_dialog(Call_Out_State_Enum.CALL_IN));
                                     break;
 
                                 case SessionState.Terminating:
-                                    dispatch(setCallOutState_callDialog(CallOutStateEnum.CALL_END));
+                                    dispatch(set__call_out_state__call_dialog(Call_Out_State_Enum.CALL_END));
                                     break;
 
                                 case SessionState.Terminated:
-                                    dispatch(setCallOutState_callDialog(CallOutStateEnum.CALL_END));
+                                    dispatch(set__call_out_state__call_dialog(Call_Out_State_Enum.CALL_END));
                                     break;
                             }
                         });
@@ -384,15 +391,15 @@ const App = () => {
                 }
                 break;
             }
-            case CallOutCmdEnum.CANCEl: {
-                mySip.destroyCallOut();
+            case Call_Out_Cmd_Enum.CANCEl: {
+                my_sip.destroy_Call_Out();
                 break;
             }
-            case CallOutCmdEnum.EMPTY: {
+            case Call_Out_Cmd_Enum.EMPTY: {
                 break;
             }
-            case CallOutCmdEnum.FINISH: {
-                mySip.destroyCallOut();
+            case Call_Out_Cmd_Enum.FINISH: {
+                my_sip.destroy_Call_Out();
                 break;
             }
             default: {
@@ -400,12 +407,12 @@ const App = () => {
                 break;
             }
         }
-    }, [dispatch, mySip, isShow_callDialog, uid_callDialog, callOutCmdType_callDialog]);
+    }, [dispatch, my_sip, is_show__call_dialog, uid__call_dialog, call_out_cmd_type__call_dialog]);
     useEffect(() => {
-        if (callOutState_callDialog === CallOutStateEnum.CALL_END) {
-            dispatch(setCallOutCmdType_callDialog(CallOutCmdEnum.EMPTY));
+        if (call_out_state__call_dialog === Call_Out_State_Enum.CALL_END) {
+            dispatch(set__call_out_cmd_type__call_dialog(Call_Out_Cmd_Enum.EMPTY));
         }
-    }, [dispatch, callOutState_callDialog]);
+    }, [dispatch, call_out_state__call_dialog]);
 
     return (
         <div>

@@ -20,7 +20,7 @@ import { PostField, RegisterPostField, RegisterPostTypeEnum, PostTypeEnum, PostT
 import { EditPostBodyField } from '@src/dataStruct/post/body';
 import { isPositiveInteger } from '@src/utility/string';
 import { uploadImage } from '../../handle';
-import { useEditPostMutation } from '@src/redux/query/postRTK';
+import { useEditPostMutation } from '@src/redux/query/post_RTK';
 
 const EditPostDialog = () => {
     const dispatch = useDispatch<AppDispatch>();

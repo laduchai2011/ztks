@@ -15,7 +15,7 @@ import TextEditor from '@src/component/TextEditor';
 import { AccountField } from '@src/dataStruct/account';
 import { NoteField } from '@src/dataStruct/note';
 import { UpdateNoteBodyField } from '@src/dataStruct/note/body';
-import { useUpdateNoteMutation } from '@src/redux/query/noteRTK';
+import { useUpdateNoteMutation } from '@src/redux/query/note_RTK';
 
 const EditNote = () => {
     const dispatch = useDispatch<AppDispatch>();

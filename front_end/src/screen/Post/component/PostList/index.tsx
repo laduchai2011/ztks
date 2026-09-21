@@ -2,7 +2,7 @@ import { memo, useEffect } from 'react';
 import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
-import { useLazyGetPostsQuery } from '@src/redux/query/postRTK';
+import { useLazyGetPostsQuery } from '@src/redux/query/post_RTK';
 import { RegisterPostField, PostField } from '@src/dataStruct/post';
 import { set_isLoading, setData_toastMessage, set_postList } from '@src/redux/slice/Post';
 import { messageType_enum } from '@src/component/ToastMessage/type';

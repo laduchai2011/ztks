@@ -3,7 +3,7 @@ import style from './style.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { HiChevronDown, HiChevronUp } from 'react-icons/hi';
-import { useLazyGetZaloOaListWith2FkQuery } from '@src/redux/query/zaloRTK';
+import { useLazyGetZaloOaListWith2FkQuery } from '@src/redux/query/zalo_RTK';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { setData_toastMessage, set_isLoading, set_selectedOa } from '@src/redux/slice/Home1';

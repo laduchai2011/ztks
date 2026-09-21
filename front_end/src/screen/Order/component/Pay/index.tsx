@@ -16,8 +16,8 @@ import { OrderField } from '@src/dataStruct/order';
 import { AccountField } from '@src/dataStruct/account';
 import { VoucherField } from '@src/dataStruct/voucher';
 import { formatMoney } from '@src/utility/string';
-import { useLazyGetZaloOaWithIdQuery } from '@src/redux/query/zaloRTK';
-import { useLazyGetOrderWithIdQuery } from '@src/redux/query/orderRTK';
+import { useLazyGetZaloOaWithIdQuery } from '@src/redux/query/zalo_RTK';
+import { useLazyGetOrderWithIdQuery } from '@src/redux/query/order_RTK';
 import { useLazyGetChatRoomsWithIdQuery } from '@src/redux/query/chat_room_RTK';
 import { useLazyGetLastMessageQuery } from '@src/redux/query/message_v1_RTK';
 import { getSocket } from '@src/socketIo';
@@ -25,8 +25,8 @@ import { MessageImageBodyField } from '@src/dataStruct/zalo/hookData/body';
 import { useCreateMessageV1Mutation } from '@src/redux/query/message_v1_RTK';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { CreateMessageV1BodyField } from '@src/dataStruct/message_v1/body';
-import { useLazyGetMyWalletWithTypeQuery } from '@src/redux/query/walletRTK';
-import { useLazyGetVoucherWithOrderIdQuery } from '@src/redux/query/voucherRTK';
+import { useLazyGetMyWalletWithTypeQuery } from '@src/redux/query/wallet_RTK';
+import { useLazyGetVoucherWithOrderIdQuery } from '@src/redux/query/voucher_RTK';
 import { WalletField, WalletEnum } from '@src/dataStruct/wallet';
 
 const Pay = () => {

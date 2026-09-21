@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { setData_toastMessage, set_isLoading, set_newRegisterPostOfCreate } from '@src/redux/slice/RegisterPost';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { useLazyGetRegisterPostsQuery } from '@src/redux/query/postRTK';
+import { useLazyGetRegisterPostsQuery } from '@src/redux/query/post_RTK';
 import { RegisterPostField } from '@src/dataStruct/post';
 import { GetRegisterPostsBodyField } from '@src/dataStruct/post/body';
 import OneRegisterPost from './component/OneRegisterPost';

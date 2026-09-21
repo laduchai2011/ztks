@@ -14,7 +14,7 @@ import {
     useLazyGetAllNewMessagesQuery,
     useLazyGetMessageWithIdQuery,
 } from '@src/redux/query/message_v1_RTK';
-import { useGetZaloUserQuery } from '@src/redux/query/zaloRTK';
+import { useGetZaloUserQuery } from '@src/redux/query/zalo_RTK';
 import { timeAgoSmart } from '@src/utility/time';
 import { MEMBER, YOU, USER, OA, IMAGE, VIDEO, FILE, STICKER, AUDIO, OA_CALL_USER, USER_CALL_OA } from '@src/const/text';
 import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';

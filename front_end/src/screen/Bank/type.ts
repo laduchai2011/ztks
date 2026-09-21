@@ -1,22 +1,22 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { BankField } from '@src/dataStruct/bank';
+import { Bank_Field } from '@src/data_struct/bank';
 
 export interface state_props {
-    isLoading: boolean;
-    toastMessage: {
+    is_loading: boolean;
+    toast_message: {
         data: ToastMessage_Data_Props;
     };
-    addBank: {
-        newBank?: BankField;
+    add_bank: {
+        new_bank?: Bank_Field;
     };
-    editBankDialog: {
-        isShow: boolean;
-        bank?: BankField;
-        newBank?: BankField;
+    edit_bank_dialog: {
+        is_show: boolean;
+        bank?: Bank_Field;
+        new_bank?: Bank_Field;
     };
-    deleteBankDialog: {
-        isShow: boolean;
-        bank?: BankField;
-        deletedBank?: BankField;
+    delete_bank_dialog: {
+        is_show: boolean;
+        bank?: Bank_Field;
+        deleted_bank?: Bank_Field;
     };
 }

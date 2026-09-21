@@ -1,17 +1,17 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { NoteField, PagedNoteField } from '@src/dataStruct/note';
+import { Note_Field, Paged_Note_Field } from '@src/data_struct/note';
 import {
-    GetNotesBodyField,
-    CreateNoteBodyField,
-    UpdateNoteBodyField,
-    DeleteNoteBodyField,
-} from '@src/dataStruct/note/body';
+    Get_Notes_Body_Field,
+    Create_Note_Body_Field,
+    Update_Note_Body_Field,
+    Delete_Note_Body_Field,
+} from '@src/data_struct/note/body';
 import { NOTE_API } from '@src/const/api/note';
-import { MyResponse } from '@src/dataStruct/response';
+import { My_Response_Field } from '@src/data_struct/response';
 import { DeviceEnum } from '@src/device/type';
 
-export const noteRTK = createApi({
-    reducerPath: 'noteRTK',
+export const note_RTK = createApi({
+    reducerPath: 'note_RTK',
     baseQuery: fetchBaseQuery({
         baseUrl: '',
         credentials: 'include',
@@ -22,7 +22,7 @@ export const noteRTK = createApi({
     }),
     tagTypes: ['Notes', 'Note'],
     endpoints: (builder) => ({
-        getNotes: builder.query<MyResponse<PagedNoteField>, GetNotesBodyField>({
+        _get_Notes_: builder.query<My_Response_Field<Paged_Note_Field>, Get_Notes_Body_Field>({
             query: (body) => ({
                 url: NOTE_API.GET_NOTES,
                 method: 'POST',
@@ -30,7 +30,7 @@ export const noteRTK = createApi({
             }),
             providesTags: ['Notes'],
         }),
-        createNote: builder.mutation<MyResponse<NoteField>, CreateNoteBodyField>({
+        _create_Note_: builder.mutation<My_Response_Field<Note_Field>, Create_Note_Body_Field>({
             query: (body) => ({
                 url: NOTE_API.CREATE_NOTE,
                 method: 'POST',
@@ -38,7 +38,7 @@ export const noteRTK = createApi({
             }),
             invalidatesTags: ['Notes'],
         }),
-        updateNote: builder.mutation<MyResponse<NoteField>, UpdateNoteBodyField>({
+        _update_Note_: builder.mutation<My_Response_Field<Note_Field>, Update_Note_Body_Field>({
             query: (body) => ({
                 url: NOTE_API.UPDATE_NOTE,
                 method: 'PATCH',
@@ -50,13 +50,13 @@ export const noteRTK = createApi({
 
                 const state = getState() as any;
 
-                const queries = noteRTK.util.selectInvalidatedBy(state, [{ type: 'Notes' }]);
+                const queries = note_RTK.util.selectInvalidatedBy(state, [{ type: 'Notes' }]);
 
                 for (const query of queries) {
-                    if (query.endpointName !== 'getNotes') continue;
+                    if (query.endpointName !== '_get_Notes_') continue;
 
                     const patchResult = dispatch(
-                        noteRTK.util.updateQueryData('getNotes', query.originalArgs, (draft) => {
+                        note_RTK.util.updateQueryData('_get_Notes_', query.originalArgs, (draft) => {
                             if (!draft.data?.items) return;
 
                             const note = draft.data.items.find((n) => n.id === arg.id);
@@ -77,8 +77,7 @@ export const noteRTK = createApi({
                 }
             },
         }),
-
-        deleteNote: builder.mutation<MyResponse<NoteField>, DeleteNoteBodyField>({
+        _delete_Note_: builder.mutation<My_Response_Field<Note_Field>, Delete_Note_Body_Field>({
             query: (body) => ({
                 url: NOTE_API.DELETE_NOTE,
                 method: 'PATCH',
@@ -90,13 +89,13 @@ export const noteRTK = createApi({
 
                 const state = getState() as any;
 
-                const queries = noteRTK.util.selectInvalidatedBy(state, [{ type: 'Notes' }]);
+                const queries = note_RTK.util.selectInvalidatedBy(state, [{ type: 'Notes' }]);
 
                 for (const query of queries) {
-                    if (query.endpointName !== 'getNotes') continue;
+                    if (query.endpointName !== '_get_Notes_') continue;
 
                     const patchResult = dispatch(
-                        noteRTK.util.updateQueryData('getNotes', query.originalArgs, (draft) => {
+                        note_RTK.util.updateQueryData('_get_Notes_', query.originalArgs, (draft) => {
                             if (!draft.data?.items) return;
 
                             const note = draft.data.items.find((n) => n.id === arg.id);
@@ -120,4 +119,5 @@ export const noteRTK = createApi({
     }),
 });
 
-export const { useLazyGetNotesQuery, useCreateNoteMutation, useUpdateNoteMutation, useDeleteNoteMutation } = noteRTK;
+export const { useLazy_get_Notes_Query, use_create_Note_Mutation, use_update_Note_Mutation, use_delete_Note_Mutation } =
+    note_RTK;

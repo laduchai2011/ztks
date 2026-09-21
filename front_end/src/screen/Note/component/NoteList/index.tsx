@@ -5,7 +5,7 @@ import { AppDispatch, RootState } from '@src/redux';
 import { SEE_MORE } from '@src/const/text';
 import Filter from './component/Filter';
 import OneNote from './component/OneNote';
-import { useLazyGetNotesQuery } from '@src/redux/query/noteRTK';
+import { useLazyGetNotesQuery } from '@src/redux/query/note_RTK';
 import { NoteField } from '@src/dataStruct/note';
 import { GetNotesBodyField } from '@src/dataStruct/note/body';
 import { set_isLoading } from '@src/redux/slice/Note';

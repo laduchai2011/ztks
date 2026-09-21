@@ -7,7 +7,7 @@ import { GrSubtractCircle } from 'react-icons/gr';
 import { IoCloseOutline } from 'react-icons/io5';
 import { CiImageOn } from 'react-icons/ci';
 import { CREATE_TEMPLATE } from '@src/const/text';
-import { useCreateZnsTemplateMutation } from '@src/redux/query/zaloRTK';
+import { useCreateZnsTemplateMutation } from '@src/redux/query/zalo_RTK';
 import { CreateZnsTemplateBodyField } from '@src/dataStruct/zalo/body';
 import {
     setData_toastMessage,

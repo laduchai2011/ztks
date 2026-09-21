@@ -12,7 +12,7 @@ import {
     useCreateAgentPayMutation,
     useLazyGetLastAgentPayQuery,
 } from '@src/redux/query/agent_RTK';
-import { usePayAgentFromWalletMutation } from '@src/redux/query/walletRTK';
+import { usePayAgentFromWalletMutation } from '@src/redux/query/wallet_RTK';
 import { PAY } from '@src/const/text';
 import { set_isLoading, setData_toastMessage } from '@src/redux/slice/Wallet';
 import { messageType_enum } from '@src/component/ToastMessage/type';

@@ -8,7 +8,7 @@ import { set_isLoading, setData_toastMessage, setIsShow_createOa, setNewZaloOa_c
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountField } from '@src/dataStruct/account';
 import { ZaloAppField } from '@src/dataStruct/zalo';
-import { useCreateZaloOaMutation } from '@src/redux/query/zaloRTK';
+import { useCreateZaloOaMutation } from '@src/redux/query/zalo_RTK';
 
 const CreateZaloOaDialog = () => {
     const dispatch = useDispatch<AppDispatch>();

@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import MyOa from './component/MyOa';
 import { SEE_MORE } from '@src/const/text';
-import { useLazyGetZaloOaListWith2FkQuery } from '@src/redux/query/zaloRTK';
+import { useLazyGetZaloOaListWith2FkQuery } from '@src/redux/query/zalo_RTK';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
 import { setData_toastMessage, set_isLoading, setIsShow_createOa, setNewZaloOa_createOa } from '@src/redux/slice/Oa';

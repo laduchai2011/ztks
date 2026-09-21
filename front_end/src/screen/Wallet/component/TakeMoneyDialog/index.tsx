@@ -13,7 +13,7 @@ import {
 } from '@src/redux/slice/Wallet';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { useLazyGetAllBanksQuery, useLazyGetBankWithIdQuery } from '@src/redux/query/bank_RTK';
-import { useCreateRequireTakeMoneyMutation, useEditRequireTakeMoneyMutation } from '@src/redux/query/walletRTK';
+import { useCreateRequireTakeMoneyMutation, useEditRequireTakeMoneyMutation } from '@src/redux/query/wallet_RTK';
 import { BankField } from '@src/dataStruct/bank';
 import { RequireTakeMoneyField, WalletField, WalletEnum } from '@src/dataStruct/wallet';
 import { isPositiveInteger, formatMoney } from '@src/utility/string';

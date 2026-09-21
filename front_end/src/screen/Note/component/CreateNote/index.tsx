@@ -10,7 +10,7 @@ import { CreateNoteBodyField } from '@src/dataStruct/note/body';
 import { setData_toastMessage, set_isLoading, setData_addNewNote } from '@src/redux/slice/Note';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { isNumber } from '@src/utility/string';
-import { useCreateNoteMutation } from '@src/redux/query/noteRTK';
+import { useCreateNoteMutation } from '@src/redux/query/note_RTK';
 
 const CreateNote = () => {
     const dispatch = useDispatch<AppDispatch>();

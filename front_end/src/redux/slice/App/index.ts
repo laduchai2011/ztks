@@ -1,114 +1,113 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { state_props } from '@src/App/type';
-import { AccountField, AccountInformationField } from '@src/dataStruct/account';
-import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
+import { Account_Field, Account_Information_Field } from '@src/data_struct/account';
+import { Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
 import {
-    CallInStateEnum,
-    CallInStateType,
-    CallOutStateEnum,
-    CallOutStateType,
-    CallInCmdEnum,
-    CallOutCmdEnum,
-    CallInCmdType,
-    CallOutCmdType,
-} from '@src/dataStruct/call';
+    Call_In_State_Enum,
+    Call_In_State_Type,
+    Call_Out_State_Enum,
+    Call_Out_State_Type,
+    Call_In_Cmd_Enum,
+    Call_Out_Cmd_Enum,
+    Call_In_Cmd_Type,
+    Call_Out_Cmd_Type,
+} from '@src/data_struct/call';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { ZaloUserField } from '@src/dataStruct/zalo/user';
+import { Zalo_User_Field } from '@src/data_struct/zalo/user';
 
 const initialState: state_props = {
-    isLoading: false,
-    toastMessage: {
+    is_loading: false,
+    toast_message: {
         data: { type: undefined, message: '' },
     },
-    id_isNewMessage_current: -1, // bỏ
     account: undefined,
-    accountInformation: undefined,
-    myAdmin: undefined,
-    zaloApp: undefined,
-    callDialog: {
-        isShow: false,
+    account_information: undefined,
+    my_admin: undefined,
+    zalo_app: undefined,
+    call_dialog: {
+        is_show: false,
         uid: undefined,
-        chatRoomId: undefined,
-        zaloOa: undefined,
-        zaloUser: undefined,
-        callInCmdType: CallInCmdEnum.EMPTY,
-        callOutCmdType: CallOutCmdEnum.EMPTY,
-        callInState: CallInStateEnum.CALL_END,
-        callOutState: CallOutStateEnum.CALL_END,
+        chat_room_id: undefined,
+        zalo_oa: undefined,
+        zalo_user: undefined,
+        call_in_cmd_type: Call_In_Cmd_Enum.EMPTY,
+        call_out_cmd_type: Call_Out_Cmd_Enum.EMPTY,
+        call_in_state: Call_In_State_Enum.CALL_END,
+        call_out_state: Call_Out_State_Enum.CALL_END,
     },
 };
 
-const AppSlice = createSlice({
-    name: 'AppSlice',
+const App_Slice = createSlice({
+    name: 'App_Slice',
     initialState,
     reducers: {
-        set_isLoading: (state, action: PayloadAction<boolean>) => {
-            state.isLoading = action.payload;
+        set__is_loading: (state, action: PayloadAction<boolean>) => {
+            state.is_loading = action.payload;
         },
-        setData_toastMessage: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
-            state.toastMessage.data = action.payload;
+        set__data__toast_message: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
+            state.toast_message.data = action.payload;
         },
         // set_id_isNewMessage_current: (state, action: PayloadAction<number>) => {
         //     state.id_isNewMessage_current = action.payload;
         // },
-        set_account: (state, action: PayloadAction<AccountField>) => {
+        set__account: (state, action: PayloadAction<Account_Field>) => {
             state.account = action.payload;
         },
-        set_accountInformation: (state, action: PayloadAction<AccountInformationField>) => {
-            state.accountInformation = action.payload;
+        set__account_information: (state, action: PayloadAction<Account_Information_Field>) => {
+            state.account_information = action.payload;
         },
-        set_myAdmin: (state, action: PayloadAction<number>) => {
-            state.myAdmin = action.payload;
+        set__my_admin: (state, action: PayloadAction<string>) => {
+            state.my_admin = action.payload;
         },
-        set_zaloApp: (state, action: PayloadAction<ZaloAppField>) => {
-            state.zaloApp = action.payload;
+        set__zalo_app: (state, action: PayloadAction<Zalo_App_Field>) => {
+            state.zalo_app = action.payload;
         },
-        setIsShow_callDialog: (state, action: PayloadAction<boolean>) => {
-            state.callDialog.isShow = action.payload;
+        set__is_show__call_dialog: (state, action: PayloadAction<boolean>) => {
+            state.call_dialog.is_show = action.payload;
         },
-        setUid_callDialog: (state, action: PayloadAction<string | undefined>) => {
-            state.callDialog.uid = action.payload;
+        set__uid__call_dialog: (state, action: PayloadAction<string | undefined>) => {
+            state.call_dialog.uid = action.payload;
         },
-        setChatRoomId_callDialog: (state, action: PayloadAction<number | undefined>) => {
-            state.callDialog.chatRoomId = action.payload;
+        set__chat_room_id__call_dialog: (state, action: PayloadAction<string | undefined>) => {
+            state.call_dialog.chat_room_id = action.payload;
         },
-        setZaloOa_callDialog: (state, action: PayloadAction<ZaloOaField | undefined>) => {
-            state.callDialog.zaloOa = action.payload;
+        set__zalo_oa__call_dialog: (state, action: PayloadAction<Zalo_Oa_Field | undefined>) => {
+            state.call_dialog.zalo_oa = action.payload;
         },
-        setZaloUser_callDialog: (state, action: PayloadAction<ZaloUserField | undefined>) => {
-            state.callDialog.zaloUser = action.payload;
+        set__zalo_user__call_dialog: (state, action: PayloadAction<Zalo_User_Field | undefined>) => {
+            state.call_dialog.zalo_user = action.payload;
         },
-        setCallInCmdType_callDialog: (state, action: PayloadAction<CallInCmdType>) => {
-            state.callDialog.callInCmdType = action.payload;
+        set__call_in_cmd_type__call_dialog: (state, action: PayloadAction<Call_In_Cmd_Type>) => {
+            state.call_dialog.call_in_cmd_type = action.payload;
         },
-        setCallOutCmdType_callDialog: (state, action: PayloadAction<CallOutCmdType>) => {
-            state.callDialog.callOutCmdType = action.payload;
+        set__call_out_cmd_type__call_dialog: (state, action: PayloadAction<Call_Out_Cmd_Type>) => {
+            state.call_dialog.call_out_cmd_type = action.payload;
         },
-        setCallInState_callDialog: (state, action: PayloadAction<CallInStateType>) => {
-            state.callDialog.callInState = action.payload;
+        set__call_in_state__call_dialog: (state, action: PayloadAction<Call_In_State_Type>) => {
+            state.call_dialog.call_in_state = action.payload;
         },
-        setCallOutState_callDialog: (state, action: PayloadAction<CallOutStateType>) => {
-            state.callDialog.callOutState = action.payload;
+        set__call_out_state__call_dialog: (state, action: PayloadAction<Call_Out_State_Type>) => {
+            state.call_dialog.call_out_state = action.payload;
         },
     },
 });
 
 export const {
-    set_isLoading,
-    setData_toastMessage,
+    set__is_loading,
+    set__data__toast_message,
     // set_id_isNewMessage_current,
-    set_account,
-    set_accountInformation,
-    set_myAdmin,
-    set_zaloApp,
-    setIsShow_callDialog,
-    setUid_callDialog,
-    setChatRoomId_callDialog,
-    setZaloOa_callDialog,
-    setZaloUser_callDialog,
-    setCallInCmdType_callDialog,
-    setCallOutCmdType_callDialog,
-    setCallInState_callDialog,
-    setCallOutState_callDialog,
-} = AppSlice.actions;
-export default AppSlice.reducer;
+    set__account,
+    set__account_information,
+    set__my_admin,
+    set__zalo_app,
+    set__is_show__call_dialog,
+    set__uid__call_dialog,
+    set__chat_room_id__call_dialog,
+    set__zalo_oa__call_dialog,
+    set__zalo_user__call_dialog,
+    set__call_in_cmd_type__call_dialog,
+    set__call_out_cmd_type__call_dialog,
+    set__call_in_state__call_dialog,
+    set__call_out_state__call_dialog,
+} = App_Slice.actions;
+export default App_Slice.reducer;

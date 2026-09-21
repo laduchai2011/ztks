@@ -9,7 +9,7 @@ import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountField } from '@src/dataStruct/account';
 import { ZaloAppField, ZaloOaField, ZnsTemplateField, ZnsMessageEnum, ZnsMessageType } from '@src/dataStruct/zalo';
 import { CreateZnsMessageBodyField } from '@src/dataStruct/zalo/body';
-import { useCreateZnsMessageMutation } from '@src/redux/query/zaloRTK';
+import { useCreateZnsMessageMutation } from '@src/redux/query/zalo_RTK';
 import { handleSrcImage, formatPhone } from '@src/utility/string';
 
 const SendTemplateDialog = () => {

@@ -27,7 +27,7 @@ import { AccountField } from '@src/dataStruct/account';
 import { OrderField } from '@src/dataStruct/order';
 import { CreateOrderStatusBodyField } from '@src/dataStruct/order/body';
 import { orderStatusType_type, orderStatusType_enum, defaultContents, defaultContent_type } from '../../type';
-import { useCreateOrderStatusMutation } from '@src/redux/query/orderRTK';
+import { useCreateOrderStatusMutation } from '@src/redux/query/order_RTK';
 
 const AddOrderStatusDialog = () => {
     const dispatch = useDispatch<AppDispatch>();

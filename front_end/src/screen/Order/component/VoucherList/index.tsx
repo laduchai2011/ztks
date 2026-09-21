@@ -9,7 +9,7 @@ import { OrderField } from '@src/dataStruct/order';
 import { formatMoney } from '@src/utility/string';
 // import { AccountField } from '@src/dataStruct/account';
 import { VoucherField } from '@src/dataStruct/voucher';
-import { useLazyGetVouchersQuery, useLazyGetVoucherWithOrderIdQuery } from '@src/redux/query/voucherRTK';
+import { useLazyGetVouchersQuery, useLazyGetVoucherWithOrderIdQuery } from '@src/redux/query/voucher_RTK';
 import { detailTime } from '@src/utility/time';
 
 const VoucherList = () => {

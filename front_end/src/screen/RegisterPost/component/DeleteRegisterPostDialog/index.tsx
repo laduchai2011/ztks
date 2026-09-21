@@ -12,7 +12,7 @@ import {
 } from '@src/redux/slice/RegisterPost';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { RegisterPostField } from '@src/dataStruct/post';
-import { useDeleteRegisterPostMutation } from '@src/redux/query/postRTK';
+import { useDeleteRegisterPostMutation } from '@src/redux/query/post_RTK';
 
 const DeleteRegisterPostDialog = () => {
     const dispatch = useDispatch<AppDispatch>();

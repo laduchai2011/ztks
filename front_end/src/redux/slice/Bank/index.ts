@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { state_props } from '@src/screen/Bank/type';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { BankField } from '@src/dataStruct/bank';
+import { Bank_Field } from '@src/data_struct/bank';
 
 const initialState: state_props = {
-    isLoading: false,
+    is_loading: false,
     toastMessage: {
         data: { type: undefined, message: '' },
     },

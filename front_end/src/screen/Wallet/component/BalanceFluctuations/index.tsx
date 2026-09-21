@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { WalletField, BalanceFluctuationField } from '@src/dataStruct/wallet';
 import { SEE_MORE } from '@src/const/text';
-import { useLazyGetBalanceFluctuationsQuery } from '@src/redux/query/walletRTK';
+import { useLazyGetBalanceFluctuationsQuery } from '@src/redux/query/wallet_RTK';
 import ACluster from './component/ACluster';
 import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Wallet';
 import { messageType_enum } from '@src/component/ToastMessage/type';

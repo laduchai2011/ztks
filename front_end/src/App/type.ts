@@ -1,28 +1,27 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { AccountField, AccountInformationField } from '@src/dataStruct/account';
-import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { CallInStateType, CallOutStateType, CallInCmdType, CallOutCmdType } from '@src/dataStruct/call';
-import { ZaloUserField } from '@src/dataStruct/zalo/user';
+import { Account_Field, Account_Information_Field } from '@src/data_struct/account';
+import { Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
+import { Call_In_State_Type, Call_Out_State_Type, Call_In_Cmd_Type, Call_Out_Cmd_Type } from '@src/data_struct/call';
+import { Zalo_User_Field } from '@src/data_struct/zalo/user';
 
 export interface state_props {
-    isLoading: boolean;
-    toastMessage: {
+    is_loading: boolean;
+    toast_message: {
         data: ToastMessage_Data_Props;
     };
-    id_isNewMessage_current: number;
-    account?: AccountField;
-    accountInformation?: AccountInformationField;
-    myAdmin?: number;
-    zaloApp?: ZaloAppField;
-    callDialog: {
-        isShow: boolean;
+    account?: Account_Field;
+    account_information?: Account_Information_Field;
+    my_admin?: string;
+    zalo_app?: Zalo_App_Field;
+    call_dialog: {
+        is_show: boolean;
         uid?: string;
-        chatRoomId?: number;
-        zaloOa?: ZaloOaField;
-        zaloUser?: ZaloUserField;
-        callInCmdType: CallInCmdType;
-        callOutCmdType: CallOutCmdType;
-        callInState: CallInStateType;
-        callOutState: CallOutStateType;
+        chat_room_id?: string;
+        zalo_oa?: Zalo_Oa_Field;
+        zalo_user?: Zalo_User_Field;
+        call_in_cmd_type: Call_In_Cmd_Type;
+        call_out_cmd_type: Call_Out_Cmd_Type;
+        call_in_state: Call_In_State_Type;
+        call_out_state: Call_Out_State_Type;
     };
 }

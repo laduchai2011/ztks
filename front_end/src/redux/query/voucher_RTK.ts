@@ -1,12 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { PagedVoucherField, VoucherField } from '@src/dataStruct/voucher';
-import { GetVouchersBodyField, GetVoucherWithOrderIdBodyField } from '@src/dataStruct/voucher/body';
+import { Paged_Voucher_Field, Voucher_Field } from '@src/data_struct/voucher';
+import { Get_Vouchers_Body_Field, Get_Voucher_With_Order_Id_Body_Field } from '@src/data_struct/voucher/body';
 import { VOUCHER_API } from '@src/const/api/voucher';
-import { MyResponse } from '@src/dataStruct/response';
+import { My_Response_Field } from '@src/data_struct/response';
 import { DeviceEnum } from '@src/device/type';
 
-export const voucherRTK = createApi({
-    reducerPath: 'voucherRTK',
+export const voucher_RTK = createApi({
+    reducerPath: 'voucher_RTK',
     baseQuery: fetchBaseQuery({
         baseUrl: '',
         credentials: 'include',
@@ -15,16 +15,19 @@ export const voucherRTK = createApi({
             return headers;
         },
     }),
-    tagTypes: ['Voucer'],
+    tagTypes: ['Voucher'],
     endpoints: (builder) => ({
-        getVouchers: builder.query<MyResponse<PagedVoucherField>, GetVouchersBodyField>({
+        _get_Vouchers_: builder.query<My_Response_Field<Paged_Voucher_Field>, Get_Vouchers_Body_Field>({
             query: (body) => ({
                 url: VOUCHER_API.GET_VOUCHERS,
                 method: 'POST',
                 body,
             }),
         }),
-        getVoucherWithOrderId: builder.query<MyResponse<VoucherField>, GetVoucherWithOrderIdBodyField>({
+        _get_Voucher_With_Order_Id_: builder.query<
+            My_Response_Field<Voucher_Field>,
+            Get_Voucher_With_Order_Id_Body_Field
+        >({
             query: (body) => ({
                 url: VOUCHER_API.GET_VOUCHER_WITH_ORDER_ID,
                 method: 'POST',
@@ -34,4 +37,4 @@ export const voucherRTK = createApi({
     }),
 });
 
-export const { useLazyGetVouchersQuery, useLazyGetVoucherWithOrderIdQuery } = voucherRTK;
+export const { useLazy_get_Vouchers_Query, useLazy_get_Voucher_With_Order_Id_Query } = voucher_RTK;

@@ -15,7 +15,7 @@ import {
     setIsShow_sendTemplateDialog,
     setZnsTemplate_sendTemplateDialog,
 } from '@src/redux/slice/Zns';
-import { useLazyGetZnsTemplatesQuery } from '@src/redux/query/zaloRTK';
+import { useLazyGetZnsTemplatesQuery } from '@src/redux/query/zalo_RTK';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { handleSrcImage } from '@src/utility/string';
 import { route_enum } from '@src/router/type';

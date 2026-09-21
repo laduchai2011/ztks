@@ -13,7 +13,7 @@ import CurrentAgent from './component/CurrentAgent';
 import AddRecommend from './component/AddRecommend';
 import TakeMoneyDialog from './component/TakeMoneyDialog';
 import { IoChevronBack } from 'react-icons/io5';
-import { useLazyGetMyWalletWithTypeQuery } from '@src/redux/query/walletRTK';
+import { useLazyGetMyWalletWithTypeQuery } from '@src/redux/query/wallet_RTK';
 import { AccountField } from '@src/dataStruct/account';
 import { WalletField, WalletType, WalletEnum } from '@src/dataStruct/wallet';
 import { setData_toastMessage } from '@src/redux/slice/Wallet';

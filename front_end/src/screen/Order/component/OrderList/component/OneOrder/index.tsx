@@ -37,8 +37,8 @@ import { VoucherField } from '@src/dataStruct/voucher';
 import { formatMoney } from '@src/utility/string';
 import { timeAgoSmart } from '@src/utility/time';
 import { orderStatusType_enum, orderStatusType_type, defaultContents } from '@src/screen/Order/type';
-import { useLazyGetAllOrderStatusQuery } from '@src/redux/query/orderRTK';
-import { useLazyGetVoucherWithOrderIdQuery } from '@src/redux/query/voucherRTK';
+import { useLazyGetAllOrderStatusQuery } from '@src/redux/query/order_RTK';
+import { useLazyGetVoucherWithOrderIdQuery } from '@src/redux/query/voucher_RTK';
 
 const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();

@@ -13,7 +13,7 @@ import {
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountField } from '@src/dataStruct/account';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { useEditZaloOaMutation } from '@src/redux/query/zaloRTK';
+import { useEditZaloOaMutation } from '@src/redux/query/zalo_RTK';
 
 const CreateZaloOaDialog = () => {
     const dispatch = useDispatch<AppDispatch>();

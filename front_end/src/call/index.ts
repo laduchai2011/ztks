@@ -1,7 +1,7 @@
 // src/sip.ts
 import { UserAgent, Registerer, Inviter, Invitation, SessionState } from 'sip.js';
 
-export class MySip {
+export class My_Sip {
     private _agentCode: string = '';
     private _agentPassword: string = '';
     private _userAgent: UserAgent | undefined;
@@ -22,7 +22,7 @@ export class MySip {
         this._agentPassword = agentPassword;
     }
 
-    private scheduleReconnect() {
+    private schedule_Reconnect() {
         if (this._stopped) {
             return;
         }
@@ -47,10 +47,10 @@ export class MySip {
                     }
                 }
 
-                this.createUserAgent();
-                this.createRegisterer();
+                this.create_User_Agent();
+                this.create_Registerer();
 
-                await this.connectSip();
+                await this.connect_Sip();
             } catch (err) {
                 console.error(err);
             }
@@ -59,7 +59,7 @@ export class MySip {
         this._reconnectDelay = Math.min(this._reconnectDelay * 2, this._maxReconnectDelay);
     }
 
-    createUserAgent() {
+    create_User_Agent() {
         this._userAgent = new UserAgent({
             uri: UserAgent.makeURI(`sip:${this._agentCode}@sip.taokosao.com`)!,
             transportOptions: {
@@ -79,7 +79,7 @@ export class MySip {
         });
     }
 
-    createRegisterer() {
+    create_Registerer() {
         if (!this._userAgent) {
             console.error('userAgent is undefine');
             return;
@@ -87,7 +87,7 @@ export class MySip {
         this._registerer = new Registerer(this._userAgent);
     }
 
-    async handleIncomingCall(
+    async handle_Incoming_Call(
         onRemoteStream: (stream: MediaStream) => void,
         onStateChange?: (state: SessionState) => void,
         onInvitation?: (invitation: Invitation) => void
@@ -102,7 +102,7 @@ export class MySip {
                 console.log('WebSocket disconnected');
 
                 if (!this._stopped) {
-                    this.scheduleReconnect();
+                    this.schedule_Reconnect();
                 }
             },
 
@@ -187,7 +187,7 @@ export class MySip {
         });
     }
 
-    async connectSip() {
+    async connect_Sip() {
         if (!this._userAgent) {
             console.error('userAgent is undefine');
             return;
@@ -211,11 +211,11 @@ export class MySip {
             this._reconnectDelay = 1000;
         } catch (error) {
             console.error('SIP Error:', error);
-            this.scheduleReconnect();
+            this.schedule_Reconnect();
         }
     }
 
-    async callUid(uid: string, isVideo?: boolean, onStateChange?: (state: SessionState) => void) {
+    async call_Uid(uid: string, isVideo?: boolean, onStateChange?: (state: SessionState) => void) {
         if (!this._userAgent) {
             console.error('userAgent is undefine');
             return;
@@ -245,56 +245,6 @@ export class MySip {
                 audio: true,
                 video: isVideo ? isVideo : false,
             });
-
-            // this._inviterOut.stateChange.addListener(async (state) => {
-            //     onStateChange?.(state);
-            //     switch (state) {
-            //         case SessionState.Initial:
-            //             console.log('Khởi tạo');
-            //             break;
-
-            //         case SessionState.Establishing:
-            //             console.log('Đang đổ chuông...');
-            //             break;
-
-            //         case SessionState.Established: {
-            //             console.log('Đã kết nối');
-
-            //             const pc = (this._inviterOut?.sessionDescriptionHandler as any)
-            //                 .peerConnection as RTCPeerConnection;
-
-            //             const remoteStream = new MediaStream();
-
-            //             pc.getReceivers().forEach((receiver) => {
-            //                 if (receiver.track) {
-            //                     remoteStream.addTrack(receiver.track);
-            //                 }
-            //             });
-
-            //             const audio = new Audio();
-
-            //             audio.srcObject = remoteStream;
-
-            //             await audio.play();
-            //             break;
-            //         }
-
-            //         case SessionState.Terminating:
-            //             console.log('Đang kết thúc');
-            //             break;
-
-            //         case SessionState.Terminated:
-            //             console.log('Cuộc gọi đã kết thúc');
-            //             if (this.localStream) {
-            //                 this.localStream.getTracks().forEach((track) => {
-            //                     track.stop();
-            //                 });
-
-            //                 this.localStream = undefined;
-            //             }
-            //             break;
-            //     }
-            // });
 
             this._inviterOutStateChange = async (state: SessionState) => {
                 onStateChange?.(state);
@@ -354,14 +304,10 @@ export class MySip {
         }
     }
 
-    async destroyCallIn() {
+    async destroy_Call_In() {
         if (this.localStream) {
             this.localStream.getTracks().forEach(async (track) => {
                 track.stop();
-
-                // if (this._inviterIn) {
-                //     this._inviterIn._bye();
-                // }
             });
 
             this.localStream = undefined;
@@ -384,7 +330,7 @@ export class MySip {
         }
     }
 
-    async destroyCallOut() {
+    async destroy_Call_Out() {
         // 1. Dừng microphone
         if (this.localStream) {
             this.localStream.getTracks().forEach((track) => track.stop());
@@ -415,7 +361,7 @@ export class MySip {
         }
     }
 
-    async disconnectSip() {
+    async disconnect_Sip() {
         try {
             // Kết thúc cuộc gọi nếu có
             if (this._inviterOut) {

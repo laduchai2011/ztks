@@ -9,27 +9,27 @@ import Call from './component/Call';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE } from '@src/const/text';
 import {
-    useLazyGetMccInfoQuery,
-    useLazyCheckConsentQuery,
-    useRequestConsentMutation,
-    useOutboundMutation,
+    useLazy_get_Mcc_Info_Query,
+    useLazy_check_Consent_Query,
+    use_request_Consent_Mutation,
+    use_outbound_Mutation,
 } from '@src/redux/query/call_RTK';
-import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
+import { Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
 import {
-    CallInStateEnum,
-    CallInStateType,
-    CallOutStateEnum,
-    CallOutStateType,
+    Call_In_State_Enum,
+    Call_In_State_Type,
+    Call_Out_State_Enum,
+    Call_Out_State_Type,
     // CallTypeEnum,
-} from '@src/dataStruct/call';
-import { setData_toastMessage, setIsShow_callDialog } from '@src/redux/slice/App';
+} from '@src/data_struct/call';
+import { set__data__toast_message, set__is_show__call_dialog } from '@src/redux/slice/App';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const CallDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
-    const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
-    const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
+    const zalo_app: Zalo_App_Field | undefined = useSelector((state: RootState) => state.App_Slice.zalo_app);
+    const zalo_oa: Zalo_Oa_Field | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
 
     const isShow_callDialog: boolean | undefined = useSelector((state: RootState) => state.AppSlice.callDialog.isShow);
     const chatRoomId_callDialog: number | undefined = useSelector(

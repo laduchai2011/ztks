@@ -7,7 +7,7 @@ import { CiEdit } from 'react-icons/ci';
 import { FaRegEye, FaEyeSlash } from 'react-icons/fa';
 import { MdOutlineWifiCalling } from 'react-icons/md';
 import { GoDotFill } from 'react-icons/go';
-import { useGetZaloOaWithIdQuery } from '@src/redux/query/zaloRTK';
+import { useGetZaloOaWithIdQuery } from '@src/redux/query/zalo_RTK';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { ZaloOaField } from '@src/dataStruct/zalo';
 import {

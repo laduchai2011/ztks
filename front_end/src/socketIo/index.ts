@@ -1,13 +1,13 @@
 import { SOCKET_URL } from '@src/const/api/socket_url';
-import { SocketType } from '@src/dataStruct/socketIo';
+import { Socket_Type } from '@src/data_struct/socket_io';
 import io from 'socket.io-client';
-import { getCookie } from '@src/utility/cookie';
+import { get_Cookie } from '@src/utility/cookie';
 
-let socket: SocketType | null = null;
+let socket: Socket_Type | null = null;
 
-export const getSocket = () => {
+export const get_Socket = () => {
     if (!socket) {
-        socket = io(SOCKET_URL || '', { path: '/socket.io/', auth: { token: getCookie('socketToken') || '' } });
+        socket = io(SOCKET_URL || '', { path: '/socket.io/', auth: { token: get_Cookie('socketToken') || '' } });
         // socket = io('wss://socket.taokosao.com', {
         //     path: "/socket.io/",
         // });

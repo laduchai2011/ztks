@@ -17,7 +17,7 @@ import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountField } from '@src/dataStruct/account';
 import { ZaloOaField, ZnsTemplateField } from '@src/dataStruct/zalo';
 import { EditZnsTemplateBodyField } from '@src/dataStruct/zalo/body';
-import { useEditZnsTemplateMutation } from '@src/redux/query/zaloRTK';
+import { useEditZnsTemplateMutation } from '@src/redux/query/zalo_RTK';
 import { handleSrcImage } from '@src/utility/string';
 import { uploadImage } from '../../handle';
 import { isPositiveInteger } from '@src/utility/string';
