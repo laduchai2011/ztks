@@ -77,7 +77,7 @@ const App = () => {
     const [get_Zalo_User] = useLazy_get_Zalo_User_Query();
     const [get_Zalo_Oa_With_Oa_Id] = useLazy_get_Zalo_Oa_With_Oa_Id_Query();
 
-    const [my_sip, set_My_Sip] = useState<My_Sip | null>(null);
+    const [my_sip, set__my_sip] = useState<My_Sip | null>(null);
 
     useEffect(() => {
         if (!account) return;
@@ -223,7 +223,7 @@ const App = () => {
 
             await sip.connect_Sip();
 
-            set_My_Sip(sip);
+            set__my_sip(sip);
         })();
 
         return () => {

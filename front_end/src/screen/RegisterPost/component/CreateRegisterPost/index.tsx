@@ -8,7 +8,7 @@ import { useLazyGetZaloOaListWith2FkQuery } from '@src/redux/query/zalo_RTK';
 import { useCreateRegisterPostMutation } from '@src/redux/query/post_RTK';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { set_isLoading, setData_toastMessage, set_newRegisterPostOfCreate } from '@src/redux/slice/RegisterPost';
+import { set_isLoading, setData_toastMessage, set_newRegisterPostOfCreate } from '@src/redux/slice/Register_Post';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { RegisterPostTypeEnum } from '@src/dataStruct/post';
 

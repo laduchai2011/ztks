@@ -2,7 +2,7 @@ import { memo, useState } from 'react';
 import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
-import { set_getRegisterPostsBody } from '@src/redux/slice/RegisterPost';
+import { set_getRegisterPostsBody } from '@src/redux/slice/Register_Post';
 import { AccountField } from '@src/dataStruct/account';
 import { SEARCH } from '@src/const/text';
 

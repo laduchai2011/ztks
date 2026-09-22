@@ -9,7 +9,7 @@ import {
     set_isLoading,
     setIsShow_deleteRegisterPostDialog,
     setNewRegisterPost_deleteRegisterPostDialog,
-} from '@src/redux/slice/RegisterPost';
+} from '@src/redux/slice/Register_Post';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { RegisterPostField } from '@src/dataStruct/post';
 import { useDeleteRegisterPostMutation } from '@src/redux/query/post_RTK';

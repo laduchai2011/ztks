@@ -1,19 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { state_props } from '@src/screen/Profile/type';
+import { state_props } from '@src/screen/SupportRoom/type';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
+import { Zalo_Oa_Field } from '@src/data_struct/zalo';
 
 const initialState: state_props = {
     is_loading: false,
     toast_message: {
         data: { type: undefined, message: '' },
     },
-    edit_infor_dialog: {
-        is_show: false,
-    },
+    selected_oa: undefined,
 };
 
-const Profile_Slice = createSlice({
-    name: 'Profile_Slice',
+const Support_Room_Slice = createSlice({
+    name: 'Support_Room_Slice',
     initialState,
     reducers: {
         set__is_loading: (state, action: PayloadAction<boolean>) => {
@@ -22,11 +21,11 @@ const Profile_Slice = createSlice({
         set__data__toast_message: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
             state.toast_message.data = action.payload;
         },
-        set__is_show__edit_infor_dialog: (state, action: PayloadAction<boolean>) => {
-            state.edit_infor_dialog.is_show = action.payload;
+        set__selected_oa: (state, action: PayloadAction<Zalo_Oa_Field>) => {
+            state.selected_oa = action.payload;
         },
     },
 });
 
-export const { set__is_loading, set__data__toast_message, set__is_show__edit_infor_dialog } = Profile_Slice.actions;
-export default Profile_Slice.reducer;
+export const { set__is_loading, set__data__toast_message, set__selected_oa } = Support_Room_Slice.actions;
+export default Support_Room_Slice.reducer;

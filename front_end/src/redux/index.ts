@@ -4,21 +4,21 @@ import Home_V1_Reducer from '@src/redux/slice/Home_V1';
 import Message_V1_Reducer from '@src/redux/slice/Message_V1';
 import Oa_Reducer from '@src/redux/slice/Oa';
 import Oa_Setting_Reducer from '@src/redux/slice/Oa_Setting';
-import SupportRoomReducer from '@src/redux/slice/SupportRoom';
+import Support_Room_Reducer from '@src/redux/slice/Support_Room';
 import Order_Reducer from '@src/redux/slice/Order';
 import AccountReceiveMessageReducer from '@src/redux/slice/AccountReceiveMessage';
 import Manage_Agent_Reducer from '@src/redux/slice/Manage_Agent';
 import Member_Reducer from '@src/redux/slice/Member';
 import Note_Reducer from '@src/redux/slice/Note';
-import SignupReducer from '@src/redux/slice/Signup';
-import ProfileReducer from '@src/redux/slice/Profile';
+import Signup_Reducer from '@src/redux/slice/Signup';
+import Profile_Reducer from '@src/redux/slice/Profile';
 import Forget_Password_Reducer from '@src/redux/slice/Forget_Password';
-import WalletReducer from '@src/redux/slice/Wallet';
-import ZnsReducer from '@src/redux/slice/Zns';
-import ZnsDetailReducer from '@src/redux/slice/ZnsDetail';
+import Wallet_Reducer from '@src/redux/slice/Wallet';
+import Zns_Reducer from '@src/redux/slice/Zns';
+import Zns_Detail_Reducer from '@src/redux/slice/Zns_Detail';
 import Bank_Reducer from '@src/redux/slice/Bank';
-import PostReducer from '@src/redux/slice/Post';
-import RegisterPostReducer from '@src/redux/slice/RegisterPost';
+import Post_Reducer from '@src/redux/slice/Post';
+import Register_Post_Reducer from '@src/redux/slice/Register_Post';
 import Leave_Reducer from '@src/redux/slice/Leave';
 import Dash_Board_Reducer from '@src/redux/slice/Dash_Board';
 import Check_In_Out_Reducer from '@src/redux/slice/Check_In_Out';
@@ -48,21 +48,21 @@ export const store = configureStore({
         Message_V1_Slice: Message_V1_Reducer,
         Oa_Slice: Oa_Reducer,
         Oa_Setting_Slice: Oa_Setting_Reducer,
-        SupportRoomSlice: SupportRoomReducer,
+        Support_Room_Slice: Support_Room_Reducer,
         Order_Slice: Order_Reducer,
         AccountReceiveMessageSlice: AccountReceiveMessageReducer,
         Manage_Agent_Slice: Manage_Agent_Reducer,
         Member_Slice: Member_Reducer,
         Note_Slice: Note_Reducer,
-        SignupSlice: SignupReducer,
-        ProfileSlice: ProfileReducer,
+        Signup_Slice: Signup_Reducer,
+        Profile_Slice: Profile_Reducer,
         Forget_Password_Slice: Forget_Password_Reducer,
-        WalletSlice: WalletReducer,
-        ZnsSlice: ZnsReducer,
-        ZnsDetailSlice: ZnsDetailReducer,
+        Wallet_Slice: Wallet_Reducer,
+        Zns_Slice: Zns_Reducer,
+        Zns_Detail_Slice: Zns_Detail_Reducer,
         Bank_Slice: Bank_Reducer,
-        PostSlice: PostReducer,
-        RegisterPostSlice: RegisterPostReducer,
+        Post_Slice: Post_Reducer,
+        Register_Post_Slice: Register_Post_Reducer,
         Leave_Slice: Leave_Reducer,
         Dash_Board_Slice: Dash_Board_Reducer,
         Check_In_Out_Slice: Check_In_Out_Reducer,

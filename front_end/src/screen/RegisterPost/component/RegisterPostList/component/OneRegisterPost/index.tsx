@@ -14,7 +14,7 @@ import {
     setIsShow_deleteRegisterPostDialog,
     setRegisterPost_deleteRegisterPostDialog,
     setNewRegisterPost_deleteRegisterPostDialog,
-} from '@src/redux/slice/RegisterPost';
+} from '@src/redux/slice/Register_Post';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const OneRegisterPost: FC<{ data: RegisterPostField }> = ({ data }) => {

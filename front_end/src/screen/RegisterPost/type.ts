@@ -1,22 +1,22 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { RegisterPostField } from '@src/dataStruct/post';
-import { GetRegisterPostsBodyField } from '@src/dataStruct/post/body';
+import { Register_Post_Field } from '@src/data_struct/post';
+import { Get_Register_Posts_Body_Field } from '@src/data_struct/post/body';
 
 export interface state_props {
-    isLoading: boolean;
-    toastMessage: {
+    is_loading: boolean;
+    toast_message: {
         data: ToastMessage_Data_Props;
     };
-    getRegisterPostsBody?: GetRegisterPostsBodyField;
-    newRegisterPostOfCreate?: RegisterPostField;
-    editRegisterPostDialog: {
-        isShow: boolean;
-        registerPost?: RegisterPostField;
-        newRegisterPost?: RegisterPostField;
+    get_register_posts_body?: Get_Register_Posts_Body_Field;
+    new_register_post_of_create?: Register_Post_Field;
+    edit_register_post_dialog: {
+        is_show: boolean;
+        register_post?: Register_Post_Field;
+        new_register_post?: Register_Post_Field;
     };
-    deleteRegisterPostDialog: {
-        isShow: boolean;
-        registerPost?: RegisterPostField;
-        newRegisterPost?: RegisterPostField;
+    delete_register_post_dialog: {
+        is_show: boolean;
+        register_post?: Register_Post_Field;
+        new_register_post?: Register_Post_Field;
     };
 }

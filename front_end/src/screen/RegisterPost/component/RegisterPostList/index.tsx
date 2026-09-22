@@ -2,7 +2,7 @@ import { memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
-import { setData_toastMessage, set_isLoading, set_newRegisterPostOfCreate } from '@src/redux/slice/RegisterPost';
+import { setData_toastMessage, set_isLoading, set_newRegisterPostOfCreate } from '@src/redux/slice/Register_Post';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { useLazyGetRegisterPostsQuery } from '@src/redux/query/post_RTK';
 import { RegisterPostField } from '@src/dataStruct/post';

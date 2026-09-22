@@ -1,52 +1,58 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { state_props } from '@src/screen/Wallet/type';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { WalletField, RequireTakeMoneyField } from '@src/dataStruct/wallet';
+import { Wallet_Field, Require_Take_Money_Field } from '@src/data_struct/wallet';
 
 const initialState: state_props = {
-    isLoading: false,
-    toastMessage: {
+    is_loading: false,
+    toast_message: {
         data: { type: undefined, message: '' },
     },
-    takeMoneyDialog: {
-        isShow: false,
+    take_money_dialog: {
+        is_show: false,
         wallet: undefined,
-        requiredTakeMoney: undefined,
-        newRequireTakeMoney: undefined,
+        required_take_money: undefined,
+        new_require_take_money: undefined,
     },
 };
 
-const WalletSlice = createSlice({
-    name: 'WalletSlice',
+const Wallet_Slice = createSlice({
+    name: 'Wallet_Slice',
     initialState,
     reducers: {
-        set_isLoading: (state, action: PayloadAction<boolean>) => {
-            state.isLoading = action.payload;
+        set__is_loading: (state, action: PayloadAction<boolean>) => {
+            state.is_loading = action.payload;
         },
-        setData_toastMessage: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
-            state.toastMessage.data = action.payload;
+        set__data__toast_message: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
+            state.toast_message.data = action.payload;
         },
-        setIsShow_takeMoneyDialog: (state, action: PayloadAction<boolean>) => {
-            state.takeMoneyDialog.isShow = action.payload;
+        set__is_show__take_money_dialog: (state, action: PayloadAction<boolean>) => {
+            state.take_money_dialog.is_show = action.payload;
         },
-        setWallet_takeMoneyDialog: (state, action: PayloadAction<WalletField | undefined>) => {
-            state.takeMoneyDialog.wallet = action.payload;
+        set__wallet__take_money_dialog: (state, action: PayloadAction<Wallet_Field | undefined>) => {
+            state.take_money_dialog.wallet = action.payload;
         },
-        setRequiredTakeMoney_takeMoneyDialog: (state, action: PayloadAction<RequireTakeMoneyField | undefined>) => {
-            state.takeMoneyDialog.requiredTakeMoney = action.payload;
+        set__required_take_money__take_money_dialog: (
+            state,
+            action: PayloadAction<Require_Take_Money_Field | undefined>
+        ) => {
+            state.take_money_dialog.required_take_money = action.payload;
         },
-        setNewRequireTakeMoney_takeMoneyDialog: (state, action: PayloadAction<RequireTakeMoneyField | undefined>) => {
-            state.takeMoneyDialog.newRequireTakeMoney = action.payload;
+        set__new_require_take_money__take_money_dialog: (
+            state,
+            action: PayloadAction<Require_Take_Money_Field | undefined>
+        ) => {
+            state.take_money_dialog.new_require_take_money = action.payload;
         },
     },
 });
 
 export const {
-    set_isLoading,
-    setData_toastMessage,
-    setIsShow_takeMoneyDialog,
-    setWallet_takeMoneyDialog,
-    setRequiredTakeMoney_takeMoneyDialog,
-    setNewRequireTakeMoney_takeMoneyDialog,
-} = WalletSlice.actions;
-export default WalletSlice.reducer;
+    set__is_loading,
+    set__data__toast_message,
+    set__is_show__take_money_dialog,
+    set__wallet__take_money_dialog,
+    set__required_take_money__take_money_dialog,
+    set__new_require_take_money__take_money_dialog,
+} = Wallet_Slice.actions;
+export default Wallet_Slice.reducer;

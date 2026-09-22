@@ -1,21 +1,21 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { ZaloOaField, ZnsTemplateField } from '@src/dataStruct/zalo';
+import { Zalo_Oa_Field, Zns_Template_Field } from '@src/data_struct/zalo';
 
 export interface state_props {
-    isLoading: boolean;
-    toastMessage: {
+    is_loading: boolean;
+    toast_message: {
         data: ToastMessage_Data_Props;
     };
-    selectedOa?: ZaloOaField;
-    newZnsTemplate?: ZnsTemplateField;
-    newZnsTemplates: ZnsTemplateField[];
-    editZnsTemplateDialog: {
-        isShow: boolean;
-        znsTemplate?: ZnsTemplateField;
-        newZnsTemplate?: ZnsTemplateField;
+    selected_oa?: Zalo_Oa_Field;
+    new_zns_template?: Zns_Template_Field;
+    new_zns_templates: Zns_Template_Field[];
+    edit_zns_template_dialog: {
+        is_show: boolean;
+        zns_template?: Zns_Template_Field;
+        new_zns_template?: Zns_Template_Field;
     };
-    sendTemplateDialog: {
-        isShow: boolean;
-        znsTemplate?: ZnsTemplateField;
+    send_template_dialog: {
+        is_show: boolean;
+        zns_template?: Zns_Template_Field;
     };
 }

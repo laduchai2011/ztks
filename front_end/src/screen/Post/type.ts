@@ -1,16 +1,16 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { RegisterPostField, PostField } from '@src/dataStruct/post';
+import { Register_Post_Field, Post_Field } from '@src/data_struct/post';
 
 export interface state_props {
-    isLoading: boolean;
-    toastMessage: {
+    is_loading: boolean;
+    toast_message: {
         data: ToastMessage_Data_Props;
     };
-    selectedRegisterPost?: RegisterPostField;
-    postList: PostField[];
-    editPostDialog: {
-        isShow: boolean;
-        post?: PostField;
-        newPost?: PostField;
+    selected_register_post?: Register_Post_Field;
+    post_list: Post_Field[];
+    edit_post_dialog: {
+        is_show: boolean;
+        post?: Post_Field;
+        new_post?: Post_Field;
     };
 }

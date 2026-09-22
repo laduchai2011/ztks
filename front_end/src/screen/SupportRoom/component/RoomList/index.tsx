@@ -4,7 +4,7 @@ import ARoom from './component/ARoom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { useLazyGetChatRoomsMongoQuery } from '@src/redux/query/chat_room_RTK';
-import { setData_toastMessage, set_isLoading } from '@src/redux/slice/SupportRoom';
+import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Support_Room';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountField } from '@src/dataStruct/account';
 import { ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';

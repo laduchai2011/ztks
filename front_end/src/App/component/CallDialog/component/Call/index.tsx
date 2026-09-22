@@ -4,90 +4,90 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { MdCall } from 'react-icons/md';
 import {
-    CallInStateEnum,
-    CallInStateType,
-    CallOutStateEnum,
-    CallOutStateType,
-    CallInCmdEnum,
-    CallOutCmdEnum,
-} from '@src/dataStruct/call';
-import { setCallInCmdType_callDialog, setCallOutCmdType_callDialog } from '@src/redux/slice/App';
+    Call_In_State_Enum,
+    Call_In_State_Type,
+    Call_Out_State_Enum,
+    Call_Out_State_Type,
+    Call_In_Cmd_Enum,
+    Call_Out_Cmd_Enum,
+} from '@src/data_struct/call';
+import { set__call_in_cmd_type__call_dialog, set__call_out_cmd_type__call_dialog } from '@src/redux/slice/App';
 import { avatarnull } from '@src/utility/string';
 // import { ZaloOaField } from '@src/dataStruct/zalo';
-import { ZaloUserField } from '@src/dataStruct/zalo/user';
+import { Zalo_User_Field } from '@src/data_struct/zalo/user';
 import { formatDuration } from '@src/utility/string';
 
 const Call = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
-    const [text, setText] = useState<string>('');
-    const [time, setTime] = useState(0);
+    const [text, set__text] = useState<string>('');
+    const [time, set__time] = useState(0);
 
-    const zaloUser_callDialog: ZaloUserField | undefined = useSelector(
-        (state: RootState) => state.AppSlice.callDialog.zaloUser
+    const zalo_user__call_dialog: Zalo_User_Field | undefined = useSelector(
+        (state: RootState) => state.App_Slice.call_dialog.zalo_user
     );
-    const callInState_callDialog: CallInStateType = useSelector(
-        (state: RootState) => state.AppSlice.callDialog.callInState
+    const call_in_state__call_dialog: Call_In_State_Type = useSelector(
+        (state: RootState) => state.App_Slice.call_dialog.call_in_state
     );
-    const callOutState_callDialog: CallOutStateType = useSelector(
-        (state: RootState) => state.AppSlice.callDialog.callOutState
+    const call_out_state__call_dialog: Call_Out_State_Type = useSelector(
+        (state: RootState) => state.App_Slice.call_dialog.call_out_state
     );
 
     useEffect(() => {
         let intervalTime: any;
-        if (callInState_callDialog === CallInStateEnum.CALL_IN) {
-            setText('');
+        if (call_in_state__call_dialog === Call_In_State_Enum.CALL_IN) {
+            set__text('');
             intervalTime = setInterval(() => {
-                setTime((pre) => pre + 1000);
+                set__time((pre) => pre + 1000);
             }, 1000);
         }
 
-        if (callInState_callDialog === CallInStateEnum.CALL_END) {
+        if (call_in_state__call_dialog === Call_In_State_Enum.CALL_END) {
             clearInterval(intervalTime);
         }
-    }, [callInState_callDialog]);
+    }, [call_in_state__call_dialog]);
 
     useEffect(() => {
         let intervalTime: any;
-        if (callOutState_callDialog === CallOutStateEnum.CALL_IN) {
+        if (call_out_state__call_dialog === Call_Out_State_Enum.CALL_IN) {
             intervalTime = setInterval(() => {
-                setTime((pre) => pre + 1000);
+                set__time((pre) => pre + 1000);
             }, 1000);
         }
 
-        if (callOutState_callDialog === CallOutStateEnum.CALL_END) {
+        if (call_out_state__call_dialog === Call_Out_State_Enum.CALL_END) {
             clearInterval(intervalTime);
         }
-    }, [callOutState_callDialog]);
+    }, [call_out_state__call_dialog]);
 
-    const handleAccept = () => {
-        if (callInState_callDialog === CallInStateEnum.RINGING) {
-            dispatch(setCallInCmdType_callDialog(CallInCmdEnum.ACCEPT));
-            setText('Đợi chút');
+    const handle_Accept = () => {
+        if (call_in_state__call_dialog === Call_In_State_Enum.RINGING) {
+            dispatch(set__call_in_cmd_type__call_dialog(Call_In_Cmd_Enum.ACCEPT));
+            set__text('Đợi chút');
             return;
         }
     };
 
-    const handleOnCallOut = () => {
-        dispatch(setCallOutCmdType_callDialog(CallOutCmdEnum.BEGIN));
+    const handle_On_Call_Out = () => {
+        dispatch(set__call_out_cmd_type__call_dialog(Call_Out_Cmd_Enum.BEGIN));
     };
 
-    const handleOfCallOut = () => {
-        switch (callOutState_callDialog) {
-            case CallOutStateEnum.CONNECTING: {
-                dispatch(setCallOutCmdType_callDialog(CallOutCmdEnum.CANCEl));
+    const handle_Of_Call_Out = () => {
+        switch (call_out_state__call_dialog) {
+            case Call_Out_State_Enum.CONNECTING: {
+                dispatch(set__call_out_cmd_type__call_dialog(Call_Out_Cmd_Enum.CANCEl));
                 break;
             }
-            case CallOutStateEnum.RINGING: {
-                dispatch(setCallOutCmdType_callDialog(CallOutCmdEnum.CANCEl));
+            case Call_Out_State_Enum.RINGING: {
+                dispatch(set__call_out_cmd_type__call_dialog(Call_Out_Cmd_Enum.CANCEl));
                 break;
             }
-            case CallOutStateEnum.CALL_END: {
+            case Call_Out_State_Enum.CALL_END: {
                 //statements;
                 break;
             }
-            case CallOutStateEnum.CALL_IN: {
-                dispatch(setCallOutCmdType_callDialog(CallOutCmdEnum.FINISH));
+            case Call_Out_State_Enum.CALL_IN: {
+                dispatch(set__call_out_cmd_type__call_dialog(Call_Out_Cmd_Enum.FINISH));
                 break;
             }
             default: {
@@ -97,17 +97,17 @@ const Call = () => {
         }
     };
 
-    const handleOfCallIn = () => {
-        switch (callInState_callDialog) {
-            case CallInStateEnum.RINGING: {
-                dispatch(setCallInCmdType_callDialog(CallInCmdEnum.CANCEl));
+    const handle_Of_Call_In = () => {
+        switch (call_in_state__call_dialog) {
+            case Call_In_State_Enum.RINGING: {
+                dispatch(set__call_in_cmd_type__call_dialog(Call_In_Cmd_Enum.CANCEl));
                 break;
             }
-            case CallInStateEnum.CALL_IN: {
-                dispatch(setCallInCmdType_callDialog(CallInCmdEnum.FINISH));
+            case Call_In_State_Enum.CALL_IN: {
+                dispatch(set__call_in_cmd_type__call_dialog(Call_In_Cmd_Enum.FINISH));
                 break;
             }
-            case CallInStateEnum.CALL_END: {
+            case Call_In_State_Enum.CALL_END: {
                 break;
             }
             default: {
@@ -119,47 +119,49 @@ const Call = () => {
 
     return (
         <div className={style.parent} ref={parent_element}>
-            {callOutState_callDialog === CallOutStateEnum.CONNECTING && (
+            {call_out_state__call_dialog === Call_Out_State_Enum.CONNECTING && (
                 <div className={style.connecting}>Đang kết nối ...</div>
             )}
-            {callOutState_callDialog === CallOutStateEnum.RINGING && <div className={style.ring}>Đổ chuông</div>}
-            {callInState_callDialog !== CallInStateEnum.CALL_END && (
+            {call_out_state__call_dialog === Call_Out_State_Enum.RINGING && <div className={style.ring}>Đổ chuông</div>}
+            {call_in_state__call_dialog !== Call_In_State_Enum.CALL_END && (
                 <div className={style.avatarContainer}>
-                    <img src={zaloUser_callDialog?.data.avatar || avatarnull} alt="Avatar" />
+                    <img src={zalo_user__call_dialog?.data.avatar || avatarnull} alt="Avatar" />
                 </div>
             )}
-            {callInState_callDialog !== CallInStateEnum.CALL_END && (
-                <div className={style.userName}>{zaloUser_callDialog?.data.display_name}</div>
+            {call_in_state__call_dialog !== Call_In_State_Enum.CALL_END && (
+                <div className={style.userName}>{zalo_user__call_dialog?.data.display_name}</div>
             )}
-            {callInState_callDialog === CallInStateEnum.RINGING && <div className={style.callIn}>Đang gọi đến</div>}
+            {call_in_state__call_dialog === Call_In_State_Enum.RINGING && (
+                <div className={style.callIn}>Đang gọi đến</div>
+            )}
             {text.length > 0 && <div className={style.text}>{text}</div>}
-            {(callInState_callDialog === CallInStateEnum.CALL_IN ||
-                callOutState_callDialog === CallOutStateEnum.CALL_IN) && (
+            {(call_in_state__call_dialog === Call_In_State_Enum.CALL_IN ||
+                call_out_state__call_dialog === Call_Out_State_Enum.CALL_IN) && (
                 <div className={style.text}>{formatDuration(time)}</div>
             )}
-            {callInState_callDialog === CallInStateEnum.CALL_END && (
+            {call_in_state__call_dialog === Call_In_State_Enum.CALL_END && (
                 <div className={style.icon1}>
-                    {callOutState_callDialog === CallOutStateEnum.CALL_END && (
-                        <MdCall onClick={() => handleOnCallOut()} size={40} color="greenyellow" />
+                    {call_out_state__call_dialog === Call_Out_State_Enum.CALL_END && (
+                        <MdCall onClick={() => handle_On_Call_Out()} size={40} color="greenyellow" />
                     )}
-                    {(callOutState_callDialog === CallOutStateEnum.RINGING ||
-                        callOutState_callDialog === CallOutStateEnum.CALL_IN) && (
-                        <MdCall onClick={() => handleOfCallOut()} size={40} color="red" />
+                    {(call_out_state__call_dialog === Call_Out_State_Enum.RINGING ||
+                        call_out_state__call_dialog === Call_Out_State_Enum.CALL_IN) && (
+                        <MdCall onClick={() => handle_Of_Call_Out()} size={40} color="red" />
                     )}
                 </div>
             )}
-            {callInState_callDialog === CallInStateEnum.RINGING && (
+            {call_in_state__call_dialog === Call_In_State_Enum.RINGING && (
                 <div className={style.icon2}>
                     <div>
-                        <MdCall onClick={() => handleAccept()} size={40} color="greenyellow" />
-                        <MdCall onClick={() => handleOfCallIn()} size={40} color="red" />
+                        <MdCall onClick={() => handle_Accept()} size={40} color="greenyellow" />
+                        <MdCall onClick={() => handle_Of_Call_In()} size={40} color="red" />
                     </div>
                 </div>
             )}
-            {callInState_callDialog === CallInStateEnum.CALL_IN && (
+            {call_in_state__call_dialog === Call_In_State_Enum.CALL_IN && (
                 <div className={style.icon2}>
                     <div>
-                        <MdCall onClick={() => handleOfCallIn()} size={40} color="red" />
+                        <MdCall onClick={() => handle_Of_Call_In()} size={40} color="red" />
                     </div>
                 </div>
             )}

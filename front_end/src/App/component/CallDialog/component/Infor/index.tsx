@@ -5,85 +5,85 @@ import { RootState } from '@src/redux';
 import { TiTick } from 'react-icons/ti';
 import { IoClose } from 'react-icons/io5';
 import {
-    CallTypeEnum,
-    CallTypeType,
-    CallInStateType,
-    CallOutStateType,
-    CallInStateEnum,
-    CallOutStateEnum,
-} from '@src/dataStruct/call';
-import { useLazyCheckConsentQuery } from '@src/redux/query/call_RTK';
-import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
+    Call_Type_Enum,
+    Call_Type_Type,
+    Call_In_State_Type,
+    Call_Out_State_Type,
+    Call_In_State_Enum,
+    Call_Out_State_Enum,
+} from '@src/data_struct/call';
+import { useLazy_check_Consent_Query } from '@src/redux/query/call_RTK';
+import { Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
 
 const Infor: FC<{
-    setIsRequestConsent: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ setIsRequestConsent }) => {
+    set__is_request_consent: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ set__is_request_consent }) => {
     // const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
-    const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
-    const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
+    const zalo_app: Zalo_App_Field | undefined = useSelector((state: RootState) => state.App_Slice.zalo_app);
+    const zalo_oa: Zalo_Oa_Field | undefined = useSelector((state: RootState) => state.Message_V1_Slice.zalo_oa);
 
-    const callInState_callDialog: CallInStateType = useSelector(
-        (state: RootState) => state.AppSlice.callDialog.callInState
+    const call_in_state__call_dialog: Call_In_State_Type = useSelector(
+        (state: RootState) => state.App_Slice.call_dialog.call_in_state
     );
-    const callOutState_callDialog: CallOutStateType = useSelector(
-        (state: RootState) => state.AppSlice.callDialog.callOutState
+    const call_out_state__call_dialog: Call_Out_State_Type = useSelector(
+        (state: RootState) => state.App_Slice.call_dialog.call_out_state
     );
 
-    const [selectedCallType, setSelectedCallType] = useState<CallTypeType>(CallTypeEnum.AUDIO);
-    const [expriedTime, setExpriedTime] = useState<string>('');
-    const [isRinging, setIsRinging] = useState<boolean>(false);
+    const [selected_call_type, set__selected_call_type] = useState<Call_Type_Type>(Call_Type_Enum.AUDIO);
+    const [expried_time, set__expried_time] = useState<string>('');
+    const [is_ringing, set__is_ringing] = useState<boolean>(false);
 
-    const [checkConsent] = useLazyCheckConsentQuery();
+    const [check_Consent] = useLazy_check_Consent_Query();
 
     useEffect(() => {
-        if (!zaloApp) return;
-        if (!zaloOa) return;
+        if (!zalo_app) return;
+        if (!zalo_oa) return;
 
-        checkConsent({
+        check_Consent({
             phone: '84789860854',
-            zaloApp: zaloApp,
-            zaloOa: zaloOa,
-            accountId: -11,
+            zalo_app: zalo_app,
+            zalo_oa: zalo_oa,
+            account_id: '',
         })
             .then((res) => {
-                const resData = res.data;
+                const res_data = res.data;
                 // console.log('checkConsent resData', resData);
-                if (resData?.isSuccess && resData.data) {
-                    const expired_time = resData.data.data.expired_time;
-                    const expired_date = new Date(expired_time);
-                    setExpriedTime(expired_date.toLocaleString('vi-VN'));
+                if (res_data?.is_success && res_data.data) {
+                    const _expired_time = res_data.data.data.expired_time;
+                    const _expired_date = new Date(_expired_time);
+                    set__expried_time(_expired_date.toLocaleString('vi-VN'));
                 }
             })
             .catch((err) => console.error('checkConsent err', err));
-    }, [checkConsent, zaloApp, zaloOa]);
+    }, [check_Consent, zalo_app, zalo_oa]);
 
     useEffect(() => {
         if (
-            callInState_callDialog === CallInStateEnum.RINGING ||
-            callOutState_callDialog === CallOutStateEnum.RINGING
+            call_in_state__call_dialog === Call_In_State_Enum.RINGING ||
+            call_out_state__call_dialog === Call_Out_State_Enum.RINGING
         ) {
-            setIsRinging(true);
+            set__is_ringing(true);
         } else {
-            setIsRinging(false);
+            set__is_ringing(false);
         }
-    }, [callInState_callDialog, callOutState_callDialog]);
+    }, [call_in_state__call_dialog, call_out_state__call_dialog]);
 
-    const handleOpenRequestConsent = () => {
-        setIsRequestConsent(true);
+    const handle_Open_Request_Consent = () => {
+        set__is_request_consent(true);
     };
 
-    const handleClassNameSelectedCallType = (callType: CallTypeType) => {
+    const handle_Class_Name_Selected_Call_Type = (call_type: Call_Type_Type) => {
         // if (selectedCallType === callType) {
         //     return style.selected;
         // }
-        if (CallTypeEnum.AUDIO === callType) {
+        if (Call_Type_Enum.AUDIO === call_type) {
             return style.selected;
         }
     };
 
-    const handleSelectCallType = (callType: CallTypeType) => {
-        setSelectedCallType(callType);
+    const handle_Select_Call_Type = (call_type: Call_Type_Type) => {
+        set__selected_call_type(call_type);
     };
 
     return (
@@ -91,25 +91,25 @@ const Infor: FC<{
             <div className={style.consents}>
                 <div>
                     <div
-                        className={handleClassNameSelectedCallType(CallTypeEnum.AUDIO)}
-                        onClick={() => handleSelectCallType(CallTypeEnum.AUDIO)}
+                        className={handle_Class_Name_Selected_Call_Type(Call_Type_Enum.AUDIO)}
+                        onClick={() => handle_Select_Call_Type(Call_Type_Enum.AUDIO)}
                     >
                         <div>Audio</div>
                         <TiTick size={20} color="greenyellow" />
                     </div>
                     <div
-                        className={handleClassNameSelectedCallType(CallTypeEnum.AUDIO_AND_VIDEO)}
-                        onClick={() => handleSelectCallType(CallTypeEnum.AUDIO_AND_VIDEO)}
+                        className={handle_Class_Name_Selected_Call_Type(Call_Type_Enum.AUDIO_AND_VIDEO)}
+                        onClick={() => handle_Select_Call_Type(Call_Type_Enum.AUDIO_AND_VIDEO)}
                     >
                         <div>Audio and video</div>
                         <IoClose size={20} color="red" />
                     </div>
                 </div>
             </div>
-            {!isRinging && <div className={style.time}>{`Hạn đến ${expriedTime}`}</div>}
-            {!isRinging && (
+            {!is_ringing && <div className={style.time}>{`Hạn đến ${expried_time}`}</div>}
+            {!is_ringing && (
                 <div className={style.requestContent}>
-                    <div onClick={() => handleOpenRequestConsent()}>Gửi yêu cầu cấp quyền gọi</div>
+                    <div onClick={() => handle_Open_Request_Consent()}>Gửi yêu cầu cấp quyền gọi</div>
                 </div>
             )}
         </div>

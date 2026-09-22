@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { state_props } from '@src/screen/Profile/type';
+import { state_props } from '@src/screen/ZnsDetail/type';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
 
 const initialState: state_props = {
@@ -7,13 +7,10 @@ const initialState: state_props = {
     toast_message: {
         data: { type: undefined, message: '' },
     },
-    edit_infor_dialog: {
-        is_show: false,
-    },
 };
 
-const Profile_Slice = createSlice({
-    name: 'Profile_Slice',
+const Zns_Detail_Slice = createSlice({
+    name: 'Zns_Detail_Slice',
     initialState,
     reducers: {
         set__is_loading: (state, action: PayloadAction<boolean>) => {
@@ -22,11 +19,8 @@ const Profile_Slice = createSlice({
         set__data__toast_message: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
             state.toast_message.data = action.payload;
         },
-        set__is_show__edit_infor_dialog: (state, action: PayloadAction<boolean>) => {
-            state.edit_infor_dialog.is_show = action.payload;
-        },
     },
 });
 
-export const { set__is_loading, set__data__toast_message, set__is_show__edit_infor_dialog } = Profile_Slice.actions;
-export default Profile_Slice.reducer;
+export const { set__is_loading, set__data__toast_message } = Zns_Detail_Slice.actions;
+export default Zns_Detail_Slice.reducer;

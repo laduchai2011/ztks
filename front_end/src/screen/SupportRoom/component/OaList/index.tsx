@@ -6,7 +6,7 @@ import { HiChevronDown, HiChevronUp } from 'react-icons/hi';
 import { useLazyGetZaloOaListWith2FkQuery } from '@src/redux/query/zalo_RTK';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { setData_toastMessage, set_isLoading, set_selectedOa } from '@src/redux/slice/SupportRoom';
+import { setData_toastMessage, set_isLoading, set_selectedOa } from '@src/redux/slice/Support_Room';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { SEE_MORE } from '@src/const/text';
 import { getCookie, setCookie } from '@src/utility/cookie';

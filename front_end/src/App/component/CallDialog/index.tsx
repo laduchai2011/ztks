@@ -29,22 +29,24 @@ const CallDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
     const zalo_app: Zalo_App_Field | undefined = useSelector((state: RootState) => state.App_Slice.zalo_app);
-    const zalo_oa: Zalo_Oa_Field | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
+    const zalo_oa: Zalo_Oa_Field | undefined = useSelector((state: RootState) => state.Message_V1_Slice.zalo_oa);
 
-    const isShow_callDialog: boolean | undefined = useSelector((state: RootState) => state.AppSlice.callDialog.isShow);
-    const chatRoomId_callDialog: number | undefined = useSelector(
-        (state: RootState) => state.AppSlice.callDialog.chatRoomId
+    const is_show__call_dialog: boolean | undefined = useSelector(
+        (state: RootState) => state.App_Slice.call_dialog.is_show
     );
-    const callInState_callDialog: CallInStateType = useSelector(
-        (state: RootState) => state.AppSlice.callDialog.callInState
+    const chat_room_id__call_dialog: string | undefined = useSelector(
+        (state: RootState) => state.App_Slice.call_dialog.chat_room_id
     );
-    const callOutState_callDialog: CallOutStateType = useSelector(
-        (state: RootState) => state.AppSlice.callDialog.callOutState
+    const call_in_state__call_dialog: Call_In_State_Type = useSelector(
+        (state: RootState) => state.App_Slice.call_dialog.call_in_state
+    );
+    const call_out_state__call_dialog: Call_Out_State_Type = useSelector(
+        (state: RootState) => state.App_Slice.call_dialog.call_out_state
     );
 
     // const [agentCode, setAgentCode] = useState<string>('');
     // const [agentPassword, setAgentPassword] = useState<string>('taokosao201195');
-    const [isRequestConsent, setIsRequestConsent] = useState<boolean>(false);
+    const [is_request_consent, set__is_request_consent] = useState<boolean>(false);
     // const [isConnecting, setIsConnecting] = useState<boolean>(false);
     // const [isRinging, setIsRinging] = useState<boolean>(false);
     // const [isCallIn, setIsCallIn] = useState<boolean>(false);
@@ -52,16 +54,16 @@ const CallDialog = () => {
     // const [callInState, setCallInState] = useState<CallInStateType>(CallInStateEnum.CALL_END);
     // const [callOutState, setCallOutState] = useState<CallOutStateType>(CallOutStateEnum.CALL_END);
 
-    const [checkConsent] = useLazyCheckConsentQuery();
-    const [requestConsent] = useRequestConsentMutation();
-    const [getMccInfo] = useLazyGetMccInfoQuery();
-    const [outbound] = useOutboundMutation();
+    const [check_Consent] = useLazy_check_Consent_Query();
+    const [request_Consent] = use_request_Consent_Mutation();
+    const [get_Mcc_Info] = useLazy_get_Mcc_Info_Query();
+    const [outbound] = use_outbound_Mutation();
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow_callDialog) {
+        if (is_show__call_dialog) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -75,80 +77,33 @@ const CallDialog = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow_callDialog]);
+    }, [is_show__call_dialog]);
 
     useEffect(() => {
         if (
-            callInState_callDialog !== CallInStateEnum.CALL_END ||
-            callOutState_callDialog !== CallOutStateEnum.CALL_END
+            call_in_state__call_dialog !== Call_In_State_Enum.CALL_END ||
+            call_out_state__call_dialog !== Call_Out_State_Enum.CALL_END
         ) {
-            // setIsRinging(true);
-            setIsRequestConsent(false);
-        } else {
-            // setIsRinging(false);
+            set__is_request_consent(false);
         }
-        // setCallInState(callInState_callDialog);
-    }, [callInState_callDialog, callOutState_callDialog]);
+    }, [call_in_state__call_dialog, call_out_state__call_dialog]);
 
     const audioRef = useRef<HTMLAudioElement>(null);
-    useEffect(() => {
-        // const handleSip = async () => {
-        //     const mySip_ = new MySip('103', agentPassword);
-        //     mySip_.createUserAgent();
-        //     mySip_.createRegisterer();
-        //     await mySip_.connectSip();
-        //     await mySip_.handleIncomingCall(
-        //         (stream: MediaStream) => {
-        //             console.log('Receive remote stream');
-        //             if (audioRef.current) {
-        //                 audioRef.current.srcObject = stream;
-        //                 audioRef.current.play().catch(console.error);
-        //             }
-        //         },
-        //         (state) => {
-        //             switch (state) {
-        //                 case SessionState.Initial:
-        //                     break;
-        //                 case SessionState.Establishing:
-        //                     break;
-        //                 case SessionState.Established:
-        //                     setCallInState(CallInStateEnum.CALL_IN);
-        //                     break;
-        //                 case SessionState.Terminating:
-        //                     setCallInState(CallInStateEnum.CALL_END);
-        //                     break;
-        //                 case SessionState.Terminated:
-        //                     setCallInState(CallInStateEnum.CALL_END);
-        //                     break;
-        //             }
-        //         },
-        //         (invitation) => {
-        //             console.log(11111111, invitation.request.from.uri);
-        //             if (invitation) {
-        //                 setCallInState(CallInStateEnum.RINGING);
-        //             }
-        //         }
-        //     );
-        //     setMySip(mySip_);
-        // };
-        // handleSip();
-    }, []);
 
-    const handleClose = () => {
-        // dispatch(set_calling({ is: false, uid: undefined, chatRoomId: undefined }));
+    const handle_Close = () => {
         if (
-            callInState_callDialog !== CallInStateEnum.CALL_END ||
-            callOutState_callDialog !== CallOutStateEnum.CALL_END
+            call_in_state__call_dialog !== Call_In_State_Enum.CALL_END ||
+            call_out_state__call_dialog !== Call_Out_State_Enum.CALL_END
         ) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.WARN,
                     message: 'Bạn không thể đóng khi đang ở trong 1 cuộc gọi !',
                 })
             );
             return;
         }
-        dispatch(setIsShow_callDialog(false));
+        dispatch(set__is_show__call_dialog(false));
     };
 
     // const handleOpenRequestConsent = () => {
@@ -170,14 +125,14 @@ const CallDialog = () => {
     //         });
     // };
 
-    const handleGetAgent = () => {
-        if (!zaloApp) return;
-        if (!zaloOa) return;
+    const handle_Get_Agent = () => {
+        if (!zalo_app) return;
+        if (!zalo_oa) return;
 
-        getMccInfo({
-            zaloApp: zaloApp,
-            zaloOa: zaloOa,
-            accountId: -1,
+        get_Mcc_Info({
+            zalo_app: zalo_app,
+            zalo_oa: zalo_oa,
+            account_id: '',
         })
             .then((res) => {
                 console.log(res);
@@ -187,24 +142,24 @@ const CallDialog = () => {
             });
     };
 
-    const handleOutbound = () => {
-        if (!zaloApp) return;
-        if (!zaloOa) return;
-    };
+    // const handle_Out_bound = () => {
+    //     if (!zalo_app) return;
+    //     if (!zalo_oa) return;
+    // };
 
     return (
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.closeContainer}>
-                    <IoMdClose onClick={() => handleClose()} size={25} title={CLOSE} />
+                    <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
                 <div className={style.contentContainer}>
                     <div className={style.header}>Cuộc gọi</div>
-                    <Infor setIsRequestConsent={setIsRequestConsent} />
+                    <Infor set__is_request_consent={set__is_request_consent} />
                     <RequestConsent
-                        isShow={isRequestConsent}
-                        setIsShow={setIsRequestConsent}
-                        chatRoomId={chatRoomId_callDialog || -1}
+                        is_show={is_request_consent}
+                        set__is_show={set__is_request_consent}
+                        chat_room_id={chat_room_id__call_dialog || ''}
                     />
                     <Call />
                     <audio ref={audioRef} autoPlay playsInline />

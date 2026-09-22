@@ -7,7 +7,7 @@ import { SEE_MORE } from '@src/const/text';
 import { useLazyGetZnsMessagesQuery } from '@src/redux/query/zalo_RTK';
 import { AccountField } from '@src/dataStruct/account';
 import { ZnsMessageField } from '@src/dataStruct/zalo';
-import { setData_toastMessage, set_isLoading } from '@src/redux/slice/ZnsDetail';
+import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Zns_Detail';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import OneDay from './component/OneDay';
 

@@ -1,11 +1,11 @@
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
 
 export interface state_props {
-    isLoading: boolean;
-    toastMessage: {
+    is_loading: boolean;
+    toast_message: {
         data: ToastMessage_Data_Props;
     };
-    editInforDialog: {
-        isShow: boolean;
+    edit_infor_dialog: {
+        is_show: boolean;
     };
 }

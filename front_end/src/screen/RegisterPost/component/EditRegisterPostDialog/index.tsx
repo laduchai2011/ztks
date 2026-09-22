@@ -9,7 +9,7 @@ import {
     set_isLoading,
     setIsShow_editRegisterPostDialog,
     setNewRegisterPost_editRegisterPostDialog,
-} from '@src/redux/slice/RegisterPost';
+} from '@src/redux/slice/Register_Post';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { AccountInformationField } from '@src/dataStruct/account';
 import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';

@@ -1,78 +1,81 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { state_props } from '@src/screen/Zns/type';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
-import { ZaloOaField, ZnsTemplateField } from '@src/dataStruct/zalo';
+import { Zalo_Oa_Field, Zns_Template_Field } from '@src/data_struct/zalo';
 
 const initialState: state_props = {
-    isLoading: false,
-    toastMessage: {
+    is_loading: false,
+    toast_message: {
         data: { type: undefined, message: '' },
     },
-    selectedOa: undefined,
-    newZnsTemplate: undefined,
-    newZnsTemplates: [],
-    editZnsTemplateDialog: {
-        isShow: false,
-        znsTemplate: undefined,
-        newZnsTemplate: undefined,
+    selected_oa: undefined,
+    new_zns_template: undefined,
+    new_zns_templates: [],
+    edit_zns_template_dialog: {
+        is_show: false,
+        zns_template: undefined,
+        new_zns_template: undefined,
     },
-    sendTemplateDialog: {
-        isShow: false,
-        znsTemplate: undefined,
+    send_template_dialog: {
+        is_show: false,
+        zns_template: undefined,
     },
 };
 
-const ZnsSlice = createSlice({
-    name: 'ZnsSlice',
+const Zns_Slice = createSlice({
+    name: 'Zns_Slice',
     initialState,
     reducers: {
-        set_isLoading: (state, action: PayloadAction<boolean>) => {
-            state.isLoading = action.payload;
+        set__is_loading: (state, action: PayloadAction<boolean>) => {
+            state.is_loading = action.payload;
         },
-        setData_toastMessage: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
-            state.toastMessage.data = action.payload;
+        set__data__toast_message: (state, action: PayloadAction<ToastMessage_Data_Props>) => {
+            state.toast_message.data = action.payload;
         },
-        set_selectedOa: (state, action: PayloadAction<ZaloOaField>) => {
-            state.selectedOa = action.payload;
+        set__selected_oa: (state, action: PayloadAction<Zalo_Oa_Field>) => {
+            state.selected_oa = action.payload;
         },
-        set_newZnsTemplate: (state, action: PayloadAction<ZnsTemplateField | undefined>) => {
-            state.newZnsTemplate = action.payload;
+        set__new_zns_template: (state, action: PayloadAction<Zns_Template_Field | undefined>) => {
+            state.new_zns_template = action.payload;
         },
-        setData_addNewZnsTemplate: (state, action: PayloadAction<ZnsTemplateField>) => {
-            state.newZnsTemplates = [...state.newZnsTemplates, action.payload];
+        set__data__add_new_zns_template: (state, action: PayloadAction<Zns_Template_Field>) => {
+            state.new_zns_templates = [...state.new_zns_templates, action.payload];
         },
-        clear_newZnsTemplates: (state) => {
-            state.newZnsTemplates = [];
+        clear__new_zns_templates: (state) => {
+            state.new_zns_templates = [];
         },
-        setIsShow_editZnsTemplateDialog: (state, action: PayloadAction<boolean>) => {
-            state.editZnsTemplateDialog.isShow = action.payload;
+        set__is_show__edit_zns_template_dialog: (state, action: PayloadAction<boolean>) => {
+            state.edit_zns_template_dialog.is_show = action.payload;
         },
-        setZnsTemplate_editZnsTemplateDialog: (state, action: PayloadAction<ZnsTemplateField | undefined>) => {
-            state.editZnsTemplateDialog.znsTemplate = action.payload;
+        set__zns_template__edit_zns_template_dialog: (state, action: PayloadAction<Zns_Template_Field | undefined>) => {
+            state.edit_zns_template_dialog.zns_template = action.payload;
         },
-        setNewZnsTemplate_editZnsTemplateDialog: (state, action: PayloadAction<ZnsTemplateField | undefined>) => {
-            state.editZnsTemplateDialog.newZnsTemplate = action.payload;
+        set__new_zns_template__edit_zns_template_dialog: (
+            state,
+            action: PayloadAction<Zns_Template_Field | undefined>
+        ) => {
+            state.edit_zns_template_dialog.new_zns_template = action.payload;
         },
-        setIsShow_sendTemplateDialog: (state, action: PayloadAction<boolean>) => {
-            state.sendTemplateDialog.isShow = action.payload;
+        set__is_show__send_template_dialog: (state, action: PayloadAction<boolean>) => {
+            state.send_template_dialog.is_show = action.payload;
         },
-        setZnsTemplate_sendTemplateDialog: (state, action: PayloadAction<ZnsTemplateField | undefined>) => {
-            state.sendTemplateDialog.znsTemplate = action.payload;
+        set__zns_template__send_template_dialog: (state, action: PayloadAction<Zns_Template_Field | undefined>) => {
+            state.send_template_dialog.zns_template = action.payload;
         },
     },
 });
 
 export const {
-    set_isLoading,
-    setData_toastMessage,
-    set_selectedOa,
-    set_newZnsTemplate,
-    setData_addNewZnsTemplate,
-    clear_newZnsTemplates,
-    setIsShow_editZnsTemplateDialog,
-    setZnsTemplate_editZnsTemplateDialog,
-    setNewZnsTemplate_editZnsTemplateDialog,
-    setIsShow_sendTemplateDialog,
-    setZnsTemplate_sendTemplateDialog,
-} = ZnsSlice.actions;
-export default ZnsSlice.reducer;
+    set__is_loading,
+    set__data__toast_message,
+    set__selected_oa,
+    set__new_zns_template,
+    set__data__add_new_zns_template,
+    clear__new_zns_templates,
+    set__is_show__edit_zns_template_dialog,
+    set__zns_template__edit_zns_template_dialog,
+    set__new_zns_template__edit_zns_template_dialog,
+    set__is_show__send_template_dialog,
+    set__zns_template__send_template_dialog,
+} = Zns_Slice.actions;
+export default Zns_Slice.reducer;
