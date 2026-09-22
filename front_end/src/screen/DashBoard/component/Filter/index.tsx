@@ -8,41 +8,43 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { SEARCH } from '@src/const/text';
-import { useLazyGetStatisticsOaQuery } from '@src/redux/query/statistics_RTK';
-import { AccountInformationField } from '@src/dataStruct/account';
-import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
+import { useLazy_get_Statistics_Oa_Query } from '@src/redux/query/statistics_RTK';
+import { Account_Information_Field } from '@src/data_struct/account';
+import { Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
 import {
-    setData_toastMessage,
-    set_isLoading,
-    set_selectedOa,
-    set_statisticsOaArray,
+    set__data__toast_message,
+    set__is_loading,
+    set__selected_oa,
+    set__statistics_oa_array,
 } from '@src/redux/slice/Dash_Board';
-import { useLazyGetZaloOaListWith2FkQuery } from '@src/redux/query/zalo_RTK';
+import { useLazy_get_Zalo_Oa_List_With_2_Fk_Query } from '@src/redux/query/zalo_RTK';
 import { OA_KEY } from '@src/const/key';
-import { getCookie, setCookie } from '@src/utility/cookie';
+import { get_Cookie, set_Cookie } from '@src/utility/cookie';
 import { SEE_MORE } from '@src/const/text';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const Filter = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const accountInformation: AccountInformationField | undefined = useSelector(
-        (state: RootState) => state.AppSlice.accountInformation
+    const account_information: Account_Information_Field | undefined = useSelector(
+        (state: RootState) => state.App_Slice.account_information
     );
-    const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
-    const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.DashBoardSlice.selectedOa);
+    const zalo_app: Zalo_App_Field | undefined = useSelector((state: RootState) => state.App_Slice.zalo_app);
+    const selected_oa: Zalo_Oa_Field | undefined = useSelector(
+        (state: RootState) => state.Dash_Board_Slice.selected_oa
+    );
 
     const list_element = useRef<HTMLDivElement | null>(null);
-    const [fromDate, setFromDate] = useState<Dayjs | null>(dayjs());
-    const [toDate, setToDate] = useState<Dayjs | null>(dayjs());
-    const [isShowOa, setIsShowOa] = useState<boolean>(false);
-    const [page, setPage] = useState<number>(1);
+    const [from_date, set__from_date] = useState<Dayjs | null>(dayjs());
+    const [to_date, set__to_date] = useState<Dayjs | null>(dayjs());
+    const [is_show_oa, set__is_show_oa] = useState<boolean>(false);
+    const [page, set__page] = useState<number>(1);
     const size: number = 5;
-    const [zaloOaList, setZaloOaList] = useState<ZaloOaField[]>([]);
-    const [total, setTotal] = useState<number>(0);
+    const [zalo_oa_list, set__zalo_oa_list] = useState<Zalo_Oa_Field[]>([]);
+    const [total, set__total] = useState<number>(0);
     // const [statisticsOaArray, setStatisticsOaArray] = useState<StatisticsOaField[]>([]);
 
-    const [getStatisticsOa] = useLazyGetStatisticsOaQuery();
-    const [getZaloOaListWith2Fk] = useLazyGetZaloOaListWith2FkQuery();
+    const [get_Statistics_Oa] = useLazy_get_Statistics_Oa_Query();
+    const [get_Zalo_Oa_List_With_2_Fk] = useLazy_get_Zalo_Oa_List_With_2_Fk_Query();
 
     // useEffect(() => {
     //     if (fromDate) {
@@ -51,91 +53,90 @@ const Filter = () => {
     // }, [fromDate]);
 
     useEffect(() => {
-        if (!accountInformation || !zaloApp) return;
-        dispatch(set_isLoading(true));
-        getZaloOaListWith2Fk({
+        if (!account_information || !zalo_app) return;
+        dispatch(set__is_loading(true));
+        get_Zalo_Oa_List_With_2_Fk({
             page: page,
             size: size,
-            zaloAppId: zaloApp.id,
-            accountId: accountInformation.addedById || -1,
+            zalo_app_id: zalo_app.id,
+            account_id: account_information.added_by_id || '',
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
                     if (page === 1) {
-                        setZaloOaList(resData.data.items);
+                        set__zalo_oa_list(res_data.data.items);
                     } else {
-                        setZaloOaList((prev) => [...prev, ...(resData.data?.items ?? [])]);
+                        set__zalo_oa_list((prev) => [...prev, ...(res_data.data?.items ?? [])]);
                     }
 
-                    setTotal(resData.data.totalCount);
+                    set__total(res_data.data.total_count);
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
-    }, [dispatch, accountInformation, getZaloOaListWith2Fk, page, zaloApp]);
+    }, [dispatch, account_information, get_Zalo_Oa_List_With_2_Fk, page, zalo_app]);
 
     useEffect(() => {
-        const selected_oa_cookie = getCookie(OA_KEY.SELECTED_OA);
+        const selected_oa_cookie = get_Cookie(OA_KEY.SELECTED_OA);
         if (!selected_oa_cookie) return;
-        const selected_oa_js = JSON.parse(selected_oa_cookie) as ZaloOaField;
+        const selected_oa_js = JSON.parse(selected_oa_cookie) as Zalo_Oa_Field;
         let isExist: boolean = false;
 
-        for (let i: number = 0; i < zaloOaList.length; i++) {
-            if (zaloOaList[i].id === selected_oa_js.id) {
+        for (let i: number = 0; i < zalo_oa_list.length; i++) {
+            if (zalo_oa_list[i].id === selected_oa_js.id) {
                 isExist = true;
                 break;
             }
         }
 
         if (isExist) {
-            dispatch(set_selectedOa(selected_oa_js));
+            dispatch(set__selected_oa(selected_oa_js));
         }
-    }, [dispatch, zaloOaList]);
+    }, [dispatch, zalo_oa_list]);
 
     useEffect(() => {
         if (!list_element.current) return;
         const listElement = list_element.current;
 
-        if (isShowOa) {
+        if (is_show_oa) {
             listElement.classList.add(style.show);
         } else {
             listElement.classList.remove(style.show);
         }
-    }, [isShowOa]);
+    }, [is_show_oa]);
 
-    const handleSearch = () => {
-        if (!selectedOa) return;
-        if (!accountInformation) return;
-        if (!fromDate) return;
-        if (!toDate) return;
+    const handle_Search = () => {
+        if (!selected_oa) return;
+        if (!account_information) return;
+        if (!from_date) return;
+        if (!to_date) return;
 
-        getStatisticsOa({
-            fromDate: new Date(fromDate.format('YYYY-MM-DD')).toString(),
-            toDate: new Date(toDate.format('YYYY-MM-DD')).toString(),
-            zaloOaId: selectedOa.id,
+        get_Statistics_Oa({
+            from_date: new Date(from_date.format('YYYY-MM-DD')).toString(),
+            to_date: new Date(to_date.format('YYYY-MM-DD')).toString(),
+            zalo_oa_id: selected_oa.id,
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    // setStatisticsOaArray(resData.data);
-                    dispatch(set_statisticsOaArray(resData.data));
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    dispatch(set__statistics_oa_array(res_data.data));
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
@@ -143,50 +144,27 @@ const Filter = () => {
             });
     };
 
-    // useEffect(() => {
-    //     if (!statisticsOaArray) return;
-
-    //     dispatch(set_statisticsOaArray(statisticsOaArray));
-
-    //     let sales: number = 0;
-    //     let averageSales: number = 0;
-    //     let orderAmount: number = 0;
-    //     let averageOrderAmount: number = 0;
-    //     let ofDay: string = '';
-    //     for (let i: number = 0; i < statisticsOaArray.length; i++) {
-    //         sales = sales + statisticsOaArray[i].sales;
-
-    //         orderAmount = orderAmount + statisticsOaArray[i].orderAmount;
-    //         // averageOrderAmount = averageOrderAmount + statisticsOaArray[i].averageOrderAmount;
-
-    //         ofDay = statisticsOaArray[i].ofDay.toString();
-    //     }
-
-    //     averageSales = sales / orderAmount;
-    //     averageOrderAmount = orderAmount / 2;
-    // }, [dispatch, statisticsOaArray]);
-
-    const handleShowDown = () => {
-        setIsShowOa(true);
+    const handle_Show_Down = () => {
+        set__is_show_oa(true);
     };
 
-    const handleShowUp = () => {
-        setIsShowOa(false);
+    const handle_Show_Up = () => {
+        set__is_show_oa(false);
     };
 
-    const handleSelected = (item: ZaloOaField) => {
-        setCookie(OA_KEY.SELECTED_OA, JSON.stringify(item), 365);
-        dispatch(set_selectedOa(item));
+    const handle_Selected = (item: Zalo_Oa_Field) => {
+        set_Cookie(OA_KEY.SELECTED_OA, JSON.stringify(item), 365);
+        dispatch(set__selected_oa(item));
     };
 
-    const handleSeeMore = () => {
-        setPage((prev) => prev + 1);
+    const handle_See_More = () => {
+        set__page((prev) => prev + 1);
     };
 
-    const list_oa = zaloOaList.map((item) => {
+    const list_oa = zalo_oa_list.map((item) => {
         return (
-            <div onClick={() => handleSelected(item)} key={item.id}>
-                {item.oaName}
+            <div onClick={() => handle_Selected(item)} key={item.id}>
+                {item.oa_name}
             </div>
         );
     });
@@ -196,15 +174,17 @@ const Filter = () => {
             <div>
                 <div>
                     <div className={style.selected}>
-                        <div>{selectedOa?.oaName}</div>
+                        <div>{selected_oa?.oa_name}</div>
                         <div>
-                            {!isShowOa && <HiChevronDown onClick={() => handleShowDown()} size={25} />}
-                            {isShowOa && <HiChevronUp onClick={() => handleShowUp()} size={25} />}
+                            {!is_show_oa && <HiChevronDown onClick={() => handle_Show_Down()} size={25} />}
+                            {is_show_oa && <HiChevronUp onClick={() => handle_Show_Up()} size={25} />}
                         </div>
                     </div>
                     <div className={style.list} ref={list_element}>
                         <div>{list_oa}</div>
-                        <div>{zaloOaList.length < total && <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>}</div>
+                        <div>
+                            {zalo_oa_list.length < total && <div onClick={() => handle_See_More()}>{SEE_MORE}</div>}
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -212,9 +192,9 @@ const Filter = () => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             label="Chọn ngày"
-                            value={fromDate}
+                            value={from_date}
                             onChange={(newValue) => {
-                                setFromDate(newValue);
+                                set__from_date(newValue);
                             }}
                         />
                     </LocalizationProvider>
@@ -222,13 +202,13 @@ const Filter = () => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             label="Chọn ngày"
-                            value={toDate}
+                            value={to_date}
                             onChange={(newValue) => {
-                                setToDate(newValue);
+                                set__to_date(newValue);
                             }}
                         />
                     </LocalizationProvider>
-                    <div className={style.searchBtn} onClick={() => handleSearch()}>
+                    <div className={style.searchBtn} onClick={() => handle_Search()}>
                         {SEARCH}
                     </div>
                 </div>

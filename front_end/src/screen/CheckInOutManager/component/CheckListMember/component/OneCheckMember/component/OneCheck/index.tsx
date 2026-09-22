@@ -4,79 +4,79 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { handleSrcImage, avatarnull } from '@src/utility/string';
 import { timeAgoSmart } from '@src/utility/time';
-import { AccountField } from '@src/dataStruct/account';
-import { CheckInOutField, CheckInOutInspectField, CheckInOutEnum } from '@src/dataStruct/checkInOut';
-import { CreateCheckInOutInspectBodyField } from '@src/dataStruct/checkInOut/body';
+import { Account_Field } from '@src/data_struct/account';
+import { Check_In_Out_Field, Check_In_Out_Inspect_Field, Check_In_Out_Enum } from '@src/data_struct/check_in_out';
+import { Create_Check_In_Out_Inspect_Body_Field } from '@src/data_struct/check_in_out/body';
 import {
-    useLazyGetCheckInOutInspectWithFkQuery,
-    useCreateCheckInOutInspectMutation,
+    useLazy_get_Check_In_Out_Inspect_With_Fk_Query,
+    use_create_Check_In_Out_Inspect_Mutation,
 } from '@src/redux/query/check_in_out_RTK';
-import { useLazyGetAccountWithIdQuery } from '@src/redux/query/account_RTK';
+import { useLazy_get_Account_With_Id_Query } from '@src/redux/query/account_RTK';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { set_isLoading, setData_toastMessage } from '@src/redux/slice/Check_In_Out_Manager';
+import { set__is_loading, set__data__toast_message } from '@src/redux/slice/Check_In_Out_Manager';
 
-const OneCheck: FC<{ data: CheckInOutField }> = ({ data }) => {
+const OneCheck: FC<{ data: Check_In_Out_Field }> = ({ data }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
 
-    const [isInspect, setIsInspect] = useState<boolean | null>(null);
-    const [checkInOutInspect, setCheckInOutInspect] = useState<CheckInOutInspectField | null>(null);
-    const [inspect_account, setInspect_account] = useState<AccountField | null>(null);
+    const [is_inspect, set__is_inspect] = useState<boolean | null>(null);
+    const [check_in_out_inspect, set__check_in_out_inspect] = useState<Check_In_Out_Inspect_Field | null>(null);
+    const [inspect_account, set__inspect_account] = useState<Account_Field | null>(null);
 
-    const [content, setContent] = useState<string>('');
+    const [content, set__content] = useState<string>('');
 
-    const [getCheckInOutInspectWithFk] = useLazyGetCheckInOutInspectWithFkQuery();
-    const [getAccountWithId] = useLazyGetAccountWithIdQuery();
-    const [createCheckInOutInspect] = useCreateCheckInOutInspectMutation();
+    const [get_Check_In_Out_Inspect_With_Fk] = useLazy_get_Check_In_Out_Inspect_With_Fk_Query();
+    const [get_Account_With_Id] = useLazy_get_Account_With_Id_Query();
+    const [create_Check_In_Out_Inspect] = use_create_Check_In_Out_Inspect_Mutation();
 
     useEffect(() => {
-        getCheckInOutInspectWithFk({ checkInOutId: data.id })
+        get_Check_In_Out_Inspect_With_Fk({ check_in_out_id: data.id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setCheckInOutInspect(resData.data);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__check_in_out_inspect(res_data.data);
                 }
             })
             .catch((err) => {
                 console.error(err);
             });
-    }, [getCheckInOutInspectWithFk, data.id]);
+    }, [get_Check_In_Out_Inspect_With_Fk, data.id]);
 
     useEffect(() => {
-        if (!checkInOutInspect) return;
-        getAccountWithId({ id: checkInOutInspect.accountId })
+        if (!check_in_out_inspect) return;
+        get_Account_With_Id({ id: check_in_out_inspect.account_id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setInspect_account(resData.data);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__inspect_account(res_data.data);
                 }
             })
             .catch((err) => {
                 console.error(err);
             });
-    }, [checkInOutInspect, getAccountWithId]);
+    }, [check_in_out_inspect, get_Account_With_Id]);
 
-    const handleSlectedInspect = (is: boolean) => {
-        if (isInspect === is) {
+    const handle_Slected_Inspect = (is: boolean) => {
+        if (is_inspect === is) {
             return style.selected;
         }
         return '';
     };
 
-    const handleInspect = (is: boolean) => {
-        setIsInspect(is);
+    const handle_Inspect = (is: boolean) => {
+        set__is_inspect(is);
     };
 
-    const handleContent = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Content = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setContent(value);
+        set__content(value);
     };
 
     const handleAgree = () => {
         if (!account) return;
-        if (isInspect === null) {
+        if (is_inspect === null) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Vui lòng chọn (Duyệt) hoặc (Không duyệt) !',
                 })
@@ -84,29 +84,28 @@ const OneCheck: FC<{ data: CheckInOutField }> = ({ data }) => {
             return;
         }
 
-        const createCheckInOutInspectBody: CreateCheckInOutInspectBodyField = {
+        const create_check_in_out_inspect_body: Create_Check_In_Out_Inspect_Body_Field = {
             content: content.trim(),
-            isPass: isInspect,
-            checkInOutId: data.id,
-            accountId: -1,
+            is_pass: is_inspect,
+            check_in_out_id: data.id,
+            account_id: '',
         };
 
-        dispatch(set_isLoading(true));
-        createCheckInOutInspect(createCheckInOutInspectBody)
+        dispatch(set__is_loading(true));
+        create_Check_In_Out_Inspect(create_check_in_out_inspect_body)
             .then((res) => {
-                const resData = res.data;
-                console.log('createCheckInOutInspect', resData);
-                if (resData?.isSuccess && resData.data) {
-                    setCheckInOutInspect(resData.data);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__check_in_out_inspect(res_data.data);
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.SUCCESS,
                             message: 'Gửi duyệt (không duyệt) thành công !',
                         })
                     );
                 } else {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.NORMAL,
                             message: 'Gửi duyệt (không duyệt) KHÔNG thành công !',
                         })
@@ -116,21 +115,21 @@ const OneCheck: FC<{ data: CheckInOutField }> = ({ data }) => {
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
-            .finally(() => dispatch(set_isLoading(false)));
+            .finally(() => dispatch(set__is_loading(false)));
     };
 
-    const handleCheckTypeColor = () => {
+    const handle_Check_Type_Color = () => {
         switch (data.type) {
-            case CheckInOutEnum.IN:
+            case Check_In_Out_Enum.IN:
                 return style.inColor;
 
-            case CheckInOutEnum.OUT:
+            case Check_In_Out_Enum.OUT:
                 return style.outColor;
 
             default:
@@ -138,11 +137,11 @@ const OneCheck: FC<{ data: CheckInOutField }> = ({ data }) => {
         }
     };
 
-    const handleInspectColor = () => {
-        if (!checkInOutInspect) {
+    const handle_Inspect_Color = () => {
+        if (!check_in_out_inspect) {
             return '';
         }
-        switch (checkInOutInspect.isPass) {
+        switch (check_in_out_inspect.is_pass) {
             case true:
                 return style.pass;
 
@@ -155,30 +154,30 @@ const OneCheck: FC<{ data: CheckInOutField }> = ({ data }) => {
     };
 
     return (
-        <div className={`${style.parent} ${handleInspectColor()}`}>
+        <div className={`${style.parent} ${handle_Inspect_Color()}`}>
             <div className={style.check}>
                 <div>
-                    <div className={handleCheckTypeColor()}>{data.type}</div>
-                    <div className={handleCheckTypeColor()}>{data.note}</div>
+                    <div className={handle_Check_Type_Color()}>{data.type}</div>
+                    <div className={handle_Check_Type_Color()}>{data.note}</div>
                 </div>
                 <div>
                     <img src={handleSrcImage(data.image || '')} alt="" />
                 </div>
                 <div>
-                    <div>{timeAgoSmart(data.createTime)}</div>
+                    <div>{timeAgoSmart(data.create_time)}</div>
                 </div>
             </div>
             <div className={style.inspect}>
-                {!checkInOutInspect && (
+                {!check_in_out_inspect && (
                     <div className={style.createInspect}>
                         <div>
-                            <input value={content} onChange={(e) => handleContent(e)} placeholder="Ghi chú" />
+                            <input value={content} onChange={(e) => handle_Content(e)} placeholder="Ghi chú" />
                         </div>
                         <div>
-                            <div className={handleSlectedInspect(true)} onClick={() => handleInspect(true)}>
+                            <div className={handle_Slected_Inspect(true)} onClick={() => handle_Inspect(true)}>
                                 Duyệt
                             </div>
-                            <div className={handleSlectedInspect(false)} onClick={() => handleInspect(false)}>
+                            <div className={handle_Slected_Inspect(false)} onClick={() => handle_Inspect(false)}>
                                 Không duyệt
                             </div>
                         </div>
@@ -187,7 +186,7 @@ const OneCheck: FC<{ data: CheckInOutField }> = ({ data }) => {
                         </div>
                     </div>
                 )}
-                {inspect_account && checkInOutInspect && (
+                {inspect_account && check_in_out_inspect && (
                     <div className={style.getInspect}>
                         <div>
                             <img
@@ -196,13 +195,13 @@ const OneCheck: FC<{ data: CheckInOutField }> = ({ data }) => {
                             />
                         </div>
                         <div>
-                            <div>{`${inspect_account.firstName} ${inspect_account.lastName}`}</div>
+                            <div>{`${inspect_account.first_name} ${inspect_account.last_name}`}</div>
                         </div>
                         <div>
-                            <div>{checkInOutInspect.isPass ? 'Duyệt' : 'Không duyệt'}</div>
+                            <div>{check_in_out_inspect.is_pass ? 'Duyệt' : 'Không duyệt'}</div>
                         </div>
                         <div>
-                            <div>{checkInOutInspect.content}</div>
+                            <div>{check_in_out_inspect.content}</div>
                         </div>
                     </div>
                 )}

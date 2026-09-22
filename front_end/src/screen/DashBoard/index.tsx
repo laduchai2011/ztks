@@ -10,24 +10,24 @@ import Filter from './component/Filter';
 import Overview from './component/Overview';
 import MemberRank from './component/MemberRank';
 import { route_enum } from '@src/router/type';
-import { setData_toastMessage } from '@src/redux/slice/Dash_Board';
+import { set__data__toast_message } from '@src/redux/slice/Dash_Board';
 import { select_enum } from '@src/router/type';
 
 const DashBoard = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
-    const myId = sessionStorage.getItem('myId');
+    const my_id = sessionStorage.getItem('myId');
 
     useEffect(() => {
-        if (myId === null) {
+        if (my_id === null) {
             navigate(route_enum.SIGNIN);
         }
-    }, [navigate, myId]);
+    }, [navigate, my_id]);
 
     useEffect(() => {
         return () => {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: undefined,
                     message: '',
                 })

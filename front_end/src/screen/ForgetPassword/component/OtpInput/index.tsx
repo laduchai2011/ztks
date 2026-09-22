@@ -5,10 +5,10 @@ import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE } from '@src/const/text';
 import {
-    setIsShow_otpDialog,
-    setToken_otpDialog,
-    set_isLoading,
-    setData_toastMessage,
+    set__is_show__otp_dialog,
+    set__token__otp_dialog,
+    set__is_loading,
+    set__data__toast_message,
 } from '@src/redux/slice/Forget_Password';
 import { verifyOtp } from '@src/otp/handle';
 import { messageType_enum } from '@src/component/ToastMessage/type';
@@ -18,13 +18,13 @@ const OtpInput: FC<{ confirmation: any }> = ({ confirmation }) => {
     const parent_element = useRef<HTMLDivElement | null>(null);
     const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
-    const isShow: boolean = useSelector((state: RootState) => state.ForgetPasswordSlice.otpDialog.isShow);
+    const is_show: boolean = useSelector((state: RootState) => state.Forget_Password_Slice.otp_dialog.is_show);
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow) {
+        if (is_show) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -38,18 +38,18 @@ const OtpInput: FC<{ confirmation: any }> = ({ confirmation }) => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow]);
+    }, [is_show]);
 
-    const handleClose = () => {
-        dispatch(setIsShow_otpDialog(false));
+    const handle_Close = () => {
+        dispatch(set__is_show__otp_dialog(false));
     };
 
-    const handleVerify = async (otp: string) => {
+    const handle_Verify = async (otp: string) => {
         const token = await verifyOtp(confirmation, otp);
         return token;
     };
 
-    const handleChange = async (value: string, index: number) => {
+    const handle_Change = async (value: string, index: number) => {
         if (!/^\d$/.test(value)) return;
 
         const input = inputsRef.current[index];
@@ -68,25 +68,25 @@ const OtpInput: FC<{ confirmation: any }> = ({ confirmation }) => {
 
         if (isComplete && index === 5) {
             try {
-                dispatch(set_isLoading(true));
-                const token = await handleVerify(otp);
-                dispatch(setToken_otpDialog(token));
-                dispatch(setIsShow_otpDialog(false));
+                dispatch(set__is_loading(true));
+                const token = await handle_Verify(otp);
+                dispatch(set__token__otp_dialog(token));
+                dispatch(set__is_show__otp_dialog(false));
             } catch (error) {
                 console.error('OTP verification failed:', error);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Mã OTP không đúng!',
                     })
                 );
             } finally {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             }
         }
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+    const handle_Key_Down = (e: React.KeyboardEvent, index: number) => {
         if (e.key === 'Backspace') {
             if (inputsRef.current[index]?.value === '') {
                 if (index > 0) {
@@ -99,7 +99,7 @@ const OtpInput: FC<{ confirmation: any }> = ({ confirmation }) => {
     };
 
     // 🚀 xử lý paste OTP
-    const handlePaste = (e: React.ClipboardEvent) => {
+    const handle_Paste = (e: React.ClipboardEvent) => {
         const paste = e.clipboardData.getData('text').slice(0, 6);
         if (!/^\d+$/.test(paste)) return;
 
@@ -116,7 +116,7 @@ const OtpInput: FC<{ confirmation: any }> = ({ confirmation }) => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.closeContainer}>
-                    <IoMdClose onClick={() => handleClose()} size={25} title={CLOSE} />
+                    <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
                 <div className={style.contentContainer}>
                     <div className={style.text}>Nhập mã OTP</div>
@@ -129,10 +129,10 @@ const OtpInput: FC<{ confirmation: any }> = ({ confirmation }) => {
                                 ref={(el) => {
                                     inputsRef.current[index] = el;
                                 }}
-                                onChange={(e) => handleChange(e.target.value, index)}
-                                onKeyDown={(e) => handleKeyDown(e, index)}
+                                onChange={(e) => handle_Change(e.target.value, index)}
+                                onKeyDown={(e) => handle_Key_Down(e, index)}
                                 onFocus={(e) => e.target.select()}
-                                onPaste={handlePaste}
+                                onPaste={handle_Paste}
                                 inputMode="numeric"
                                 pattern="[0-9]*"
                             />

@@ -8,13 +8,13 @@ import { LOAD_COMPONENTS_CONST } from '@src/component/Loading/const';
 
 const MyLoading = () => {
     const parent_element = useRef<HTMLDivElement | null>(null);
-    const isLoading = useSelector((state: RootState) => state.DashBoardSlice.isLoading);
+    const is_loading = useSelector((state: RootState) => state.Dash_Board_Slice.is_loading);
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isLoading) {
+        if (is_loading) {
             parentElement.classList.add(style.display);
             const timeout1 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -27,7 +27,7 @@ const MyLoading = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isLoading]);
+    }, [is_loading]);
 
     const lineCircleLoad: LineCircleLoadProps = {
         lineSize: 3,

@@ -6,106 +6,111 @@ import { AppDispatch, RootState } from '@src/redux';
 import { SIGNIN, ACCOUNT, SIGNUP, FORGET_PASSWORD, PHONE_NUMBER, SEND, NEW_PASSWORD } from '@src/const/text';
 import { route_enum } from '@src/router/type';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-// import { AccountField } from '@src/dataStruct/account';
 import MyLoading from './component/MyLoading';
 import MyToastMessage from './component/MyToastMessage';
 import OtpInput from './component/OtpInput';
 import { sendOtp } from '@src/otp/handle';
 import { formatPhone, handleSrcImage } from '@src/utility/string';
 import {
-    setIsShow_otpDialog,
-    setToken_otpDialog,
-    set_isLoading,
-    setData_toastMessage,
+    set__is_show__otp_dialog,
+    set__token__otp_dialog,
+    set__is_loading,
+    set__data__toast_message,
 } from '@src/redux/slice/Forget_Password';
-import { useForgetPasswordMutation, useLazyCheckForgetPasswordQuery } from '@src/redux/query/account_RTK';
+import { use_forget_Password_Mutation, useLazy_check_Forget_Password_Query } from '@src/redux/query/account_RTK';
 import { isSpace, containsSpecialCharacters } from '@src/utility/string';
 
 const ForgetPassword = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
 
-    const token: string = useSelector((state: RootState) => state.ForgetPasswordSlice.otpDialog.token);
+    const token: string = useSelector((state: RootState) => state.Forget_Password_Slice.otp_dialog.token);
 
-    const [confirmation, setConfirmation] = useState<any>(null);
-    const [userName, setUserName] = useState<string>('');
-    const [phoneNumber, setPhoneNumber] = useState<string>('');
-    const [newPassword, setNewPassword] = useState<string>('');
+    const [confirmation, set__confirmation] = useState<any>(null);
+    const [user_name, set__user_name] = useState<string>('');
+    const [phone_number, set__phone_number] = useState<string>('');
+    const [new_password, set__new_password] = useState<string>('');
 
-    const [forgetPassword] = useForgetPasswordMutation();
-    const [checkForgetPassword] = useLazyCheckForgetPasswordQuery();
+    const [forget_Password] = use_forget_Password_Mutation();
+    const [check_Forget_Password] = useLazy_check_Forget_Password_Query();
 
-    const handleGoToSignin = () => {
+    const handle_Go_To_Signin = () => {
         navigate(route_enum.SIGNIN);
     };
 
-    const handleGoToSignup = () => {
+    const handle_Go_To_Signup = () => {
         navigate(route_enum.SIGNUP);
     };
 
-    const handleChangeUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUserName(e.target.value);
+    const handle_Change_User_Name = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__user_name(e.target.value);
     };
 
-    const handleChangePhoneNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPhoneNumber(e.target.value);
+    const handle_Change_Phone_Number = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__phone_number(e.target.value);
     };
 
-    const handleChangeNewPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setNewPassword(e.target.value);
+    const handle_Change_New_Password = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__new_password(e.target.value);
     };
 
     useEffect(() => {
         if (token.length === 0) return;
-        dispatch(set_isLoading(true));
-        forgetPassword({
-            body: { userName: userName.trim(), phone: phoneNumber.trim(), password: newPassword.trim() },
+        dispatch(set__is_loading(true));
+        forget_Password({
+            body: { user_name: user_name.trim(), phone: phone_number.trim(), password: new_password.trim() },
             token: token,
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
                     dispatch(
-                        setData_toastMessage({ type: messageType_enum.SUCCESS, message: 'Đổi mật khẩu thành công' })
+                        set__data__toast_message({ type: messageType_enum.SUCCESS, message: 'Đổi mật khẩu thành công' })
                     );
                 } else {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.ERROR,
-                            message: resData?.message || 'Đổi mật khẩu thất bại',
+                            message: res_data?.message || 'Đổi mật khẩu thất bại',
                         })
                     );
                 }
             })
             .catch((err) => console.error(err))
             .finally(() => {
-                dispatch(setToken_otpDialog(''));
-                dispatch(set_isLoading(false));
+                dispatch(set__token__otp_dialog(''));
+                dispatch(set__is_loading(false));
             });
-    }, [dispatch, token, forgetPassword, userName, newPassword, phoneNumber]);
+    }, [dispatch, token, forget_Password, user_name, new_password, phone_number]);
 
-    const handleSend = async () => {
-        const userName_trim = userName.trim();
-        const newPassword_trim = newPassword.trim();
-        const phone_trim = formatPhone(phoneNumber.trim());
-        if (userName_trim.length === 0) {
-            dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Vui lòng nhập tên tài khoản' }));
+    const handle_Send = async () => {
+        const user_name_trim = user_name.trim();
+        const new_password_trim = new_password.trim();
+        const phone_trim = formatPhone(phone_number.trim());
+        if (user_name_trim.length === 0) {
+            dispatch(
+                set__data__toast_message({ type: messageType_enum.ERROR, message: 'Vui lòng nhập tên tài khoản' })
+            );
             return;
         }
         if (phone_trim.length === 0) {
-            dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Vui lòng nhập số điện thoại' }));
+            dispatch(
+                set__data__toast_message({ type: messageType_enum.ERROR, message: 'Vui lòng nhập số điện thoại' })
+            );
             return;
         }
-        if (newPassword_trim.length === 0) {
-            dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Vui lòng nhập mật khẩu mới' }));
+        if (new_password_trim.length === 0) {
+            dispatch(set__data__toast_message({ type: messageType_enum.ERROR, message: 'Vui lòng nhập mật khẩu mới' }));
             return;
         } else {
-            if (isSpace(newPassword_trim)) {
-                dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Không được có khoảng trắng' }));
-                return;
-            } else if (containsSpecialCharacters(newPassword_trim)) {
+            if (isSpace(new_password_trim)) {
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({ type: messageType_enum.ERROR, message: 'Không được có khoảng trắng' })
+                );
+                return;
+            } else if (containsSpecialCharacters(new_password_trim)) {
+                dispatch(
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Mật khẩu không được chứa ký tự đặc biệt !',
                     })
@@ -114,21 +119,21 @@ const ForgetPassword = () => {
             }
         }
 
-        const resCheck = await checkForgetPassword({ userName: userName_trim, phone: phone_trim });
-        const resCheckData = resCheck.data;
-        if (!(resCheckData?.isSuccess && resCheckData.data)) {
+        const res_check = await check_Forget_Password({ user_name: user_name_trim, phone: phone_trim });
+        const res_check_data = res_check.data;
+        if (!(res_check_data?.is_success && res_check_data.data)) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
-                    message: resCheckData?.message || 'Tài khoản hoặc số điện thoại không đúng',
+                    message: res_check_data?.message || 'Tài khoản hoặc số điện thoại không đúng',
                 })
             );
             return;
         }
 
         const res = await sendOtp(phone_trim);
-        setConfirmation(res);
-        dispatch(setIsShow_otpDialog(true));
+        set__confirmation(res);
+        dispatch(set__is_show__otp_dialog(true));
     };
 
     return (
@@ -142,8 +147,8 @@ const ForgetPassword = () => {
                     <div className={style.aInput}>
                         <div>{ACCOUNT}</div>
                         <input
-                            value={userName}
-                            onChange={(e) => handleChangeUserName(e)}
+                            value={user_name}
+                            onChange={(e) => handle_Change_User_Name(e)}
                             type="text"
                             placeholder="Nhập tài khoản"
                         />
@@ -151,8 +156,8 @@ const ForgetPassword = () => {
                     <div className={style.aInput}>
                         <div>{PHONE_NUMBER}</div>
                         <input
-                            value={phoneNumber}
-                            onChange={(e) => handleChangePhoneNumber(e)}
+                            value={phone_number}
+                            onChange={(e) => handle_Change_Phone_Number(e)}
                             type="text"
                             placeholder="Nhập số điện thoại"
                         />
@@ -160,19 +165,19 @@ const ForgetPassword = () => {
                     <div className={style.aInput}>
                         <div>{NEW_PASSWORD}</div>
                         <input
-                            value={newPassword}
-                            onChange={(e) => handleChangeNewPassword(e)}
+                            value={new_password}
+                            onChange={(e) => handle_Change_New_Password(e)}
                             type="password"
                             placeholder="Mật khẩu mới"
                         />
                     </div>
                 </div>
                 <div className={style.buttonContainer}>
-                    <div onClick={() => handleSend()}>{SEND}</div>
+                    <div onClick={() => handle_Send()}>{SEND}</div>
                 </div>
                 <div className={style.options}>
-                    <div onClick={() => handleGoToSignin()}>{SIGNIN}</div>
-                    <div onClick={() => handleGoToSignup()}>{SIGNUP}</div>
+                    <div onClick={() => handle_Go_To_Signin()}>{SIGNIN}</div>
+                    <div onClick={() => handle_Go_To_Signup()}>{SIGNUP}</div>
                 </div>
             </div>
             <div>

@@ -4,48 +4,47 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { IoCloseOutline } from 'react-icons/io5';
 import { CREATE_CHECK_IN_OUT } from '@src/const/text';
-import { CheckInOutType, CheckInOutEnum } from '@src/dataStruct/checkInOut';
-import { CreateCheckInOutBodyField } from '@src/dataStruct/checkInOut/body';
-import { setData_toastMessage, set_isLoading, setAddData_checkInOuts } from '@src/redux/slice/Check_In_Out';
+import { Check_In_Out_Type, Check_In_Out_Enum } from '@src/data_struct/check_in_out';
+import { Create_Check_In_Out_Body_Field } from '@src/data_struct/check_in_out/body';
+import { set__data__toast_message, set__is_loading, set__add_data__check_in_outs } from '@src/redux/slice/Check_In_Out';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { useCreateCheckInOutMutation } from '@src/redux/query/check_in_out_RTK';
+import { use_create_Check_In_Out_Mutation } from '@src/redux/query/check_in_out_RTK';
 import { FaImage } from 'react-icons/fa';
-// import { PiVideoFill } from 'react-icons/pi';
 import { uploadImage } from '../../handle';
-import { AccountField } from '@src/dataStruct/account';
+import { Account_Field } from '@src/data_struct/account';
 
 const CreateCheckInOut = () => {
     const dispatch = useDispatch<AppDispatch>();
     const image_element = useRef<HTMLInputElement>(null);
     const checkTypes_element = useRef<HTMLDivElement>(null);
 
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
 
-    const [createCheckInOut] = useCreateCheckInOutMutation();
+    const [create_Check_In_Out] = use_create_Check_In_Out_Mutation();
 
-    const [isShowParent, setIsShowParent] = useState(false);
-    const [isDisplayBtn, setIsDisplayBtn] = useState(true);
-    const [isShowBtn, setIsShowBtn] = useState(true);
-    const [isDisplayIcon, setIsDisplayIcon] = useState(false);
-    const [isShowIcon, setIsShowIcon] = useState(false);
+    const [is_show_parent, set__is_show_parent] = useState(false);
+    const [is_display_btn, set__is_display_btn] = useState(true);
+    const [is_show_btn, set__is_show_btn] = useState(true);
+    const [is_display_icon, set__is_display_icon] = useState(false);
+    const [is_show_icon, set__is_show_icon] = useState(false);
 
-    const [note, setNote] = useState('');
-    const [checkType, setCheckType] = useState<CheckInOutType | null>(null);
-    const [image, setImage] = useState<File | null>(null);
-    const [preview, setPreview] = useState<string | null>(null);
+    const [note, set__note] = useState('');
+    const [check_type, set__check_type] = useState<Check_In_Out_Type | null>(null);
+    const [image, set__image] = useState<File | null>(null);
+    const [preview, set__preview] = useState<string | null>(null);
 
     useEffect(() => {
         if (!checkTypes_element.current) return;
         const checkTypesElement = checkTypes_element.current;
         const checkTypeElements = checkTypesElement.children;
 
-        switch (checkType) {
-            case CheckInOutEnum.IN: {
+        switch (check_type) {
+            case Check_In_Out_Enum.IN: {
                 checkTypeElements[0].classList.add(style.selected);
                 checkTypeElements[1].classList.remove(style.selected);
                 break;
             }
-            case CheckInOutEnum.OUT: {
+            case Check_In_Out_Enum.OUT: {
                 checkTypeElements[0].classList.remove(style.selected);
                 checkTypeElements[1].classList.add(style.selected);
                 break;
@@ -55,60 +54,60 @@ const CreateCheckInOut = () => {
                 break;
             }
         }
-    }, [checkType]);
+    }, [check_type]);
 
-    const handleHBtn = () => {
-        setIsShowParent(true);
-        setIsShowBtn(false);
+    const handle_H_Btn = () => {
+        set__is_show_parent(true);
+        set__is_show_btn(false);
         setTimeout(() => {
-            setIsDisplayBtn(false);
+            set__is_display_btn(false);
         }, 300);
-        setIsDisplayIcon(true);
+        set__is_display_icon(true);
         setTimeout(() => {
-            setIsShowIcon(true);
+            set__is_show_icon(true);
         }, 10);
     };
 
-    const handleHIcon = () => {
-        setIsShowParent(false);
-        setIsShowIcon(false);
+    const handle_H_Icon = () => {
+        set__is_show_parent(false);
+        set__is_show_icon(false);
         setTimeout(() => {
-            setIsDisplayIcon(false);
+            set__is_display_icon(false);
         }, 300);
-        setIsDisplayBtn(true);
+        set__is_display_btn(true);
         setTimeout(() => {
-            setIsShowBtn(true);
+            set__is_show_btn(true);
         }, 10);
     };
 
-    const handleNote = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Note = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setNote(value);
+        set__note(value);
     };
 
-    const handleCheckType = (type: CheckInOutType) => {
-        setCheckType(type);
+    const handle_Check_Type = (type: Check_In_Out_Type) => {
+        set__check_type(type);
     };
 
     useEffect(() => {
         if (!image) return;
-        const objectUrl = URL.createObjectURL(image);
-        setPreview(objectUrl);
+        const object_url = URL.createObjectURL(image);
+        set__preview(object_url);
 
         return () => {
-            URL.revokeObjectURL(objectUrl);
-            setPreview(null);
+            URL.revokeObjectURL(object_url);
+            set__preview(null);
         };
     }, [image]);
-    const handleClickImageIcon = () => {
+    const handle_Click_Image_Icon = () => {
         image_element.current?.click();
     };
-    const handleCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Capture = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
 
         if (!file) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Đã có lỗi xảy ra',
                 })
@@ -116,17 +115,17 @@ const CreateCheckInOut = () => {
             return;
         }
 
-        setImage(file);
+        set__image(file);
     };
 
     // const handleClickVideoIcon = () => {};
 
-    const handleCreate = async () => {
+    const handle_Create = async () => {
         if (!account) return;
 
-        if (!checkType) {
+        if (!check_type) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Vui lòng chọn loại check in/out',
                 })
@@ -136,7 +135,7 @@ const CreateCheckInOut = () => {
 
         if (!image) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Chưa có hình ảnh',
                 })
@@ -144,11 +143,11 @@ const CreateCheckInOut = () => {
             return;
         }
 
-        dispatch(set_isLoading(true));
-        const resData_image = await uploadImage(image, account.id.toString());
-        if (!resData_image) {
+        dispatch(set__is_loading(true));
+        const res_data_image = await uploadImage(image, account.id.toString());
+        if (!res_data_image) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Đăng tải hình ảnh thất bại !',
                 })
@@ -156,76 +155,82 @@ const CreateCheckInOut = () => {
             return;
         }
         dispatch(
-            setData_toastMessage({
+            set__data__toast_message({
                 type: messageType_enum.SUCCESS,
                 message: 'Đăng tải hình ảnh thành công !',
             })
         );
 
-        const fileName = resData_image.fileName;
+        const file_name = res_data_image.fileName;
 
-        const createNoteBody: CreateCheckInOutBodyField = {
-            type: checkType,
+        const create_note_body: Create_Check_In_Out_Body_Field = {
+            type: check_type,
             note: note.trim(),
-            image: fileName,
+            image: file_name,
             video: null,
-            accountId: -1,
+            account_id: '',
         };
 
-        createCheckInOut(createNoteBody)
+        create_Check_In_Out(create_note_body)
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    dispatch(setAddData_checkInOuts(resData.data));
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    dispatch(set__add_data__check_in_outs(res_data.data));
                     dispatch(
-                        setData_toastMessage({ type: messageType_enum.SUCCESS, message: 'Tạo ghi chú thành công !' })
+                        set__data__toast_message({
+                            type: messageType_enum.SUCCESS,
+                            message: 'Tạo ghi chú thành công !',
+                        })
                     );
                 } else {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.ERROR,
-                            message: resData?.message ?? 'Tạo ghi chú không thành công !',
+                            message: res_data?.message ?? 'Tạo ghi chú không thành công !',
                         })
                     );
                 }
             })
             .catch((err) => {
                 dispatch(
-                    setData_toastMessage({ type: messageType_enum.ERROR, message: 'Tạo ghi chú không thành công !' })
+                    set__data__toast_message({
+                        type: messageType_enum.ERROR,
+                        message: 'Tạo ghi chú không thành công !',
+                    })
                 );
                 console.error(err);
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
     };
 
     return (
-        <div className={`${style.parent} ${isShowParent ? style.show : ''}`}>
+        <div className={`${style.parent} ${is_show_parent ? style.show : ''}`}>
             <div className={style.header}>
                 <div
-                    className={`${style.btn} ${isDisplayBtn ? style.display : ''} ${isShowBtn ? style.show : ''}`}
-                    onClick={() => handleHBtn()}
+                    className={`${style.btn} ${is_display_btn ? style.display : ''} ${is_show_btn ? style.show : ''}`}
+                    onClick={() => handle_H_Btn()}
                 >
                     {CREATE_CHECK_IN_OUT}
                 </div>
                 <IoCloseOutline
-                    className={`${style.icon} ${isDisplayIcon ? style.display : ''} ${isShowIcon ? style.show : ''}`}
-                    onClick={() => handleHIcon()}
+                    className={`${style.icon} ${is_display_icon ? style.display : ''} ${is_show_icon ? style.show : ''}`}
+                    onClick={() => handle_H_Icon()}
                     size={25}
                 />
             </div>
             <div className={style.content}>
                 <div>
-                    <input value={note} onChange={(e) => handleNote(e)} placeholder="Ghi chú" />
+                    <input value={note} onChange={(e) => handle_Note(e)} placeholder="Ghi chú" />
                 </div>
                 <div className={style.checkTypes} ref={checkTypes_element}>
-                    <div onClick={() => handleCheckType(CheckInOutEnum.IN)}>Check in</div>
-                    <div onClick={() => handleCheckType(CheckInOutEnum.OUT)}>Check out</div>
+                    <div onClick={() => handle_Check_Type(Check_In_Out_Enum.IN)}>Check in</div>
+                    <div onClick={() => handle_Check_Type(Check_In_Out_Enum.OUT)}>Check out</div>
                 </div>
                 <div>
-                    <FaImage onClick={() => handleClickImageIcon()} size={25} color="greenyellow" />
-                    <input type="file" ref={image_element} accept="image/*" capture="user" onChange={handleCapture} />
+                    <FaImage onClick={() => handle_Click_Image_Icon()} size={25} color="greenyellow" />
+                    <input type="file" ref={image_element} accept="image/*" capture="user" onChange={handle_Capture} />
                     {/* <PiVideoFill onClick={() => handleClickVideoIcon()} size={25} color="red" /> */}
                 </div>
                 <div className={style.preview}>
@@ -233,7 +238,7 @@ const CreateCheckInOut = () => {
                     <div></div>
                 </div>
                 <div>
-                    <div onClick={() => handleCreate()}>{CREATE_CHECK_IN_OUT}</div>
+                    <div onClick={() => handle_Create()}>{CREATE_CHECK_IN_OUT}</div>
                 </div>
             </div>
         </div>

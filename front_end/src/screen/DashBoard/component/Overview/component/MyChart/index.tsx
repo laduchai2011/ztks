@@ -3,41 +3,41 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux';
 import Chart from 'react-apexcharts';
 import type { ApexOptions } from 'apexcharts';
-import { StatisticsOaField } from '@src/dataStruct/statistics';
+import { Statistics_Oa_Field } from '@src/data_struct/statistics';
 
 const MyChart = () => {
-    const statisticsOaArray: StatisticsOaField[] = useSelector(
-        (state: RootState) => state.DashBoardSlice.statisticsOaArray
+    const statistics_oa_array: Statistics_Oa_Field[] = useSelector(
+        (state: RootState) => state.Dash_Board_Slice.statistics_oa_array
     );
 
-    const [sales, setSales] = useState<number[]>([]);
-    const [averageSalesArray, setAverageSalesArray] = useState<number[]>([]);
-    const [orderAmounts, setOrderAmounts] = useState<number[]>([]);
-    const [averageOrderAmountsArray, setAverageOrderAmountsArray] = useState<number[]>([]);
-    const [ofDayArray, setOfDayArray] = useState<string[]>([]);
+    const [sales, set__sales] = useState<number[]>([]);
+    const [average_sales_array, set__average_sales_array] = useState<number[]>([]);
+    const [order_amounts, set__order_amounts] = useState<number[]>([]);
+    const [average_order_amounts_array, set__average_order_amounts_array] = useState<number[]>([]);
+    const [of_day_array, set__of_day_array] = useState<string[]>([]);
 
     useEffect(() => {
         const _sales: number[] = [];
-        const _averageSalesArray: number[] = [];
-        const _orderAmounts: number[] = [];
-        const _averageOrderAmountsArray: number[] = [];
-        const _ofDayArray: string[] = [];
-        const length = statisticsOaArray.length;
+        const _average_sales_array: number[] = [];
+        const _order_amounts: number[] = [];
+        const _average_order_amounts_array: number[] = [];
+        const _of_day_array: string[] = [];
+        const length = statistics_oa_array.length;
 
         for (let i: number = 0; i < length; i++) {
-            _sales.push(statisticsOaArray[i].sales);
-            _orderAmounts.push(statisticsOaArray[i].orderAmount);
-            _averageSalesArray.push(statisticsOaArray[i].sales / statisticsOaArray[i].orderAmount);
-            _averageOrderAmountsArray.push(statisticsOaArray[i].orderAmount / 2);
-            _ofDayArray.push(statisticsOaArray[i].ofDay.toString().split('T')[0]);
+            _sales.push(statistics_oa_array[i].sales);
+            _order_amounts.push(statistics_oa_array[i].order_amount);
+            _average_sales_array.push(statistics_oa_array[i].sales / statistics_oa_array[i].order_amount);
+            _average_order_amounts_array.push(statistics_oa_array[i].order_amount / 2);
+            _of_day_array.push(statistics_oa_array[i].of_day.toString().split('T')[0]);
         }
 
-        setSales(_sales);
-        setOrderAmounts(_orderAmounts);
-        setAverageSalesArray(_averageSalesArray);
-        setAverageOrderAmountsArray(_averageOrderAmountsArray);
-        setOfDayArray(_ofDayArray);
-    }, [statisticsOaArray]);
+        set__sales(_sales);
+        set__order_amounts(_order_amounts);
+        set__average_sales_array(_average_sales_array);
+        set__average_order_amounts_array(_average_order_amounts_array);
+        set__of_day_array(_of_day_array);
+    }, [statistics_oa_array]);
 
     // const data = [
     //     3000, 4000, 3500, 5000, 4900, 6000, 7000, 9100, 8000, 7500, 8500, 9500, 10000, 11000, 10500, 12000, 13000,
@@ -103,7 +103,7 @@ const MyChart = () => {
         },
 
         xaxis: {
-            categories: ofDayArray,
+            categories: of_day_array,
         },
 
         // yaxis: [
@@ -161,7 +161,7 @@ const MyChart = () => {
         },
 
         xaxis: {
-            categories: ofDayArray,
+            categories: of_day_array,
         },
 
         stroke: {
@@ -189,17 +189,17 @@ const MyChart = () => {
         },
         {
             name: 'Doanh số TB',
-            data: averageSalesArray,
+            data: average_sales_array,
             yAxisIndex: 0,
         },
         {
             name: 'Số lượng đơn',
-            data: orderAmounts,
+            data: order_amounts,
             yAxisIndex: 1,
         },
         {
             name: 'Số lượng đơn TB',
-            data: averageOrderAmountsArray,
+            data: average_order_amounts_array,
             yAxisIndex: 1,
         },
     ];

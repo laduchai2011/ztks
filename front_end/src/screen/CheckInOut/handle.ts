@@ -1,6 +1,6 @@
 // import axiosInstance from '@src/api/axiosInstance';
 // import { VIDEO_API } from '@src/const/api/video';
-import { IMAGEV1_API } from '@src/const/api/image_v1';
+import { IMAGE_V1_API } from '@src/const/api/image_v1';
 // import { MyResponse } from '@src/dataStruct/response';
 // import { MessageField, SendVideoTdFailureBodyField, SendVideoTdSuccessBodyField } from '@src/dataStruct/message';
 
@@ -77,7 +77,7 @@ export const uploadImage = async (file: File, id: string): Promise<{ fileName: s
         // formData.append('filename', filename);
         // formData.append('totalChunks', totalChunks.toString());
 
-        await fetch(IMAGEV1_API.UPLOAD_CHUNK, {
+        await fetch(IMAGE_V1_API.UPLOAD_CHUNK, {
             method: 'POST',
             body: formData,
             credentials: 'include',
@@ -89,7 +89,7 @@ export const uploadImage = async (file: File, id: string): Promise<{ fileName: s
         totalChunks,
         finalFileName: filename,
     };
-    await fetch(IMAGEV1_API.MERGE_CHUNK, {
+    await fetch(IMAGE_V1_API.MERGE_CHUNKS, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(mergeBody),

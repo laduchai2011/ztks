@@ -5,21 +5,21 @@ import { SEE_MORE } from '@src/const/text';
 
 const OneMember = () => {
     const orderList_element = useRef<HTMLDivElement | null>(null);
-    const [isShowList, setIsShowList] = useState<boolean>(false);
+    const [is_show_list, set__is_show_list] = useState<boolean>(false);
 
     useEffect(() => {
         if (!orderList_element.current) return;
         const orderListElement = orderList_element.current;
 
-        if (isShowList) {
+        if (is_show_list) {
             orderListElement.classList.add(style.show);
         } else {
             orderListElement.classList.remove(style.show);
         }
-    }, [isShowList]);
+    }, [is_show_list]);
 
-    const handleShowList = () => {
-        setIsShowList(!isShowList);
+    const handle_Show_List = () => {
+        set__is_show_list(!is_show_list);
     };
 
     return (
@@ -32,7 +32,7 @@ const OneMember = () => {
                 <div className={style.name}>ten</div>
                 <div className={style.sales}>doanh so</div>
                 <div className={style.orderAmount}>don</div>
-                <div className={style.orderListText} onClick={() => handleShowList()}>
+                <div className={style.orderListText} onClick={() => handle_Show_List()}>
                     Danh sách đơn
                 </div>
             </div>

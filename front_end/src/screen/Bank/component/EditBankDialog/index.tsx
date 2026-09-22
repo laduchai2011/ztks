@@ -5,35 +5,35 @@ import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE, AGREE, EXIT } from '@src/const/text';
 import {
-    setData_toastMessage,
-    set_isLoading,
-    setIsShow_editBankDialog,
-    setNewBank_editBankDialog,
+    set__is_loading,
+    set__data__toast_message,
+    set__is_show__edit_bank_dialog,
+    set__new_bank__edit_bank_dialog,
 } from '@src/redux/slice/Bank';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { BankField } from '@src/dataStruct/bank';
-import { useEditBankMutation } from '@src/redux/query/bank_RTK';
+import { Bank_Field } from '@src/data_struct/bank';
+import { use_edit_Bank_Mutation } from '@src/redux/query/bank_RTK';
 
 const EditBankDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
-    const isShow: boolean = useSelector((state: RootState) => state.BankSlice.editBankDialog.isShow);
-    const bank: BankField | undefined = useSelector((state: RootState) => state.BankSlice.editBankDialog.bank);
+    const is_show: boolean = useSelector((state: RootState) => state.Bank_Slice.edit_bank_dialog.is_show);
+    const bank: Bank_Field | undefined = useSelector((state: RootState) => state.Bank_Slice.edit_bank_dialog.bank);
 
-    const [bank1, setBank1] = useState<BankField | undefined>(undefined);
+    const [bank1, set__bank1] = useState<Bank_Field | undefined>(undefined);
 
-    const [editBank] = useEditBankMutation();
+    const [edit_Bank] = use_edit_Bank_Mutation();
 
     useEffect(() => {
         if (!bank) return;
-        setBank1(bank);
+        set__bank1(bank);
     }, [bank]);
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow) {
+        if (is_show) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -47,65 +47,65 @@ const EditBankDialog = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow]);
+    }, [is_show]);
 
-    const handleBankCode = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Bank_Code = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!bank1) return;
-        setBank1({ ...bank1, bankCode: e.target.value });
+        set__bank1({ ...bank1, bank_code: e.target.value });
     };
 
-    const handleAccountNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Account_Number = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!bank1) return;
-        setBank1({ ...bank1, accountNumber: e.target.value });
+        set__bank1({ ...bank1, account_number: e.target.value });
     };
 
-    const handleAccountName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Account_Name = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!bank1) return;
-        setBank1({ ...bank1, accountName: e.target.value });
+        set__bank1({ ...bank1, account_name: e.target.value });
     };
 
-    const handleClose = () => {
-        dispatch(setIsShow_editBankDialog(false));
+    const handle_Close = () => {
+        dispatch(set__is_show__edit_bank_dialog(false));
     };
 
-    const handleAgree = () => {
+    const handle_Agree = () => {
         if (!bank1) return;
 
-        const bankCodeTrim = bank1.bankCode.trim();
-        const accountNumberTrim = bank1.accountNumber.trim();
-        const accountNameTrim = bank1.accountName.trim();
+        const bank_code_trim = bank1.bank_code.trim();
+        const account_number_trim = bank1.account_number.trim();
+        const account_name_trim = bank1.account_name.trim();
 
-        if (bankCodeTrim === '' || accountNumberTrim === '' || accountNameTrim === '') {
+        if (bank_code_trim === '' || account_number_trim === '' || account_name_trim === '') {
             dispatch(
-                setData_toastMessage({ type: messageType_enum.ERROR, message: 'Không được để trống trường nào !' })
+                set__data__toast_message({ type: messageType_enum.ERROR, message: 'Không được để trống trường nào !' })
             );
             return;
         }
 
-        dispatch(set_isLoading(true));
-        editBank({
+        dispatch(set__is_loading(true));
+        edit_Bank({
             id: bank1.id,
-            bankCode: bankCodeTrim,
-            accountNumber: accountNumberTrim,
-            accountName: accountNameTrim,
-            accountId: -1,
+            bank_code: bank_code_trim,
+            account_number: account_number_trim,
+            account_name: account_name_trim,
+            account_id: '',
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
                     dispatch(
-                        setData_toastMessage({ type: messageType_enum.SUCCESS, message: 'Chỉnh sửa thành công !' })
+                        set__data__toast_message({ type: messageType_enum.SUCCESS, message: 'Chỉnh sửa thành công !' })
                     );
-                    dispatch(setIsShow_editBankDialog(false));
-                    dispatch(setNewBank_editBankDialog(resData.data));
+                    dispatch(set__is_show__edit_bank_dialog(false));
+                    dispatch(set__new_bank__edit_bank_dialog(res_data.data));
                 }
             })
             .catch((err) => {
                 console.error(err);
-                dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
+                dispatch(set__data__toast_message({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
     };
 
@@ -113,34 +113,34 @@ const EditBankDialog = () => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.closeContainer}>
-                    <IoMdClose onClick={() => handleClose()} size={25} title={CLOSE} />
+                    <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
                 <div className={style.contentContainer}>
                     <div className={style.content}>
                         <input
-                            value={bank1?.bankCode || ''}
-                            onChange={(e) => handleBankCode(e)}
+                            value={bank1?.bank_code || ''}
+                            onChange={(e) => handle_Bank_Code(e)}
                             placeholder="Mã ngân hàng"
                         />
                     </div>
                     <div className={style.content}>
                         <input
-                            value={bank1?.accountNumber || ''}
-                            onChange={(e) => handleAccountNumber(e)}
+                            value={bank1?.account_number || ''}
+                            onChange={(e) => handle_Account_Number(e)}
                             placeholder="Số tài khoản"
                         />
                     </div>
                     <div className={style.content}>
                         <input
-                            value={bank1?.accountName || ''}
-                            onChange={(e) => handleAccountName(e)}
+                            value={bank1?.account_name || ''}
+                            onChange={(e) => handle_Account_Name(e)}
                             placeholder="Tên tài khoản"
                         />
                     </div>
                 </div>
                 <div className={style.buttonContainer}>
-                    <button onClick={() => handleAgree()}>{AGREE}</button>
-                    <button onClick={() => handleClose()}>{EXIT}</button>
+                    <button onClick={() => handle_Agree()}>{AGREE}</button>
+                    <button onClick={() => handle_Close()}>{EXIT}</button>
                 </div>
             </div>
         </div>

@@ -4,28 +4,28 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux';
 import { formatMoney, formatNumber } from '@src/utility/string';
 import MyChart from './component/MyChart';
-import { StatisticsOaField } from '@src/dataStruct/statistics';
+import { Statistics_Oa_Field } from '@src/data_struct/statistics';
 
 const Overview = () => {
-    const statisticsOaArray: StatisticsOaField[] = useSelector(
-        (state: RootState) => state.DashBoardSlice.statisticsOaArray
+    const statistics_oa_array: Statistics_Oa_Field[] = useSelector(
+        (state: RootState) => state.Dash_Board_Slice.statistics_oa_array
     );
 
-    const [sales, setSales] = useState<number>(0);
-    const [averageSales, setAverageSales] = useState<number>(0);
-    const [orderAmount, setOrderAmount] = useState<number>(0);
-    const [averageOrderAmount, setAverageOrderAmount] = useState<number>(0);
+    const [sales, set__sales] = useState<number>(0);
+    const [average_sales, set__average_sales] = useState<number>(0);
+    const [order_amount, set__order_amount] = useState<number>(0);
+    const [average_order_amount, set__average_order_amount] = useState<number>(0);
 
     useEffect(() => {
-        if (statisticsOaArray.length > 0) {
-            const totalSales = statisticsOaArray.reduce((sum, oa) => sum + oa.sales, 0);
-            const totalOrderAmount = statisticsOaArray.reduce((sum, oa) => sum + oa.orderAmount, 0);
-            setSales(totalSales);
-            setAverageSales(totalSales / totalOrderAmount);
-            setOrderAmount(totalOrderAmount);
-            setAverageOrderAmount(totalOrderAmount / 2);
+        if (statistics_oa_array.length > 0) {
+            const total_sales = statistics_oa_array.reduce((sum, oa) => sum + oa.sales, 0);
+            const total_order_amount = statistics_oa_array.reduce((sum, oa) => sum + oa.order_amount, 0);
+            set__sales(total_sales);
+            set__average_sales(total_sales / total_order_amount);
+            set__order_amount(total_order_amount);
+            set__average_order_amount(total_order_amount / 2);
         }
-    }, [statisticsOaArray]);
+    }, [statistics_oa_array]);
 
     return (
         <div className={style.parent}>
@@ -35,7 +35,7 @@ const Overview = () => {
                     <div className={style.number}>
                         <div>{formatMoney(sales)}</div>
                         <div>
-                            <div>{formatMoney(averageSales)}</div>
+                            <div>{formatMoney(average_sales)}</div>
                         </div>
                         {/* <div>{formatMoney(10000000)}</div>
                         <div>
@@ -46,9 +46,9 @@ const Overview = () => {
                 <div>
                     <div className={style.title}>Tổng đơn hàng</div>
                     <div className={style.number}>
-                        <div>{formatNumber(orderAmount)}</div>
+                        <div>{formatNumber(order_amount)}</div>
                         <div>
-                            <div>{formatNumber(averageOrderAmount)}</div>
+                            <div>{formatNumber(average_order_amount)}</div>
                         </div>
                         {/* <div>{formatNumber(100)}</div>
                         <div>

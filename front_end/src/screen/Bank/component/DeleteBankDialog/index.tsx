@@ -5,35 +5,35 @@ import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE, AGREE, EXIT } from '@src/const/text';
 import {
-    setData_toastMessage,
-    set_isLoading,
-    setIsShow_deleteBankDialog,
-    setDeletedBank_deleteBankDialog,
+    set__data__toast_message,
+    set__is_loading,
+    set__is_show__delete_bank_dialog,
+    set__deleted_bank__delete_bank_dialog,
 } from '@src/redux/slice/Bank';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { BankField } from '@src/dataStruct/bank';
-import { useDeleteBankMutation } from '@src/redux/query/bank_RTK';
+import { Bank_Field } from '@src/data_struct/bank';
+import { use_delete_Bank_Mutation } from '@src/redux/query/bank_RTK';
 
 const DeleteBankDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
-    const isShow: boolean = useSelector((state: RootState) => state.BankSlice.deleteBankDialog.isShow);
-    const bank: BankField | undefined = useSelector((state: RootState) => state.BankSlice.deleteBankDialog.bank);
+    const is_show: boolean = useSelector((state: RootState) => state.Bank_Slice.delete_bank_dialog.is_show);
+    const bank: Bank_Field | undefined = useSelector((state: RootState) => state.Bank_Slice.delete_bank_dialog.bank);
 
-    const [bank1, setBank1] = useState<BankField | undefined>(undefined);
+    const [bank1, set__bank1] = useState<Bank_Field | undefined>(undefined);
 
-    const [deleteBank] = useDeleteBankMutation();
+    const [delete_Bank] = use_delete_Bank_Mutation();
 
     useEffect(() => {
         if (!bank) return;
-        setBank1(bank);
+        set__bank1(bank);
     }, [bank]);
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow) {
+        if (is_show) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -47,30 +47,30 @@ const DeleteBankDialog = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow]);
+    }, [is_show]);
 
-    const handleClose = () => {
-        dispatch(setIsShow_deleteBankDialog(false));
+    const handle_Close = () => {
+        dispatch(set__is_show__delete_bank_dialog(false));
     };
 
-    const handleAgree = () => {
+    const handle_Agree = () => {
         if (!bank1) return;
-        dispatch(set_isLoading(true));
-        deleteBank({ id: bank1.id, accountId: -1 })
+        dispatch(set__is_loading(true));
+        delete_Bank({ id: bank1.id, account_id: '' })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData?.data) {
-                    dispatch(setData_toastMessage({ type: messageType_enum.SUCCESS, message: 'Xóa thành công !' }));
-                    dispatch(setIsShow_deleteBankDialog(false));
-                    dispatch(setDeletedBank_deleteBankDialog(resData.data));
+                const res_data = res.data;
+                if (res_data?.is_success && res_data?.data) {
+                    dispatch(set__data__toast_message({ type: messageType_enum.SUCCESS, message: 'Xóa thành công !' }));
+                    dispatch(set__is_show__delete_bank_dialog(false));
+                    dispatch(set__deleted_bank__delete_bank_dialog(res_data.data));
                 }
             })
             .catch((err) => {
                 console.error(err);
-                dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
+                dispatch(set__data__toast_message({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
     };
 
@@ -78,23 +78,23 @@ const DeleteBankDialog = () => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.closeContainer}>
-                    <IoMdClose onClick={() => handleClose()} size={25} title={CLOSE} />
+                    <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
                 <div className={style.contentContainer}>
                     <div className={style.content}>
-                        <div>{bank1?.bankCode}</div>
+                        <div>{bank1?.bank_code}</div>
                     </div>
                     <div className={style.content}>
-                        <div>{bank1?.accountNumber}</div>
+                        <div>{bank1?.account_number}</div>
                     </div>
                     <div className={style.content}>
-                        <div>{bank1?.accountName}</div>
+                        <div>{bank1?.account_name}</div>
                     </div>
                     <div className={style.text}>Bạn có chắc chắn muốn xóa ngân hàng này không ?</div>
                 </div>
                 <div className={style.buttonContainer}>
-                    <button onClick={() => handleAgree()}>{AGREE}</button>
-                    <button onClick={() => handleClose()}>{EXIT}</button>
+                    <button onClick={() => handle_Agree()}>{AGREE}</button>
+                    <button onClick={() => handle_Close()}>{EXIT}</button>
                 </div>
             </div>
         </div>

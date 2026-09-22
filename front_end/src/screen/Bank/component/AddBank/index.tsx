@@ -4,123 +4,129 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { IoCloseOutline } from 'react-icons/io5';
 import { ADD_BANK } from '@src/const/text';
-import { useAddBankMutation } from '@src/redux/query/bank_RTK';
-import { setData_toastMessage, set_isLoading, setNewBank_addBank } from '@src/redux/slice/Bank';
+import { use_add_Bank_Mutation } from '@src/redux/query/bank_RTK';
+import { set__data__toast_message, set__is_loading, set__new_bank__add_bank } from '@src/redux/slice/Bank';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const AddBank = () => {
     const dispatch = useDispatch<AppDispatch>();
 
-    const [isShowParent, setIsShowParent] = useState(false);
-    const [isDisplayBtn, setIsDisplayBtn] = useState(true);
-    const [isShowBtn, setIsShowBtn] = useState(true);
-    const [isDisplayIcon, setIsDisplayIcon] = useState(false);
-    const [isShowIcon, setIsShowIcon] = useState(false);
+    const [is_show_parent, set__is_show_parent] = useState(false);
+    const [is_display_btn, set__is_display_btn] = useState(true);
+    const [is_show_btn, set__is_show_btn] = useState(true);
+    const [is_display_icon, set__is_display_icon] = useState(false);
+    const [is_show_icon, set__is_show_icon] = useState(false);
 
-    const [bankCode, setBankCode] = useState<string>('');
-    const [accountNumber, setAccountNumber] = useState<string>('');
-    const [accountName, setAccountName] = useState<string>('');
+    const [bank_code, set__bank_code] = useState<string>('');
+    const [account_number, set__account_number] = useState<string>('');
+    const [account_name, set__account_name] = useState<string>('');
 
-    const [addBank] = useAddBankMutation();
+    const [add_Bank] = use_add_Bank_Mutation();
 
-    const handleHBtn = () => {
-        setIsShowParent(true);
-        setIsShowBtn(false);
+    const handle_H_Btn = () => {
+        set__is_show_parent(true);
+        set__is_show_btn(false);
         setTimeout(() => {
-            setIsDisplayBtn(false);
+            set__is_display_btn(false);
         }, 300);
-        setIsDisplayIcon(true);
+        set__is_display_icon(true);
         setTimeout(() => {
-            setIsShowIcon(true);
+            set__is_show_icon(true);
         }, 10);
     };
 
-    const handleHIcon = () => {
-        setIsShowParent(false);
-        setIsShowIcon(false);
+    const handle_H_Icon = () => {
+        set__is_show_parent(false);
+        set__is_show_icon(false);
         setTimeout(() => {
-            setIsDisplayIcon(false);
+            set__is_display_icon(false);
         }, 300);
-        setIsDisplayBtn(true);
+        set__is_display_btn(true);
         setTimeout(() => {
-            setIsShowBtn(true);
+            set__is_show_btn(true);
         }, 10);
     };
 
-    const handleBankCode = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setBankCode(e.target.value);
+    const handle_Bank_Code = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__bank_code(e.target.value);
     };
 
-    const handleAccountNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setAccountNumber(e.target.value);
+    const handle_Account_Number = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__account_number(e.target.value);
     };
 
-    const handleAccountName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setAccountName(e.target.value);
+    const handle_Account_Name = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__account_name(e.target.value);
     };
 
-    const handleCreate = () => {
-        const bankCodeTrim = bankCode.trim();
-        const accountNumberTrim = accountNumber.trim();
-        const accountNameTrim = accountName.trim();
+    const handle_Create = () => {
+        const bank_code_trim = bank_code.trim();
+        const account_number_trim = account_number.trim();
+        const account_name_trim = account_name.trim();
 
-        if (bankCodeTrim === '' || accountNumberTrim === '' || accountNameTrim === '') {
+        if (bank_code_trim === '' || account_number_trim === '' || account_name_trim === '') {
             dispatch(
-                setData_toastMessage({ type: messageType_enum.ERROR, message: 'Không được để trống trường nào !' })
+                set__data__toast_message({ type: messageType_enum.ERROR, message: 'Không được để trống trường nào !' })
             );
             return;
         }
 
-        dispatch(set_isLoading(true));
-        addBank({
-            bankCode: bankCodeTrim,
-            accountNumber: accountNumberTrim,
-            accountName: accountNameTrim,
-            accountId: -1,
+        dispatch(set__is_loading(true));
+        add_Bank({
+            bank_code: bank_code_trim,
+            account_number: account_number_trim,
+            account_name: account_name_trim,
+            account_id: '',
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    dispatch(setData_toastMessage({ type: messageType_enum.SUCCESS, message: 'Thêm thành công !' }));
-                    dispatch(setNewBank_addBank(resData.data));
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    dispatch(
+                        set__data__toast_message({ type: messageType_enum.SUCCESS, message: 'Thêm thành công !' })
+                    );
+                    dispatch(set__new_bank__add_bank(res_data.data));
                 }
             })
             .catch((err) => {
                 console.error(err);
-                dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
+                dispatch(set__data__toast_message({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
     };
 
     return (
-        <div className={`${style.parent} ${isShowParent ? style.show : ''}`}>
+        <div className={`${style.parent} ${is_show_parent ? style.show : ''}`}>
             <div className={style.header}>
                 <div
-                    className={`${style.btn} ${isDisplayBtn ? style.display : ''} ${isShowBtn ? style.show : ''}`}
-                    onClick={() => handleHBtn()}
+                    className={`${style.btn} ${is_display_btn ? style.display : ''} ${is_show_btn ? style.show : ''}`}
+                    onClick={() => handle_H_Btn()}
                 >
                     {ADD_BANK}
                 </div>
                 <IoCloseOutline
-                    className={`${style.icon} ${isDisplayIcon ? style.display : ''} ${isShowIcon ? style.show : ''}`}
-                    onClick={() => handleHIcon()}
+                    className={`${style.icon} ${is_display_icon ? style.display : ''} ${is_show_icon ? style.show : ''}`}
+                    onClick={() => handle_H_Icon()}
                     size={25}
                 />
             </div>
             <div className={style.content}>
                 <div>
-                    <input value={bankCode} onChange={(e) => handleBankCode(e)} placeholder="Mã ngân hàng" />
+                    <input value={bank_code} onChange={(e) => handle_Bank_Code(e)} placeholder="Mã ngân hàng" />
                 </div>
                 <div>
-                    <input value={accountNumber} onChange={(e) => handleAccountNumber(e)} placeholder="Số tài khoản" />
+                    <input
+                        value={account_number}
+                        onChange={(e) => handle_Account_Number(e)}
+                        placeholder="Số tài khoản"
+                    />
                 </div>
                 <div>
-                    <input value={accountName} onChange={(e) => handleAccountName(e)} placeholder="Tên tài khoản" />
+                    <input value={account_name} onChange={(e) => handle_Account_Name(e)} placeholder="Tên tài khoản" />
                 </div>
                 <div>
-                    <div onClick={() => handleCreate()}>{ADD_BANK}</div>
+                    <div onClick={() => handle_Create()}>{ADD_BANK}</div>
                 </div>
             </div>
         </div>

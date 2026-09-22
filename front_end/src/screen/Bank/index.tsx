@@ -11,28 +11,28 @@ import BankList from './component/BankList';
 import EditBankDialog from './component/EditBankDialog';
 import DeleteBankDialog from './component/DeleteBankDialog';
 import { IoChevronBack } from 'react-icons/io5';
-import { setData_toastMessage } from '@src/redux/slice/Bank';
+import { set__data__toast_message } from '@src/redux/slice/Bank';
 import { route_enum } from '@src/router/type';
 
 const Bank = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
-    const myId = sessionStorage.getItem('myId');
+    const my_id = sessionStorage.getItem('myId');
 
     useEffect(() => {
-        if (myId === null) {
+        if (my_id === null) {
             navigate(route_enum.SIGNIN);
         }
 
         return () => {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     message: '',
                     type: undefined,
                 })
             );
         };
-    }, [navigate, myId, dispatch]);
+    }, [navigate, my_id, dispatch]);
 
     const handleBack = () => {
         navigate(-1);
