@@ -14,7 +14,7 @@ import { IoChevronBack } from 'react-icons/io5';
 import { route_enum } from '@src/router/type';
 import { setData_toastMessage } from '@src/redux/slice/Home_V1';
 
-const Home1 = () => {
+const Home_V1 = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     const myId = sessionStorage.getItem('myId');
@@ -61,4 +61,4 @@ const Home1 = () => {
     );
 };
 
-export default Home1;
+export default Home_V1;

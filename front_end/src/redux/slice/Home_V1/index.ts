@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { state_props } from '@src/screen/Home1/type';
+import { state_props } from '@src/screen/Home_V1/type';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
 import { Zalo_Oa_Field } from '@src/data_struct/zalo';
 

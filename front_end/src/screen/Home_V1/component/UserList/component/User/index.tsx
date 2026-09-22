@@ -4,32 +4,31 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux';
 import { useNavigate } from 'react-router-dom';
 import { route_enum } from '@src/router/type';
-import { ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
-import { MessageV1Field, NewMessageV1Field } from '@src/dataStruct/message_v1';
-import { ZaloOaField, ZaloAppField } from '@src/dataStruct/zalo';
-import { ZaloUserField } from '@src/dataStruct/zalo/user';
-import { AccountField } from '@src/dataStruct/account';
+import { Chat_Room_Role_Schema } from '@src/data_struct/chat_room';
+import { Message_V1_Field, New_Message_V1_Field, Socket_Message_Field } from '@src/data_struct/message_v1';
+import { Zalo_Oa_Field, Zalo_App_Field } from '@src/data_struct/zalo';
+import { Zalo_User_Field } from '@src/data_struct/zalo/user';
+import { Account_Field } from '@src/data_struct/account';
 import {
-    useLazyGetLastMessageQuery,
-    useLazyGetAllNewMessagesQuery,
-    useLazyGetMessageWithIdQuery,
+    useLazy_get_Last_Message_Query,
+    useLazy_get_All_New_Messages_Query,
+    useLazy_get_Message_With_Id_Query,
 } from '@src/redux/query/message_v1_RTK';
-import { useGetZaloUserQuery } from '@src/redux/query/zalo_RTK';
+import { use_get_Zalo_User_Query } from '@src/redux/query/zalo_RTK';
 import { timeAgoSmart } from '@src/utility/time';
 import { MEMBER, YOU, USER, OA, IMAGE, VIDEO, FILE, STICKER, AUDIO, OA_CALL_USER, USER_CALL_OA } from '@src/const/text';
-import { ZaloMessageType } from '@src/dataStruct/zalo/hookData';
-import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
+import { Zalo_Message_Type } from '@src/data_struct/zalo/hook_data';
+import { Zalo_Event_Name_Enum } from '@src/data_struct/zalo/hook_data/common';
 import { handleNewMsgAmount } from './handle';
-import { getSocket } from '@src/socketIo';
-import { SocketMessageField } from '@src/dataStruct/message_v1';
+import { get_Socket } from '@src/socketIo';
 import { avatarnull } from '@src/utility/string';
 
-const User: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSchema }) => {
+const User: FC<{ chat_room_role_schema: Chat_Room_Role_Schema }> = ({ chat_room_role_schema }) => {
     const navigate = useNavigate();
     const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
     const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
     const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.Home1Slice.selectedOa);
-    // const chatRoomRole: ChatRoomRoleSchema = chatRoomRoleSchema;
+
     const [lastMessage, setLastMessage] = useState<MessageV1Field<ZaloMessageType> | undefined>(undefined);
     const [zaloUser, setZaloUser] = useState<ZaloUserField | undefined>(undefined);
     const isUserSend = lastMessage?.event_name.startsWith('user_send');

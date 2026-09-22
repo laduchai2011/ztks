@@ -3,7 +3,7 @@ import Signup from '@src/screen/Signup';
 import Signin from '@src/screen/Signin';
 import Signout from '@src/screen/Signout';
 import ForgetPassword from '@src/screen/ForgetPassword';
-import Home1 from '@src/screen/Home1';
+import Home_V1 from '@src/screen/Home_V1';
 import Message1 from '@src/screen/Message_V1';
 import SupportRoom from '@src/screen/SupportRoom';
 import Note from '@src/screen/Note';
@@ -33,7 +33,7 @@ const router = createBrowserRouter(
         { path: route_enum.SIGNIN, element: <Signin /> },
         { path: route_enum.SIGNOUT, element: <Signout /> },
         { path: route_enum.FORGET_PASSWORD, element: <ForgetPassword /> },
-        { path: route_enum.HOME, element: <Home1 /> },
+        { path: route_enum.HOME, element: <Home_V1 /> },
         { path: route_enum.MESSAGE1 + '/:id', element: <Message1 /> },
         { path: route_enum.SUPPORT_ROOM, element: <SupportRoom /> },
         { path: route_enum.NOTE, element: <Note /> },
