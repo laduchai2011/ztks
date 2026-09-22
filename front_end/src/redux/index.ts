@@ -6,7 +6,7 @@ import Oa_Reducer from '@src/redux/slice/Oa';
 import Oa_Setting_Reducer from '@src/redux/slice/Oa_Setting';
 import Support_Room_Reducer from '@src/redux/slice/Support_Room';
 import Order_Reducer from '@src/redux/slice/Order';
-import AccountReceiveMessageReducer from '@src/redux/slice/AccountReceiveMessage';
+import Account_Receive_Message_Reducer from '@src/redux/slice/Account_Receive_Message';
 import Manage_Agent_Reducer from '@src/redux/slice/Manage_Agent';
 import Member_Reducer from '@src/redux/slice/Member';
 import Note_Reducer from '@src/redux/slice/Note';
@@ -50,7 +50,7 @@ export const store = configureStore({
         Oa_Setting_Slice: Oa_Setting_Reducer,
         Support_Room_Slice: Support_Room_Reducer,
         Order_Slice: Order_Reducer,
-        AccountReceiveMessageSlice: AccountReceiveMessageReducer,
+        Account_Receive_Message_Slice: Account_Receive_Message_Reducer,
         Manage_Agent_Slice: Manage_Agent_Reducer,
         Member_Slice: Member_Reducer,
         Note_Slice: Note_Reducer,

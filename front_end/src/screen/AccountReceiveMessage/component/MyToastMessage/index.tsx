@@ -6,7 +6,7 @@ import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
 
 const MyToastMessage = () => {
     const message: ToastMessage_Data_Props = useSelector(
-        (state: RootState) => state.AccountReceiveMessageSlice.toastMessage.data
+        (state: RootState) => state.Account_Receive_Message_Slice.toast_message.data
     );
 
     return message.type && <ToastMessage toastMessage={{ data: { type: message.type, message: message.message } }} />;
