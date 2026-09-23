@@ -12,65 +12,66 @@ import MsgFile from './MsgFile';
 import MsgSticker from './MsgSticker';
 import MsgCall from './MsgCall';
 import {
-    ZaloMessageType,
-    MessageTextField,
-    MessageImageField,
-    MessageMultiImageField,
-    MessageVideoField,
-    MessageAudioField,
-    MessageFileField,
-    MessageStickerField,
-    ZaloCallType,
-} from '@src/dataStruct/zalo/hookData';
-import { MessageV1Field, CallV1Field } from '@src/dataStruct/message_v1';
-import { AccountField } from '@src/dataStruct/account';
-import { ChatRoomRoleField } from '@src/dataStruct/chatRoom';
-import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
+    Zalo_Message_Type,
+    Message_Text_Field,
+    Message_Image_Field,
+    Message_Multi_Image_Field,
+    Message_Video_Field,
+    Message_Audio_Field,
+    Message_File_Field,
+    Message_Sticker_Field,
+    Zalo_Call_Type,
+} from '@src/data_struct/zalo/hook_data';
+import { Message_V1_Field, Call_V1_Field } from '@src/data_struct/message_v1';
+import { Account_Field } from '@src/data_struct/account';
+import { Chat_Room_Role_Field } from '@src/data_struct/chat_room';
+import { Zalo_Event_Name_Enum } from '@src/data_struct/zalo/hook_data/common';
 import { timeAgoSmart } from '@src/utility/time';
-import { useGetChatRoomRoleWithCridAaidQuery } from '@src/redux/query/chat_room_RTK';
-import { useGetAccountWithIdQuery } from '@src/redux/query/account_RTK';
-import { set_repliedMessage } from '@src/redux/slice/Message_V1';
+import { use_get_Chat_Room_Role_With_Crid_Aaid_Query } from '@src/redux/query/chat_room_RTK';
+import { use_get_Account_With_Id_Query } from '@src/redux/query/account_RTK';
+import { set__replied_message } from '@src/redux/slice/Message_V1';
 import { avatarnull } from '@src/utility/string';
 import { handleSrcImage } from '@src/utility/string';
 
 const MyMsg: FC<{
     msgList_element?: HTMLDivElement | null;
-    data: MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType>;
-    messages: (MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType>)[];
+    data: Message_V1_Field<Zalo_Message_Type> | Call_V1_Field<Zalo_Call_Type>;
+    messages: (Message_V1_Field<Zalo_Message_Type> | Call_V1_Field<Zalo_Call_Type>)[];
 }> = ({ msgList_element, data, messages }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const defaultColor = '#EBEBEB';
+    const default_color = '#EBEBEB';
     const parent_element = useRef<HTMLDivElement | null>(null);
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
     const { id } = useParams<{ id: string }>();
-    const [isMore, setIsMore] = useState<boolean>(false);
-    const [chatRoomRole, setChatRoomRole] = useState<ChatRoomRoleField | undefined>(undefined);
-    const isYou = data?.reply_account_id === account?.id;
-    const youString: string | null = isYou ? 'Bạn' : null;
-    const [accountWId, setAccountWId] = useState<AccountField | undefined>(undefined);
-    const [isAvatar, setIsAvatar] = useState<boolean>(true);
-    const avatarUrl = accountWId?.avatar ? handleSrcImage(accountWId.avatar) : avatarnull;
+
+    const [is_more, set__is_more] = useState<boolean>(false);
+    const [chat_room_role, set__chat_room_role] = useState<Chat_Room_Role_Field | undefined>(undefined);
+    const is_you = data?.reply_account_id === account?.id;
+    const you_string: string | null = is_you ? 'Bạn' : null;
+    const [accountWId, set__accountWId] = useState<Account_Field | undefined>(undefined);
+    const [is_avatar, set__is_avatar] = useState<boolean>(true);
+    const avatar_url = accountWId?.avatar ? handleSrcImage(accountWId.avatar) : avatarnull;
 
     useEffect(() => {
         // const isUserSend_data = eventName.startsWith('user_send');
         // const isOaSend = eventName.startsWith('oa_send');
-        const indexMessage = messages.indexOf(data);
-        if (indexMessage <= 0) return;
-        const befor_message = messages[indexMessage - 1];
-        const isOaSend_dataBefor = befor_message.event_name.startsWith('oa_send');
-        if (isOaSend_dataBefor) {
+        const index_message = messages.indexOf(data);
+        if (index_message <= 0) return;
+        const befor_message = messages[index_message - 1];
+        const is_oa_send__data_befor = befor_message.event_name.startsWith('oa_send');
+        if (is_oa_send__data_befor) {
             if (befor_message.reply_account_id === data.reply_account_id) {
-                setIsAvatar(false);
+                set__is_avatar(false);
             } else {
-                setIsAvatar(true);
+                set__is_avatar(true);
             }
         } else {
-            setIsAvatar(true);
+            set__is_avatar(true);
         }
     }, [data, messages]);
 
-    const handleShowMore = () => {
-        setIsMore(!isMore);
+    const handle_Show_More = () => {
+        set__is_more(!is_more);
     };
 
     const msg = () => {
@@ -78,31 +79,31 @@ const MyMsg: FC<{
 
         switch (event_name) {
             case Zalo_Event_Name_Enum.oa_send_text: {
-                const data_t = data as MessageV1Field<MessageTextField>;
+                const data_t = data as Message_V1_Field<Message_Text_Field>;
                 return <MsgText data={data_t} />;
             }
             case Zalo_Event_Name_Enum.oa_send_image: {
-                const data_t = data as MessageV1Field<MessageImageField | MessageMultiImageField>;
+                const data_t = data as Message_V1_Field<Message_Image_Field | Message_Multi_Image_Field>;
                 return <MsgImage data={data_t} />;
             }
             case Zalo_Event_Name_Enum.oa_send_video: {
-                const data_t = data as MessageV1Field<MessageVideoField>;
+                const data_t = data as Message_V1_Field<Message_Video_Field>;
                 return <MsgVideo msgList_element={msgList_element} data={data_t} />;
             }
             case Zalo_Event_Name_Enum.oa_send_audio: {
-                const data_t = data as MessageV1Field<MessageAudioField>;
+                const data_t = data as Message_V1_Field<Message_Audio_Field>;
                 return <MsgAudio data={data_t} />;
             }
             case Zalo_Event_Name_Enum.oa_send_file: {
-                const data_t = data as MessageV1Field<MessageFileField>;
+                const data_t = data as Message_V1_Field<Message_File_Field>;
                 return <MsgFile data={data_t} />;
             }
             case Zalo_Event_Name_Enum.oa_send_sticker: {
-                const data_t = data as MessageV1Field<MessageStickerField>;
+                const data_t = data as Message_V1_Field<Message_Sticker_Field>;
                 return <MsgSticker data={data_t} />;
             }
             case Zalo_Event_Name_Enum.oa_call_user: {
-                const data_t = data as CallV1Field<ZaloCallType>;
+                const data_t = data as Call_V1_Field<Zalo_Call_Type>;
                 return <MsgCall data={data_t} />;
             }
             default: {
@@ -112,94 +113,90 @@ const MyMsg: FC<{
     };
 
     const {
-        data: data_chatRoomRole,
+        data: data__chat_room_role,
         // isFetching,
-        isLoading: isLoading_chatRoomRole,
-        isError: isError_chatRoomRole,
-        error: error_chatRoomRole,
-    } = useGetChatRoomRoleWithCridAaidQuery(
-        { authorizedAccountId: data?.reply_account_id || -1, chatRoomId: Number(id) },
+        isLoading: is_loading__chat_room_role,
+        isError: is_error__chat_room_role,
+        error: error__chat_room_role,
+    } = use_get_Chat_Room_Role_With_Crid_Aaid_Query(
+        { authorized_account_id: data?.reply_account_id || '', chat_room_id: id || '' },
         { skip: id === undefined || data === undefined }
     );
     useEffect(() => {
-        if (isError_chatRoomRole && error_chatRoomRole) {
-            console.error(error_chatRoomRole);
-            // dispatch(
-            //     setData_toastMessage({
-            //         type: messageType_enum.ERROR,
-            //         message: 'Lấy dữ liệu phòng hội thoại KHÔNG thành công !',
-            //     })
-            // );
+        if (is_error__chat_room_role && error__chat_room_role) {
+            console.error(error__chat_room_role);
         }
-    }, [isError_chatRoomRole, error_chatRoomRole]);
+    }, [is_error__chat_room_role, error__chat_room_role]);
     useEffect(() => {
         // dispatch(set_isLoading(isLoading_chatRoom));
-    }, [isLoading_chatRoomRole]);
+    }, [is_loading__chat_room_role]);
     useEffect(() => {
-        const resData = data_chatRoomRole;
-        if (resData?.isSuccess && resData.data) {
-            setChatRoomRole(resData.data);
+        const res_data = data__chat_room_role;
+        if (res_data?.is_success && res_data.data) {
+            set__chat_room_role(res_data.data);
         }
-    }, [data_chatRoomRole]);
+    }, [data__chat_room_role]);
 
     const {
-        data: data_account_wid,
+        data: data__account_wid,
         // isFetching,
-        isLoading: isLoading_account_wid,
-        isError: isError_account_wid,
-        error: error_account_wid,
-    } = useGetAccountWithIdQuery({ id: data?.reply_account_id || -1 }, { skip: data === undefined });
+        isLoading: is_loading__account_wid,
+        isError: is_error__account_wid,
+        error: error__account_wid,
+    } = use_get_Account_With_Id_Query({ id: data?.reply_account_id || '' }, { skip: data === undefined });
     useEffect(() => {
-        if (isError_account_wid && error_account_wid) {
-            console.error(error_account_wid);
+        if (is_error__account_wid && error__account_wid) {
+            console.error(error__account_wid);
         }
-    }, [isError_account_wid, error_account_wid]);
+    }, [is_error__account_wid, error__account_wid]);
     useEffect(() => {
         // dispatch(set_isLoading(isLoading_account));
-    }, [isLoading_account_wid]);
+    }, [is_loading__account_wid]);
     useEffect(() => {
-        const resData = data_account_wid;
-        if (resData?.isSuccess && resData.data) {
-            setAccountWId(resData.data);
+        const res_data = data__account_wid;
+        if (res_data?.is_success && res_data.data) {
+            set__accountWId(res_data.data);
         }
-    }, [data_account_wid]);
+    }, [data__account_wid]);
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
-        const background = chatRoomRole?.backGroundColor ? chatRoomRole?.backGroundColor : defaultColor;
+        const background = chat_room_role?.back_ground_color ? chat_room_role?.back_ground_color : default_color;
         parentElement.style.setProperty('--msgBackground', `${background}`);
-    }, [chatRoomRole]);
+    }, [chat_room_role]);
 
-    const handleToReply = () => {
-        setIsMore(!isMore);
-        dispatch(set_repliedMessage(data));
+    const handle_To_Reply = () => {
+        set__is_more(!is_more);
+        dispatch(set__replied_message(data));
     };
 
     return (
         <div className={style.parent} ref={parent_element}>
             <div className={style.iconContainer}>
-                <IoIosMore onClick={() => handleShowMore()} size={25} />
-                {isMore && (
+                <IoIosMore onClick={() => handle_Show_More()} size={25} />
+                {is_more && (
                     <div className={style.moreContainer}>
-                        <div onClick={() => handleToReply()}>Trả lời</div>
+                        <div onClick={() => handle_To_Reply()}>Trả lời</div>
                         <div>Chia sẻ</div>
                     </div>
                 )}
             </div>
             <div className={style.msgContainer}>
-                {!isYou && (
+                {!is_you && (
                     <div className={style.nameContainer}>
-                        {youString && <div className={style.youString}>{`(${youString})`}</div>}
-                        {isAvatar && (
-                            <div className={style.name}>{accountWId?.firstName + ' ' + accountWId?.lastName}</div>
+                        {you_string && <div className={style.youString}>{`(${you_string})`}</div>}
+                        {is_avatar && (
+                            <div className={style.name}>{accountWId?.first_name + ' ' + accountWId?.last_name}</div>
                         )}
                     </div>
                 )}
                 <div>{msg()}</div>
                 <div className={style.moreInfor}>{timeAgoSmart(data.timestamp)}</div>
             </div>
-            {!isYou && <div className={style.avatarContainer}>{isAvatar && <img src={avatarUrl} alt="avatar" />}</div>}
+            {!is_you && (
+                <div className={style.avatarContainer}>{is_avatar && <img src={avatar_url} alt="avatar" />}</div>
+            )}
         </div>
     );
 };

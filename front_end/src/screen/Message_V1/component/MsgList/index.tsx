@@ -4,84 +4,88 @@ import { useParams } from 'react-router-dom';
 import UserMsg from './component/UserMsg';
 import MyMsg from './component/MyMsg';
 import {
-    useLazyGetMessagesForChatScreenQuery,
-    useLazyGetMessageWithIdQuery,
-    useLazyDelAllNewMessagesQuery,
+    useLazy_get_Messages_For_Chat_Screen_Query,
+    useLazy_get_Message_With_Id_Query,
+    useLazy_del_All_New_Messages_Query,
 } from '@src/redux/query/message_v1_RTK';
-import { MessageV1Field, CallV1Field } from '@src/dataStruct/message_v1';
-import { ZaloMessageType, ZaloCallType } from '@src/dataStruct/zalo/hookData';
-import { getSocket } from '@src/socketIo';
-import { SocketMessageField } from '@src/dataStruct/message_v1';
+import { Message_V1_Field, Call_V1_Field } from '@src/data_struct/message_v1';
+import { Zalo_Message_Type, Zalo_Call_Type } from '@src/data_struct/zalo/hook_data';
+import { get_Socket } from '@src/socketIo';
+import { Socket_Message_Field } from '@src/data_struct/message_v1';
 
 const MsgList = () => {
     const { id } = useParams<{ id: string }>();
     const parent_element = useRef<HTMLDivElement | null>(null);
     const bottom_element = useRef<HTMLDivElement | null>(null);
-    const [messages, setMessages] = useState<(MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType>)[]>([]);
+
+    const [messages, set__messages] = useState<(Message_V1_Field<Zalo_Message_Type> | Call_V1_Field<Zalo_Call_Type>)[]>(
+        []
+    );
     const size = 20;
-    const lockLoadMore = useRef<boolean>(true);
-    const [cursor, setCursor] = useState<string | null>(null);
-    const [isLoadingMore, setIsLoadingMore] = useState(false);
-    const [hasMore, setHasMore] = useState(true);
-    const [getMessageWithId] = useLazyGetMessageWithIdQuery();
-    const [delAllNewMessages] = useLazyDelAllNewMessagesQuery();
+    const lock_load_more = useRef<boolean>(true);
+    const [cursor, set__cursor] = useState<string | null>(null);
+    const [is_loading_more, set__is_loading_more] = useState(false);
+    const [has_more, set__has_more] = useState(true);
+
+    const [get_Message_With_Id] = useLazy_get_Message_With_Id_Query();
+    const [del_All_New_Messages] = useLazy_del_All_New_Messages_Query();
+    const [get_Messages] = useLazy_get_Messages_For_Chat_Screen_Query();
 
     useEffect(() => {
         if (!id) return;
-        const socket = getSocket();
+        const socket = get_Socket();
 
-        const handleDelMsg = () => {
-            delAllNewMessages({ chatRoomId: id })
+        const handle_Del_Msg = () => {
+            del_All_New_Messages({ chat_room_id: id })
                 .then((res) => {
-                    const resData = res.data;
-                    console.log('delAllNewMessages', resData);
+                    const res_data = res.data;
+                    console.log('del_All_New_Messages', res_data);
                 })
                 .catch((err) => {
                     console.error(err);
                 });
         };
-        handleDelMsg();
+        handle_Del_Msg();
 
-        const scrollToBottom = () => {
+        const scroll_To_Bottom = () => {
             if (!bottom_element.current) return;
             const bottomElement = bottom_element.current;
             bottomElement.scrollIntoView({ behavior: 'auto' });
         };
 
-        const onSocketMessage = (socketMsg: SocketMessageField) => {
-            const msgId = socketMsg._id;
-            getMessageWithId({ id: msgId })
+        const on_Socket_Message = (socket_msg: Socket_Message_Field) => {
+            const msg_id = socket_msg._id;
+            get_Message_With_Id({ id: msg_id })
                 .then((res) => {
-                    const resData = res.data;
-                    if (resData?.isSuccess && resData.data) {
-                        const newMsg = resData.data;
-                        setMessages((prev) => [...prev, newMsg]);
+                    const res_data = res.data;
+                    if (res_data?.is_success && res_data.data) {
+                        const newMsg = res_data.data;
+                        set__messages((prev) => [...prev, newMsg]);
                         setTimeout(() => {
-                            scrollToBottom();
-                            handleDelMsg();
+                            scroll_To_Bottom();
+                            handle_Del_Msg();
                         }, 10);
                     }
                 })
                 .catch((err) => console.error(err));
         };
 
-        socket.on('socketMessage', onSocketMessage);
+        socket.on('socketMessage', on_Socket_Message);
 
         return () => {
-            socket.off('socketMessage', onSocketMessage);
+            socket.off('socketMessage', on_Socket_Message);
         };
-    }, [id, getMessageWithId, delAllNewMessages]);
+    }, [id, get_Message_With_Id, del_All_New_Messages]);
 
-    const [getMessages] = useLazyGetMessagesForChatScreenQuery();
     useEffect(() => {
         if (!id) return;
-        getMessages({ cursor: null, size: size, chatRoomId: Number(id) })
+        get_Messages({ cursor: null, size: size, chat_room_id: id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setMessages(resData.data?.items);
-                    setCursor(resData.data.cursor);
-                    setHasMore(resData.data?.items.length === size);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__messages(res_data.data?.items);
+                    set__cursor(res_data.data.cursor);
+                    set__has_more(res_data.data?.items.length === size);
                 }
                 requestAnimationFrame(() => {
                     if (!parent_element.current) return;
@@ -90,53 +94,53 @@ const MsgList = () => {
                 });
             })
             .catch((err) => console.error(err))
-            .finally(() => (lockLoadMore.current = false));
-    }, [getMessages, id]);
+            .finally(() => (lock_load_more.current = false));
+    }, [get_Messages, id]);
 
     useEffect(() => {
-        const scrollToBottom = () => {
+        const scroll_To_Bottom = () => {
             if (!bottom_element.current) return;
             const bottomElement = bottom_element.current;
             bottomElement.scrollIntoView({ behavior: 'auto' });
         };
-        scrollToBottom();
+        scroll_To_Bottom();
         setTimeout(() => {
-            scrollToBottom();
+            scroll_To_Bottom();
         }, 1000);
         setTimeout(() => {
-            scrollToBottom();
+            scroll_To_Bottom();
         }, 2000);
     }, []);
 
     const loadMore = async () => {
         if (!id) return;
-        if (lockLoadMore.current) return;
-        if (!hasMore || isLoadingMore) return;
+        if (lock_load_more.current) return;
+        if (!has_more || is_loading_more) return;
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        setIsLoadingMore(true);
+        set__is_loading_more(true);
 
         const container = parentElement;
         const prevScrollHeight = container.scrollHeight;
         const prevScrollTop = container.scrollTop;
 
-        getMessages({ cursor: cursor, size: size, chatRoomId: Number(id) })
+        get_Messages({ cursor: cursor, size: size, chat_room_id: id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setMessages((pre) => [...(resData.data?.items || []), ...pre]);
-                    setCursor(resData.data.cursor);
-                    setHasMore(resData.data?.items.length === size);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__messages((pre) => [...(res_data.data?.items || []), ...pre]);
+                    set__cursor(res_data.data.cursor);
+                    set__has_more(res_data.data?.items.length === size);
                 }
                 requestAnimationFrame(() => {
                     const newScrollHeight = container.scrollHeight;
                     container.scrollTop = prevScrollTop + (newScrollHeight - prevScrollHeight);
-                    setIsLoadingMore(false);
+                    set__is_loading_more(false);
                 });
             })
             .catch((err) => console.error(err))
-            .finally(() => (lockLoadMore.current = false));
+            .finally(() => (lock_load_more.current = false));
     };
 
     const onScroll = () => {
@@ -149,26 +153,26 @@ const MsgList = () => {
     };
 
     const list_message = messages.map((item, index) => {
-        const eventName = item.event_name;
-        const isUserSend = eventName.startsWith('user_send');
-        const isOaSend = eventName.startsWith('oa_send');
-        const isUserCall = eventName.startsWith('user_call');
-        const isOaCall = eventName.startsWith('oa_call');
+        const event_name = item.event_name;
+        const is_user_send = event_name.startsWith('user_send');
+        const is_oa_send = event_name.startsWith('oa_send');
+        const is_user_call = event_name.startsWith('user_call');
+        const is_oa_call = event_name.startsWith('oa_call');
 
         if ('call_id' in item) {
-            if (isUserCall) {
+            if (is_user_call) {
                 return <UserMsg key={index} msgList_element={parent_element.current} data={item} messages={messages} />;
             }
 
-            if (isOaCall) {
+            if (is_oa_call) {
                 return <MyMsg key={index} msgList_element={parent_element.current} data={item} messages={messages} />;
             }
         } else {
-            if (isUserSend) {
+            if (is_user_send) {
                 return <UserMsg key={index} msgList_element={parent_element.current} data={item} messages={messages} />;
             }
 
-            if (isOaSend) {
+            if (is_oa_send) {
                 return <MyMsg key={index} msgList_element={parent_element.current} data={item} messages={messages} />;
             }
         }
@@ -178,7 +182,7 @@ const MsgList = () => {
 
     return (
         <div className={style.parent} ref={parent_element} onScroll={onScroll}>
-            {isLoadingMore && <div className={style.loading}>Đang tải ...</div>}
+            {is_loading_more && <div className={style.loading}>Đang tải ...</div>}
             {list_message}
             <div ref={bottom_element}></div>
         </div>

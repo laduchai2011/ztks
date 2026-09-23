@@ -1,9 +1,9 @@
 import { FC, memo } from 'react';
 import style from './style.module.scss';
-import { MessageAudioField } from '@src/dataStruct/zalo/hookData';
-import { MessageV1Field } from '@src/dataStruct/message_v1';
+import { Message_Audio_Field } from '@src/data_struct/zalo/hook_data';
+import { Message_V1_Field } from '@src/data_struct/message_v1';
 
-const MsgAudio: FC<{ data?: MessageV1Field<MessageAudioField> }> = ({ data }) => {
+const MsgAudio: FC<{ data?: Message_V1_Field<Message_Audio_Field> }> = ({ data }) => {
     const url = data?.message.attachments[0].payload.url;
 
     return (

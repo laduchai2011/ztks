@@ -1,10 +1,10 @@
 import { FC, memo } from 'react';
 import style from './style.module.scss';
-import { MessageVideoField } from '@src/dataStruct/zalo/hookData';
-import { MessageV1Field } from '@src/dataStruct/message_v1';
+import { Message_Video_Field } from '@src/data_struct/zalo/hook_data';
+import { Message_V1_Field } from '@src/data_struct/message_v1';
 import LazyVideo from '@src/component/LazyVideo';
 
-const MsgVideo: FC<{ msgList_element?: HTMLDivElement | null; data?: MessageV1Field<MessageVideoField> }> = ({
+const MsgVideo: FC<{ msgList_element?: HTMLDivElement | null; data?: Message_V1_Field<Message_Video_Field> }> = ({
     msgList_element,
     data,
 }) => {

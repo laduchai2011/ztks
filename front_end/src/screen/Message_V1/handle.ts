@@ -55,7 +55,7 @@ export const uploadVideo = async (file: File, id: string) => {
         );
 
         const res1Data = response1.data;
-        if (!res1Data?.isSuccess) {
+        if (!res1Data?.is_success) {
             throw new Error(`Upload chunk ${chunkIndex} thất bại`);
         }
     }
@@ -74,7 +74,7 @@ export const uploadVideo = async (file: File, id: string) => {
 
     const res2Data = response2.data;
 
-    if (!res2Data?.isSuccess) {
+    if (!res2Data?.is_success) {
         throw new Error(`Merge chunk thất bại !`);
     }
 

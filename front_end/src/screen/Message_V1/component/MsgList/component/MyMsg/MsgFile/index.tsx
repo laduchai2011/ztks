@@ -1,8 +1,8 @@
 import { FC, memo } from 'react';
-import { MessageFileField } from '@src/dataStruct/zalo/hookData';
-import { MessageV1Field } from '@src/dataStruct/message_v1';
+import { Message_File_Field } from '@src/data_struct/zalo/hook_data';
+import { Message_V1_Field } from '@src/data_struct/message_v1';
 
-const MsgFile: FC<{ data?: MessageV1Field<MessageFileField> }> = () => {
+const MsgFile: FC<{ data?: Message_V1_Field<Message_File_Field> }> = () => {
     return <div>MsgFile</div>;
 };
 

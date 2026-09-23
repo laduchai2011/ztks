@@ -12,84 +12,89 @@ import MsgSticker from './MsgSticker';
 import MsgLink from './MsgLink';
 import MsgCall from './MsgCall';
 import {
-    ZaloMessageType,
-    MessageTextField,
-    MessageImageField,
-    MessageMultiImageField,
-    MessageVideoField,
-    MessageAudioField,
-    MessageFileField,
-    MessageStickerField,
-    MessageLinkField,
-    ZaloCallType,
-} from '@src/dataStruct/zalo/hookData';
-import { MessageV1Field, CallV1Field } from '@src/dataStruct/message_v1';
-import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { ZaloUserField } from '@src/dataStruct/zalo/user';
-import { ChatRoomField } from '@src/dataStruct/chatRoom';
-import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
+    Zalo_Message_Type,
+    Message_Text_Field,
+    Message_Image_Field,
+    Message_Multi_Image_Field,
+    Message_Video_Field,
+    Message_Audio_Field,
+    Message_File_Field,
+    Message_Sticker_Field,
+    Message_Link_Field,
+    Zalo_Call_Type,
+} from '@src/data_struct/zalo/hook_data';
+import { Message_V1_Field, Call_V1_Field } from '@src/data_struct/message_v1';
+import { Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
+import { Zalo_User_Field } from '@src/data_struct/zalo/user';
+import { Chat_Room_Field } from '@src/data_struct/chat_room';
+import { Zalo_Event_Name_Enum } from '@src/data_struct/zalo/hook_data/common';
 import { timeAgoSmart } from '@src/utility/time';
-import { useGetZaloUserQuery } from '@src/redux/query/zalo_RTK';
-import { set_repliedMessage } from '@src/redux/slice/Message_V1';
+import { use_get_Zalo_User_Query } from '@src/redux/query/zalo_RTK';
+import { set__replied_message } from '@src/redux/slice/Message_V1';
 import { avatarnull } from '@src/utility/string';
 
 const UserMsg: FC<{
     msgList_element?: HTMLDivElement | null;
-    data: MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType>;
-    messages: (MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType>)[];
+    data: Message_V1_Field<Zalo_Message_Type> | Call_V1_Field<Zalo_Call_Type>;
+    messages: (Message_V1_Field<Zalo_Message_Type> | Call_V1_Field<Zalo_Call_Type>)[];
 }> = ({ msgList_element, data, messages }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
-    const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
-    const chatRoom: ChatRoomField | undefined = useSelector((state: RootState) => state.MessageV1Slice.chatRoom);
-    const userIdByApp = chatRoom?.userIdByApp;
-    const [zaloUser, setZaloUser] = useState<ZaloUserField | undefined>(undefined);
-    const [isAvatar, setIsAvatar] = useState<boolean>(true);
+    const zalo_app: Zalo_App_Field | undefined = useSelector((state: RootState) => state.App_Slice.zalo_app);
+    const zalo_oa: Zalo_Oa_Field | undefined = useSelector((state: RootState) => state.Message_V1_Slice.zalo_oa);
+    const chat_room: Chat_Room_Field | undefined = useSelector((state: RootState) => state.Message_V1_Slice.chat_room);
+
+    const [user_id_by_app, set__user_id_by_app] = useState<string | undefined>(undefined);
+    const [zalo_user, set__zalo_user] = useState<Zalo_User_Field | undefined>(undefined);
+    const [is_avatar, set__is_avatar] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (!chat_room) return;
+        set__user_id_by_app(chat_room.user_id_by_app);
+    }, [chat_room]);
 
     useEffect(() => {
         // const isUserSend_data = eventName.startsWith('user_send');
         // const isOaSend = eventName.startsWith('oa_send');
-        const indexMessage = messages.indexOf(data);
-        if (indexMessage <= 0) return;
-        const befor_message = messages[indexMessage - 1];
-        const isUserSend_dataBefor = befor_message.event_name.startsWith('user_send');
-        if (isUserSend_dataBefor) {
-            setIsAvatar(false);
+        const index_message = messages.indexOf(data);
+        if (index_message <= 0) return;
+        const befor_message = messages[index_message - 1];
+        const is_user_send__data_befor = befor_message.event_name.startsWith('user_send');
+        if (is_user_send__data_befor) {
+            set__is_avatar(false);
         } else {
-            setIsAvatar(true);
+            set__is_avatar(true);
         }
     }, [data, messages]);
 
     const {
-        data: data_zaloUser,
+        data: data__zalo_user,
         // isFetching,
-        isLoading: isLoading_zaloUser,
-        isError: isError_zaloUser,
-        error: error_zaloUser,
-    } = useGetZaloUserQuery(
-        { zaloApp: zaloApp!, zaloOa: zaloOa!, userIdByApp: userIdByApp! },
-        { skip: zaloApp === undefined || zaloOa === undefined || userIdByApp === undefined }
+        isLoading: is_loading__zalo_user,
+        isError: is_error__zalo_user,
+        error: error__zalo_user,
+    } = use_get_Zalo_User_Query(
+        { zalo_app: zalo_app!, zalo_oa: zalo_oa!, user_id_by_app: user_id_by_app! },
+        { skip: zalo_app === undefined || zalo_oa === undefined || user_id_by_app === undefined }
     );
     useEffect(() => {
-        if (isError_zaloUser && error_zaloUser) {
-            console.error(error_zaloUser);
+        if (is_error__zalo_user && error__zalo_user) {
+            console.error(error__zalo_user);
         }
-    }, [isError_zaloUser, error_zaloUser]);
+    }, [is_error__zalo_user, error__zalo_user]);
     useEffect(() => {
         // dispatch(set_isLoading(isLoading_chatRoom));
-    }, [isLoading_zaloUser]);
+    }, [is_loading__zalo_user]);
     useEffect(() => {
-        const resData = data_zaloUser;
-        // console.log(resData);
-        if (resData?.isSuccess && resData.data && resData.data) {
-            setZaloUser(resData.data);
+        const res_data = data__zalo_user;
+        if (res_data?.is_success && res_data.data) {
+            set__zalo_user(res_data.data);
         }
-    }, [data_zaloUser]);
+    }, [data__zalo_user]);
 
-    const [isMore, setIsMore] = useState<boolean>(false);
+    const [is_more, set__is_more] = useState<boolean>(false);
 
-    const handleShowMore = () => {
-        setIsMore(!isMore);
+    const handle_Show_More = () => {
+        set__is_more(!is_more);
     };
 
     const msg = () => {
@@ -97,35 +102,35 @@ const UserMsg: FC<{
 
         switch (event_name) {
             case Zalo_Event_Name_Enum.user_send_text: {
-                const data_t = data as MessageV1Field<MessageTextField>;
+                const data_t = data as Message_V1_Field<Message_Text_Field>;
                 return <MsgText data={data_t} />;
             }
             case Zalo_Event_Name_Enum.user_send_image: {
-                const data_t = data as MessageV1Field<MessageImageField | MessageMultiImageField>;
+                const data_t = data as Message_V1_Field<Message_Image_Field | Message_Multi_Image_Field>;
                 return <MsgImage data={data_t} />;
             }
             case Zalo_Event_Name_Enum.user_send_video: {
-                const data_t = data as MessageV1Field<MessageVideoField>;
+                const data_t = data as Message_V1_Field<Message_Video_Field>;
                 return <MsgVideo msgList_element={msgList_element} data={data_t} />;
             }
             case Zalo_Event_Name_Enum.user_send_audio: {
-                const data_t = data as MessageV1Field<MessageAudioField>;
+                const data_t = data as Message_V1_Field<Message_Audio_Field>;
                 return <MsgAudio data={data_t} />;
             }
             case Zalo_Event_Name_Enum.user_send_file: {
-                const data_t = data as MessageV1Field<MessageFileField>;
+                const data_t = data as Message_V1_Field<Message_File_Field>;
                 return <MsgFile data={data_t} />;
             }
             case Zalo_Event_Name_Enum.user_send_sticker: {
-                const data_t = data as MessageV1Field<MessageStickerField>;
+                const data_t = data as Message_V1_Field<Message_Sticker_Field>;
                 return <MsgSticker data={data_t} />;
             }
             case Zalo_Event_Name_Enum.user_send_link: {
-                const data_t = data as MessageV1Field<MessageLinkField>;
+                const data_t = data as Message_V1_Field<Message_Link_Field>;
                 return <MsgLink data={data_t} />;
             }
             case Zalo_Event_Name_Enum.user_call_oa: {
-                const data_t = data as CallV1Field<ZaloCallType>;
+                const data_t = data as Call_V1_Field<Zalo_Call_Type>;
                 return <MsgCall data={data_t} />;
             }
             default: {
@@ -134,25 +139,25 @@ const UserMsg: FC<{
         }
     };
 
-    const handleToReply = () => {
-        dispatch(set_repliedMessage(data));
+    const handle_To_Reply = () => {
+        dispatch(set__replied_message(data));
     };
 
     return (
         <div className={style.parent}>
             <div className={style.avatarContainer}>
-                {isAvatar && <img src={zaloUser?.data.avatar || avatarnull} alt="avatar" />}
+                {is_avatar && <img src={zalo_user?.data.avatar || avatarnull} alt="avatar" />}
             </div>
             <div className={style.msgContainer}>
-                {isAvatar && <div className={style.name}>{zaloUser?.data.display_name}</div>}
+                {is_avatar && <div className={style.name}>{zalo_user?.data.display_name}</div>}
                 <div>{msg()}</div>
                 <div className={style.moreInfor}>{timeAgoSmart(data.timestamp)}</div>
             </div>
             <div className={style.iconContainer}>
-                <IoIosMore onClick={() => handleShowMore()} size={25} />
-                {isMore && (
+                <IoIosMore onClick={() => handle_Show_More()} size={25} />
+                {is_more && (
                     <div className={style.moreContainer}>
-                        <div onClick={() => handleToReply()}>Trả lời</div>
+                        <div onClick={() => handle_To_Reply()}>Trả lời</div>
                         <div>Chia sẻ</div>
                     </div>
                 )}

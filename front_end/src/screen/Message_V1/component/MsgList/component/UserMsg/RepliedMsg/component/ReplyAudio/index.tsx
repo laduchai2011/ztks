@@ -1,11 +1,11 @@
 import { FC, memo } from 'react';
 import style from './style.module.scss';
-import { MessageV1Field } from '@src/dataStruct/message_v1';
-import { MessageAudioField } from '@src/dataStruct/zalo/hookData';
+import { Message_V1_Field } from '@src/data_struct/message_v1';
+import { Message_Audio_Field } from '@src/data_struct/zalo/hook_data';
 import { AUDIO } from '@src/const/text';
 import { LuAudioLines } from 'react-icons/lu';
 
-const ReplyAudio: FC<{ data: MessageV1Field<MessageAudioField> }> = ({ data }) => {
+const ReplyAudio: FC<{ data: Message_V1_Field<Message_Audio_Field> }> = ({ data }) => {
     const url = data.message.attachments[0].payload.url;
 
     return (

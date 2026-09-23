@@ -11,9 +11,9 @@ import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import ChangeChatRoomMasterDialog from './component/ChangeChatRoomMasterDialog';
 import { IoChevronBack } from 'react-icons/io5';
-import { useGetChatRoomsWithIdQuery } from '@src/redux/query/chat_room_RTK';
-import { useGetZaloOaWithIdQuery } from '@src/redux/query/zalo_RTK';
-import { useLazyGetLastMessageQuery } from '@src/redux/query/message_v1_RTK';
+import { use_get_Chat_Rooms_With_Id_Query } from '@src/redux/query/chat_room_RTK';
+import { use_get_Zalo_Oa_With_Id_Query } from '@src/redux/query/zalo_RTK';
+import { useLazy_get_Last_Message_Query } from '@src/redux/query/message_v1_RTK';
 import {
     setData_chatRoom,
     setData_toastMessage,
@@ -23,8 +23,8 @@ import {
     set_uid,
 } from '@src/redux/slice/Message_V1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { AccountInformationField } from '@src/dataStruct/account';
-import { ChatRoomField } from '@src/dataStruct/chatRoom';
+import { AccountInformationField } from '@src/data_struct/account';
+import { ChatRoomField } from '@src/data_struct/chat_room';
 import { getSocket } from '@src/socketIo';
 import { route_enum } from '@src/router/type';
 

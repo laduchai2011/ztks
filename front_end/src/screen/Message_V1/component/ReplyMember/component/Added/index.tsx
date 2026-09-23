@@ -4,119 +4,117 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { HexColorPicker } from 'react-colorful';
-import { AccountField } from '@src/dataStruct/account';
-import { ChatRoomRoleField } from '@src/dataStruct/chatRoom';
-import { UpdateSetupChatRoomRoleBodyField } from '@src/dataStruct/chatRoom/body';
+import { Account_Field } from '@src/data_struct/account';
+import { Chat_Room_Role_Field } from '@src/data_struct/chat_room';
+import { Update_Setup_Chat_Room_Role_Body_Field } from '@src/data_struct/chat_room/body';
 import { avatarnull } from '@src/utility/string';
 import {
-    useGetChatRoomRoleWithCridAaidQuery,
-    useUpdateSetupChatRoomRoleMutation,
+    use_get_Chat_Room_Role_With_Crid_Aaid_Query,
+    use_update_Setup_Chat_Room_Role_Mutation,
 } from '@src/redux/query/chat_room_RTK';
-import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Message_V1';
+import { set__data__toast_message, set__is_loading } from '@src/redux/slice/Message_V1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { handleSrcImage } from '@src/utility/string';
 
-const Added: FC<{ index: number; data: AccountField }> = ({ index, data }) => {
-    const defaultColor = '#EBEBEB';
+const Added: FC<{ index: number; data: Account_Field }> = ({ index, data }) => {
+    const default_color = '#EBEBEB';
     const dispatch = useDispatch<AppDispatch>();
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
     const you: string = account?.id === data.id ? 'Bạn' : '';
     const { id } = useParams<{ id: string }>();
-    const [isColorFrame, setIscolorFrame] = useState<boolean>(false);
-    const [isRead, setIsRead] = useState<boolean>(false);
-    const [isSend, setIsSend] = useState<boolean>(false);
-    const [color, setColor] = useState<string>(defaultColor);
-    const [chatRoomRole, setChatRoomRole] = useState<ChatRoomRoleField | undefined>(undefined);
-    const [avatarUrl, setAvatarUrl] = useState<string>(avatarnull);
+    const [is_color_frame, set__is_color_frame] = useState<boolean>(false);
+    const [is_read, set__is_read] = useState<boolean>(false);
+    const [is_send, set__is_send] = useState<boolean>(false);
+    const [color, set__color] = useState<string>(default_color);
+    const [chat_room_role, set__chat_room_role] = useState<Chat_Room_Role_Field | undefined>(undefined);
+    const [avatar_url, set__avatar_url] = useState<string>(avatarnull);
 
-    const [updateSetupChatRoomRole] = useUpdateSetupChatRoomRoleMutation();
+    const [update_Setup_Chat_Room_Role] = use_update_Setup_Chat_Room_Role_Mutation();
 
-    const handleIsRead = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Is_Read = (e: React.ChangeEvent<HTMLInputElement>) => {
         const checked = e.target.checked;
-        setIsRead(checked);
+        set__is_read(checked);
     };
 
-    const handleIsSend = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Is_Send = (e: React.ChangeEvent<HTMLInputElement>) => {
         const checked = e.target.checked;
-        setIsSend(checked);
+        set__is_send(checked);
     };
 
-    const handleShowColorFrame = () => {
-        setIscolorFrame(!isColorFrame);
+    const handle_Show_Color_Frame = () => {
+        set__is_color_frame(!is_color_frame);
     };
 
     const {
-        data: data_chatRoomRole,
+        data: data__chat_room_role,
         // isFetching,
-        isLoading: isLoading_chatRoomRole,
-        isError: isError_chatRoomRole,
-        error: error_chatRoomRole,
-    } = useGetChatRoomRoleWithCridAaidQuery(
-        { authorizedAccountId: data.id, chatRoomId: Number(id) },
+        isLoading: is_loading__chat_room_role,
+        isError: is_error__chat_room_role,
+        error: error__chat_room_role,
+    } = use_get_Chat_Room_Role_With_Crid_Aaid_Query(
+        { authorized_account_id: data.id, chat_room_id: id || '' },
         { skip: id === undefined }
     );
     useEffect(() => {
-        if (isError_chatRoomRole && error_chatRoomRole) {
-            console.error(error_chatRoomRole);
-            // dispatch(
-            //     setData_toastMessage({
-            //         type: messageType_enum.ERROR,
-            //         message: 'Lấy dữ liệu phòng hội thoại KHÔNG thành công !',
-            //     })
-            // );
+        if (is_error__chat_room_role && error__chat_room_role) {
+            console.error(error__chat_room_role);
         }
-    }, [isError_chatRoomRole, error_chatRoomRole]);
+    }, [is_error__chat_room_role, error__chat_room_role]);
     useEffect(() => {
         // dispatch(set_isLoading(isLoading_chatRoom));
-    }, [isLoading_chatRoomRole]);
+    }, [is_loading__chat_room_role]);
     useEffect(() => {
-        const resData = data_chatRoomRole;
-        if (resData?.isSuccess && resData.data) {
-            setChatRoomRole(resData.data);
+        const res_data = data__chat_room_role;
+        if (res_data?.is_success && res_data.data) {
+            set__chat_room_role(res_data.data);
         }
-    }, [data_chatRoomRole]);
+    }, [data__chat_room_role]);
 
     useEffect(() => {
-        if (!chatRoomRole) return;
-        setIsRead(chatRoomRole.isRead);
-        setIsSend(chatRoomRole.isSend);
-        if (chatRoomRole.backGroundColor) {
-            setColor(chatRoomRole.backGroundColor);
+        if (!chat_room_role) return;
+        set__is_read(chat_room_role.is_read);
+        set__is_send(chat_room_role.is_send);
+        if (chat_room_role.back_ground_color) {
+            set__color(chat_room_role.back_ground_color);
         }
-    }, [chatRoomRole]);
+    }, [chat_room_role]);
 
     useEffect(() => {
-        const avatarUrl_ = data.avatar ? handleSrcImage(data.avatar) : avatarnull;
-        setAvatarUrl(avatarUrl_);
+        const _avatar_url = data.avatar ? handleSrcImage(data.avatar) : avatarnull;
+        set__avatar_url(_avatar_url);
     }, [data.avatar]);
 
-    const handleUpdate = () => {
-        if (!chatRoomRole) return;
-        if (chatRoomRole.isRead === isRead && chatRoomRole.isSend === isSend && chatRoomRole.backGroundColor === color)
+    const handle_Update = () => {
+        if (!chat_room_role) return;
+        if (
+            chat_room_role.is_read === is_read &&
+            chat_room_role.is_send === is_send &&
+            chat_room_role.back_ground_color === color
+        )
             return;
 
-        const updateSetupChatRoomRoleBody: UpdateSetupChatRoomRoleBodyField = {
-            id: chatRoomRole.id,
-            backGroundColor: color,
-            isRead: isRead,
-            isSend: isSend,
-            accountId: chatRoomRole.accountId,
+        const update_setup_chat_room_role_body: Update_Setup_Chat_Room_Role_Body_Field = {
+            id: chat_room_role.id,
+            back_ground_color: color,
+            is_read: is_read,
+            is_send: is_send,
+            account_id: chat_room_role.account_id,
         };
 
-        dispatch(set_isLoading(true));
-        updateSetupChatRoomRole(updateSetupChatRoomRoleBody)
+        dispatch(set__is_loading(true));
+        update_Setup_Chat_Room_Role(update_setup_chat_room_role_body)
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess) {
+                const res_data = res.data;
+                if (res_data?.is_success) {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.SUCCESS,
                             message: 'Cập nhật thành công !',
                         })
                     );
                 } else {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.ERROR,
                             message: 'Cập nhật thất bại !',
                         })
@@ -124,43 +122,43 @@ const Added: FC<{ index: number; data: AccountField }> = ({ index, data }) => {
                 }
             })
             .catch((err) => console.error(err))
-            .finally(() => dispatch(set_isLoading(false)));
+            .finally(() => dispatch(set__is_loading(false)));
     };
 
     return (
         <div className={style.parent}>
             <div className={style.indexContainer}>{index + 1}</div>
             <div className={style.nameContainer}>
-                <img src={avatarUrl} alt="" />
+                <img src={avatar_url} alt="" />
                 <div className={style.you}>{you}</div>
-                <div className={style.name}>{data.firstName + ' ' + data.lastName}</div>
+                <div className={style.name}>{data.first_name + ' ' + data.last_name}</div>
             </div>
             <div className={style.setupContainer}>
                 <div className={style.setupMain}>
                     <div className={style.read}>
-                        <input checked={isRead} onChange={(e) => handleIsRead(e)} type="checkbox" />
+                        <input checked={is_read} onChange={(e) => handle_Is_Read(e)} type="checkbox" />
                         <div>Đọc</div>
                     </div>
                     <div className={style.send}>
-                        <input checked={isSend} onChange={(e) => handleIsSend(e)} type="checkbox" />
+                        <input checked={is_send} onChange={(e) => handle_Is_Send(e)} type="checkbox" />
                         <div>Gửi</div>
                     </div>
                     <div className={style.colorSelect}>
                         <div
-                            onClick={() => handleShowColorFrame()}
+                            onClick={() => handle_Show_Color_Frame()}
                             style={{
                                 background: color,
                             }}
                         />
                         <div>Màu nền</div>
-                        {isColorFrame && (
-                            <HexColorPicker className={style.colorFrame} color={color} onChange={setColor} />
+                        {is_color_frame && (
+                            <HexColorPicker className={style.colorFrame} color={color} onChange={set__color} />
                         )}
                     </div>
                 </div>
             </div>
             <div className={style.btnContainer}>
-                <button onClick={() => handleUpdate()}>Cập nhật</button>
+                <button onClick={() => handle_Update()}>Cập nhật</button>
             </div>
         </div>
     );
