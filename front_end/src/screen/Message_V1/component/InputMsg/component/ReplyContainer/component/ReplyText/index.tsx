@@ -1,9 +1,9 @@
 import { FC, memo } from 'react';
 import style from './style.module.scss';
-import { MessageV1Field } from '@src/dataStruct/message_v1';
-import { MessageTextField } from '@src/dataStruct/zalo/hookData';
+import { Message_V1_Field } from '@src/data_struct/message_v1';
+import { Message_Text_Field } from '@src/data_struct/zalo/hook_data';
 
-const ReplyText: FC<{ data: MessageV1Field<MessageTextField> }> = ({ data }) => {
+const ReplyText: FC<{ data: Message_V1_Field<Message_Text_Field> }> = ({ data }) => {
     return (
         <div className={style.parent}>
             <div>{data.message.text}</div>

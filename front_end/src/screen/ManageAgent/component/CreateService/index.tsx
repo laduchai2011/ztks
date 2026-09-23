@@ -3,41 +3,42 @@ import style from './style.module.scss';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import {
-    set_isLoading,
-    setData_toastMessage,
-    setData_addNewAgent,
-    clear_newAgents,
+    set__is_loading,
+    set__data__toast_message,
+    set__data__add_new_agent,
+    clear__new_agents,
 } from '@src/redux/slice/Manage_Agent';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { IoIosAddCircle } from 'react-icons/io';
-import { useCreateAgentMutation } from '@src/redux/query/agent_RTK';
+import { use_create_Agent_Mutation } from '@src/redux/query/agent_RTK';
 
 const CreateService = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const [createAgent] = useCreateAgentMutation();
+
+    const [create_Agent] = use_create_Agent_Mutation();
 
     useEffect(() => {
         return () => {
-            dispatch(clear_newAgents());
+            dispatch(clear__new_agents());
         };
     }, [dispatch]);
 
-    const handleCreateAgent = () => {
-        dispatch(set_isLoading(true));
-        createAgent({ accountId: -1 })
+    const handle_Create_Agent = () => {
+        dispatch(set__is_loading(true));
+        create_Agent({ account_id: '' })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    dispatch(setData_addNewAgent(resData.data));
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    dispatch(set__data__add_new_agent(res_data.data));
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.SUCCESS,
                             message: 'Tạo agent thành công !',
                         })
                     );
                 } else {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.NORMAL,
                             message: 'Tạo agent không thành công !',
                         })
@@ -47,18 +48,18 @@ const CreateService = () => {
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
-            .finally(() => dispatch(set_isLoading(false)));
+            .finally(() => dispatch(set__is_loading(false)));
     };
 
     return (
         <div className={style.parent}>
-            <IoIosAddCircle onClick={() => handleCreateAgent()} size={25} color="greenyellow" />
+            <IoIosAddCircle onClick={() => handle_Create_Agent()} size={25} color="greenyellow" />
         </div>
     );
 };

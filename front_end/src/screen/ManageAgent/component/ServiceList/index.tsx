@@ -5,102 +5,101 @@ import { RootState, AppDispatch } from '@src/redux';
 import { SEE_MORE } from '@src/const/text';
 import { CiSearch } from 'react-icons/ci';
 import OneService from './component/OneService';
-import { useLazyGetAgentsQuery } from '@src/redux/query/agent_RTK';
-import { AgentField } from '@src/dataStruct/agent';
-import { set_isLoading, setData_toastMessage } from '@src/redux/slice/Manage_Agent';
+import { useLazy_get_Agents_Query } from '@src/redux/query/agent_RTK';
+import { Agent_Field } from '@src/data_struct/agent';
+import { set__is_loading, set__data__toast_message } from '@src/redux/slice/Manage_Agent';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const ServiceList = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const newAgents: AgentField[] = useSelector((state: RootState) => state.ManageAgentSlice.newAgents);
-    const [agents, setAgents] = useState<AgentField[]>([]);
-    const [hasMore, setHasMore] = useState<boolean>(true);
-    const [page, setPage] = useState<number>(1);
-    const [searchInput, setSearchInput] = useState<string>('');
-    const [isSearch, setIsSearch] = useState<boolean>(true);
+    const new_agents: Agent_Field[] = useSelector((state: RootState) => state.Manage_Agent_Slice.new_agents);
+
+    const [agents, set__agents] = useState<Agent_Field[]>([]);
+    const [has_more, set__has_more] = useState<boolean>(true);
+    const [page, set__page] = useState<number>(1);
+    const [search_input, set__search_input] = useState<string>('');
+    const [is_search, set__is_search] = useState<boolean>(true);
     const size = 10;
 
-    const [getAgents] = useLazyGetAgentsQuery();
+    const [get_Agents] = useLazy_get_Agents_Query();
 
     useEffect(() => {
-        if (newAgents.length === 0) return;
-        setAgents((prev) => [newAgents[newAgents.length - 1], ...prev]);
-    }, [newAgents]);
+        if (new_agents.length === 0) return;
+        set__agents((prev) => [new_agents[new_agents.length - 1], ...prev]);
+    }, [new_agents]);
 
     useEffect(() => {
-        if (!isSearch) return;
-        const searchInput_t = searchInput.trim();
-        dispatch(set_isLoading(true));
-        getAgents({
+        if (!is_search) return;
+        const search_input_t = search_input.trim();
+        dispatch(set__is_loading(true));
+        get_Agents({
             page: 1,
             size: size,
             offset: 0,
-            agentAccountId:
-                searchInput_t.length > 0 && !isNaN(Number(searchInput_t)) ? Number(searchInput_t) : undefined,
-            accountId: -1,
+            agent_account_id: search_input_t.length > 0 ? search_input_t : '',
+            account_id: '',
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setAgents(resData.data.items);
-                    setPage(2);
-                    setHasMore(resData.data.items.length === size);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__agents(res_data.data.items);
+                    set__page(2);
+                    set__has_more(res_data.data.items.length === size);
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
-                setIsSearch(false);
+                dispatch(set__is_loading(false));
+                set__is_search(false);
             });
-    }, [dispatch, getAgents, isSearch, searchInput]);
+    }, [dispatch, get_Agents, is_search, search_input]);
 
-    const handleSeeMore = () => {
-        if (!hasMore) return;
-        const searchInput_t = searchInput.trim();
-        dispatch(set_isLoading(true));
-        getAgents({
+    const handle_See_More = () => {
+        if (!has_more) return;
+        const search_input_t = search_input.trim();
+        dispatch(set__is_loading(true));
+        get_Agents({
             page: page,
             size: size,
             offset: 0,
-            agentAccountId:
-                searchInput_t.length > 0 && !isNaN(Number(searchInput_t)) ? Number(searchInput_t) : undefined,
-            accountId: -1,
+            agent_account_id: search_input_t.length > 0 ? search_input_t : '',
+            account_id: '',
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setAgents((prev) => [...prev, ...(resData.data?.items || [])]);
-                    setPage((pre) => pre + 1);
-                    setHasMore(resData.data.items.length === size);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__agents((prev) => [...prev, ...(res_data.data?.items || [])]);
+                    set__page((pre) => pre + 1);
+                    set__has_more(res_data.data.items.length === size);
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
-            .finally(() => dispatch(set_isLoading(false)));
+            .finally(() => dispatch(set__is_loading(false)));
     };
 
-    const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Search_Input = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setSearchInput(value);
+        set__search_input(value);
     };
 
-    const handleSearch = () => {
-        setIsSearch(true);
+    const handle_Search = () => {
+        set__is_search(true);
     };
 
     const list_service = agents.map((item, index) => {
@@ -111,14 +110,14 @@ const ServiceList = () => {
         <div className={style.parent}>
             <div className={style.search}>
                 <div>
-                    <input value={searchInput} onChange={(e) => handleSearchInput(e)} placeholder="Id thành viên" />
-                    <CiSearch onClick={() => handleSearch()} size={25} />
+                    <input value={search_input} onChange={(e) => handle_Search_Input(e)} placeholder="Id thành viên" />
+                    <CiSearch onClick={() => handle_Search()} size={25} />
                 </div>
             </div>
             <div>{list_service}</div>
-            {hasMore && (
+            {has_more && (
                 <div className={style.seeMore}>
-                    <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>
+                    <div onClick={() => handle_See_More()}>{SEE_MORE}</div>
                 </div>
             )}
         </div>

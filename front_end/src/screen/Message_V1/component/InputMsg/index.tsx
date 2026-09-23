@@ -12,111 +12,111 @@ import { MdOutlineOndemandVideo, MdAttachFile } from 'react-icons/md';
 import { PiSmileyStickerLight } from 'react-icons/pi';
 import { TbTransfer } from 'react-icons/tb';
 import { IoIosCall } from 'react-icons/io';
-import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
+import { Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
 import {
-    useCreateMessageV1Mutation,
-    useGetLastMessageQuery,
-    useVideoMessageMutation,
+    use_create_Message_V1_Mutation,
+    use_get_Last_Message_Query,
+    use_video_Message_Mutation,
 } from '@src/redux/query/message_v1_RTK';
-import { CreateMessageV1BodyField, VideoMessageBodyField } from '@src/dataStruct/message_v1/body';
-import { MessageV1Field, CallV1Field } from '@src/dataStruct/message_v1';
-import { ZaloMessageType, ZaloCallType } from '@src/dataStruct/zalo/hookData';
-import { MessageImageBodyField } from '@src/dataStruct/zalo/hookData/body';
+import { Create_Message_V1_Body_Field, Video_Message_Body_Field } from '@src/data_struct/message_v1/body';
+import { Message_V1_Field, Call_V1_Field } from '@src/data_struct/message_v1';
+import { Zalo_Message_Type, Zalo_Call_Type } from '@src/data_struct/zalo/hook_data';
+import { Message_Image_Body_Field } from '@src/data_struct/zalo/hook_data/body';
 import ReplyContainer from './component/ReplyContainer';
 import {
-    set_repliedMessage,
-    setData_toastMessage,
-    set_isLoading,
-    setIsShow_changeChatRoomMasterDialog,
+    set__replied_message,
+    set__data__toast_message,
+    set__is_loading,
+    set__is_show__change_chat_room_master_dialog,
 } from '@src/redux/slice/Message_V1';
-import { setIsShow_callDialog, setUid_callDialog, setChatRoomId_callDialog } from '@src/redux/slice/App';
+import { set__is_show__call_dialog, set__uid__call_dialog, set__chat_room_id__call_dialog } from '@src/redux/slice/App';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { uploadAImageToZalo, uploadVideo } from '../../handle';
-import { AccountField } from '@src/dataStruct/account';
+import { Account_Field } from '@src/data_struct/account';
 // import { BASE_URL_API } from '@src/const/api/baseUrl';
-import { getSocket } from '@src/socketIo';
+import { get_Socket } from '@src/socketIo';
 // import { Zalo_Event_Name_Enum } from '@src/dataStruct/zalo/hookData/common';
 
 const InputMsg = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
     const { id } = useParams<{ id: string }>();
+
     const textarea_element = useRef<HTMLTextAreaElement | null>(null);
     const imageInput_element = useRef<HTMLInputElement | null>(null);
     const videoInput_element = useRef<HTMLInputElement | null>(null);
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
-    const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.MessageV1Slice.zaloOa);
-    const repliedMessage: MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType> | undefined = useSelector(
-        (state: RootState) => state.MessageV1Slice.repliedMessage
-    );
-    const id_imageInput = useId();
-    const id_videoInput = useId();
-    const [text, setText] = useState<string>('');
-    const [lastMessage, setLastMessage] = useState<
-        MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType> | undefined
-    >(undefined);
-    const [isPlaywrightOnline, setIsPlaywrightOnline] = useState<boolean>(false);
 
-    const [createMessageV1] = useCreateMessageV1Mutation();
-    const [videoMessage] = useVideoMessageMutation();
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
+    const zalo_app: Zalo_App_Field | undefined = useSelector((state: RootState) => state.App_Slice.zalo_app);
+    const zalo_oa: Zalo_Oa_Field | undefined = useSelector((state: RootState) => state.Message_V1_Slice.zalo_oa);
+    const replied_message: Message_V1_Field<Zalo_Message_Type> | Call_V1_Field<Zalo_Call_Type> | undefined =
+        useSelector((state: RootState) => state.Message_V1_Slice.replied_message);
+    const id_image_input = useId();
+    const id_video_input = useId();
+    const [text, set__text] = useState<string>('');
+    const [last_message, set__last_message] = useState<
+        Message_V1_Field<Zalo_Message_Type> | Call_V1_Field<Zalo_Call_Type> | undefined
+    >(undefined);
+    const [is_playwright_online, set__is_playwright_online] = useState<boolean>(false);
+
+    const [create_Message_V1] = use_create_Message_V1_Mutation();
+    const [video_Message] = use_video_Message_Mutation();
 
     const {
-        data: data_lastMessage,
+        data: data__last_message,
         // isFetching,
-        isLoading: isLoading_lastMessage,
-        isError: isError_lastMessage,
-        error: error_lastMessage,
-    } = useGetLastMessageQuery({ chatRoomId: id || '' }, { skip: id === undefined });
+        isLoading: is_loading__last_message,
+        isError: is_error__last_message,
+        error: error__last_message,
+    } = use_get_Last_Message_Query({ chat_room_id: id || '' }, { skip: id === undefined });
     useEffect(() => {
-        if (isError_lastMessage && error_lastMessage) {
-            console.error(error_lastMessage);
+        if (is_error__last_message && error__last_message) {
+            console.error(error__last_message);
         }
-    }, [isError_lastMessage, error_lastMessage]);
+    }, [is_error__last_message, error__last_message]);
     useEffect(() => {
         // dispatch(set_isLoading(isLoading_zaloOa));
-    }, [isLoading_lastMessage]);
+    }, [is_loading__last_message]);
     useEffect(() => {
-        const resData = data_lastMessage;
-        if (resData?.isSuccess && resData.data) {
-            setLastMessage(resData.data);
+        const res_data = data__last_message;
+        if (res_data?.is_success && res_data.data) {
+            set__last_message(res_data.data);
         }
-    }, [data_lastMessage]);
+    }, [data__last_message]);
 
     useEffect(() => {
-        if (!zaloApp || !account) return;
+        if (!zalo_app || !account) return;
 
-        let timeoutId: NodeJS.Timeout;
+        let timeout_id: NodeJS.Timeout;
 
-        const socket = getSocket();
+        const socket = get_Socket();
 
-        interface PlaywrightOnlinePayload {
-            zaloAppId: number;
-            accountId: number;
+        interface Playwright_Online_Payload_Field {
+            zalo_app_id: string;
+            account_id: string;
         }
-        const playwrightOnline = (playwrightOnlinePayload: PlaywrightOnlinePayload) => {
-            // console.log('Received playwrightOnline event:', playwrightOnlinePayload);
-            if (!playwrightOnlinePayload) return;
-            clearTimeout(timeoutId);
-            setIsPlaywrightOnline(true);
-            timeoutId = setTimeout(() => {
-                setIsPlaywrightOnline(false);
+        const playwright_Online = (playwright_online_payload: Playwright_Online_Payload_Field) => {
+            if (!playwright_online_payload) return;
+            clearTimeout(timeout_id);
+            set__is_playwright_online(true);
+            timeout_id = setTimeout(() => {
+                set__is_playwright_online(false);
             }, 5000);
         };
 
-        socket.on('playwrightOnline-appOn', playwrightOnline);
+        socket.on('playwrightOnline-appOn', playwright_Online);
 
         setInterval(() => {
-            socket.emit('playwrightOnline-onApp', { zaloAppId: zaloApp.id, accountId: account.id });
+            socket.emit('playwrightOnline-onApp', { zalo_app_id: zalo_app.id, account_id: account.id });
         }, 3000);
 
         return () => {
-            socket.off('playwrightOnline-appOn', playwrightOnline);
-            clearTimeout(timeoutId);
+            socket.off('playwrightOnline-appOn', playwright_Online);
+            clearTimeout(timeout_id);
         };
-    }, [zaloApp, account]);
+    }, [zalo_app, account]);
 
-    const handleInput = () => {
+    const handle_Input = () => {
         const el = textarea_element.current;
         if (!el) return;
 
@@ -124,115 +124,115 @@ const InputMsg = () => {
         el.style.height = el.scrollHeight + 'px'; // grow theo nội dung
     };
 
-    const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handle_Text_Change = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const value = e.target.value;
-        setText(value);
+        set__text(value);
     };
 
-    const handleSend = () => {
-        if (!zaloApp || !zaloOa || !id) return;
-        if (!lastMessage) return;
+    const handle_Send = () => {
+        if (!zalo_app || !zalo_oa || !id) return;
+        if (!last_message) return;
 
         const txt = text.trim();
         if (txt.length === 0) return;
 
-        let u_senderId: string = '';
+        let u_sender_id: string = '';
 
-        const isUserSend = lastMessage.event_name.startsWith('user_send');
-        const isOaSend = lastMessage.event_name.startsWith('oa_send');
+        const is_user_send = last_message.event_name.startsWith('user_send');
+        const is_oa_send = last_message.event_name.startsWith('oa_send');
 
-        if ('call_id' in lastMessage) {
-            u_senderId = lastMessage.user_id;
+        if ('call_id' in last_message) {
+            u_sender_id = last_message.user_id;
         } else {
-            if (isUserSend) {
-                u_senderId = lastMessage.sender_id;
+            if (is_user_send) {
+                u_sender_id = last_message.sender_id;
             }
 
-            if (isOaSend) {
-                u_senderId = lastMessage.recipient_id;
+            if (is_oa_send) {
+                u_sender_id = last_message.recipient_id;
             }
         }
 
-        if (repliedMessage && 'call_id' in repliedMessage) {
+        if (replied_message && 'call_id' in replied_message) {
             //
         } else {
-            const newMessage = repliedMessage?.message_id
+            const newMessage = replied_message?.message_id
                 ? {
                       text: txt,
-                      quote_message_id: repliedMessage.message_id,
+                      quote_message_id: replied_message.message_id,
                   }
                 : { text: txt };
 
-            const createMessageV1Body: CreateMessageV1BodyField = {
-                zaloApp: zaloApp,
-                zaloOa: zaloOa,
-                chatRoomId: Number(id),
+            const create_message_v1_body: Create_Message_V1_Body_Field = {
+                zalo_app: zalo_app,
+                zalo_oa: zalo_oa,
+                chat_room_id: id,
                 payload: {
                     recipient: {
-                        user_id: u_senderId,
+                        user_id: u_sender_id,
                     },
                     message: newMessage,
                 },
             };
 
-            createMessageV1(createMessageV1Body)
+            create_Message_V1(create_message_v1_body)
                 .then((res) => {
-                    const resData = res.data;
-                    if (!(resData?.isSuccess && resData.data)) {
+                    const res_data = res.data;
+                    if (!(res_data?.is_success && res_data.data)) {
                         dispatch(
-                            setData_toastMessage({
+                            set__data__toast_message({
                                 type: messageType_enum.ERROR,
-                                message: resData?.message ?? 'Gửi tin nhắn không thành công !',
+                                message: res_data?.message ?? 'Gửi tin nhắn không thành công !',
                             })
                         );
                     }
-                    setText('');
-                    dispatch(set_repliedMessage(undefined));
+                    set__text('');
+                    dispatch(set__replied_message(undefined));
                 })
                 .catch((err) => console.error(err));
         }
     };
 
-    const handleImageIconClick = () => {
+    const handle_Image_Icon_Click = () => {
         imageInput_element.current?.click();
     };
 
-    const handleVideoIconClick = () => {
-        if (!isPlaywrightOnline) return;
+    const handle_Video_Icon_Click = () => {
+        if (!is_playwright_online) return;
         videoInput_element.current?.click();
     };
 
-    const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Image_Change = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
 
         if (!files) return;
 
         const file = files[0];
 
-        if (!zaloApp) return;
-        if (!zaloOa) return;
+        if (!zalo_app) return;
+        if (!zalo_oa) return;
         if (!id) return;
-        if (!lastMessage) return;
+        if (!last_message) return;
         try {
-            const res_upload = await uploadAImageToZalo(file, zaloApp, zaloOa);
+            const res_upload = await uploadAImageToZalo(file, zalo_app, zalo_oa);
             if (res_upload.error !== 0) return;
-            let u_senderId: string = '';
-            const isUserSend = lastMessage.event_name.startsWith('user_send');
-            const isOaSend = lastMessage.event_name.startsWith('oa_send');
+            let u_sender_id: string = '';
+            const is_user_send = last_message.event_name.startsWith('user_send');
+            const is_oa_send = last_message.event_name.startsWith('oa_send');
 
-            if ('call_id' in lastMessage) {
-                u_senderId = lastMessage.user_id;
+            if ('call_id' in last_message) {
+                u_sender_id = last_message.user_id;
             } else {
-                if (isUserSend) {
-                    u_senderId = lastMessage.sender_id;
+                if (is_user_send) {
+                    u_sender_id = last_message.sender_id;
                 }
 
-                if (isOaSend) {
-                    u_senderId = lastMessage.recipient_id;
+                if (is_oa_send) {
+                    u_sender_id = last_message.recipient_id;
                 }
             }
 
-            const newMessage: MessageImageBodyField = {
+            const new_message: Message_Image_Body_Field = {
                 text: '',
                 attachment: {
                     type: 'template',
@@ -248,26 +248,26 @@ const InputMsg = () => {
                 },
             };
 
-            const createMessageV1Body: CreateMessageV1BodyField = {
-                zaloApp: zaloApp,
-                zaloOa: zaloOa,
-                chatRoomId: Number(id),
+            const create_message_v1_body: Create_Message_V1_Body_Field = {
+                zalo_app: zalo_app,
+                zalo_oa: zalo_oa,
+                chat_room_id: id,
                 payload: {
                     recipient: {
-                        user_id: u_senderId,
+                        user_id: u_sender_id,
                     },
-                    message: newMessage,
+                    message: new_message,
                 },
             };
 
-            createMessageV1(createMessageV1Body)
+            create_Message_V1(create_message_v1_body)
                 .then((res) => {
-                    const resData = res.data;
-                    if (!(resData?.isSuccess && resData.data)) {
+                    const res_data = res.data;
+                    if (!(res_data?.is_success && res_data.data)) {
                         dispatch(
-                            setData_toastMessage({
+                            set__data__toast_message({
                                 type: messageType_enum.ERROR,
-                                message: resData?.message ?? 'Gửi tin nhắn không thành công !',
+                                message: res_data?.message ?? 'Gửi tin nhắn không thành công !',
                             })
                         );
                     }
@@ -278,7 +278,7 @@ const InputMsg = () => {
         }
     };
 
-    const handleVideoChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Video_Change = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
 
         if (!files) return;
@@ -286,16 +286,17 @@ const InputMsg = () => {
         const file = files[0];
 
         if (!account) return;
-        if (!zaloApp) return;
-        if (!zaloOa) return;
-        if (!lastMessage) return;
+        if (!zalo_app) return;
+        if (!zalo_oa) return;
+        if (!last_message) return;
+        if (!id) return;
 
         try {
-            dispatch(set_isLoading(true));
-            const resData_video = await uploadVideo(file, account.id.toString());
-            if (!resData_video) {
+            dispatch(set__is_loading(true));
+            const res_data_video = await uploadVideo(file, account.id);
+            if (!res_data_video) {
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đăng tải thước phim thất bại !',
                     })
@@ -303,162 +304,162 @@ const InputMsg = () => {
                 return;
             }
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.SUCCESS,
                     message: 'Đăng tải thước phim thành công !',
                 })
             );
-            dispatch(set_isLoading(false));
+            dispatch(set__is_loading(false));
 
-            const fileName = resData_video.fileName;
+            const file_name = res_data_video.file_name;
             // const videoUrl = `${BASE_URL_API}/service_video_v1/query/video/${fileName}`;
             // console.log('videoUrl', videoUrl);
 
-            let oaId: string = '';
-            let userId: string = '';
-            const isUserSend = lastMessage.event_name.startsWith('user_send');
-            const isOaSend = lastMessage.event_name.startsWith('oa_send');
+            let oa_id: string = '';
+            let user_id: string = '';
+            const is_user_send = last_message.event_name.startsWith('user_send');
+            const is_oa_send = last_message.event_name.startsWith('oa_send');
 
-            if ('call_id' in lastMessage) {
-                oaId = lastMessage.oa_id;
-                userId = lastMessage.user_id;
+            if ('call_id' in last_message) {
+                oa_id = last_message.oa_id;
+                user_id = last_message.user_id;
             } else {
-                if (isUserSend) {
-                    oaId = lastMessage.recipient_id;
-                    userId = lastMessage.sender_id;
+                if (is_user_send) {
+                    oa_id = last_message.recipient_id;
+                    user_id = last_message.sender_id;
                 }
 
-                if (isOaSend) {
-                    oaId = lastMessage.sender_id;
-                    userId = lastMessage.recipient_id;
+                if (is_oa_send) {
+                    oa_id = last_message.sender_id;
+                    user_id = last_message.recipient_id;
                 }
             }
 
-            const videoMessageBody: VideoMessageBodyField = {
-                zaloAppId: zaloApp.id,
-                zaloOaId: zaloOa.id,
-                chatRoomId: Number(id),
-                accountId: account.id,
-                videoName: fileName,
-                oaId: oaId,
-                userId: userId,
-                userIdByApp: lastMessage.user_id_by_app,
+            const video_message_body: Video_Message_Body_Field = {
+                zalo_app_id: zalo_app.id,
+                zalo_oa_id: zalo_oa.id,
+                chat_room_id: id,
+                account_id: account.id,
+                video_name: file_name,
+                oa_id: oa_id,
+                user_id: user_id,
+                user_id_by_app: last_message.user_id_by_app,
             };
 
-            dispatch(set_isLoading(true));
-            videoMessage(videoMessageBody)
+            dispatch(set__is_loading(true));
+            video_Message(video_message_body)
                 .then((res) => {
-                    const resData = res.data;
-                    console.log('videoMessage', resData);
+                    const res_data = res.data;
+                    console.log('videoMessage', res_data);
                 })
                 .catch((err) => {
                     console.error(err);
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.ERROR,
                             message: 'Đã có lỗi xảy ra !',
                         })
                     );
                 })
                 .finally(() => {
-                    dispatch(set_isLoading(false));
+                    dispatch(set__is_loading(false));
                 });
         } catch (error) {
             console.error(error);
-            dispatch(set_isLoading(false));
+            dispatch(set__is_loading(false));
         }
     };
 
-    const handleOpenCall = () => {
+    const handle_Open_Call = () => {
         if (!id) return;
-        if (!lastMessage) return;
+        if (!last_message) return;
 
-        let u_senderId: string = '';
-        const isUserSend = lastMessage.event_name.startsWith('user_send');
-        const isOaSend = lastMessage.event_name.startsWith('oa_send');
+        let u_sender_id: string = '';
+        const is_user_send = last_message.event_name.startsWith('user_send');
+        const is_oa_send = last_message.event_name.startsWith('oa_send');
 
-        if ('call_id' in lastMessage) {
-            u_senderId = lastMessage.user_id;
+        if ('call_id' in last_message) {
+            u_sender_id = last_message.user_id;
         } else {
-            if (isUserSend) {
-                u_senderId = lastMessage.sender_id;
+            if (is_user_send) {
+                u_sender_id = last_message.sender_id;
             }
 
-            if (isOaSend) {
-                u_senderId = lastMessage.recipient_id;
+            if (is_oa_send) {
+                u_sender_id = last_message.recipient_id;
             }
         }
         // dispatch(set_calling({ is: true, uid: u_senderId, chatRoomId: Number(id) }));
-        dispatch(setIsShow_callDialog(true));
-        dispatch(setUid_callDialog(u_senderId));
-        dispatch(setChatRoomId_callDialog(Number(id)));
+        dispatch(set__is_show__call_dialog(true));
+        dispatch(set__uid__call_dialog(u_sender_id));
+        dispatch(set__chat_room_id__call_dialog(id));
     };
 
-    const handleGoToOrder = () => {
+    const handle_Go_To_Order = () => {
         navigate(route_enum.ORDER, {
-            state: { chatRoomId: id || '' },
+            state: { chat_room_id: id || '' },
         });
     };
 
-    const handleGoToNote = () => {
+    const handle_Go_To_Note = () => {
         navigate(route_enum.NOTE, {
-            state: { chatRoomId: id || '' },
+            state: { chat_room_id: id || '' },
         });
     };
 
-    const handleOpenChangeChatRoomMaster = () => {
-        dispatch(setIsShow_changeChatRoomMasterDialog(true));
+    const handle_Open_Change_Chat_Room_Master = () => {
+        dispatch(set__is_show__change_chat_room_master_dialog(true));
     };
 
     return (
         <div className={style.parent}>
             <div className={style.icons}>
                 <div className={style.icons1}>
-                    <CiImageOn id={id_imageInput} onClick={handleImageIconClick} size={20} color="green" />
+                    <CiImageOn id={id_image_input} onClick={handle_Image_Icon_Click} size={20} color="green" />
                     <input
                         ref={imageInput_element}
-                        onChange={handleImageChange}
+                        onChange={handle_Image_Change}
                         type="file"
-                        id={id_imageInput}
+                        id={id_image_input}
                         accept="image/*"
                     />
                     <MdOutlineOndemandVideo
-                        id={id_videoInput}
-                        onClick={handleVideoIconClick}
+                        id={id_video_input}
+                        onClick={handle_Video_Icon_Click}
                         size={20}
-                        color={isPlaywrightOnline ? 'red' : 'gray'}
+                        color={is_playwright_online ? 'red' : 'gray'}
                     />
                     <input
                         ref={videoInput_element}
-                        onChange={handleVideoChange}
+                        onChange={handle_Video_Change}
                         type="file"
-                        id={id_videoInput}
+                        id={id_video_input}
                         accept="video/*"
                     />
                     <MdAttachFile size={20} />
                     <PiSmileyStickerLight size={20} />
-                    <IoIosCall onClick={() => handleOpenCall()} size={20} />
+                    <IoIosCall onClick={() => handle_Open_Call()} size={20} />
                 </div>
                 <div className={style.icons2}>
-                    <FaShoppingCart onClick={() => handleGoToOrder()} size={20} color="red" />
-                    <LuNotebookPen onClick={() => handleGoToNote()} size={20} />
-                    <TbTransfer onClick={() => handleOpenChangeChatRoomMaster()} size={20} />
+                    <FaShoppingCart onClick={() => handle_Go_To_Order()} size={20} color="red" />
+                    <LuNotebookPen onClick={() => handle_Go_To_Note()} size={20} />
+                    <TbTransfer onClick={() => handle_Open_Change_Chat_Room_Master()} size={20} />
                 </div>
             </div>
-            {repliedMessage && !('call_id' in repliedMessage) && <ReplyContainer data={repliedMessage} />}
+            {replied_message && !('call_id' in replied_message) && <ReplyContainer data={replied_message} />}
             <div className={style.textInput}>
                 <div>
                     <textarea
                         value={text}
-                        onChange={(e) => handleTextChange(e)}
+                        onChange={(e) => handle_Text_Change(e)}
                         ref={textarea_element}
                         rows={2}
                         placeholder="Nhắn gì đó !"
-                        onInput={handleInput}
+                        onInput={handle_Input}
                     />
                 </div>
                 <div>
-                    <IoSend onClick={() => handleSend()} size={25} />
+                    <IoSend onClick={() => handle_Send()} size={25} />
                 </div>
             </div>
         </div>

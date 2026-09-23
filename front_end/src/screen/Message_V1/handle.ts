@@ -1,18 +1,18 @@
 import axiosInstance from '@src/api/axiosInstance';
-import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { IMAGEV1_API } from '@src/const/api/image_v1';
-import { VIDEOV1_API } from '@src/const/api/video_v1';
-import { MyResponse } from '@src/dataStruct/response';
+import { Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
+import { IMAGE_V1_API } from '@src/const/api/image_v1';
+import { VIDEO_V1_API } from '@src/const/api/video_v1';
+import { My_Response_Field } from '@src/data_struct/response';
 import { DeviceEnum } from '@src/device/type';
 
-export async function uploadAImageToZalo(file: File, zaloApp: ZaloAppField, zaloOa: ZaloOaField) {
+export async function uploadAImageToZalo(file: File, zalo_app: Zalo_App_Field, zalo_oa: Zalo_Oa_Field) {
     const form = new FormData();
 
     form.append('image', file);
-    form.append('zaloApp', JSON.stringify(zaloApp));
-    form.append('zaloOa', JSON.stringify(zaloOa));
+    form.append('zalo_app', JSON.stringify(zalo_app));
+    form.append('zalo_oa', JSON.stringify(zalo_oa));
 
-    const res = await fetch(IMAGEV1_API.UPLOAD_A_IMAGE_TO_ZALO, {
+    const res = await fetch(IMAGE_V1_API.UPLOAD_A_IMAGE_TO_ZALO, {
         method: 'POST',
         body: form,
         credentials: 'include', // ⭐ gửi cookie
@@ -43,12 +43,16 @@ export const uploadVideo = async (file: File, id: string) => {
 
         const formData = new FormData();
         formData.append('chunk', chunk); // ⚡ field name phải đúng
-        formData.append('fileId', fileId);
-        formData.append('chunkIndex', chunkIndex.toString());
+        formData.append('file_id', fileId);
+        formData.append('chunk_index', chunkIndex.toString());
 
-        const response1 = await axiosInstance.post<MyResponse<any>, any, any>(VIDEOV1_API.UPLOAD_CHUNK, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        const response1 = await axiosInstance.post<My_Response_Field<any>, any, any>(
+            VIDEO_V1_API.UPLOAD_CHUNK,
+            formData,
+            {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            }
+        );
 
         const res1Data = response1.data;
         if (!res1Data?.isSuccess) {
@@ -56,8 +60,8 @@ export const uploadVideo = async (file: File, id: string) => {
         }
     }
 
-    const response2 = await axiosInstance.post<MyResponse<any>, any, any>(
-        VIDEOV1_API.MERGE_CHUNK,
+    const response2 = await axiosInstance.post<My_Response_Field<any>, any, any>(
+        VIDEO_V1_API.MERGE_CHUNK,
         {
             fileId,
             totalChunks,
@@ -76,5 +80,5 @@ export const uploadVideo = async (file: File, id: string) => {
 
     const objectName = res2Data.data;
 
-    return { fileName: objectName };
+    return { file_name: objectName };
 };

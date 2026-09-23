@@ -3,45 +3,66 @@ import style from './style.module.scss';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { ADD } from '@src/const/text';
-import { useLazyGetAccountWithIdQuery, useAddMemberV1Mutation } from '@src/redux/query/account_RTK';
-import { set_isLoading, setData_toastMessage, setData_newMember } from '@src/redux/slice/Member';
+import { useLazy_get_Account_With_Id_Query, use_add_Member_V1_Mutation } from '@src/redux/query/account_RTK';
+import { set__is_loading, set__data__toast_message, set__data__new_member } from '@src/redux/slice/Member';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const AddMember = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const [accountId, setAccountId] = useState<string>('');
+    const [account_id, set__account_id] = useState<string>('');
 
-    const [addMemberV1] = useAddMemberV1Mutation();
-    const [getAccountWithId] = useLazyGetAccountWithIdQuery();
+    const [add_Member_V1] = use_add_Member_V1_Mutation();
+    const [get_Account_With_Id] = useLazy_get_Account_With_Id_Query();
 
-    const handleAccountId = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Account_Id = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setAccountId(value);
+        set__account_id(value);
     };
 
-    const handleAdd = () => {
-        const accountId_t = accountId.trim();
+    const handle_Get_Account_With_Id = (id: string) => {
+        dispatch(set__is_loading(true));
+        get_Account_With_Id({ id: id })
+            .then((res) => {
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    dispatch(set__data__new_member(res_data.data));
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                dispatch(
+                    set__data__toast_message({
+                        type: messageType_enum.ERROR,
+                        message: 'Đã có lỗi xảy ra !',
+                    })
+                );
+            })
+            .finally(() => dispatch(set__is_loading(false)));
+    };
 
-        if (accountId_t.length === 0) return;
-        if (isNaN(Number(accountId_t))) {
+    const handle_Add = () => {
+        const account_id_t = account_id.trim();
+
+        if (account_id_t.length === 0) return;
+        if (isNaN(Number(account_id_t))) {
             return;
         }
 
-        dispatch(set_isLoading(true));
-        addMemberV1({ accountId: Number(accountId_t), addedById: -1 })
+        dispatch(set__is_loading(true));
+        add_Member_V1({ account_id: account_id_t, added_by_id: '' })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    handleGetAccountWithId(resData.data.accountId);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    handle_Get_Account_With_Id(res_data.data.account_id);
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.SUCCESS,
                             message: 'Tạo thành công !',
                         })
                     );
                 } else {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.NORMAL,
                             message: 'Tạo thất bại !',
                         })
@@ -51,40 +72,19 @@ const AddMember = () => {
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
-            .finally(() => dispatch(set_isLoading(false)));
-    };
-
-    const handleGetAccountWithId = (id: number) => {
-        dispatch(set_isLoading(true));
-        getAccountWithId({ id: id })
-            .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    dispatch(setData_newMember(resData.data));
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-                dispatch(
-                    setData_toastMessage({
-                        type: messageType_enum.ERROR,
-                        message: 'Đã có lỗi xảy ra !',
-                    })
-                );
-            })
-            .finally(() => dispatch(set_isLoading(false)));
+            .finally(() => dispatch(set__is_loading(false)));
     };
 
     return (
         <div className={style.parent}>
-            <input value={accountId} onChange={(e) => handleAccountId(e)} placeholder="Nhập id người dùng !" />
-            <div onClick={() => handleAdd()}>{ADD}</div>
+            <input value={account_id} onChange={(e) => handle_Account_Id(e)} placeholder="Nhập id người dùng !" />
+            <div onClick={() => handle_Add()}>{ADD}</div>
         </div>
     );
 };

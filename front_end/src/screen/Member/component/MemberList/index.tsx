@@ -5,96 +5,90 @@ import { RootState, AppDispatch } from '@src/redux';
 import { SEE_MORE } from '@src/const/text';
 import Filter from './component/Filter';
 import OneMember from './component/OneMember';
-import { useLazyGetMembersQuery } from '@src/redux/query/account_RTK';
-import { set_isLoading, setData_toastMessage } from '@src/redux/slice/Member';
+import { useLazy_get_Members_Query } from '@src/redux/query/account_RTK';
+import { set__is_loading, set__data__toast_message } from '@src/redux/slice/Member';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { AccountField, AccountInformationField } from '@src/dataStruct/account';
+import { Account_Field, Account_Information_Field } from '@src/data_struct/account';
 
 const MemberList = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const accountInformation: AccountInformationField | undefined = useSelector(
-        (state: RootState) => state.AppSlice.accountInformation
+    const account_information: Account_Information_Field | undefined = useSelector(
+        (state: RootState) => state.App_Slice.account_information
     );
 
-    const searchedAccountId: string = useSelector((state: RootState) => state.MemberSlice.searchedAccountId);
-    const newMember: AccountField | undefined = useSelector((state: RootState) => state.MemberSlice.newMember);
-    const [members, setMembers] = useState<AccountField[]>([]);
-    const [hasMore, setHasMore] = useState<boolean>(true);
-    const [page, setPage] = useState<number>(1);
+    const searched_account_id: string = useSelector((state: RootState) => state.Member_Slice.searched_account_id);
+    const new_member: Account_Field | undefined = useSelector((state: RootState) => state.Member_Slice.new_member);
+    const [members, set__members] = useState<Account_Field[]>([]);
+    const [has_more, set__has_more] = useState<boolean>(true);
+    const [page, set__page] = useState<number>(1);
     const size = 10;
 
-    const [getMembers] = useLazyGetMembersQuery();
+    const [get_Members] = useLazy_get_Members_Query();
 
     useEffect(() => {
-        if (!newMember) return;
-        setMembers((prev) => [newMember, ...prev]);
-    }, [newMember]);
+        if (!new_member) return;
+        set__members((prev) => [new_member, ...prev]);
+    }, [new_member]);
 
     useEffect(() => {
-        if (!accountInformation?.addedById) return;
+        if (!account_information?.added_by_id) return;
 
-        const searchedAccountId_cp = searchedAccountId.trim();
-        dispatch(set_isLoading(true));
-        getMembers({
+        const searched_account_id_cp = searched_account_id.trim();
+        dispatch(set__is_loading(true));
+        get_Members({
             page: 1,
             size: size,
-            accountId: accountInformation.addedById,
-            searchedAccountId:
-                searchedAccountId_cp.length > 0 && !isNaN(Number(searchedAccountId_cp))
-                    ? Number(searchedAccountId_cp)
-                    : undefined,
+            account_id: account_information.added_by_id,
+            searched_account_id: searched_account_id_cp.length > 0 ? searched_account_id_cp : undefined,
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setMembers(resData.data.items);
-                    setPage(2);
-                    setHasMore(resData.data.items.length === size);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__members(res_data.data.items);
+                    set__page(2);
+                    set__has_more(res_data.data.items.length === size);
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
-            .finally(() => dispatch(set_isLoading(false)));
-    }, [dispatch, getMembers, searchedAccountId, accountInformation]);
+            .finally(() => dispatch(set__is_loading(false)));
+    }, [dispatch, get_Members, searched_account_id, account_information]);
 
-    const handleSeeMore = () => {
-        if (!hasMore) return;
-        const searchedAccountId_cp = searchedAccountId.trim();
-        dispatch(set_isLoading(true));
-        getMembers({
+    const handle_See_More = () => {
+        if (!has_more) return;
+        const searched_account_id_cp = searched_account_id.trim();
+        dispatch(set__is_loading(true));
+        get_Members({
             page: page,
             size: size,
-            accountId: -1,
-            searchedAccountId:
-                searchedAccountId_cp.length > 0 && !isNaN(Number(searchedAccountId_cp))
-                    ? Number(searchedAccountId_cp)
-                    : undefined,
+            account_id: '',
+            searched_account_id: searched_account_id_cp.length > 0 ? searched_account_id_cp : undefined,
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setMembers((prev) => [...prev, ...(resData.data?.items || [])]);
-                    setPage((pre) => pre + 1);
-                    setHasMore(resData.data.items.length === size);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__members((prev) => [...prev, ...(res_data.data?.items || [])]);
+                    set__page((pre) => pre + 1);
+                    set__has_more(res_data.data.items.length === size);
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
-            .finally(() => dispatch(set_isLoading(false)));
+            .finally(() => dispatch(set__is_loading(false)));
     };
 
     const list_member = members.map((item, index) => {
@@ -106,7 +100,7 @@ const MemberList = () => {
             <Filter />
             <div>{list_member}</div>
             <div className={style.seeMore}>
-                <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>
+                <div onClick={() => handle_See_More()}>{SEE_MORE}</div>
             </div>
         </div>
     );

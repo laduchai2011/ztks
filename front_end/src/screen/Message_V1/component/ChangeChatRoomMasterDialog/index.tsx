@@ -6,12 +6,16 @@ import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CiSearch } from 'react-icons/ci';
 import { CLOSE, AGREE, EXIT, CHANGE_CHAT_ROOM_MASTER, SEE_MORE } from '@src/const/text';
-import { setData_toastMessage, set_isLoading, setIsShow_changeChatRoomMasterDialog } from '@src/redux/slice/Message_V1';
+import {
+    set__data__toast_message,
+    set__is_loading,
+    set__is_show__change_chat_room_master_dialog,
+} from '@src/redux/slice/Message_V1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { avatarnull } from '@src/utility/string';
-import { useLazyGetMembersQuery } from '@src/redux/query/account_RTK';
-import { useChangeChatRoomMasterMutation } from '@src/redux/query/chat_room_RTK';
-import { AccountField, AccountInformationField } from '@src/dataStruct/account';
+import { useLazy_get_Members_Query } from '@src/redux/query/account_RTK';
+import { use_change_Chat_Room_Master_Mutation } from '@src/redux/query/chat_room_RTK';
+import { Account_Field, Account_Information_Field } from '@src/data_struct/account';
 import { handleSrcImage } from '@src/utility/string';
 
 const ChangeChatRoomMasterDialog = () => {
@@ -20,27 +24,29 @@ const ChangeChatRoomMasterDialog = () => {
 
     const { id } = useParams<{ id: string }>();
 
-    const accountInformation: AccountInformationField | undefined = useSelector(
-        (state: RootState) => state.AppSlice.accountInformation
+    const account_information: Account_Information_Field | undefined = useSelector(
+        (state: RootState) => state.App_Slice.account_information
     );
-    const isShow: boolean = useSelector((state: RootState) => state.MessageV1Slice.changeChatRoomMasterDialog.isShow);
+    const is_show: boolean = useSelector(
+        (state: RootState) => state.Message_V1_Slice.change_chat_room_master_dialog.is_show
+    );
 
-    const [searchedAccountId, setSearchedAccountId] = useState<string>('');
-    const [selectedMember, setSelectedMember] = useState<AccountField | undefined>(undefined);
-    const [members, setMembers] = useState<AccountField[]>([]);
-    const [hasMore, setHasMore] = useState<boolean>(true);
-    const [page, setPage] = useState<number>(1);
-    const [isSearch, setIsSearch] = useState<boolean>(true);
+    const [searched_account_id, set__searched_account_id] = useState<string>('');
+    const [selected_member, set__selected_member] = useState<Account_Field | undefined>(undefined);
+    const [members, set__members] = useState<Account_Field[]>([]);
+    const [has_more, set__has_more] = useState<boolean>(true);
+    const [page, set__page] = useState<number>(1);
+    const [is_search, set__is_search] = useState<boolean>(true);
     const size = 10;
 
-    const [getMembers] = useLazyGetMembersQuery();
-    const [changeChatRoomMaster] = useChangeChatRoomMasterMutation();
+    const [get_Members] = useLazy_get_Members_Query();
+    const [change_Chat_Room_Master] = use_change_Chat_Room_Master_Mutation();
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow) {
+        if (is_show) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -54,100 +60,96 @@ const ChangeChatRoomMasterDialog = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow]);
+    }, [is_show]);
 
-    const handleSearchedAccountId = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchedAccountId(e.target.value);
+    const handle_Searched_Account_Id = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__searched_account_id(e.target.value);
     };
 
     useEffect(() => {
-        if (!accountInformation?.addedById) return;
-        if (!isSearch) return;
+        if (!account_information?.added_by_id) return;
+        if (!is_search) return;
 
-        const searchedAccountId_cp = searchedAccountId.trim();
+        const searched_account_id_cp = searched_account_id.trim();
 
-        dispatch(set_isLoading(true));
-        getMembers({
+        dispatch(set__is_loading(true));
+        get_Members({
             page: page,
             size: size,
-            accountId: accountInformation.addedById,
-            searchedAccountId:
-                searchedAccountId_cp.length > 0 && !isNaN(Number(searchedAccountId_cp))
-                    ? Number(searchedAccountId_cp)
-                    : undefined,
+            account_id: account_information.added_by_id,
+            searched_account_id: searched_account_id_cp.length > 0 ? searched_account_id_cp : undefined,
         })
             .then((res) => {
-                const resData = res.data;
+                const res_data = res.data;
 
-                if (resData?.isSuccess && resData.data) {
+                if (res_data?.is_success && res_data.data) {
                     if (page === 1) {
-                        setMembers(resData.data.items);
+                        set__members(res_data.data.items);
                     } else {
-                        setMembers((prev) => [...prev, ...(resData.data?.items || [])]);
+                        set__members((prev) => [...prev, ...(res_data.data?.items || [])]);
                     }
 
-                    setHasMore(resData.data.items.length === size);
+                    set__has_more(res_data.data.items.length === size);
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
-                setIsSearch(false);
+                dispatch(set__is_loading(false));
+                set__is_search(false);
             });
-    }, [getMembers, accountInformation, searchedAccountId, dispatch, page, isSearch]);
+    }, [get_Members, account_information, searched_account_id, dispatch, page, is_search]);
 
-    const handleClose = () => {
-        dispatch(setIsShow_changeChatRoomMasterDialog(false));
+    const handle_Close = () => {
+        dispatch(set__is_show__change_chat_room_master_dialog(false));
     };
 
-    const handleSeeMore = () => {
-        if (!hasMore) return;
-        setPage((prev) => prev + 1);
+    const handle_See_More = () => {
+        if (!has_more) return;
+        set__page((prev) => prev + 1);
     };
 
-    const handleSelected = (e: React.ChangeEvent<HTMLInputElement>, item: AccountField) => {
+    const handle_Selected = (e: React.ChangeEvent<HTMLInputElement>, item: Account_Field) => {
         const checked = e.target.checked;
         if (checked) {
-            setSelectedMember(item);
+            set__selected_member(item);
         }
     };
 
-    const handleSearch = () => {
-        setIsSearch(true);
+    const handle_Search = () => {
+        set__is_search(true);
     };
 
-    const handleAgree = () => {
-        if (!selectedMember) return;
+    const handle_Agree = () => {
+        if (!selected_member) return;
         if (!id) return;
-        if (!accountInformation) return;
+        if (!account_information) return;
 
-        dispatch(set_isLoading(true));
-        changeChatRoomMaster({
-            chatRoomId: Number(id),
-            newAccountId: selectedMember.id,
-            accountId: accountInformation.accountId,
+        dispatch(set__is_loading(true));
+        change_Chat_Room_Master({
+            chat_room_id: id,
+            new_account_id: selected_member.id,
+            account_id: account_information.account_id,
         })
             .then((res) => {
-                const resData = res.data;
-                console.log('changeChatRoomMaster', resData);
-                if (resData?.isSuccess && resData.data) {
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.SUCCESS,
                             message: 'Thay đổi thành công !',
                         })
                     );
                 } else {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.ERROR,
                             message: 'Thay đổi không thành công !',
                         })
@@ -157,31 +159,31 @@ const ChangeChatRoomMasterDialog = () => {
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
     };
 
     const list_member = members.map((item) => {
-        const isSelected = selectedMember?.id === item.id ? true : false;
+        const is_selected = selected_member?.id === item.id ? true : false;
 
-        if (item.id === accountInformation?.accountId) {
+        if (item.id === account_information?.account_id) {
             return;
         }
 
-        const avatarUrl_ = item.avatar ? handleSrcImage(item.avatar) : avatarnull;
+        const avatar_url_ = item.avatar ? handleSrcImage(item.avatar) : avatarnull;
 
         return (
             <div className={style.one} key={item.id}>
-                <img src={avatarUrl_} alt="" />
-                <div>{item.firstName + ' ' + item.lastName}</div>
-                <input checked={isSelected} onChange={(e) => handleSelected(e, item)} type="checkbox" />
+                <img src={avatar_url_} alt="" />
+                <div>{item.first_name + ' ' + item.last_name}</div>
+                <input checked={is_selected} onChange={(e) => handle_Selected(e, item)} type="checkbox" />
             </div>
         );
     });
@@ -190,28 +192,28 @@ const ChangeChatRoomMasterDialog = () => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.closeContainer}>
-                    <IoMdClose onClick={() => handleClose()} size={25} title={CLOSE} />
+                    <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
                 <div className={style.contentContainer}>
                     <div className={style.header}>{CHANGE_CHAT_ROOM_MASTER}</div>
                     <div className={style.filter}>
                         <div>
                             <input
-                                value={searchedAccountId}
-                                onChange={(e) => handleSearchedAccountId(e)}
+                                value={searched_account_id}
+                                onChange={(e) => handle_Searched_Account_Id(e)}
                                 placeholder="Nhập id thành viên"
                             />
-                            <CiSearch onClick={() => handleSearch()} size={20} />
+                            <CiSearch onClick={() => handle_Search()} size={20} />
                         </div>
                     </div>
                     <div className={style.list}>{list_member}</div>
                     <div className={style.seeMore}>
-                        {hasMore && <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>}
+                        {has_more && <div onClick={() => handle_See_More()}>{SEE_MORE}</div>}
                     </div>
                 </div>
                 <div className={style.buttonContainer}>
-                    <button onClick={() => handleAgree()}>{AGREE}</button>
-                    <button onClick={() => handleClose()}>{EXIT}</button>
+                    <button onClick={() => handle_Agree()}>{AGREE}</button>
+                    <button onClick={() => handle_Close()}>{EXIT}</button>
                 </div>
             </div>
         </div>

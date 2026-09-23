@@ -1,10 +1,10 @@
 import { FC, memo } from 'react';
 import style from './style.module.scss';
-import { MessageV1Field } from '@src/dataStruct/message_v1';
-import { MessageVideoField } from '@src/dataStruct/zalo/hookData';
+import { Message_V1_Field } from '@src/data_struct/message_v1';
+import { Message_Video_Field } from '@src/data_struct/zalo/hook_data';
 import { VIDEO } from '@src/const/text';
 
-const ReplyVideo: FC<{ data: MessageV1Field<MessageVideoField> }> = ({ data }) => {
+const ReplyVideo: FC<{ data: Message_V1_Field<Message_Video_Field> }> = ({ data }) => {
     const url = data.message.attachments[0].payload.url;
 
     return (

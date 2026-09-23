@@ -5,53 +5,53 @@ import { AppDispatch, RootState } from '@src/redux';
 import { BASIC, UPGRADE, DELETE } from '@src/const/text';
 import { avatarnull } from '@src/utility/string';
 import { IoMdAdd } from 'react-icons/io';
-import { AccountField } from '@src/dataStruct/account';
-import { AgentField, AgentPayField } from '@src/dataStruct/agent';
-import { setIsShow_memberListDialog, set_agent_memberListDialog } from '@src/redux/slice/Manage_Agent';
-import { useLazyGetAccountWithIdQuery } from '@src/redux/query/account_RTK';
+import { Account_Field } from '@src/data_struct/account';
+import { Agent_Field, Agent_Pay_Field } from '@src/data_struct/agent';
+import { set__is_show__member_list_dialog, set__agent__member_list_dialog } from '@src/redux/slice/Manage_Agent';
+import { useLazy_get_Account_With_Id_Query } from '@src/redux/query/account_RTK';
 import {
-    set_isLoading,
-    setData_toastMessage,
-    setIsShow_agentPayDialog,
-    set_agent_agentPayDialog,
+    set__is_loading,
+    set__data__toast_message,
+    set__is_show__agent_pay_dialog,
+    set__agent__agent_pay_dialog,
 } from '@src/redux/slice/Manage_Agent';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { useAgentDelAccountMutation, useLazyGetAgentWithIdQuery } from '@src/redux/query/agent_RTK';
-import { getSocket } from '@src/socketIo';
+import { use_agent_Del_Account_Mutation, useLazy_get_Agent_With_Id_Query } from '@src/redux/query/agent_RTK';
+import { get_Socket } from '@src/socketIo';
 import { handleSrcImage } from '@src/utility/string';
 
-const OneService: FC<{ index: number; data: AgentField }> = ({ index, data }) => {
+const OneService: FC<{ index: number; data: Agent_Field }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const [account, setAccount] = useState<AccountField | undefined>(undefined);
-    const iShow_MemberListDialog: boolean = useSelector(
-        (state: RootState) => state.ManageAgentSlice.memberListDialog.isShow
+    const [account, set__account] = useState<Account_Field | undefined>(undefined);
+    const is_show__member_list_dialog: boolean = useSelector(
+        (state: RootState) => state.Manage_Agent_Slice.member_list_dialog.is_show
     );
-    const agent_MemberListDialog: AgentField | undefined = useSelector(
-        (state: RootState) => state.ManageAgentSlice.memberListDialog.agent
+    const agent__member_list_dialog: Agent_Field | undefined = useSelector(
+        (state: RootState) => state.Manage_Agent_Slice.member_list_dialog.agent
     );
-    const [agent, setAgent] = useState<AgentField>(data);
-    const [text, setText] = useState<string>('');
+    const [agent, set__agent] = useState<Agent_Field>(data);
+    const [text, set__text] = useState<string>('');
 
-    const [agentDelAccount] = useAgentDelAccountMutation();
-    const [getAccountWithId] = useLazyGetAccountWithIdQuery();
-    const [getAgentWithId] = useLazyGetAgentWithIdQuery();
+    const [agent_Del_Account] = use_agent_Del_Account_Mutation();
+    const [get_Account_With_Id] = useLazy_get_Account_With_Id_Query();
+    const [get_Agent_With_Id] = useLazy_get_Agent_With_Id_Query();
 
-    const avatarUrl = account?.avatar ? handleSrcImage(account.avatar) : avatarnull;
+    const avatar_url = account?.avatar ? handleSrcImage(account.avatar) : avatarnull;
 
     useEffect(() => {
-        const socket = getSocket();
+        const socket = get_Socket();
 
-        const onSocketAgentPay = (agentPay: AgentPayField) => {
-            const agentId = agentPay.agentId;
+        const on_Socket_Agent_Pay = (agent_pay: Agent_Pay_Field) => {
+            const agent_id = agent_pay.agent_id;
 
-            if (data.id === agentId) {
-                getAgentWithId({ id: agentId })
+            if (data.id === agent_id) {
+                get_Agent_With_Id({ id: agent_id })
                     .then((res) => {
-                        const resData = res.data;
-                        if (resData?.isSuccess && resData.data) {
-                            const agentUpdated = resData.data;
-                            dispatch(set_agent_agentPayDialog(agentUpdated));
-                            setAgent(agentUpdated);
+                        const res_data = res.data;
+                        if (res_data?.is_success && res_data.data) {
+                            const agent_updated = res_data.data;
+                            dispatch(set__agent__agent_pay_dialog(agent_updated));
+                            set__agent(agent_updated);
                         }
                     })
                     .catch((err) => {
@@ -60,79 +60,79 @@ const OneService: FC<{ index: number; data: AgentField }> = ({ index, data }) =>
             }
         };
 
-        socket.on('agentPay', onSocketAgentPay);
+        socket.on('agentPay', on_Socket_Agent_Pay);
 
         return () => {
-            socket.off('agentPay', onSocketAgentPay);
+            socket.off('agentPay', on_Socket_Agent_Pay);
         };
-    }, [dispatch, data, getAgentWithId]);
+    }, [dispatch, data, get_Agent_With_Id]);
 
     useEffect(() => {
-        if (iShow_MemberListDialog) return;
-        if (!agent_MemberListDialog) return;
+        if (is_show__member_list_dialog) return;
+        if (!agent__member_list_dialog) return;
 
-        if (agent.id === agent_MemberListDialog.id) {
-            if (!agent_MemberListDialog.agentAccountId) return;
-            getAccountWithId({ id: agent_MemberListDialog.agentAccountId })
+        if (agent.id === agent__member_list_dialog.id) {
+            if (!agent__member_list_dialog.agent_account_id) return;
+            get_Account_With_Id({ id: agent__member_list_dialog.agent_account_id })
                 .then((res) => {
-                    const resData = res.data;
-                    if (resData?.isSuccess && resData.data) {
-                        setAccount(resData.data);
+                    const res_data = res.data;
+                    if (res_data?.is_success && res_data.data) {
+                        set__account(res_data.data);
                     }
                 })
                 .catch((err) => {
                     console.error(err);
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.ERROR,
                             message: 'Đã có lỗi xảy ra !',
                         })
                     );
                 })
-                .finally(() => dispatch(set_isLoading(false)));
+                .finally(() => dispatch(set__is_loading(false)));
         }
-    }, [iShow_MemberListDialog, agent_MemberListDialog, getAccountWithId, dispatch, agent]);
+    }, [is_show__member_list_dialog, agent__member_list_dialog, get_Account_With_Id, dispatch, agent]);
 
     useEffect(() => {
-        if (!agent.agentAccountId) return;
-        getAccountWithId({ id: agent.agentAccountId })
+        if (!agent.agent_account_id) return;
+        get_Account_With_Id({ id: agent.agent_account_id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setAccount(resData.data);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__account(res_data.data);
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
-            .finally(() => dispatch(set_isLoading(false)));
-    }, [dispatch, agent, getAccountWithId]);
+            .finally(() => dispatch(set__is_loading(false)));
+    }, [dispatch, agent, get_Account_With_Id]);
 
-    const handleAddAgent = () => {
-        dispatch(setIsShow_memberListDialog(true));
-        dispatch(set_agent_memberListDialog(agent));
+    const handle_Add_Agent = () => {
+        dispatch(set__is_show__member_list_dialog(true));
+        dispatch(set__agent__member_list_dialog(agent));
     };
 
-    const handleOpenUpgrade = () => {
-        dispatch(setIsShow_agentPayDialog(true));
-        dispatch(set_agent_agentPayDialog(agent));
+    const handle_Open_Upgrade = () => {
+        dispatch(set__is_show__agent_pay_dialog(true));
+        dispatch(set__agent__agent_pay_dialog(agent));
     };
 
-    const handleDelAgent = () => {
-        dispatch(set_isLoading(true));
-        agentDelAccount({ id: agent.id, accountId: -1 })
+    const handle_Del_Agent = () => {
+        dispatch(set__is_loading(true));
+        agent_Del_Account({ id: agent.id, account_id: '' })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setAccount(undefined);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__account(undefined);
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.SUCCESS,
                             message: 'Xóa thành công !',
                         })
@@ -142,26 +142,26 @@ const OneService: FC<{ index: number; data: AgentField }> = ({ index, data }) =>
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
-            .finally(() => dispatch(set_isLoading(false)));
+            .finally(() => dispatch(set__is_loading(false)));
     };
 
     useEffect(() => {
         const type = agent.type;
         if (type === 'basic') {
-            setText('Bạn đang dùng gói cơ bản, giới hạn 30 tin nhắn trong ngày');
+            set__text('Bạn đang dùng gói cơ bản, giới hạn 30 tin nhắn trong ngày');
         }
         if (type === 'upgrade') {
-            setText('Bạn đang dùng gói nâng cấp, số lượng tin nhắn không giới hạn');
+            set__text('Bạn đang dùng gói nâng cấp, số lượng tin nhắn không giới hạn');
         }
     }, [agent]);
 
-    const handleExpiryTime = () => {
+    const handle_Expiry_Time = () => {
         const dateStr = agent.expiry;
         if (!dateStr) return null;
         const date = new Date(dateStr);
@@ -174,28 +174,28 @@ const OneService: FC<{ index: number; data: AgentField }> = ({ index, data }) =>
                 <div>{index + 1}</div>
                 <div>
                     {agent.type === 'basic' && <div>{BASIC}</div>}
-                    {agent.type === 'basic' && <div onClick={() => handleOpenUpgrade()}>{UPGRADE}</div>}
+                    {agent.type === 'basic' && <div onClick={() => handle_Open_Upgrade()}>{UPGRADE}</div>}
                     {/* <IoIosMore size={25} /> */}
                 </div>
             </div>
             <div className={style.content}>
                 <div>{text}</div>
             </div>
-            {agent?.expiry && <div className={style.expiry}>{handleExpiryTime()}</div>}
+            {agent?.expiry && <div className={style.expiry}>{handle_Expiry_Time()}</div>}
             {account && (
                 <div className={style.infor}>
                     <div>
-                        <img src={avatarUrl} alt="avatar" />
-                        <div>{`${account.firstName} ${account.lastName}`}</div>
+                        <img src={avatar_url} alt="avatar" />
+                        <div>{`${account.first_name} ${account.last_name}`}</div>
                     </div>
                     <div>
-                        <button onClick={() => handleDelAgent()}>{DELETE}</button>
+                        <button onClick={() => handle_Del_Agent()}>{DELETE}</button>
                     </div>
                 </div>
             )}
             {!account && (
                 <div className={style.add}>
-                    <IoMdAdd onClick={() => handleAddAgent()} size={30} />
+                    <IoMdAdd onClick={() => handle_Add_Agent()} size={30} />
                 </div>
             )}
             <div className={style.btn}>

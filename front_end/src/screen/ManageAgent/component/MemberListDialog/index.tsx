@@ -6,44 +6,44 @@ import { IoMdClose } from 'react-icons/io';
 import { CiSearch } from 'react-icons/ci';
 import { CLOSE, SEE_MORE } from '@src/const/text';
 import {
-    setIsShow_memberListDialog,
-    set_agent_memberListDialog,
-    set_isLoading,
-    setData_toastMessage,
+    set__is_show__member_list_dialog,
+    set__agent__member_list_dialog,
+    set__is_loading,
+    set__data__toast_message,
 } from '@src/redux/slice/Manage_Agent';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { avatarnull } from '@src/utility/string';
-import { useLazyGetMembersQuery } from '@src/redux/query/account_RTK';
-import { useAgentAddAccountMutation } from '@src/redux/query/agent_RTK';
-import { AccountField, AccountInformationField } from '@src/dataStruct/account';
-import { AgentField } from '@src/dataStruct/agent';
+import { useLazy_get_Members_Query } from '@src/redux/query/account_RTK';
+import { use_agent_Add_Account_Mutation } from '@src/redux/query/agent_RTK';
+import { Account_Field, Account_Information_Field } from '@src/data_struct/account';
+import { Agent_Field } from '@src/data_struct/agent';
 import { handleSrcImage } from '@src/utility/string';
 
 const MemberListDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
-    const accountInformation: AccountInformationField | undefined = useSelector(
-        (state: RootState) => state.AppSlice.accountInformation
+    const account_information: Account_Information_Field | undefined = useSelector(
+        (state: RootState) => state.App_Slice.account_information
     );
-    const isShow: boolean = useSelector((state: RootState) => state.ManageAgentSlice.memberListDialog.isShow);
-    const agent: AgentField | undefined = useSelector(
-        (state: RootState) => state.ManageAgentSlice.memberListDialog.agent
+    const is_show: boolean = useSelector((state: RootState) => state.Manage_Agent_Slice.member_list_dialog.is_show);
+    const agent: Agent_Field | undefined = useSelector(
+        (state: RootState) => state.Manage_Agent_Slice.member_list_dialog.agent
     );
-    const [members, setMembers] = useState<AccountField[]>([]);
-    const [hasMore, setHasMore] = useState<boolean>(true);
-    const [page, setPage] = useState<number>(1);
+    const [members, set__members] = useState<Account_Field[]>([]);
+    const [has_more, set__has_more] = useState<boolean>(true);
+    const [page, set__page] = useState<number>(1);
     const size = 10;
-    const [searchInput, setSearchInput] = useState<string>('');
-    const [isSearch, setIsSearch] = useState<boolean>(true);
+    const [search_input, set__search_input] = useState<string>('');
+    const [is_search, set__is_search] = useState<boolean>(true);
 
-    const [getMembers] = useLazyGetMembersQuery();
-    const [agentAddAccount] = useAgentAddAccountMutation();
+    const [get_Members] = useLazy_get_Members_Query();
+    const [agent_Add_Account] = use_agent_Add_Account_Mutation();
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow) {
+        if (is_show) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -57,119 +57,117 @@ const MemberListDialog = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow]);
+    }, [is_show]);
 
     useEffect(() => {
-        if (!isSearch) return;
-        if (!accountInformation?.addedById) return;
+        if (!is_search) return;
+        if (!account_information?.added_by_id) return;
 
-        const searchInput_t = searchInput.trim();
-        dispatch(set_isLoading(true));
-        getMembers({
+        const search_input_t = search_input.trim();
+        dispatch(set__is_loading(true));
+        get_Members({
             page: 1,
             size: size,
-            accountId: accountInformation.addedById,
-            searchedAccountId:
-                searchInput_t.length > 0 && !isNaN(Number(searchInput_t)) ? Number(searchInput_t) : undefined,
+            account_id: account_information.added_by_id,
+            searched_account_id: search_input_t.length > 0 ? search_input_t : undefined,
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setMembers(resData.data.items);
-                    setPage(2);
-                    setHasMore(resData.data.items.length === size);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__members(res_data.data.items);
+                    set__page(2);
+                    set__has_more(res_data.data.items.length === size);
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
-                setIsSearch(false);
+                dispatch(set__is_loading(false));
+                set__is_search(false);
             });
-    }, [dispatch, getMembers, searchInput, isSearch, accountInformation]);
+    }, [dispatch, get_Members, search_input, is_search, account_information]);
 
-    const handleClose = () => {
-        dispatch(setIsShow_memberListDialog(false));
+    const handle_Close = () => {
+        dispatch(set__is_show__member_list_dialog(false));
     };
 
-    const handleSearch = () => {
-        setIsSearch(true);
+    const handle_Search = () => {
+        set__is_search(true);
     };
 
-    const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Search_Input = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setSearchInput(value);
+        set__search_input(value);
     };
 
-    const handleSeeMore = () => {
-        if (!hasMore) return;
-        const searchInput_t = searchInput.trim();
-        dispatch(set_isLoading(true));
-        getMembers({
+    const handle_See_More = () => {
+        if (!has_more) return;
+        const search_input_t = search_input.trim();
+        dispatch(set__is_loading(true));
+        get_Members({
             page: page,
             size: size,
-            accountId: -1,
-            searchedAccountId:
-                searchInput_t.length > 0 && !isNaN(Number(searchInput_t)) ? Number(searchInput_t) : undefined,
+            account_id: '',
+            searched_account_id: search_input_t.length > 0 ? search_input_t : undefined,
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setMembers((prev) => [...prev, ...(resData.data?.items || [])]);
-                    setPage((pre) => pre + 1);
-                    setHasMore(resData.data.items.length === size);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__members((prev) => [...prev, ...(res_data.data?.items || [])]);
+                    set__page((pre) => pre + 1);
+                    set__has_more(res_data.data.items.length === size);
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
-            .finally(() => dispatch(set_isLoading(false)));
+            .finally(() => dispatch(set__is_loading(false)));
     };
 
-    const handleSelect = (item: AccountField) => {
+    const handle_Select = (item: Account_Field) => {
         if (!agent) return;
-        dispatch(set_isLoading(true));
-        agentAddAccount({ id: agent.id, agentAccountId: item.id, accountId: -1 })
+        dispatch(set__is_loading(true));
+        agent_Add_Account({ id: agent.id, agent_account_id: item.id, account_id: '' })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    dispatch(setIsShow_memberListDialog(false));
-                    dispatch(set_agent_memberListDialog(resData.data));
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    dispatch(set__is_show__member_list_dialog(false));
+                    dispatch(set__agent__member_list_dialog(res_data.data));
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
-            .finally(() => dispatch(set_isLoading(false)));
+            .finally(() => dispatch(set__is_loading(false)));
     };
 
     const list_member = members.map((item, index) => {
         const avatarUrl = item.avatar ? handleSrcImage(item.avatar) : avatarnull;
 
         return (
-            <div className={style.row} key={item.id} onClick={() => handleSelect(item)}>
+            <div className={style.row} key={item.id} onClick={() => handle_Select(item)}>
                 <div>{index + 1}</div>
                 <img src={avatarUrl} alt="" />
-                <div>{`${item.firstName} ${item.lastName}`}</div>
+                <div>{`${item.first_name} ${item.last_name}`}</div>
             </div>
         );
     });
@@ -178,22 +176,22 @@ const MemberListDialog = () => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.closeContainer}>
-                    <IoMdClose onClick={() => handleClose()} size={25} title={CLOSE} />
+                    <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
                 <div className={style.search}>
                     <div>
                         <input
-                            value={searchInput}
-                            onChange={(e) => handleSearchInput(e)}
+                            value={search_input}
+                            onChange={(e) => handle_Search_Input(e)}
                             placeholder="Id thành viên !"
                         />
-                        <CiSearch onClick={() => handleSearch()} size={25} />
+                        <CiSearch onClick={() => handle_Search()} size={25} />
                     </div>
                 </div>
                 <div className={style.list}>{list_member}</div>
-                {hasMore && (
+                {has_more && (
                     <div className={style.seeMore}>
-                        <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>
+                        <div onClick={() => handle_See_More()}>{SEE_MORE}</div>
                     </div>
                 )}
             </div>

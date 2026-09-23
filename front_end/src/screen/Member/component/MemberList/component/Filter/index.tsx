@@ -3,32 +3,32 @@ import style from './style.module.scss';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { SEARCH } from '@src/const/text';
-import { setData_searchedAccountId } from '@src/redux/slice/Member';
+import { set__data__searched_account_id } from '@src/redux/slice/Member';
 
 const Filter = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const [searchedId, setSearchedId] = useState<string>('');
+    const [searched_id, set__searched_id] = useState<string>('');
 
-    const handleSearchedAccountId = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Searched_Account_Id = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setSearchedId(value);
+        set__searched_id(value);
     };
 
-    const handleSearch = () => {
-        dispatch(setData_searchedAccountId(searchedId));
+    const handle_Search = () => {
+        dispatch(set__data__searched_account_id(searched_id));
     };
 
     return (
         <div className={style.parent}>
             <div>
                 <input
-                    value={searchedId}
-                    onChange={(e) => handleSearchedAccountId(e)}
+                    value={searched_id}
+                    onChange={(e) => handle_Searched_Account_Id(e)}
                     placeholder="Nhập id người dùng !"
                 />
             </div>
             <div>
-                <div onClick={() => handleSearch()}>{SEARCH}</div>
+                <div onClick={() => handle_Search()}>{SEARCH}</div>
             </div>
         </div>
     );

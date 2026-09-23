@@ -72,8 +72,8 @@ export const uploadImage = async (file: File, id: string): Promise<{ fileName: s
 
         const formData = new FormData();
         formData.append('chunk', chunk);
-        formData.append('chunkIndex', index.toString());
-        formData.append('fileId', uploadId);
+        formData.append('chunk_index', index.toString());
+        formData.append('file_id', uploadId);
         // formData.append('filename', filename);
         // formData.append('totalChunks', totalChunks.toString());
 

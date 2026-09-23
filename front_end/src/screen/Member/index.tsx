@@ -10,23 +10,23 @@ import AddMember from './component/AddMember';
 import MemberList from './component/MemberList';
 import { IoChevronBack } from 'react-icons/io5';
 import { route_enum } from '@src/router/type';
-import { setData_toastMessage } from '@src/redux/slice/Member';
+import { set__data__toast_message } from '@src/redux/slice/Member';
 
 const Member = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
-    const myId = sessionStorage.getItem('myId');
+    const my_id = sessionStorage.getItem('myId');
 
     useEffect(() => {
-        if (myId === null) {
+        if (my_id === null) {
             navigate(route_enum.SIGNIN);
         }
-    }, [navigate, myId]);
+    }, [navigate, my_id]);
 
     useEffect(() => {
         return () => {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: undefined,
                     message: '',
                 })
