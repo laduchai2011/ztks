@@ -11,23 +11,23 @@ import LeaveAllAccountReceiveMessage from './component/LeaveAllAccountReceiveMes
 import LeaveAllChatRoom from './component/LeaveAllChatRoom';
 import LeaveAdmin from './component/LeaveAdmin';
 import { IoChevronBack } from 'react-icons/io5';
-import { setData_toastMessage } from '@src/redux/slice/Leave';
+import { set__data__toast_message } from '@src/redux/slice/Leave';
 import { route_enum } from '@src/router/type';
 
 const Leave = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
-    const myId = sessionStorage.getItem('myId');
+    const my_id = sessionStorage.getItem('myId');
 
     useEffect(() => {
-        if (myId === null) {
+        if (my_id === null) {
             navigate(route_enum.SIGNIN);
         }
-    }, [navigate, myId]);
+    }, [navigate, my_id]);
 
     useEffect(() => {
         dispatch(
-            setData_toastMessage({
+            set__data__toast_message({
                 type: undefined,
                 message: '',
             })

@@ -12,23 +12,23 @@ import MyLoading from './component/MyLoading';
 import UserList from './component/UserList';
 import { IoChevronBack } from 'react-icons/io5';
 import { route_enum } from '@src/router/type';
-import { setData_toastMessage } from '@src/redux/slice/Home_V1';
+import { set__data__toast_message } from '@src/redux/slice/Home_V1';
 
 const Home_V1 = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
-    const myId = sessionStorage.getItem('myId');
+    const my_id = sessionStorage.getItem('myId');
 
     useEffect(() => {
-        if (myId === null) {
+        if (my_id === null) {
             navigate(route_enum.SIGNIN);
         }
-    }, [navigate, myId]);
+    }, [navigate, my_id]);
 
     useEffect(() => {
         return () => {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: undefined,
                     message: '',
                 })
