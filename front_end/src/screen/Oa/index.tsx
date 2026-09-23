@@ -12,23 +12,23 @@ import CreateZaloOaDialog from './component/CreateZaloOaDialog';
 import { IoChevronBack } from 'react-icons/io5';
 import { OA_LIST } from '@src/const/text';
 import { route_enum } from '@src/router/type';
-import { setData_toastMessage } from '@src/redux/slice/Oa';
+import { set__data__toast_message } from '@src/redux/slice/Oa';
 
 const Oa = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
-    const myId = sessionStorage.getItem('myId');
+    const my_id = sessionStorage.getItem('myId');
 
     useEffect(() => {
-        if (myId === null) {
+        if (my_id === null) {
             navigate(route_enum.SIGNIN);
         }
-    }, [navigate, myId]);
+    }, [navigate, my_id]);
 
     useEffect(() => {
         return () => {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: undefined,
                     message: '',
                 })
@@ -36,7 +36,7 @@ const Oa = () => {
         };
     }, [dispatch]);
 
-    const handleBack = () => {
+    const handle_Back = () => {
         navigate(-1);
     };
 
@@ -45,7 +45,7 @@ const Oa = () => {
             <div className={style.main}>
                 <div className={style.header}>
                     <div>{OA_LIST}</div>
-                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                    <IoChevronBack onClick={() => handle_Back()} size={20} color="white" />
                 </div>
                 <div>
                     <OaApp />

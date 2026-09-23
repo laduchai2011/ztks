@@ -5,67 +5,67 @@ import { AppDispatch, RootState } from '@src/redux';
 import { SEE_MORE } from '@src/const/text';
 import Filter from './component/Filter';
 import OneNote from './component/OneNote';
-import { useLazyGetNotesQuery } from '@src/redux/query/note_RTK';
-import { NoteField } from '@src/dataStruct/note';
-import { GetNotesBodyField } from '@src/dataStruct/note/body';
-import { set_isLoading } from '@src/redux/slice/Note';
+import { useLazy_get_Notes_Query } from '@src/redux/query/note_RTK';
+import { Note_Field } from '@src/data_struct/note';
+import { Get_Notes_Body_Field } from '@src/data_struct/note/body';
+import { set__is_loading } from '@src/redux/slice/Note';
 
 const NoteList = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const newNotes: NoteField[] = useSelector((state: RootState) => state.NoteSlice.newNotes);
-    const [filterBody, setFilterBody] = useState<GetNotesBodyField>({
+    const new_notes: Note_Field[] = useSelector((state: RootState) => state.Note_Slice.new_notes);
+    const [filter_body, set__filter_body] = useState<Get_Notes_Body_Field>({
         page: -1,
         size: 5,
         offset: 0,
-        chatRoomId: -1,
-        accountId: -1,
+        chat_room_id: '',
+        account_id: '',
     });
-    const [notes, setNotes] = useState<NoteField[]>([]);
-    const [hasMore, setHasMore] = useState<boolean>(true);
-    const [getNotes] = useLazyGetNotesQuery();
+    const [notes, set__notes] = useState<Note_Field[]>([]);
+    const [has_more, set__has_more] = useState<boolean>(true);
+    const [get_Notes] = useLazy_get_Notes_Query();
 
-    const handleGetNotes = useCallback(
-        (getNotesBody: GetNotesBodyField) => {
-            setNotes([]);
-            setHasMore(true);
-            setFilterBody(getNotesBody);
-            dispatch(set_isLoading(true));
-            getNotes(getNotesBody)
+    const handle_Get_Notes = useCallback(
+        (get_notes_body: Get_Notes_Body_Field) => {
+            set__notes([]);
+            set__has_more(true);
+            set__filter_body(get_notes_body);
+            dispatch(set__is_loading(true));
+            get_Notes(get_notes_body)
                 .then((res) => {
-                    const resData = res.data;
-                    if (resData?.isSuccess && resData?.data) {
-                        setNotes(resData.data.items);
-                        setHasMore(resData.data.items.length === getNotesBody.size);
+                    const res_data = res.data;
+                    if (res_data?.is_success && res_data?.data) {
+                        set__notes(res_data.data.items);
+                        set__has_more(res_data.data.items.length === get_notes_body.size);
                     }
                 })
                 .catch((error) => {
                     console.log('NoteList', 'getNotes error: ', error);
                 })
                 .finally(() => {
-                    dispatch(set_isLoading(false));
+                    dispatch(set__is_loading(false));
                 });
         },
-        [dispatch, getNotes]
+        [dispatch, get_Notes]
     );
 
-    const handleSeeMore = () => {
-        if (!hasMore || filterBody.page === -1) return;
-        const body: GetNotesBodyField = { ...filterBody, page: filterBody.page + 1, offset: newNotes.length };
-        dispatch(set_isLoading(true));
-        getNotes(body)
+    const handle_See_More = () => {
+        if (!has_more || filter_body.page === -1) return;
+        const body: Get_Notes_Body_Field = { ...filter_body, page: filter_body.page + 1, offset: new_notes.length };
+        dispatch(set__is_loading(true));
+        get_Notes(body)
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData?.data) {
-                    setNotes((prev) => [...prev, ...(resData.data?.items || [])]);
-                    setHasMore(resData.data.items.length === body.size);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data?.data) {
+                    set__notes((prev) => [...prev, ...(res_data.data?.items || [])]);
+                    set__has_more(res_data.data.items.length === body.size);
                 }
             })
             .catch((error) => {
                 console.log('OrderList', 'getOrders error: ', error);
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
-                setFilterBody({ ...filterBody, page: filterBody.page + 1 });
+                dispatch(set__is_loading(false));
+                set__filter_body({ ...filter_body, page: filter_body.page + 1 });
             });
     };
 
@@ -75,9 +75,9 @@ const NoteList = () => {
 
     return (
         <div className={style.parent}>
-            <Filter handleGetNotes={handleGetNotes} />
+            <Filter handle_Get_Notes={handle_Get_Notes} />
             {list_order}
-            <div className={style.seeMore}>{hasMore && <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>}</div>
+            <div className={style.seeMore}>{has_more && <div onClick={() => handle_See_More()}>{SEE_MORE}</div>}</div>
         </div>
     );
 };

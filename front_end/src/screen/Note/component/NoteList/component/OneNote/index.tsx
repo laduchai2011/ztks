@@ -2,46 +2,53 @@ import { FC, memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
-import { NoteField } from '@src/dataStruct/note';
-import { set_editNoteDialog, setNote_deleteNoteDialog, setIsShow_deleteNoteDialog } from '@src/redux/slice/Note';
+import { Note_Field } from '@src/data_struct/note';
+import {
+    set__edit_note_dialog,
+    set__note__delete_note_dialog,
+    set__is_show__delete_note_dialog,
+} from '@src/redux/slice/Note';
 import { CiEdit } from 'react-icons/ci';
 import { MdDelete } from 'react-icons/md';
 import { timeAgoSmart } from '@src/utility/time';
 
-const OneNote: FC<{ index: number; data: NoteField }> = ({ index, data }) => {
+const OneNote: FC<{ index: number; data: Note_Field }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const newNote: NoteField | undefined = useSelector((state: RootState) => state.NoteSlice.editNoteDialog.newNote);
-    const deletedNote: NoteField | undefined = useSelector(
-        (state: RootState) => state.NoteSlice.deleteNoteDialog.deletedNote
+    const new_note: Note_Field | undefined = useSelector(
+        (state: RootState) => state.Note_Slice.edit_note_dialog.new_note
     );
-    const [note, setNote] = useState<NoteField>(data);
+    const deleted_note: Note_Field | undefined = useSelector(
+        (state: RootState) => state.Note_Slice.delete_note_dialog.deleted_note
+    );
+
+    const [note, set__note] = useState<Note_Field>(data);
 
     useEffect(() => {
-        if (!newNote) return;
-        if (newNote.id === note.id) {
-            setNote(newNote);
+        if (!new_note) return;
+        if (new_note.id === note.id) {
+            set__note(new_note);
         }
-    }, [newNote, note]);
+    }, [new_note, note]);
 
     useEffect(() => {
-        if (!deletedNote) return;
-        if (deletedNote.id === note.id) {
-            setNote(deletedNote);
+        if (!deleted_note) return;
+        if (deleted_note.id === note.id) {
+            set__note(deleted_note);
         }
-    }, [deletedNote, note]);
+    }, [deleted_note, note]);
 
-    const handleOpenEdit = () => {
-        dispatch(set_editNoteDialog({ isShow: true, note: note }));
+    const handle_Open_Edit = () => {
+        dispatch(set__edit_note_dialog({ is_show: true, note: note }));
     };
 
-    const handleOpenDelete = () => {
-        if (note.isDelete) return;
-        dispatch(setIsShow_deleteNoteDialog(true));
-        dispatch(setNote_deleteNoteDialog(note));
+    const handle_Open_Delete = () => {
+        if (note.is_delete) return;
+        dispatch(set__is_show__delete_note_dialog(true));
+        dispatch(set__note__delete_note_dialog(note));
     };
 
-    const handleDeleteColor = () => {
-        if (note.isDelete) {
+    const handle_Delete_Color = () => {
+        if (note.is_delete) {
             return 'gray';
         }
         return 'red';
@@ -52,14 +59,14 @@ const OneNote: FC<{ index: number; data: NoteField }> = ({ index, data }) => {
             <div className={style.index}>
                 <div>{index}</div>
                 <div>
-                    <CiEdit onClick={() => handleOpenEdit()} size={22} color="green" />
-                    <MdDelete onClick={() => handleOpenDelete()} size={22} color={handleDeleteColor()} />
+                    <CiEdit onClick={() => handle_Open_Edit()} size={22} color="green" />
+                    <MdDelete onClick={() => handle_Open_Delete()} size={22} color={handle_Delete_Color()} />
                 </div>
             </div>
             <div>
                 <div dangerouslySetInnerHTML={{ __html: note.note }} />
             </div>
-            <div className={style.time}>{timeAgoSmart(note.createTime)}</div>
+            <div className={style.time}>{timeAgoSmart(note.create_time)}</div>
         </div>
     );
 };

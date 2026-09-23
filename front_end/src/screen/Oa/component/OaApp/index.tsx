@@ -4,70 +4,30 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux';
 import { FaRegEye, FaEyeSlash } from 'react-icons/fa';
 import { GoDotFill } from 'react-icons/go';
-// import { useGetZaloAppWithAccountIdQuery } from '@src/redux/query/zaloRTK';
-// import { AccountInformationField } from '@src/dataStruct/account';
-import { ZaloAppField } from '@src/dataStruct/zalo';
-// import { messageType_enum } from '@src/component/ToastMessage/type';
-// import { set_isLoading, setData_toastMessage } from '@src/redux/slice/Oa';
+import { Zalo_App_Field } from '@src/data_struct/zalo';
 
 const OaApp = () => {
-    // const dispatch = useDispatch<AppDispatch>();
-    // const accountInformation: AccountInformationField | undefined = useSelector(
-    //     (state: RootState) => state.AppSlice.accountInformation
-    // );
-    // const myAdmin: number | undefined = useSelector((state: RootState) => state.AppSlice.myAdmin);
-    const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
-    const [isShow_id, setIsShow_id] = useState(false);
-    const [isShow_secret, setIsShow_secret] = useState(false);
-    // const [zaloApp, setZaloApp] = useState<ZaloAppField | undefined>(undefined);
+    const zalo_app: Zalo_App_Field | undefined = useSelector((state: RootState) => state.App_Slice.zalo_app);
 
-    // const {
-    //     data: data_zaloApp,
-    //     // isFetching,
-    //     isLoading: isLoading_zaloApp,
-    //     isError: isError_zaloApp,
-    //     error: error_zaloApp,
-    // } = useGetZaloAppWithAccountIdQuery(
-    //     { role: accountInformation?.accountType || '', accountId: myAdmin || 0 },
-    //     { skip: myAdmin === undefined || accountInformation === undefined }
-    // );
-    // useEffect(() => {
-    //     if (isError_zaloApp && error_zaloApp) {
-    //         console.error(error_zaloApp);
-    //         dispatch(
-    //             setData_toastMessage({
-    //                 type: messageType_enum.ERROR,
-    //                 message: 'Lấy dữ liệu zalo-app KHÔNG thành công !',
-    //             })
-    //         );
-    //     }
-    // }, [dispatch, isError_zaloApp, error_zaloApp]);
-    // useEffect(() => {
-    //     dispatch(set_isLoading(isLoading_zaloApp));
-    // }, [dispatch, isLoading_zaloApp]);
-    // useEffect(() => {
-    //     const resData = data_zaloApp;
-    //     if (resData?.isSuccess && resData.data) {
-    //         setZaloApp(resData.data);
-    //     }
-    // }, [data_zaloApp]);
+    const [is_show_id, set__is_show_id] = useState(false);
+    const [is_show_secret, set__is_show_secret] = useState(false);
 
-    const handleShow_id = (isShow: boolean) => {
-        setIsShow_id(isShow);
+    const handle_Show_id = (is_show: boolean) => {
+        set__is_show_id(is_show);
     };
 
-    const handleShow_secret = (isShow: boolean) => {
-        setIsShow_secret(isShow);
+    const handle_Show_Secret = (is_show: boolean) => {
+        set__is_show_secret(is_show);
     };
 
     return (
         <div className={style.parent}>
             <div>
-                <div className={style.label}>{zaloApp?.label}</div>
+                <div className={style.label}>{zalo_app?.label}</div>
                 <div>
                     <div>
                         <div>Tên ứng dụng</div>
-                        <div>{zaloApp?.appName}</div>
+                        <div>{zalo_app?.app_name}</div>
                     </div>
                 </div>
                 <div>
@@ -75,13 +35,13 @@ const OaApp = () => {
                         <div>
                             <div>Định danh ứng dụng</div>
                             <div>
-                                {isShow_id && <FaRegEye onClick={() => handleShow_id(false)} />}
-                                {!isShow_id && <FaEyeSlash onClick={() => handleShow_id(true)} />}
+                                {is_show_id && <FaRegEye onClick={() => handle_Show_id(false)} />}
+                                {!is_show_id && <FaEyeSlash onClick={() => handle_Show_id(true)} />}
                             </div>
                         </div>
                         <div>
-                            {isShow_id && <div>{zaloApp?.appId}</div>}
-                            {!isShow_id && (
+                            {is_show_id && <div>{zalo_app?.app_id}</div>}
+                            {!is_show_id && (
                                 <div>
                                     <GoDotFill /> <GoDotFill /> <GoDotFill /> <GoDotFill /> <GoDotFill />
                                 </div>
@@ -94,13 +54,13 @@ const OaApp = () => {
                         <div>
                             <div>Khóa ứng dụng</div>
                             <div>
-                                {isShow_secret && <FaRegEye onClick={() => handleShow_secret(false)} />}
-                                {!isShow_secret && <FaEyeSlash onClick={() => handleShow_secret(true)} />}
+                                {is_show_secret && <FaRegEye onClick={() => handle_Show_Secret(false)} />}
+                                {!is_show_secret && <FaEyeSlash onClick={() => handle_Show_Secret(true)} />}
                             </div>
                         </div>
                         <div>
-                            {isShow_secret && <div>{zaloApp?.appSecret}</div>}
-                            {!isShow_secret && (
+                            {is_show_secret && <div>{zalo_app?.app_secret}</div>}
+                            {!is_show_secret && (
                                 <div>
                                     <GoDotFill /> <GoDotFill /> <GoDotFill /> <GoDotFill /> <GoDotFill />
                                 </div>

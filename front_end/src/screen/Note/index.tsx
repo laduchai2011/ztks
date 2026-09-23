@@ -13,28 +13,28 @@ import EditNote from './component/EditNote';
 import DeleteNoteDialog from './component/DeleteNoteDialog';
 import { IoChevronBack } from 'react-icons/io5';
 import { select_enum } from '@src/router/type';
-import { setData_toastMessage, clear_newNotes } from '@src/redux/slice/Note';
+import { set__data__toast_message, clear__new_notes } from '@src/redux/slice/Note';
 import { route_enum } from '@src/router/type';
 
 const Note = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
-    const myId = sessionStorage.getItem('myId');
+    const my_id = sessionStorage.getItem('myId');
 
     useEffect(() => {
-        if (myId === null) {
+        if (my_id === null) {
             navigate(route_enum.SIGNIN);
         }
-    }, [navigate, myId]);
+    }, [navigate, my_id]);
 
     useEffect(() => {
         return () => {
-            dispatch(setData_toastMessage({ type: undefined, message: '' }));
-            dispatch(clear_newNotes());
+            dispatch(set__data__toast_message({ type: undefined, message: '' }));
+            dispatch(clear__new_notes());
         };
     }, [dispatch]);
 
-    const handleBack = () => {
+    const handle_Back = () => {
         navigate(-1);
     };
 
@@ -43,7 +43,7 @@ const Note = () => {
             <div className={style.main}>
                 <div className={style.header}>
                     <div>{NOTE}</div>
-                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                    <IoChevronBack onClick={() => handle_Back()} size={20} color="white" />
                 </div>
                 <CreateNote />
                 <NoteList />

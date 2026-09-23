@@ -15,57 +15,57 @@ import { use_get_Chat_Rooms_With_Id_Query } from '@src/redux/query/chat_room_RTK
 import { use_get_Zalo_Oa_With_Id_Query } from '@src/redux/query/zalo_RTK';
 import { useLazy_get_Last_Message_Query } from '@src/redux/query/message_v1_RTK';
 import {
-    setData_chatRoom,
-    setData_toastMessage,
-    set_isLoading,
-    set_zaloOa,
-    setIsShow_changeChatRoomMasterDialog,
+    set__data__chat_room,
+    set__data__toast_message,
+    set__is_loading,
+    set__zalo_oa,
+    set__is_show__change_chat_room_master_dialog,
     set_uid,
 } from '@src/redux/slice/Message_V1';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { AccountInformationField } from '@src/data_struct/account';
-import { ChatRoomField } from '@src/data_struct/chat_room';
-import { getSocket } from '@src/socketIo';
+import { Account_Information_Field } from '@src/data_struct/account';
+import { Chat_Room_Field } from '@src/data_struct/chat_room';
+import { get_Socket } from '@src/socketIo';
 import { route_enum } from '@src/router/type';
 
 const Message1 = () => {
     const navigate = useNavigate();
-    const myId = sessionStorage.getItem('myId');
+    const my_id = sessionStorage.getItem('myId');
     const dispatch = useDispatch<AppDispatch>();
     const { id } = useParams<{ id: string }>();
-    const accountInformation: AccountInformationField | undefined = useSelector(
-        (state: RootState) => state.AppSlice.accountInformation
+    const account_information: Account_Information_Field | undefined = useSelector(
+        (state: RootState) => state.App_Slice.account_information
     );
-    const chatRoom: ChatRoomField | undefined = useSelector((state: RootState) => state.MessageV1Slice.chatRoom);
+    const chat_room: Chat_Room_Field | undefined = useSelector((state: RootState) => state.Message_V1_Slice.chat_room);
 
-    const [getLastMessage] = useLazyGetLastMessageQuery();
+    const [get_Last_Message] = useLazy_get_Last_Message_Query();
 
     useEffect(() => {
-        if (myId === null) {
+        if (my_id === null) {
             navigate(route_enum.SIGNIN);
         }
-    }, [navigate, myId]);
+    }, [navigate, my_id]);
 
     useEffect(() => {
         return () => {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: undefined,
                     message: '',
                 })
             );
-            dispatch(setIsShow_changeChatRoomMasterDialog(false));
+            dispatch(set__is_show__change_chat_room_master_dialog(false));
         };
     }, [dispatch]);
 
     useEffect(() => {
         if (!id) return;
 
-        const socket = getSocket();
-        const chatRoomId = `chatRoomId_${id}`;
+        const socket = get_Socket();
+        const chat_room_id = `chat_room_id_${id}`;
 
         const onConnect = () => {
-            socket.emit('joinRoom', chatRoomId);
+            socket.emit('joinRoom', chat_room_id);
         };
 
         socket.on('connect', onConnect);
@@ -76,7 +76,7 @@ const Message1 = () => {
         }
 
         return () => {
-            socket.emit('leaveRoom', chatRoomId);
+            socket.emit('leaveRoom', chat_room_id);
             socket.off('connect', onConnect);
 
             // ❌ KHÔNG disconnect ở đây
@@ -84,95 +84,93 @@ const Message1 = () => {
     }, [id]);
 
     const {
-        data: data_chatRoom,
+        data: data__chat_room,
         // isFetching,
-        isLoading: isLoading_chatRoom,
-        isError: isError_chatRoom,
-        error: error_chatRoom,
-    } = useGetChatRoomsWithIdQuery({ id: Number(id) }, { skip: id === undefined });
+        isLoading: is_loading__chat_room,
+        isError: is_error__chat_room,
+        error: error__chat_room,
+    } = use_get_Chat_Rooms_With_Id_Query({ id: id || '' }, { skip: id === undefined });
     useEffect(() => {
-        if (isError_chatRoom && error_chatRoom) {
-            console.error(error_chatRoom);
+        if (is_error__chat_room && error__chat_room) {
+            console.error(error__chat_room);
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Lấy dữ liệu phòng hội thoại KHÔNG thành công !',
                 })
             );
         }
-    }, [dispatch, isError_chatRoom, error_chatRoom]);
+    }, [dispatch, is_error__chat_room, error__chat_room]);
     useEffect(() => {
-        dispatch(set_isLoading(isLoading_chatRoom));
-    }, [dispatch, isLoading_chatRoom]);
+        dispatch(set__is_loading(is_loading__chat_room));
+    }, [dispatch, is_loading__chat_room]);
     useEffect(() => {
-        const resData = data_chatRoom;
-        if (resData?.isSuccess && resData.data) {
-            dispatch(setData_chatRoom(resData.data));
+        const res_data = data__chat_room;
+        if (res_data?.is_success && res_data.data) {
+            dispatch(set__data__chat_room(res_data.data));
         }
-    }, [dispatch, data_chatRoom]);
+    }, [dispatch, data__chat_room]);
 
     const {
-        data: data_zaloOa,
+        data: data__zalo_oa,
         // isFetching,
-        isLoading: isLoading_zaloOa,
-        isError: isError_zaloOa,
-        error: error_zaloOa,
-    } = useGetZaloOaWithIdQuery(
-        { id: chatRoom?.zaloOaId || -1, accountId: accountInformation?.addedById || -1 },
-        { skip: chatRoom === undefined || accountInformation === undefined }
+        isLoading: is_loading__zalo_oa,
+        isError: is_error__zalo_oa,
+        error: error__zalo_oa,
+    } = use_get_Zalo_Oa_With_Id_Query(
+        { id: chat_room?.zalo_oa_id || '', account_id: account_information?.added_by_id || '' },
+        { skip: chat_room === undefined || account_information === undefined }
     );
     useEffect(() => {
-        if (isError_zaloOa && error_zaloOa) {
-            console.error(error_zaloOa);
+        if (is_error__zalo_oa && error__zalo_oa) {
+            console.error(error__zalo_oa);
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.SUCCESS,
                     message: 'Lấy dữ liệu OA KHÔNG thành công !',
                 })
             );
         }
-    }, [dispatch, isError_zaloOa, error_zaloOa]);
+    }, [dispatch, is_error__zalo_oa, error__zalo_oa]);
     useEffect(() => {
-        dispatch(set_isLoading(isLoading_zaloOa));
-    }, [dispatch, isLoading_zaloOa]);
+        dispatch(set__is_loading(is_loading__zalo_oa));
+    }, [dispatch, is_loading__zalo_oa]);
     useEffect(() => {
-        const resData = data_zaloOa;
-        // console.log(resData);
-        if (resData?.isSuccess && resData.data) {
-            // setZaloOa(resData.data);
-            dispatch(set_zaloOa(resData.data));
+        const res_data = data__zalo_oa;
+        if (res_data?.is_success && res_data.data) {
+            dispatch(set__zalo_oa(res_data.data));
         }
-    }, [dispatch, data_zaloOa]);
+    }, [dispatch, data__zalo_oa]);
 
     useEffect(() => {
         if (!id) return;
-        getLastMessage({ chatRoomId: id })
+        get_Last_Message({ chat_room_id: id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    const lastMessage = resData.data;
-                    const eventName = lastMessage.event_name;
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    const last_message = res_data.data;
+                    const event_name = last_message.event_name;
 
-                    const isUserSend = eventName.startsWith('user_send');
-                    const isOaSend = eventName.startsWith('oa_send');
+                    const is_user_send = event_name.startsWith('user_send');
+                    const is_oa_send = event_name.startsWith('oa_send');
 
-                    if ('call_id' in lastMessage) {
-                        dispatch(set_uid(lastMessage.user_id));
+                    if ('call_id' in last_message) {
+                        dispatch(set_uid(last_message.user_id));
                     } else {
-                        if (isUserSend) {
-                            dispatch(set_uid(lastMessage.sender_id));
+                        if (is_user_send) {
+                            dispatch(set_uid(last_message.sender_id));
                         }
 
-                        if (isOaSend) {
-                            dispatch(set_uid(lastMessage.recipient_id));
+                        if (is_oa_send) {
+                            dispatch(set_uid(last_message.recipient_id));
                         }
                     }
                 }
             })
             .catch((err) => console.error(err));
-    }, [dispatch, getLastMessage, id]);
+    }, [dispatch, get_Last_Message, id]);
 
-    const handleBack = () => {
+    const handle_Back = () => {
         navigate(-1);
     };
 
@@ -181,7 +179,7 @@ const Message1 = () => {
             <div className={style.main}>
                 <div className={style.header}>
                     <div>{MESSAGE}</div>
-                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                    <IoChevronBack onClick={() => handle_Back()} size={20} color="white" />
                 </div>
                 <ReplyMember />
                 <MsgList />

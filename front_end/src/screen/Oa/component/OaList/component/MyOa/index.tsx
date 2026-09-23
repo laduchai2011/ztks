@@ -8,32 +8,31 @@ import { GoDotFill } from 'react-icons/go';
 import { IoMdSettings } from 'react-icons/io';
 import { SETTING } from '@src/const/text';
 import { route_enum } from '@src/router/type';
-import { ZaloOaField } from '@src/dataStruct/zalo';
+import { Zalo_Oa_Field } from '@src/data_struct/zalo';
+import { set__is_show__take_token_dialog, set__zalo_oa__take_token_dialog } from '@src/redux/slice/Oa';
 
-import { setIsShow_takeTokenDialog, setZaloOa_takeTokenDialog } from '@src/redux/slice/Oa';
-
-const MyOa: FC<{ index: number; data: ZaloOaField }> = ({ index, data }) => {
+const MyOa: FC<{ index: number; data: Zalo_Oa_Field }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 
-    const [isShow_id, setIsShow_id] = useState(false);
-    const [isShow_secret, setIsShow_secret] = useState(false);
+    const [is_show_id, set__is_show_id] = useState(false);
+    const [is_show_secret, set__is_show_secret] = useState(false);
 
-    const handleShow_id = (isShow: boolean) => {
-        setIsShow_id(isShow);
+    const handle_Show_Id = (is_show: boolean) => {
+        set__is_show_id(is_show);
     };
 
-    const handleShow_secret = (isShow: boolean) => {
-        setIsShow_secret(isShow);
+    const handle_Show_Secret = (is_show: boolean) => {
+        set__is_show_secret(is_show);
     };
 
     const gotoSetting = () => {
         navigate(route_enum.OA_SETTING + '/' + `${data.id}`);
     };
 
-    const handleOpenTakeToken = () => {
-        dispatch(setIsShow_takeTokenDialog(true));
-        dispatch(setZaloOa_takeTokenDialog(data));
+    const handle_Open_Take_Token = () => {
+        dispatch(set__is_show__take_token_dialog(true));
+        dispatch(set__zalo_oa__take_token_dialog(data));
     };
 
     return (
@@ -47,7 +46,7 @@ const MyOa: FC<{ index: number; data: ZaloOaField }> = ({ index, data }) => {
                     <div>
                         <div>
                             <div>Tên OA</div>
-                            <div>{data.oaName}</div>
+                            <div>{data.oa_name}</div>
                         </div>
                     </div>
                     <div>
@@ -55,13 +54,13 @@ const MyOa: FC<{ index: number; data: ZaloOaField }> = ({ index, data }) => {
                             <div>
                                 <div>Định danh OA</div>
                                 <div>
-                                    {isShow_id && <FaRegEye onClick={() => handleShow_id(false)} />}
-                                    {!isShow_id && <FaEyeSlash onClick={() => handleShow_id(true)} />}
+                                    {is_show_id && <FaRegEye onClick={() => handle_Show_Id(false)} />}
+                                    {!is_show_id && <FaEyeSlash onClick={() => handle_Show_Id(true)} />}
                                 </div>
                             </div>
                             <div>
-                                {isShow_id && <div>{data.oaId}</div>}
-                                {!isShow_id && (
+                                {is_show_id && <div>{data.oa_id}</div>}
+                                {!is_show_id && (
                                     <div>
                                         <GoDotFill /> <GoDotFill /> <GoDotFill /> <GoDotFill /> <GoDotFill />
                                     </div>
@@ -74,13 +73,13 @@ const MyOa: FC<{ index: number; data: ZaloOaField }> = ({ index, data }) => {
                             <div>
                                 <div>Khóa OA</div>
                                 <div>
-                                    {isShow_secret && <FaRegEye onClick={() => handleShow_secret(false)} />}
-                                    {!isShow_secret && <FaEyeSlash onClick={() => handleShow_secret(true)} />}
+                                    {is_show_secret && <FaRegEye onClick={() => handle_Show_Secret(false)} />}
+                                    {!is_show_secret && <FaEyeSlash onClick={() => handle_Show_Secret(true)} />}
                                 </div>
                             </div>
                             <div>
-                                {isShow_secret && <div>{data.oaSecret}</div>}
-                                {!isShow_secret && (
+                                {is_show_secret && <div>{data.oa_secret}</div>}
+                                {!is_show_secret && (
                                     <div>
                                         <GoDotFill /> <GoDotFill /> <GoDotFill /> <GoDotFill /> <GoDotFill />
                                     </div>
@@ -89,7 +88,7 @@ const MyOa: FC<{ index: number; data: ZaloOaField }> = ({ index, data }) => {
                         </div>
                     </div>
                     <div className={style.btnContainer}>
-                        <div className={style.refresh} onClick={() => handleOpenTakeToken()}>
+                        <div className={style.refresh} onClick={() => handle_Open_Take_Token()}>
                             Lấy token mới
                         </div>
                         <div className={style.setting}>

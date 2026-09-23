@@ -5,7 +5,7 @@ import { RootState } from '@src/redux';
 import { ToastMessage_Data_Props } from '@src/component/ToastMessage/type';
 
 const MyToastMessage = () => {
-    const message: ToastMessage_Data_Props = useSelector((state: RootState) => state.NoteSlice.toastMessage.data);
+    const message: ToastMessage_Data_Props = useSelector((state: RootState) => state.Note_Slice.toast_message.data);
 
     return message.type && <ToastMessage toastMessage={{ data: { type: message.type, message: message.message } }} />;
 };
