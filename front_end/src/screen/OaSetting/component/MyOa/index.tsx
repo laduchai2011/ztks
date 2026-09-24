@@ -7,105 +7,105 @@ import { CiEdit } from 'react-icons/ci';
 import { FaRegEye, FaEyeSlash } from 'react-icons/fa';
 import { MdOutlineWifiCalling } from 'react-icons/md';
 import { GoDotFill } from 'react-icons/go';
-import { useGetZaloOaWithIdQuery } from '@src/redux/query/zalo_RTK';
-import { AccountInformationField } from '@src/dataStruct/account';
-import { ZaloOaField } from '@src/dataStruct/zalo';
+import { use_get_Zalo_Oa_With_Id_Query } from '@src/redux/query/zalo_RTK';
+import { Account_Information_Field } from '@src/data_struct/account';
+import { Zalo_Oa_Field } from '@src/data_struct/zalo';
 import {
-    set_zaloOa,
-    set_isLoading,
-    setData_toastMessage,
-    setIsShow_takeTokenDialog,
-    setZaloOa_takeTokenDialog,
-    setIsShow_editZaloOa,
-    setZaloOa_editZaloOa,
-    setNewZaloOa_editZaloOa,
-    setIsShow_createZaloTrunkDialog,
-    setZaloOa_createZaloTrunkDialog,
+    set__zalo_oa,
+    set__is_loading,
+    set__data__toast_message,
+    set__is_show__take_token_dialog,
+    set__zalo_oa__take_token_dialog,
+    set__is_show__edit_zalo_oa,
+    set__zalo_oa__edit_zalo_oa,
+    set__new_zalo_oa__edit_zalo_oa,
+    set__is_show__create_zalo_trunk_dialog,
+    set__zalo_oa__create_zalo_trunk_dialog,
 } from '@src/redux/slice/Oa_Setting';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const MyOa = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { id } = useParams<{ id: string }>();
-    const accountInformation: AccountInformationField | undefined = useSelector(
-        (state: RootState) => state.AppSlice.accountInformation
+    const account_information: Account_Information_Field | undefined = useSelector(
+        (state: RootState) => state.App_Slice.account_information
     );
-    const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.OaSettingSlice.zaloOa);
-    const newZaloOa: ZaloOaField | undefined = useSelector(
-        (state: RootState) => state.OaSettingSlice.editZaloOa.newZaloOa
+    const zalo_oa: Zalo_Oa_Field | undefined = useSelector((state: RootState) => state.Oa_Setting_Slice.zalo_oa);
+    const new_zalo_oa: Zalo_Oa_Field | undefined = useSelector(
+        (state: RootState) => state.Oa_Setting_Slice.edit_zalo_oa.new_zalo_oa
     );
-    const [isShow_id, setIsShow_id] = useState(false);
-    const [isShow_secret, setIsShow_secret] = useState(false);
+
+    const [is_show_id, set__is_show_id] = useState(false);
+    const [is_show_secret, set__is_show_secret] = useState(false);
 
     const {
-        data: data_zaloOa,
+        data: data__zalo_oa,
         // isFetching,
-        isLoading: isLoading_zaloOa,
-        isError: isError_zaloOa,
-        error: error_zaloOa,
-    } = useGetZaloOaWithIdQuery(
-        { id: Number(id) || -1, accountId: accountInformation?.addedById || -1 },
-        { skip: id === undefined || accountInformation === undefined }
+        isLoading: is_loading__zalo_oa,
+        isError: is_error__zalo_oa,
+        error: error__zalo_oa,
+    } = use_get_Zalo_Oa_With_Id_Query(
+        { id: id || '', account_id: account_information?.added_by_id || '' },
+        { skip: id === undefined || account_information === undefined }
     );
     useEffect(() => {
-        if (isError_zaloOa && error_zaloOa) {
-            console.error(error_zaloOa);
+        if (is_error__zalo_oa && error__zalo_oa) {
+            console.error(error__zalo_oa);
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.SUCCESS,
                     message: 'Lấy dữ liệu OA KHÔNG thành công !',
                 })
             );
         }
-    }, [dispatch, isError_zaloOa, error_zaloOa]);
+    }, [dispatch, is_error__zalo_oa, error__zalo_oa]);
     useEffect(() => {
-        dispatch(set_isLoading(isLoading_zaloOa));
-    }, [dispatch, isLoading_zaloOa]);
+        dispatch(set__is_loading(is_loading__zalo_oa));
+    }, [dispatch, is_loading__zalo_oa]);
     useEffect(() => {
-        const resData = data_zaloOa;
-        if (resData?.isSuccess && resData.data) {
-            // setZaloOa(resData.data);
-            dispatch(set_zaloOa(resData.data));
+        const res_data = data__zalo_oa;
+        if (res_data?.is_success && res_data.data) {
+            dispatch(set__zalo_oa(res_data.data));
         }
-    }, [dispatch, data_zaloOa]);
+    }, [dispatch, data__zalo_oa]);
 
     useEffect(() => {
-        if (!newZaloOa) return;
-        dispatch(set_zaloOa(newZaloOa));
-        dispatch(setNewZaloOa_editZaloOa(undefined));
-    }, [dispatch, newZaloOa]);
+        if (!new_zalo_oa) return;
+        dispatch(set__zalo_oa(new_zalo_oa));
+        dispatch(set__new_zalo_oa__edit_zalo_oa(undefined));
+    }, [dispatch, new_zalo_oa]);
 
-    const handleShow_id = (isShow: boolean) => {
-        setIsShow_id(isShow);
+    const handle_Show_Id = (is_show: boolean) => {
+        set__is_show_id(is_show);
     };
 
-    const handleShow_secret = (isShow: boolean) => {
-        setIsShow_secret(isShow);
+    const handle_Show_Secret = (is_show: boolean) => {
+        set__is_show_secret(is_show);
     };
 
-    const handleOpenTakeToken = () => {
-        dispatch(setIsShow_takeTokenDialog(true));
-        dispatch(setZaloOa_takeTokenDialog(zaloOa));
+    const handle_Open_Take_Token = () => {
+        dispatch(set__is_show__take_token_dialog(true));
+        dispatch(set__zalo_oa__take_token_dialog(zalo_oa));
     };
 
-    const handleOpenEdit = () => {
-        dispatch(setIsShow_editZaloOa(true));
-        dispatch(setZaloOa_editZaloOa(zaloOa));
+    const handle_Open_Edit = () => {
+        dispatch(set__is_show__edit_zalo_oa(true));
+        dispatch(set__zalo_oa__edit_zalo_oa(zalo_oa));
     };
 
-    const handleOpenCreateZaloTrunk = () => {
-        dispatch(setIsShow_createZaloTrunkDialog(true));
-        dispatch(setZaloOa_createZaloTrunkDialog(zaloOa));
+    const handle_Open_Create_Zalo_Trunk = () => {
+        dispatch(set__is_show__create_zalo_trunk_dialog(true));
+        dispatch(set__zalo_oa__create_zalo_trunk_dialog(zalo_oa));
     };
 
     return (
         <div className={style.parent}>
             <div>
-                <div className={style.label}>{zaloOa?.label}</div>
+                <div className={style.label}>{zalo_oa?.label}</div>
                 <div>
                     <div>
                         <div>Tên OA</div>
-                        <div>{zaloOa?.oaName}</div>
+                        <div>{zalo_oa?.oa_name}</div>
                     </div>
                 </div>
                 <div>
@@ -113,13 +113,13 @@ const MyOa = () => {
                         <div>
                             <div>Định danh OA</div>
                             <div>
-                                {isShow_id && <FaRegEye onClick={() => handleShow_id(false)} />}
-                                {!isShow_id && <FaEyeSlash onClick={() => handleShow_id(true)} />}
+                                {is_show_id && <FaRegEye onClick={() => handle_Show_Id(false)} />}
+                                {!is_show_id && <FaEyeSlash onClick={() => handle_Show_Id(true)} />}
                             </div>
                         </div>
                         <div>
-                            {isShow_id && <div>{zaloOa?.oaId}</div>}
-                            {!isShow_id && (
+                            {is_show_id && <div>{zalo_oa?.oa_id}</div>}
+                            {!is_show_id && (
                                 <div>
                                     <GoDotFill /> <GoDotFill /> <GoDotFill /> <GoDotFill /> <GoDotFill />
                                 </div>
@@ -132,13 +132,13 @@ const MyOa = () => {
                         <div>
                             <div>Khóa OA</div>
                             <div>
-                                {isShow_secret && <FaRegEye onClick={() => handleShow_secret(false)} />}
-                                {!isShow_secret && <FaEyeSlash onClick={() => handleShow_secret(true)} />}
+                                {is_show_secret && <FaRegEye onClick={() => handle_Show_Secret(false)} />}
+                                {!is_show_secret && <FaEyeSlash onClick={() => handle_Show_Secret(true)} />}
                             </div>
                         </div>
                         <div>
-                            {isShow_secret && <div>{zaloOa?.oaSecret}</div>}
-                            {!isShow_secret && (
+                            {is_show_secret && <div>{zalo_oa?.oa_secret}</div>}
+                            {!is_show_secret && (
                                 <div>
                                     <GoDotFill /> <GoDotFill /> <GoDotFill /> <GoDotFill /> <GoDotFill />
                                 </div>
@@ -147,11 +147,11 @@ const MyOa = () => {
                     </div>
                 </div>
                 <div className={style.btnContainer}>
-                    <div className={style.refresh} onClick={() => handleOpenTakeToken()}>
+                    <div className={style.refresh} onClick={() => handle_Open_Take_Token()}>
                         Lấy token mới
                     </div>
-                    <CiEdit onClick={() => handleOpenEdit()} size={30} color="green" />
-                    <MdOutlineWifiCalling onClick={() => handleOpenCreateZaloTrunk()} size={25} color="red" />
+                    <CiEdit onClick={() => handle_Open_Edit()} size={30} color="green" />
+                    <MdOutlineWifiCalling onClick={() => handle_Open_Create_Zalo_Trunk()} size={25} color="red" />
                 </div>
                 <div className={style.warn}>Thông tin không được để lộ</div>
             </div>

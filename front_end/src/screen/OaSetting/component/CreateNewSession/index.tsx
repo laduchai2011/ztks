@@ -3,39 +3,39 @@ import style from './style.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { CREATE_NEW_SESSION } from '@src/const/text';
-import { useCreateChatSessionMutation } from '@src/redux/query/chat_session_RTK';
-import { ChatSessionBodyField } from '@src/dataStruct/chatSession/body';
+import { use_create_Chat_Session_Mutation } from '@src/redux/query/chat_session_RTK';
+import { Chat_Session_Body_Field } from '@src/data_struct/chat_session/body';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { set_isLoading, setData_toastMessage, set_chatSessions } from '@src/redux/slice/Oa_Setting';
-import { ZaloOaField } from '@src/dataStruct/zalo';
+import { set__is_loading, set__data__toast_message, set__chat_sessions } from '@src/redux/slice/Oa_Setting';
+import { Zalo_Oa_Field } from '@src/data_struct/zalo';
 import { Crud_Enum } from '../../type';
 
 const CreateNewSession = () => {
     const dispatch = useDispatch<AppDispatch>();
 
-    const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.OaSettingSlice.zaloOa);
+    const zalo_oa: Zalo_Oa_Field | undefined = useSelector((state: RootState) => state.Oa_Setting_Slice.zalo_oa);
 
-    const [label, setLabel] = useState<string>('');
-    const [code, setCode] = useState<string>('');
+    const [label, set__label] = useState<string>('');
+    const [code, set__code] = useState<string>('');
 
-    const [createChatSession] = useCreateChatSessionMutation();
+    const [create_Chat_Session] = use_create_Chat_Session_Mutation();
 
-    const handleLabel = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Label = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setLabel(value);
+        set__label(value);
     };
 
-    const handleCode = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Code = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setCode(value);
+        set__code(value);
     };
 
-    const handleCreate = () => {
+    const handle_Create = () => {
         const label1 = label.trim();
         const code1 = code.trim();
         if (label1.length === 0) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Nhãn không được để trống !',
                 })
@@ -44,7 +44,7 @@ const CreateNewSession = () => {
         }
         if (code1.length === 0) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Mã không được để trống !',
                 })
@@ -52,38 +52,38 @@ const CreateNewSession = () => {
             return;
         }
 
-        const chatSessionBody: ChatSessionBodyField = {
+        const chat_session_body: Chat_Session_Body_Field = {
             label: label1,
             code: code1,
-            isReady: false,
-            selectedAccountId: -1,
-            zaloOaId: zaloOa?.id || -1,
-            accountId: -1,
+            is_ready: false,
+            selected_account_id: '',
+            zalo_oa_id: zalo_oa?.id || '',
+            account_id: '',
         };
 
-        dispatch(set_isLoading(true));
-        createChatSession(chatSessionBody)
+        dispatch(set__is_loading(true));
+        create_Chat_Session(chat_session_body)
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    dispatch(set_chatSessions({ chatSessions: [resData.data], crud_type: Crud_Enum.CREATE }));
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    dispatch(set__chat_sessions({ chat_sessions: [res_data.data], crud_type: Crud_Enum.CREATE }));
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.SUCCESS,
-                            message: resData.message,
+                            message: res_data.message,
                         })
                     );
                 } else {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.ERROR,
-                            message: resData?.message,
+                            message: res_data?.message,
                         })
                     );
                 }
             })
             .catch((err) => console.error(err))
-            .finally(() => dispatch(set_isLoading(false)));
+            .finally(() => dispatch(set__is_loading(false)));
     };
 
     return (
@@ -96,11 +96,11 @@ const CreateNewSession = () => {
                         thể nhắn tin cho bạn
                     </div>
                     <div className={style.inputContainer}>
-                        <input value={label} onChange={(e) => handleLabel(e)} placeholder="Nhãn" />
-                        <input value={code} onChange={(e) => handleCode(e)} placeholder="Mã" />
+                        <input value={label} onChange={(e) => handle_Label(e)} placeholder="Nhãn" />
+                        <input value={code} onChange={(e) => handle_Code(e)} placeholder="Mã" />
                     </div>
                     <div className={style.btnContainer}>
-                        <button className={style.btn} onClick={() => handleCreate()}>
+                        <button className={style.btn} onClick={() => handle_Create()}>
                             Tạo phiên mới
                         </button>
                     </div>

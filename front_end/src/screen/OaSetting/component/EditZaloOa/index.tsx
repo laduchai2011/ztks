@@ -5,37 +5,39 @@ import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE, AGREE, EXIT } from '@src/const/text';
 import {
-    set_isLoading,
-    setData_toastMessage,
-    setIsShow_editZaloOa,
-    setNewZaloOa_editZaloOa,
+    set__is_loading,
+    set__data__toast_message,
+    set__is_show__edit_zalo_oa,
+    set__new_zalo_oa__edit_zalo_oa,
 } from '@src/redux/slice/Oa_Setting';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { AccountField } from '@src/dataStruct/account';
-import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { useEditZaloOaMutation } from '@src/redux/query/zalo_RTK';
+import { Account_Field } from '@src/data_struct/account';
+import { Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
+import { use_edit_Zalo_Oa_Mutation } from '@src/redux/query/zalo_RTK';
 
 const CreateZaloOaDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
 
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
-    const isShow: boolean = useSelector((state: RootState) => state.OaSettingSlice.editZaloOa.isShow);
-    const zaloOa: ZaloOaField | undefined = useSelector((state: RootState) => state.OaSettingSlice.editZaloOa.zaloOa);
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
+    const zalo_app: Zalo_App_Field | undefined = useSelector((state: RootState) => state.App_Slice.zalo_app);
+    const is_show: boolean = useSelector((state: RootState) => state.Oa_Setting_Slice.edit_zalo_oa.is_show);
+    const zalo_oa: Zalo_Oa_Field | undefined = useSelector(
+        (state: RootState) => state.Oa_Setting_Slice.edit_zalo_oa.zalo_oa
+    );
 
-    const [label, setLabel] = useState<string>('');
-    const [oaId, setOaId] = useState<string>('');
-    const [oaName, setOaName] = useState<string>('');
-    const [oaSecret, setOaSecret] = useState<string>('');
+    const [label, set__label] = useState<string>('');
+    const [oa_id, set__oa_id] = useState<string>('');
+    const [oa_name, set__oa_name] = useState<string>('');
+    const [oa_secret, set__oa_secret] = useState<string>('');
 
-    const [editZaloOa] = useEditZaloOaMutation();
+    const [edit_Zalo_Oa] = use_edit_Zalo_Oa_Mutation();
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow) {
+        if (is_show) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -49,45 +51,45 @@ const CreateZaloOaDialog = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow]);
+    }, [is_show]);
 
     useEffect(() => {
-        if (!zaloOa) return;
-        setLabel(zaloOa.label);
-        setOaId(zaloOa.oaId);
-        setOaName(zaloOa.oaName);
-        setOaSecret(zaloOa.oaSecret);
-    }, [zaloOa]);
+        if (!zalo_oa) return;
+        set__label(zalo_oa.label);
+        set__oa_id(zalo_oa.oa_id);
+        set__oa_name(zalo_oa.oa_name);
+        set__oa_secret(zalo_oa.oa_secret);
+    }, [zalo_oa]);
 
-    const handleClose = () => {
-        dispatch(setIsShow_editZaloOa(false));
+    const handle_Close = () => {
+        dispatch(set__is_show__edit_zalo_oa(false));
     };
 
-    const handleLabel = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setLabel(e.target.value);
+    const handle_Label = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__label(e.target.value);
     };
 
-    const handleOaId = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setOaId(e.target.value);
+    const handle_Oa_Id = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__oa_id(e.target.value);
     };
 
-    const handleOaName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setOaName(e.target.value);
+    const handle_Oa_Name = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__oa_name(e.target.value);
     };
 
-    const handleOaSecret = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setOaSecret(e.target.value);
+    const handle_Oa_Secret = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__oa_secret(e.target.value);
     };
 
-    const handleAgree = async () => {
+    const handle_Agree = async () => {
         if (!account) return;
-        if (!zaloApp) return;
-        if (!zaloOa) return;
+        if (!zalo_app) return;
+        if (!zalo_oa) return;
 
         const label_t = label.trim();
         if (label_t.length === 0) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Nhãn không được để trống !',
                 })
@@ -95,10 +97,10 @@ const CreateZaloOaDialog = () => {
             return;
         }
 
-        const oaId_t = oaId.trim();
-        if (oaId_t.length === 0) {
+        const oa_id_t = oa_id.trim();
+        if (oa_id_t.length === 0) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Đinh danh oa không được để trống !',
                 })
@@ -106,10 +108,10 @@ const CreateZaloOaDialog = () => {
             return;
         }
 
-        const oaName_t = oaName.trim();
-        if (oaName_t.length === 0) {
+        const oa_name_t = oa_name.trim();
+        if (oa_name_t.length === 0) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Tên oa không được để trống !',
                 })
@@ -117,10 +119,10 @@ const CreateZaloOaDialog = () => {
             return;
         }
 
-        const oaSecret_t = oaSecret.trim();
-        if (oaSecret_t.length === 0) {
+        const oa_secret_t = oa_secret.trim();
+        if (oa_secret_t.length === 0) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Khóa bí mật oa không được để trống !',
                 })
@@ -128,29 +130,29 @@ const CreateZaloOaDialog = () => {
             return;
         }
 
-        dispatch(set_isLoading(true));
-        editZaloOa({
-            id: zaloOa.id,
+        dispatch(set__is_loading(true));
+        edit_Zalo_Oa({
+            id: zalo_oa.id,
             label: label_t,
-            oaId: oaId_t,
-            oaName: oaName_t,
-            oaSecret: oaSecret_t,
-            zaloAppId: zaloApp.id,
-            accountId: account.id,
+            oa_id: oa_id_t,
+            oa_name: oa_name_t,
+            oa_secret: oa_secret_t,
+            zalo_app_id: zalo_app.id,
+            account_id: account.id,
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    dispatch(setNewZaloOa_editZaloOa(resData.data));
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    dispatch(set__new_zalo_oa__edit_zalo_oa(res_data.data));
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.SUCCESS,
                             message: 'Chỉnh sửa thành công !',
                         })
                     );
                 } else {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.ERROR,
                             message: 'Chỉnh sửa không thành công !',
                         })
@@ -160,14 +162,14 @@ const CreateZaloOaDialog = () => {
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
     };
 
@@ -175,38 +177,38 @@ const CreateZaloOaDialog = () => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.closeContainer}>
-                    <IoMdClose onClick={() => handleClose()} size={25} title={CLOSE} />
+                    <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
-                <div className={style.header}>{`Chỉnh sửa zalo oa ${zaloOa?.oaName}`}</div>
+                <div className={style.header}>{`Chỉnh sửa zalo oa ${zalo_oa?.oa_name}`}</div>
                 <div className={style.contentContainer}>
                     <div>
                         <div>
                             <div>Nhãn</div>
-                            <input value={label} onChange={(e) => handleLabel(e)} placeholder="Nhãn" />
+                            <input value={label} onChange={(e) => handle_Label(e)} placeholder="Nhãn" />
                         </div>
                     </div>
                     <div>
                         <div>
                             <div>Định danh oa</div>
-                            <input value={oaId} onChange={(e) => handleOaId(e)} placeholder="Định danh oa" />
+                            <input value={oa_id} onChange={(e) => handle_Oa_Id(e)} placeholder="Định danh oa" />
                         </div>
                     </div>
                     <div>
                         <div>
                             <div>Tên oa</div>
-                            <input value={oaName} onChange={(e) => handleOaName(e)} placeholder="Tên oa" />
+                            <input value={oa_name} onChange={(e) => handle_Oa_Name(e)} placeholder="Tên oa" />
                         </div>
                     </div>
                     <div>
                         <div>
                             <div>Khóa bí mật</div>
-                            <input value={oaSecret} onChange={(e) => handleOaSecret(e)} placeholder="Khóa bí mật" />
+                            <input value={oa_secret} onChange={(e) => handle_Oa_Secret(e)} placeholder="Khóa bí mật" />
                         </div>
                     </div>
                 </div>
                 <div className={style.buttonContainer}>
-                    <button onClick={() => handleAgree()}>{AGREE}</button>
-                    <button onClick={() => handleClose()}>{EXIT}</button>
+                    <button onClick={() => handle_Agree()}>{AGREE}</button>
+                    <button onClick={() => handle_Close()}>{EXIT}</button>
                 </div>
             </div>
         </div>

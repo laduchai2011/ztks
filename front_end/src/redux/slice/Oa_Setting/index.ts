@@ -45,7 +45,7 @@ const Oa_Setting_Slice = createSlice({
         set__is_show__del_dialog: (state, action: PayloadAction<boolean>) => {
             state.del_dialog.is_show = action.payload;
         },
-        set__show__dialog_loading: (state, action: PayloadAction<boolean>) => {
+        set__is_show__dialog_loading: (state, action: PayloadAction<boolean>) => {
             state.dialog_loading.is_show = action.payload;
         },
         set__zalo_oa: (state, action: PayloadAction<Zalo_Oa_Field>) => {
@@ -104,7 +104,7 @@ export const {
     set__is_loading,
     set__data__toast_message,
     set__is_show__del_dialog,
-    set__show__dialog_loading,
+    set__is_show__dialog_loading,
     set__zalo_oa,
     set__chat_sessions,
     set__is_show__take_token_dialog,

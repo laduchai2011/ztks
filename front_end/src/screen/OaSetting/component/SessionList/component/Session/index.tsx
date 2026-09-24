@@ -5,102 +5,102 @@ import { AppDispatch } from '@src/redux';
 import { MdDelete } from 'react-icons/md';
 import { GoDotFill } from 'react-icons/go';
 import { avatarnull } from '@src/utility/string';
-import { ChatSessionField } from '@src/dataStruct/chatSession';
-import { useGetAccountWithIdQuery } from '@src/redux/query/account_RTK';
+import { Chat_Session_Field } from '@src/data_struct/chat_session';
+import { use_get_Account_With_Id_Query } from '@src/redux/query/account_RTK';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { set_isLoading, setData_toastMessage, setIsShow_delDialog } from '@src/redux/slice/Oa_Setting';
-import { AccountField } from '@src/dataStruct/account';
-import { useGetAllMembersQuery } from '@src/redux/query/account_RTK';
+import { set__is_loading, set__data__toast_message, set__is_show__del_dialog } from '@src/redux/slice/Oa_Setting';
+import { Account_Field } from '@src/data_struct/account';
+import { use_get_All_Members_Query } from '@src/redux/query/account_RTK';
 import {
-    useUpdateSelectedAccountIdOfChatSessionMutation,
-    useUpdateIsReayOfChatSessionMutation,
+    use_update_Selected_Account_Id_Of_Chat_Session_Mutation,
+    use_update_Is_Reay_Of_Chat_Session_Mutation,
 } from '@src/redux/query/chat_session_RTK';
 import { handleSrcImage } from '@src/utility/string';
 
-const Session: FC<{ index: number; data: ChatSessionField }> = ({ index, data }) => {
-    const [chatSession, setChatSession] = useState<ChatSessionField>(data);
+const Session: FC<{ index: number; data: Chat_Session_Field }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const btnText = chatSession.isReady ? 'Bỏ sẵn sàng' : 'Sẵn sàng';
-    const readyColor = chatSession.isReady ? 'greenyellow' : 'gray';
-    const readyBackgroundColor = !chatSession.isReady ? 'greenyellow' : 'white';
-    const [allMembers, setAllMembers] = useState<AccountField[]>([]);
-    const [account, setAccount] = useState<AccountField | undefined>(undefined);
 
-    const [updateSelectedAccountIdOfChatSession] = useUpdateSelectedAccountIdOfChatSessionMutation();
-    const [updateIsReadyOfChatSession] = useUpdateIsReayOfChatSessionMutation();
+    const [chat_session, set__chat_session] = useState<Chat_Session_Field>(data);
+    const btn_text = chat_session.is_ready ? 'Bỏ sẵn sàng' : 'Sẵn sàng';
+    const ready_color = chat_session.is_ready ? 'greenyellow' : 'gray';
+    const ready_background_color = !chat_session.is_ready ? 'greenyellow' : 'white';
+    const [all_members, set__all_members] = useState<Account_Field[]>([]);
+    const [account, set__account] = useState<Account_Field | undefined>(undefined);
+
+    const [update_Selected_Account_Id_Of_Chat_Session] = use_update_Selected_Account_Id_Of_Chat_Session_Mutation();
+    const [update_Is_Ready_Of_Chat_Session] = use_update_Is_Reay_Of_Chat_Session_Mutation();
 
     const {
-        data: data_allMembers,
+        data: data__all_members,
         // isFetching,
-        isLoading: isLoading_allMembers,
-        isError: isError_allMembers,
-        error: error_allMembers,
-    } = useGetAllMembersQuery({ addedById: -1 });
+        isLoading: is_loading__all_members,
+        isError: is_error__all_members,
+        error: error__all_members,
+    } = use_get_All_Members_Query({ added_by_id: '' });
     useEffect(() => {
-        if (isError_allMembers && error_allMembers) {
-            console.error(error_allMembers);
+        if (is_error__all_members && error__all_members) {
+            console.error(error__all_members);
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Lấy dữ liệu KHÔNG thành công !',
                 })
             );
         }
-    }, [dispatch, isError_allMembers, error_allMembers]);
+    }, [dispatch, is_error__all_members, error__all_members]);
     useEffect(() => {
-        dispatch(set_isLoading(isLoading_allMembers));
-    }, [dispatch, isLoading_allMembers]);
+        dispatch(set__is_loading(is_loading__all_members));
+    }, [dispatch, is_loading__all_members]);
     useEffect(() => {
-        const resData = data_allMembers;
-        console.log(11111, resData);
-        if (resData?.isSuccess && resData?.data) {
-            setAllMembers(resData.data);
+        const res_data = data__all_members;
+        if (res_data?.is_success && res_data?.data) {
+            set__all_members(res_data.data);
         }
-    }, [chatSession, data_allMembers]);
+    }, [data__all_members]);
 
     const {
-        data: data_account,
+        data: data__account,
         // isFetching,
-        isLoading: isLoading_account,
-        isError: isError_account,
+        isLoading: is_loading_account,
+        isError: is_error_account,
         error: error_account,
-    } = useGetAccountWithIdQuery({ id: chatSession.selectedAccountId });
+    } = use_get_Account_With_Id_Query({ id: chat_session.selected_account_id });
     useEffect(() => {
-        if (isError_account && error_account) {
+        if (is_error_account && error_account) {
             console.error(error_account);
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Lấy dữ liệu tài khoản KHÔNG thành công !',
                 })
             );
         }
-    }, [dispatch, isError_account, error_account]);
+    }, [dispatch, is_error_account, error_account]);
     useEffect(() => {
-        dispatch(set_isLoading(isLoading_account));
-    }, [dispatch, isLoading_account]);
+        dispatch(set__is_loading(is_loading_account));
+    }, [dispatch, is_loading_account]);
     useEffect(() => {
-        const resData = data_account;
-        if (resData?.isSuccess && resData.data) {
-            setAccount(resData.data);
+        const res_data = data__account;
+        if (res_data?.is_success && res_data.data) {
+            set__account(res_data.data);
         }
-    }, [dispatch, data_account]);
+    }, [dispatch, data__account]);
 
-    const handleDel = () => {
-        dispatch(setIsShow_delDialog(true));
+    const handle_Del = () => {
+        dispatch(set__is_show__del_dialog(true));
     };
 
-    const handleSelected = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handle_Selected = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = e.target.value;
-        dispatch(set_isLoading(true));
-        updateSelectedAccountIdOfChatSession({ id: chatSession.id, selectedAccountId: Number(value), accountId: -1 })
+        dispatch(set__is_loading(true));
+        update_Selected_Account_Id_Of_Chat_Session({ id: chat_session.id, selected_account_id: value, account_id: '' })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setChatSession(resData.data);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__chat_session(res_data.data);
                 } else {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.WARN,
                             message: 'Lựa chọn KHÔNG thành công !',
                         })
@@ -108,20 +108,20 @@ const Session: FC<{ index: number; data: ChatSessionField }> = ({ index, data })
                 }
             })
             .catch((err) => console.error(err))
-            .finally(() => dispatch(set_isLoading(false)));
+            .finally(() => dispatch(set__is_loading(false)));
     };
 
-    const handleReady = () => {
-        const isReady = chatSession.isReady;
-        dispatch(set_isLoading(true));
-        updateIsReadyOfChatSession({ id: chatSession.id, isReady: !isReady, accountId: -1 })
+    const handle_Ready = () => {
+        const is_ready = chat_session.is_ready;
+        dispatch(set__is_loading(true));
+        update_Is_Ready_Of_Chat_Session({ id: chat_session.id, is_ready: !is_ready, account_id: '' })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setChatSession(resData.data);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__chat_session(res_data.data);
                 } else {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.WARN,
                             message: 'Hành động thất bại !',
                         })
@@ -129,14 +129,14 @@ const Session: FC<{ index: number; data: ChatSessionField }> = ({ index, data })
                 }
             })
             .catch((err) => console.error(err))
-            .finally(() => dispatch(set_isLoading(false)));
+            .finally(() => dispatch(set__is_loading(false)));
     };
 
-    const list_member = allMembers.map((item, index) => {
+    const list_member = all_members.map((item, index) => {
         const index1 = index + 1;
         return (
-            <option key={`${item.id}-${chatSession.id}`} value={item.id}>
-                {index1 + '  ' + item.firstName + ' ' + item.lastName}
+            <option key={`${item.id}-${chat_session.id}`} value={item.id}>
+                {index1 + '  ' + item.first_name + ' ' + item.last_name}
             </option>
         );
     });
@@ -145,18 +145,18 @@ const Session: FC<{ index: number; data: ChatSessionField }> = ({ index, data })
         <div className={style.parent}>
             <div className={style.header}>
                 <div>{index}</div>
-                <div>{chatSession.label}</div>
+                <div>{chat_session.label}</div>
                 <div>
-                    <GoDotFill size={20} color={readyColor} />
-                    <MdDelete onClick={() => handleDel()} size={20} color="red" />
+                    <GoDotFill size={20} color={ready_color} />
+                    <MdDelete onClick={() => handle_Del()} size={20} color="red" />
                 </div>
             </div>
             <div className={style.infor}>
-                <div>{`Mã phiên: ${chatSession.code}`}</div>
+                <div>{`Mã phiên: ${chat_session.code}`}</div>
                 <div>Chỉ định: Lựa chọn hoặc nhập id</div>
                 <div className={style.selectedContainer}>
                     <div>
-                        <select value={chatSession.selectedAccountId} onChange={(e) => handleSelected(e)}>
+                        <select value={chat_session.selected_account_id} onChange={(e) => handle_Selected(e)}>
                             {list_member}
                         </select>
                     </div>
@@ -169,11 +169,11 @@ const Session: FC<{ index: number; data: ChatSessionField }> = ({ index, data })
                 <div>
                     <img src={account?.avatar ? handleSrcImage(account.avatar) : avatarnull} alt="avatar" />
                 </div>
-                <div>{account?.firstName + ' ' + account?.lastName}</div>
+                <div>{account?.first_name + ' ' + account?.last_name}</div>
             </div>
             <div className={style.btnContainer}>
-                <button style={{ background: readyBackgroundColor }} onClick={() => handleReady()}>
-                    {btnText}
+                <button style={{ background: ready_background_color }} onClick={() => handle_Ready()}>
+                    {btn_text}
                 </button>
             </div>
         </div>

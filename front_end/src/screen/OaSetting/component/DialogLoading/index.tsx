@@ -8,13 +8,13 @@ import { RootState } from '@src/redux';
 
 const DialogLoading = () => {
     const parent_element = useRef<HTMLDivElement | null>(null);
-    const isShow: boolean = useSelector((state: RootState) => state.OaSettingSlice.dialogLoading.isShow);
+    const is_show: boolean = useSelector((state: RootState) => state.Oa_Setting_Slice.dialog_loading.is_show);
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow) {
+        if (is_show) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -28,7 +28,7 @@ const DialogLoading = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow]);
+    }, [is_show]);
 
     const lineCircleLoad: LineCircleLoadProps = {
         lineSize: 10,

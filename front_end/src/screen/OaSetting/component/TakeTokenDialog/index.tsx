@@ -5,19 +5,19 @@ import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE, AGREE, EXIT } from '@src/const/text';
 import {
-    set_isLoading,
-    setData_toastMessage,
-    setIsShow_takeTokenDialog,
-    setZaloOa_takeTokenDialog,
+    set__is_loading,
+    set__data__toast_message,
+    set__is_show__take_token_dialog,
+    set__zalo_oa__take_token_dialog,
 } from '@src/redux/slice/Oa_Setting';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { AccountField } from '@src/dataStruct/account';
-import { ZaloAppField, ZaloOaField, GenZaloOaTokenResultField } from '@src/dataStruct/zalo';
+import { Account_Field } from '@src/data_struct/account';
+import { Zalo_App_Field, Zalo_Oa_Field, Gen_Zalo_Oa_Token_Result_Field } from '@src/data_struct/zalo';
 import {
-    useGenZaloOaTokenMutation,
-    useLazyGetZaloOaTokenWithFkQuery,
-    useCreateZaloOaTokenMutation,
-    useUpdateRefreshTokenOfZaloOaMutation,
+    use_gen_Zalo_Oa_Token_Mutation,
+    useLazy_get_Zalo_Oa_Token_With_Fk_Query,
+    use_create_Zalo_Oa_Token_Mutation,
+    use_update_Refresh_Token_Of_Zalo_Oa_Mutation,
 } from '@src/redux/query/zalo_RTK';
 import { isProduct } from '@src/const/api/base_url';
 
@@ -25,27 +25,27 @@ const TakeTokenDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
 
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
-    const zaloOa: ZaloOaField | undefined = useSelector(
-        (state: RootState) => state.OaSettingSlice.takeTokenDialog.zaloOa
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
+    const zalo_app: Zalo_App_Field | undefined = useSelector((state: RootState) => state.App_Slice.zalo_app);
+    const zalo_oa: Zalo_Oa_Field | undefined = useSelector(
+        (state: RootState) => state.Oa_Setting_Slice.take_token_dialog.zalo_oa
     );
-    const isShow: boolean = useSelector((state: RootState) => state.OaSettingSlice.takeTokenDialog.isShow);
+    const is_show: boolean = useSelector((state: RootState) => state.Oa_Setting_Slice.take_token_dialog.is_show);
 
-    const [code, setCode] = useState<string>('');
-    const [tokenResult, setTokenResult] = useState<GenZaloOaTokenResultField | undefined>(undefined);
-    const [noti, setNoti] = useState<string>('');
+    const [code, set__code] = useState<string>('');
+    const [token_result, set__token_result] = useState<Gen_Zalo_Oa_Token_Result_Field | undefined>(undefined);
+    const [noti, set__noti] = useState<string>('');
 
-    const [genZaloOaToken] = useGenZaloOaTokenMutation();
-    const [getZaloOaTokenWithFk] = useLazyGetZaloOaTokenWithFkQuery();
-    const [createZaloOaToken] = useCreateZaloOaTokenMutation();
-    const [updateRefreshTokenOfZaloOa] = useUpdateRefreshTokenOfZaloOaMutation();
+    const [gen_Zalo_Oa_Token] = use_gen_Zalo_Oa_Token_Mutation();
+    const [get_Zalo_Oa_Token_With_Fk] = useLazy_get_Zalo_Oa_Token_With_Fk_Query();
+    const [create_Zalo_Oa_Token] = use_create_Zalo_Oa_Token_Mutation();
+    const [update_Refresh_Token_Of_Zalo_Oa] = use_update_Refresh_Token_Of_Zalo_Oa_Mutation();
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow) {
+        if (is_show) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -59,54 +59,54 @@ const TakeTokenDialog = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow]);
+    }, [is_show]);
 
-    const handleClose = () => {
-        dispatch(setIsShow_takeTokenDialog(false));
-        dispatch(setZaloOa_takeTokenDialog(undefined));
+    const handle_Close = () => {
+        dispatch(set__is_show__take_token_dialog(false));
+        dispatch(set__zalo_oa__take_token_dialog(undefined));
     };
 
-    const handleTakeCode = () => {
-        if (!zaloApp) return;
+    const handle_Take_Code = () => {
+        if (!zalo_app) return;
 
-        const redirectUrl = isProduct
+        const redirect_url = isProduct
             ? process.env.ZALO_REDIRECT_URI
             : 'https://zalowebhookdev.taokosao.com/zalo/tokenCallback';
 
-        const url = `https://oauth.zaloapp.com/v4/oa/permission?app_id=${zaloApp.appId}&redirect_uri=${redirectUrl}`;
+        const url = `https://oauth.zaloapp.com/v4/oa/permission?app_id=${zalo_app.app_id}&redirect_uri=${redirect_url}`;
         window.open(url, '_blank');
     };
 
-    const handleChangeCode = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setCode(e.target.value);
+    const handle_Change_Code = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__code(e.target.value);
     };
 
-    const handleSendCode = () => {
-        if (!zaloApp) return;
+    const handle_Send_Code = () => {
+        if (!zalo_app) return;
 
         const code_t = code.trim();
         if (code_t.length === 0) {
-            dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Mã không được để trống !' }));
+            dispatch(set__data__toast_message({ type: messageType_enum.ERROR, message: 'Mã không được để trống !' }));
             return;
         }
 
-        setNoti('');
-        dispatch(set_isLoading(true));
-        genZaloOaToken({ appId: zaloApp.appId, appSecret: zaloApp.appSecret, code: code_t })
+        set__noti('');
+        dispatch(set__is_loading(true));
+        gen_Zalo_Oa_Token({ app_id: zalo_app.app_id, app_secret: zalo_app.app_secret, code: code_t })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setTokenResult(resData.data);
-                    setNoti('Bạn đã gửi mã thành công, hãy đồng ý để hoàn tất cập nhật');
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__token_result(res_data.data);
+                    set__noti('Bạn đã gửi mã thành công, hãy đồng ý để hoàn tất cập nhật');
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.SUCCESS,
                             message: 'Gửi mã thành công !',
                         })
                     );
                 } else {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.ERROR,
                             message: 'Gửi mã thất bại !',
                         })
@@ -116,67 +116,67 @@ const TakeTokenDialog = () => {
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
     };
 
-    const handleAgree = async () => {
-        if (!zaloOa) return;
+    const handle_Agree = async () => {
+        if (!zalo_oa) return;
         if (!account) return;
-        if (!tokenResult) return;
+        if (!token_result) return;
 
         try {
-            dispatch(set_isLoading(true));
-            const res_get = await getZaloOaTokenWithFk({ zaloOaId: zaloOa.id, accountId: account.id });
-            const resData_get = res_get.data;
-            if (resData_get?.isSuccess && resData_get.data) {
-                const res_update = await updateRefreshTokenOfZaloOa({
-                    zaloOaId: zaloOa.id,
-                    accountId: account.id,
-                    refreshToken: tokenResult.refresh_token,
+            dispatch(set__is_loading(true));
+            const res_get = await get_Zalo_Oa_Token_With_Fk({ zalo_oa_id: zalo_oa.id, account_id: account.id });
+            const res_data_get = res_get.data;
+            if (res_data_get?.is_success && res_data_get.data) {
+                const res_update = await update_Refresh_Token_Of_Zalo_Oa({
+                    zalo_oa_id: zalo_oa.id,
+                    account_id: account.id,
+                    refresh_token: token_result.refresh_token,
                 });
-                const resData_update = res_update.data;
-                if (resData_update?.isSuccess && resData_update.data) {
+                const res_data_update = res_update.data;
+                if (res_data_update?.is_success && res_data_update.data) {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.SUCCESS,
-                            message: `Cập nhật token trên zalo oa ( ${zaloOa.oaName} ) thành công !`,
+                            message: `Cập nhật token trên zalo oa ( ${zalo_oa.oa_name} ) thành công !`,
                         })
                     );
                 } else {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.ERROR,
-                            message: `Cập nhật token trên zalo oa ( ${zaloOa.oaName} ) KHÔNG thành công !`,
+                            message: `Cập nhật token trên zalo oa ( ${zalo_oa.oa_name} ) KHÔNG thành công !`,
                         })
                     );
                 }
             } else {
-                const res_create = await createZaloOaToken({
-                    zaloOaId: zaloOa.id,
-                    accountId: account.id,
-                    refreshToken: tokenResult.refresh_token,
+                const res_create = await create_Zalo_Oa_Token({
+                    zalo_oa_id: zalo_oa.id,
+                    account_id: account.id,
+                    refresh_token: token_result.refresh_token,
                 });
-                const resData_create = res_create.data;
-                if (resData_create?.isSuccess && resData_create.data) {
+                const res_data_create = res_create.data;
+                if (res_data_create?.is_success && res_data_create.data) {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.SUCCESS,
-                            message: `Cập nhật token trên zalo oa ( ${zaloOa.oaName} ) thành công !`,
+                            message: `Cập nhật token trên zalo oa ( ${zalo_oa.oa_name} ) thành công !`,
                         })
                     );
                 } else {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.ERROR,
-                            message: `Cập nhật token trên zalo oa ( ${zaloOa.oaName} ) KHÔNG thành công !`,
+                            message: `Cập nhật token trên zalo oa ( ${zalo_oa.oa_name} ) KHÔNG thành công !`,
                         })
                     );
                 }
@@ -184,13 +184,13 @@ const TakeTokenDialog = () => {
         } catch (error) {
             console.error(error);
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Đã có lỗi xảy ra !',
                 })
             );
         } finally {
-            dispatch(set_isLoading(false));
+            dispatch(set__is_loading(false));
         }
     };
 
@@ -198,24 +198,24 @@ const TakeTokenDialog = () => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.closeContainer}>
-                    <IoMdClose onClick={() => handleClose()} size={25} title={CLOSE} />
+                    <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
-                <div className={style.header}>{`Lấy token cho zalo oa ${zaloOa?.oaName}`}</div>
+                <div className={style.header}>{`Lấy token cho zalo oa ${zalo_oa?.oa_name}`}</div>
                 <div className={style.contentContainer}>
                     <div className={style.takeCode}>
-                        <div onClick={() => handleTakeCode()}>Lấy mã</div>
+                        <div onClick={() => handle_Take_Code()}>Lấy mã</div>
                     </div>
                     <div className={style.sendCodeContainer}>
-                        <input value={code} onChange={(e) => handleChangeCode(e)} />
+                        <input value={code} onChange={(e) => handle_Change_Code(e)} />
                         <div>
-                            <div onClick={() => handleSendCode()}>Gửi mã</div>
+                            <div onClick={() => handle_Send_Code()}>Gửi mã</div>
                         </div>
                     </div>
                 </div>
                 <div className={style.notiContainer}>{noti.length > 0 && <div>{noti}</div>}</div>
                 <div className={style.buttonContainer}>
-                    <button onClick={() => handleAgree()}>{AGREE}</button>
-                    <button onClick={() => handleClose()}>{EXIT}</button>
+                    <button onClick={() => handle_Agree()}>{AGREE}</button>
+                    <button onClick={() => handle_Close()}>{EXIT}</button>
                 </div>
             </div>
         </div>

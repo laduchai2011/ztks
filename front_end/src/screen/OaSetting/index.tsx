@@ -15,23 +15,23 @@ import EditZaloOa from './component/EditZaloOa';
 import CreateZaloTrunkDialog from './component/CreateZaloTrunkDialog';
 import { IoChevronBack } from 'react-icons/io5';
 import { route_enum } from '@src/router/type';
-import { setData_toastMessage } from '@src/redux/slice/Order';
+import { set__data__toast_message } from '@src/redux/slice/Order';
 
 const OaSetting = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
-    const myId = sessionStorage.getItem('myId');
+    const my_id = sessionStorage.getItem('myId');
 
     useEffect(() => {
-        if (myId === null) {
+        if (my_id === null) {
             navigate(route_enum.SIGNIN);
         }
-    }, [navigate, myId]);
+    }, [navigate, my_id]);
 
     useEffect(() => {
         return () => {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: undefined,
                     message: '',
                 })
@@ -39,7 +39,7 @@ const OaSetting = () => {
         };
     }, [dispatch]);
 
-    const handleBack = () => {
+    const handle_Back = () => {
         navigate(-1);
     };
 
@@ -48,7 +48,7 @@ const OaSetting = () => {
             <div className={style.main}>
                 <div className={style.header}>
                     <div>{OA_SETTING}</div>
-                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                    <IoChevronBack onClick={() => handle_Back()} size={20} color="white" />
                 </div>
                 <div>
                     <MyOa />
