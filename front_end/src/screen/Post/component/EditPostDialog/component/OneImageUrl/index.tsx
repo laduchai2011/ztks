@@ -3,13 +3,13 @@ import style from './style.module.scss';
 import { IoIosCloseCircle } from 'react-icons/io';
 import { BASE_URL_API } from '@src/const/api/base_url';
 
-const OneImageUrl: FC<{ fileName: string; index: number; handle_Close_Image: (index: number) => void }> = ({
-    fileName,
+const OneImageUrl: FC<{ file_name: string; index: number; handle_Close_Image: (index: number) => void }> = ({
+    file_name,
     index,
     handle_Close_Image,
 }) => {
     const handle_Src_Image = () => {
-        const url = `${BASE_URL_API}/service_image_v1/query/image/${fileName}`;
+        const url = `${BASE_URL_API}/service__image_v1/query/image/${file_name}`;
         return url;
     };
 

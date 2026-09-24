@@ -2,47 +2,47 @@ import { memo, useEffect } from 'react';
 import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
-import { useLazyGetPostsQuery } from '@src/redux/query/post_RTK';
-import { RegisterPostField, PostField } from '@src/dataStruct/post';
-import { set_isLoading, setData_toastMessage, set_postList } from '@src/redux/slice/Post';
+import { useLazy_get_Posts_Query } from '@src/redux/query/post_RTK';
+import { Register_Post_Field, Post_Field } from '@src/data_struct/post';
+import { set__is_loading, set__data__toast_message, set__post_list } from '@src/redux/slice/Post';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import OnePost from './component/OnePost';
 
 const PostList = () => {
     const dispatch = useDispatch<AppDispatch>();
 
-    const postList: PostField[] = useSelector((state: RootState) => state.PostSlice.postList);
-    const selectedRegisterPost: RegisterPostField | undefined = useSelector(
-        (state: RootState) => state.PostSlice.selectedRegisterPost
+    const post_list: Post_Field[] = useSelector((state: RootState) => state.Post_Slice.post_list);
+    const selected_register_post: Register_Post_Field | undefined = useSelector(
+        (state: RootState) => state.Post_Slice.selected_register_post
     );
 
-    const [getPosts] = useLazyGetPostsQuery();
+    const [get_Posts] = useLazy_get_Posts_Query();
 
     useEffect(() => {
-        if (!selectedRegisterPost) return;
-        dispatch(set_isLoading(true));
-        getPosts({ page: 1, size: 10, registerPostId: selectedRegisterPost.id })
+        if (!selected_register_post) return;
+        dispatch(set__is_loading(true));
+        get_Posts({ page: 1, size: 10, register_post_id: selected_register_post.id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    dispatch(set_postList(resData.data.items));
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    dispatch(set__post_list(res_data.data.items));
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
-    }, [dispatch, getPosts, selectedRegisterPost]);
+    }, [dispatch, get_Posts, selected_register_post]);
 
-    const list_post = postList.map((item) => {
+    const list_post = post_list.map((item) => {
         return <OnePost data={item} key={item.id} />;
     });
 

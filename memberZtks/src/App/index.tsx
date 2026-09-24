@@ -45,7 +45,7 @@ const App = () => {
         if (myId === null) {
             const fetchCheckSignin = async () => {
                 try {
-                    const response = await axiosInstance.get<MyResponse<number>>(`/service_account/query/isSignin`);
+                    const response = await axiosInstance.get<MyResponse<number>>(`/service__account/query/isSignin`);
                     const resData = response.data;
                     if (resData.isSuccess) {
                         if (resData.data) {
@@ -67,7 +67,7 @@ const App = () => {
         const getAccountInformation = async () => {
             try {
                 const response = await axiosInstance.get<MyResponse<AccountInformationField>>(
-                    `/service_account/query/getAccountInformation`
+                    `/service__account/query/getAccountInformation`
                 );
                 const resData = response.data;
                 // console.log('getAccountInformation', resData);
@@ -90,7 +90,7 @@ const App = () => {
     useEffect(() => {
         const getAccount = async () => {
             try {
-                const response = await axiosInstance.get<MyResponse<AccountField>>(`/service_account/query/getMe`);
+                const response = await axiosInstance.get<MyResponse<AccountField>>(`/service__account/query/getMe`);
                 const resData = response.data;
                 if (resData.isSuccess) {
                     if (resData.data) {

@@ -4,90 +4,90 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { MdDeleteOutline, MdOutlineUpgrade } from 'react-icons/md';
 import { CiEdit } from 'react-icons/ci';
-import { RegisterPostField, RegisterPostTypeEnum } from '@src/dataStruct/post';
+import { Register_Post_Field, Register_Post_Type_Enum } from '@src/data_struct/post';
 import { detailTime } from '@src/utility/time';
 import {
-    setData_toastMessage,
-    setIsShow_editRegisterPostDialog,
-    setRegisterPost_editRegisterPostDialog,
-    setNewRegisterPost_editRegisterPostDialog,
-    setIsShow_deleteRegisterPostDialog,
-    setRegisterPost_deleteRegisterPostDialog,
-    setNewRegisterPost_deleteRegisterPostDialog,
+    set__data__toast_message,
+    set__is_show__edit_register_post_dialog,
+    set__register_post__edit_register_post_dialog,
+    set__new_register_post__edit_register_post_dialog,
+    set__is_show__delete_register_post_dialog,
+    set__register_post__delete_register_post_dialog,
+    set__new_register_post__delete_register_post_dialog,
 } from '@src/redux/slice/Register_Post';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
-const OneRegisterPost: FC<{ data: RegisterPostField }> = ({ data }) => {
+const OneRegisterPost: FC<{ data: Register_Post_Field }> = ({ data }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const newRegisterPostE: RegisterPostField | undefined = useSelector(
-        (state: RootState) => state.RegisterPostSlice.editRegisterPostDialog.newRegisterPost
+    const new_register_post_e: Register_Post_Field | undefined = useSelector(
+        (state: RootState) => state.Register_Post_Slice.edit_register_post_dialog.new_register_post
     );
-    const newRegisterPostD: RegisterPostField | undefined = useSelector(
-        (state: RootState) => state.RegisterPostSlice.deleteRegisterPostDialog.newRegisterPost
+    const new_register_post_d: Register_Post_Field | undefined = useSelector(
+        (state: RootState) => state.Register_Post_Slice.delete_register_post_dialog.new_register_post
     );
 
-    const [registerPost, setRegisterPost] = useState<RegisterPostField>(data);
+    const [register_post, set__register_post] = useState<Register_Post_Field>(data);
 
     useEffect(() => {
-        if (!newRegisterPostE) return;
-        if (newRegisterPostE.id === registerPost.id) {
-            setRegisterPost(newRegisterPostE);
+        if (!new_register_post_e) return;
+        if (new_register_post_e.id === register_post.id) {
+            set__register_post(new_register_post_e);
         }
-        dispatch(setNewRegisterPost_editRegisterPostDialog(undefined));
-    }, [dispatch, newRegisterPostE, registerPost]);
+        dispatch(set__new_register_post__edit_register_post_dialog(undefined));
+    }, [dispatch, new_register_post_e, register_post]);
 
     useEffect(() => {
-        if (!newRegisterPostD) return;
-        if (newRegisterPostD.id === registerPost.id) {
-            setRegisterPost(newRegisterPostD);
+        if (!new_register_post_d) return;
+        if (new_register_post_d.id === register_post.id) {
+            set__register_post(new_register_post_d);
         }
-        dispatch(setNewRegisterPost_deleteRegisterPostDialog(undefined));
-    }, [dispatch, newRegisterPostD, registerPost]);
+        dispatch(set__new_register_post__delete_register_post_dialog(undefined));
+    }, [dispatch, new_register_post_d, register_post]);
 
-    const handleUpgrade = () => {
+    const handle_Upgrade = () => {
         dispatch(
-            setData_toastMessage({
+            set__data__toast_message({
                 type: messageType_enum.NORMAL,
                 message: 'Tính năng sắp ra mắt !',
             })
         );
     };
 
-    const handleOpenEdit = () => {
-        dispatch(setIsShow_editRegisterPostDialog(true));
-        dispatch(setRegisterPost_editRegisterPostDialog(registerPost));
+    const handle_Open_Edit = () => {
+        dispatch(set__is_show__edit_register_post_dialog(true));
+        dispatch(set__register_post__edit_register_post_dialog(register_post));
     };
 
-    const handleOpenDelete = () => {
-        dispatch(setIsShow_deleteRegisterPostDialog(true));
-        dispatch(setRegisterPost_deleteRegisterPostDialog(registerPost));
+    const handle_Open_Delete = () => {
+        dispatch(set__is_show__delete_register_post_dialog(true));
+        dispatch(set__register_post__delete_register_post_dialog(register_post));
     };
 
     return (
         <div className={style.parent}>
-            <div className={style.name}>{registerPost.name}</div>
+            <div className={style.name}>{register_post.name}</div>
             <div className={style.infor}>
                 <div className={style.type}>
-                    {registerPost.type === RegisterPostTypeEnum.FREE && <div className={style.free}>Miễn phí</div>}
-                    {registerPost.type === RegisterPostTypeEnum.UPGRADE && (
+                    {register_post.type === Register_Post_Type_Enum.FREE && <div className={style.free}>Miễn phí</div>}
+                    {register_post.type === Register_Post_Type_Enum.UPGRADE && (
                         <div className={style.upgrade}>Nâng cấp</div>
                     )}
                 </div>
                 <div className={style.time}>
-                    {registerPost.type === RegisterPostTypeEnum.FREE && <div>Không giới hạn</div>}
-                    {registerPost.type === RegisterPostTypeEnum.UPGRADE && (
-                        <div>{detailTime(registerPost.expiryTime ?? '')}</div>
+                    {register_post.type === Register_Post_Type_Enum.FREE && <div>Không giới hạn</div>}
+                    {register_post.type === Register_Post_Type_Enum.UPGRADE && (
+                        <div>{detailTime(register_post.expiry_time ?? '')}</div>
                     )}
                 </div>
             </div>
             <div className={style.status}>
-                {registerPost.isDelete && <div className={style.ed}>Đã xóa</div>}
-                {!registerPost.isDelete && <div className={style.not}>Hoạt động</div>}
+                {register_post.is_delete && <div className={style.ed}>Đã xóa</div>}
+                {!register_post.is_delete && <div className={style.not}>Hoạt động</div>}
             </div>
             <div className={style.icons}>
-                <MdOutlineUpgrade onClick={() => handleUpgrade()} size={18} />
-                <CiEdit onClick={() => handleOpenEdit()} size={18} color="green" />
-                <MdDeleteOutline onClick={() => handleOpenDelete()} size={18} color="red" />
+                <MdOutlineUpgrade onClick={() => handle_Upgrade()} size={18} />
+                <CiEdit onClick={() => handle_Open_Edit()} size={18} color="green" />
+                <MdDeleteOutline onClick={() => handle_Open_Delete()} size={18} color="red" />
             </div>
         </div>
     );

@@ -4,55 +4,60 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { CiEdit } from 'react-icons/ci';
-import { PostField, PostTypeEnum } from '@src/dataStruct/post';
-import { BASE_URL_API } from '@src/const/api/base_url';
-import { setIsShow_editPostDialog, setPost_editPostDialog, setNewPost_editPostDialog } from '@src/redux/slice/Post';
+import { Post_Field, Post_Type_Enum } from '@src/data_struct/post';
+import {
+    set__is_show__edit_post_dialog,
+    set__post__edit_post_dialog,
+    set__new_post__edit_post_dialog,
+} from '@src/redux/slice/Post';
 import { handleSrcImage } from '@src/utility/string';
 
-const OnePost: FC<{ data: PostField }> = ({ data }) => {
+const OnePost: FC<{ data: Post_Field }> = ({ data }) => {
     const dispatch = useDispatch<AppDispatch>();
 
-    const newPost: PostField | undefined = useSelector((state: RootState) => state.PostSlice.editPostDialog.newPost);
+    const new_post: Post_Field | undefined = useSelector(
+        (state: RootState) => state.Post_Slice.edit_post_dialog.new_post
+    );
 
-    const [post1, setPost1] = useState<PostField>(data);
-    const [imageIndex, setImageIndex] = useState<number>(0);
-    const [images, setImages] = useState<string[]>([]);
+    const [post1, set__post1] = useState<Post_Field>(data);
+    const [image_index, set__image_index] = useState<number>(0);
+    const [images, set__images] = useState<string[]>([]);
 
     useEffect(() => {
-        const imageArr = JSON.parse(post1.images) as string[];
-        setImages(imageArr);
+        const image_arr = JSON.parse(post1.images) as string[];
+        set__images(image_arr);
     }, [post1]);
 
     useEffect(() => {
-        if (!newPost) return;
+        if (!new_post) return;
 
-        if (newPost.id === post1.id) {
-            setPost1(newPost);
-            dispatch(setNewPost_editPostDialog(undefined));
+        if (new_post.id === post1.id) {
+            set__post1(new_post);
+            dispatch(set__new_post__edit_post_dialog(undefined));
         }
-    }, [dispatch, newPost, post1]);
+    }, [dispatch, new_post, post1]);
 
-    const handleBackImage = () => {
-        if (imageIndex > 0) {
-            setImageIndex((prev) => prev - 1);
-        }
-    };
-
-    const handleNextImage = () => {
-        if (imageIndex < images.length - 1) {
-            setImageIndex((prev) => prev + 1);
+    const handle_Back_Image = () => {
+        if (image_index > 0) {
+            set__image_index((prev) => prev - 1);
         }
     };
 
-    const handleTypeToDisplay = () => {
+    const handle_Next_Image = () => {
+        if (image_index < images.length - 1) {
+            set__image_index((prev) => prev + 1);
+        }
+    };
+
+    const handle_Type_To_Display = () => {
         let text: string = '';
 
         switch (post1.type) {
-            case PostTypeEnum.FREE: {
+            case Post_Type_Enum.FREE: {
                 text = 'Miễn phí';
                 break;
             }
-            case PostTypeEnum.UPGRADE: {
+            case Post_Type_Enum.UPGRADE: {
                 text = 'Nâng cấp';
                 break;
             }
@@ -65,16 +70,16 @@ const OnePost: FC<{ data: PostField }> = ({ data }) => {
         return text;
     };
 
-    const handleOpenEdit = () => {
-        dispatch(setIsShow_editPostDialog(true));
-        dispatch(setPost_editPostDialog(post1));
+    const handle_Open_Edit = () => {
+        dispatch(set__is_show__edit_post_dialog(true));
+        dispatch(set__post__edit_post_dialog(post1));
     };
 
     return (
         <div className={style.parent}>
             <div className={style.header}>
                 <div>{post1.name}</div>
-                <div>{handleTypeToDisplay()}</div>
+                <div>{handle_Type_To_Display()}</div>
                 <div>{post1.index}</div>
             </div>
             <div className={style.title}>
@@ -85,16 +90,16 @@ const OnePost: FC<{ data: PostField }> = ({ data }) => {
             </div>
             {images.length > 0 && (
                 <div className={style.images}>
-                    <img src={handleSrcImage(images[imageIndex])} alt="" />
+                    <img src={handleSrcImage(images[image_index])} alt="" />
                     <div>
-                        <FiChevronLeft onClick={() => handleBackImage()} />
-                        <div>{`${imageIndex + 1} / ${images.length}`}</div>
-                        <FiChevronRight onClick={() => handleNextImage()} />
+                        <FiChevronLeft onClick={() => handle_Back_Image()} />
+                        <div>{`${image_index + 1} / ${images.length}`}</div>
+                        <FiChevronRight onClick={() => handle_Next_Image()} />
                     </div>
                 </div>
             )}
             <div className={style.icons}>
-                <CiEdit onClick={() => handleOpenEdit()} size={20} color="green" />
+                <CiEdit onClick={() => handle_Open_Edit()} size={20} color="green" />
             </div>
         </div>
     );

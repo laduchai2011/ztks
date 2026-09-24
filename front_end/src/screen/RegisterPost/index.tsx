@@ -6,7 +6,7 @@ import { AppDispatch } from '@src/redux';
 import { REGISTER_POST } from '@src/const/text';
 import MyLoading from './component/MyLoading';
 import MyToastMessage from './component/MyToastMessage';
-import { setData_toastMessage } from '@src/redux/slice/Post';
+import { set__data__toast_message } from '@src/redux/slice/Post';
 import { route_enum } from '@src/router/type';
 import CreateRegisterPost from './component/CreateRegisterPost';
 import Filter from './component/Filter';
@@ -19,17 +19,17 @@ const RegisterPost = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 
-    const myId = sessionStorage.getItem('myId');
+    const my_id = sessionStorage.getItem('myId');
 
     useEffect(() => {
-        if (myId === null) {
+        if (my_id === null) {
             navigate(route_enum.SIGNIN);
         }
-    }, [navigate, myId]);
+    }, [navigate, my_id]);
 
     useEffect(() => {
         return () => {
-            dispatch(setData_toastMessage({ type: undefined, message: '' }));
+            dispatch(set__data__toast_message({ type: undefined, message: '' }));
         };
     }, [dispatch]);
 

@@ -5,42 +5,45 @@ import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE, AGREE, EXIT, EDIT_REGISTER_POST } from '@src/const/text';
 import {
-    setData_toastMessage,
-    set_isLoading,
-    setIsShow_editRegisterPostDialog,
-    setNewRegisterPost_editRegisterPostDialog,
+    set__data__toast_message,
+    set__is_loading,
+    set__is_show__edit_register_post_dialog,
+    set__new_register_post__edit_register_post_dialog,
 } from '@src/redux/slice/Register_Post';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { AccountInformationField } from '@src/dataStruct/account';
-import { ZaloAppField, ZaloOaField } from '@src/dataStruct/zalo';
-import { RegisterPostField } from '@src/dataStruct/post';
-import { useEditRegisterPostMutation } from '@src/redux/query/post_RTK';
-import { useLazyGetZaloOaListWith2FkQuery } from '@src/redux/query/zalo_RTK';
+import { Account_Information_Field } from '@src/data_struct/account';
+import { Zalo_App_Field, Zalo_Oa_Field } from '@src/data_struct/zalo';
+import { Register_Post_Field } from '@src/data_struct/post';
+import { use_edit_Register_Post_Mutation } from '@src/redux/query/post_RTK';
+import { useLazy_get_Zalo_Oa_List_With_2_Fk_Query } from '@src/redux/query/zalo_RTK';
 
 const EditRegisterPostDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
-    const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
-    const isShow: boolean = useSelector((state: RootState) => state.RegisterPostSlice.editRegisterPostDialog.isShow);
-    const registerPost: RegisterPostField | undefined = useSelector(
-        (state: RootState) => state.RegisterPostSlice.editRegisterPostDialog.registerPost
+
+    const zalo_app: Zalo_App_Field | undefined = useSelector((state: RootState) => state.App_Slice.zalo_app);
+    const is_show: boolean = useSelector(
+        (state: RootState) => state.Register_Post_Slice.edit_register_post_dialog.is_show
     );
-    const accountInformation: AccountInformationField | undefined = useSelector(
-        (state: RootState) => state.AppSlice.accountInformation
+    const register_post: Register_Post_Field | undefined = useSelector(
+        (state: RootState) => state.Register_Post_Slice.edit_register_post_dialog.register_post
+    );
+    const account_information: Account_Information_Field | undefined = useSelector(
+        (state: RootState) => state.App_Slice.account_information
     );
 
-    const [name, setName] = useState<string>('');
-    const [selectedZaloOa, setSelectedZaloOa] = useState<ZaloOaField | undefined>(undefined);
-    const [zaloOaList, setZaloOaList] = useState<ZaloOaField[]>([]);
+    const [name, set__name] = useState<string>('');
+    const [selected_zalo_oa, set__selected_zalo_oa] = useState<Zalo_Oa_Field | undefined>(undefined);
+    const [zalo_oa_list, set__zalo_oa_list] = useState<Zalo_Oa_Field[]>([]);
 
-    const [getZaloOaListWith2Fk] = useLazyGetZaloOaListWith2FkQuery();
-    const [editRegisterPost] = useEditRegisterPostMutation();
+    const [get_Zalo_Oa_List_With_2_Fk] = useLazy_get_Zalo_Oa_List_With_2_Fk_Query();
+    const [edit_Register_Post] = use_edit_Register_Post_Mutation();
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow) {
+        if (is_show) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -54,38 +57,38 @@ const EditRegisterPostDialog = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow]);
+    }, [is_show]);
 
     useEffect(() => {
-        if (!registerPost) return;
+        if (!register_post) return;
 
-        const zaloOaId = registerPost.zaloOaId;
+        const zalo_oa_id = register_post.zalo_oa_id;
 
-        for (let i: number = 0; i < zaloOaList.length; i++) {
-            if (zaloOaId === zaloOaList[i].id) {
-                setSelectedZaloOa(zaloOaList[i]);
+        for (let i: number = 0; i < zalo_oa_list.length; i++) {
+            if (zalo_oa_id === zalo_oa_list[i].id) {
+                set__selected_zalo_oa(zalo_oa_list[i]);
                 break;
             }
         }
 
-        setName(registerPost.name);
-    }, [registerPost, zaloOaList]);
+        set__name(register_post.name);
+    }, [register_post, zalo_oa_list]);
 
-    const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(e.target.value);
+    const handle_Name = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__name(e.target.value);
     };
 
-    const handleClose = () => {
-        dispatch(setIsShow_editRegisterPostDialog(false));
+    const handle_Close = () => {
+        dispatch(set__is_show__edit_register_post_dialog(false));
     };
 
-    const handleAgree = () => {
-        if (!registerPost) return;
+    const handle_Agree = () => {
+        if (!register_post) return;
 
         const name_t = name.trim();
         if (name_t.length === 0) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Tên không được để trống !',
                 })
@@ -93,9 +96,9 @@ const EditRegisterPostDialog = () => {
             return;
         }
 
-        if (!selectedZaloOa) {
+        if (!selected_zalo_oa) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Vui lòng chọn oa !',
                 })
@@ -103,27 +106,26 @@ const EditRegisterPostDialog = () => {
             return;
         }
 
-        dispatch(set_isLoading(true));
-        editRegisterPost({
-            id: registerPost.id,
+        dispatch(set__is_loading(true));
+        edit_Register_Post({
+            id: register_post.id,
             name: name_t,
-            zaloOaId: selectedZaloOa.id,
-            accountId: -1,
+            zalo_oa_id: selected_zalo_oa.id,
+            account_id: '',
         })
             .then((res) => {
-                const resData = res.data;
-                console.log('createRegisterPost', resData);
-                if (resData?.isSuccess && resData.data) {
-                    dispatch(setNewRegisterPost_editRegisterPostDialog(resData.data));
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    dispatch(set__new_register_post__edit_register_post_dialog(res_data.data));
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.SUCCESS,
                             message: 'Chỉnh sửa thành công !',
                         })
                     );
                 } else {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.ERROR,
                             message: 'Chỉnh sửa không thành công !',
                         })
@@ -133,57 +135,57 @@ const EditRegisterPostDialog = () => {
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
     };
 
-    const handleSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const id = Number(e.target.value);
+    const handle_Selection = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const id = e.target.value.trim();
 
-        const selected = zaloOaList.find((item) => item.id === id);
-        setSelectedZaloOa(selected);
+        const selected = zalo_oa_list.find((item) => item.id === id);
+        set__selected_zalo_oa(selected);
     };
 
     useEffect(() => {
-        if (!accountInformation || !zaloApp) return;
-        dispatch(set_isLoading(true));
-        getZaloOaListWith2Fk({
+        if (!account_information || !zalo_app) return;
+        dispatch(set__is_loading(true));
+        get_Zalo_Oa_List_With_2_Fk({
             page: 1,
             size: 50,
-            zaloAppId: zaloApp.id,
-            accountId: accountInformation.addedById || -1,
+            zalo_app_id: zalo_app.id,
+            account_id: account_information.added_by_id || '',
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setZaloOaList(resData.data.items);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__zalo_oa_list(res_data.data.items);
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
-    }, [dispatch, accountInformation, getZaloOaListWith2Fk, zaloApp]);
+    }, [dispatch, account_information, get_Zalo_Oa_List_With_2_Fk, zalo_app]);
 
-    const list_oa = zaloOaList.map((item) => {
+    const list_oa = zalo_oa_list.map((item) => {
         return (
             <option value={item.id} key={item.id}>
-                {item.oaName}
+                {item.oa_name}
             </option>
         );
     });
@@ -192,18 +194,18 @@ const EditRegisterPostDialog = () => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.closeContainer}>
-                    <IoMdClose onClick={() => handleClose()} size={25} title={CLOSE} />
+                    <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
                 <div className={style.contentContainer}>
                     <div className={style.content}>
                         <div>{EDIT_REGISTER_POST}</div>
                         <div>
-                            <input value={name} onChange={(e) => handleName(e)} placeholder="Đặt tên dễ nhớ !" />
+                            <input value={name} onChange={(e) => handle_Name(e)} placeholder="Đặt tên dễ nhớ !" />
                         </div>
                         <div>
                             <div>
                                 <div>Chọn OA</div>
-                                <select value={selectedZaloOa?.id ?? ''} onChange={(e) => handleSelection(e)}>
+                                <select value={selected_zalo_oa?.id ?? ''} onChange={(e) => handle_Selection(e)}>
                                     <option value="">-- Rỗng --</option>
                                     {list_oa}
                                 </select>
@@ -212,8 +214,8 @@ const EditRegisterPostDialog = () => {
                     </div>
                 </div>
                 <div className={style.buttonContainer}>
-                    <button onClick={() => handleAgree()}>{AGREE}</button>
-                    <button onClick={() => handleClose()}>{EXIT}</button>
+                    <button onClick={() => handle_Agree()}>{AGREE}</button>
+                    <button onClick={() => handle_Close()}>{EXIT}</button>
                 </div>
             </div>
         </div>

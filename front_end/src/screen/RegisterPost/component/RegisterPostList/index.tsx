@@ -2,100 +2,104 @@ import { memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
-import { setData_toastMessage, set_isLoading, set_newRegisterPostOfCreate } from '@src/redux/slice/Register_Post';
+import {
+    set__data__toast_message,
+    set__is_loading,
+    set__new_register_post_of_create,
+} from '@src/redux/slice/Register_Post';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { useLazyGetRegisterPostsQuery } from '@src/redux/query/post_RTK';
-import { RegisterPostField } from '@src/dataStruct/post';
-import { GetRegisterPostsBodyField } from '@src/dataStruct/post/body';
+import { useLazy_get_Register_Posts_Query } from '@src/redux/query/post_RTK';
+import { Register_Post_Field } from '@src/data_struct/post';
+import { Get_Register_Posts_Body_Field } from '@src/data_struct/post/body';
 import OneRegisterPost from './component/OneRegisterPost';
 import { SEE_MORE } from '@src/const/text';
 
 const RegisterPostList = () => {
     const dispatch = useDispatch<AppDispatch>();
 
-    const getRegisterPostsBody: GetRegisterPostsBodyField | undefined = useSelector(
-        (state: RootState) => state.RegisterPostSlice.getRegisterPostsBody
+    const get_register_posts_body: Get_Register_Posts_Body_Field | undefined = useSelector(
+        (state: RootState) => state.Register_Post_Slice.get_register_posts_body
     );
-    const newRegisterPostOfCreate: RegisterPostField | undefined = useSelector(
-        (state: RootState) => state.RegisterPostSlice.newRegisterPostOfCreate
+    const new_register_post_of_create: Register_Post_Field | undefined = useSelector(
+        (state: RootState) => state.Register_Post_Slice.new_register_post_of_create
     );
 
-    const [registerPosts, setRegisterPosts] = useState<RegisterPostField[]>([]);
-    const [hasMore, setHasMore] = useState<boolean>(false);
-    const [filter, setFilter] = useState<GetRegisterPostsBodyField | undefined>(undefined);
+    const [register_posts, set__register_posts] = useState<Register_Post_Field[]>([]);
+    const [has_more, set__has_more] = useState<boolean>(false);
+    const [filter, set__filter] = useState<Get_Register_Posts_Body_Field | undefined>(undefined);
 
-    const [getRegisterPosts] = useLazyGetRegisterPostsQuery();
+    const [get_Register_Posts] = useLazy_get_Register_Posts_Query();
 
     useEffect(() => {
-        if (!getRegisterPostsBody) return;
-        setFilter(getRegisterPostsBody);
-        dispatch(set_isLoading(true));
-        getRegisterPosts(getRegisterPostsBody)
+        if (!get_register_posts_body) return;
+        set__filter(get_register_posts_body);
+        dispatch(set__is_loading(true));
+        get_Register_Posts(get_register_posts_body)
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setRegisterPosts(resData.data.items);
-                    setHasMore(resData.data.items.length === getRegisterPostsBody.size);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__register_posts(res_data.data.items);
+                    set__has_more(res_data.data.items.length === get_register_posts_body.size);
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
-    }, [getRegisterPosts, getRegisterPostsBody, dispatch]);
+    }, [get_Register_Posts, get_register_posts_body, dispatch]);
 
     useEffect(() => {
-        if (!newRegisterPostOfCreate) return;
-        setRegisterPosts((prev) => [newRegisterPostOfCreate, ...prev]);
-        dispatch(set_newRegisterPostOfCreate(undefined));
+        if (!new_register_post_of_create) return;
+        set__register_posts((prev) => [new_register_post_of_create, ...prev]);
+        dispatch(set__new_register_post_of_create(undefined));
         setTimeout(() => {
             window.location.reload();
         }, 500);
-    }, [dispatch, newRegisterPostOfCreate]);
+    }, [dispatch, new_register_post_of_create]);
 
-    const handleSeeMore = () => {
+    const handle_See_More = () => {
         if (!filter) return;
         const filter_cp = { ...filter };
         filter_cp.page = filter_cp.page + 1;
-        getRegisterPosts(filter_cp)
+        get_Register_Posts(filter_cp)
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setRegisterPosts((prev) => [...prev, ...(resData.data?.items || [])]);
-                    setHasMore(resData.data.items.length === filter_cp.size);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__register_posts((prev) => [...prev, ...(res_data.data?.items || [])]);
+                    set__has_more(res_data.data.items.length === filter_cp.size);
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
-                setFilter(filter_cp);
+                dispatch(set__is_loading(false));
+                set__filter(filter_cp);
             });
     };
 
-    const list = registerPosts.map((item) => {
+    const list = register_posts.map((item) => {
         return <OneRegisterPost data={item} key={item.id} />;
     });
 
     return (
         <div className={style.parent}>
             <div>{list}</div>
-            <div className={style.seeMore}>{hasMore && <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>}</div>
+            <div className={style.seeMore}>{has_more && <div onClick={() => handle_See_More()}>{SEE_MORE}</div>}</div>
         </div>
     );
 };

@@ -23,18 +23,24 @@ import Infor from './component/Infor';
 import EditInforDialog from './component/EditInforDialog';
 import { IoChevronBack } from 'react-icons/io5';
 import { select_enum, route_enum } from '@src/router/type';
-import { AccountInformationField, accountType_enum } from '@src/dataStruct/account';
-import { setData_toastMessage } from '@src/redux/slice/Profile';
+import { Account_Information_Field, account_type_enum } from '@src/data_struct/account';
+import { set__data__toast_message } from '@src/redux/slice/Profile';
 
 const Profile = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
-    const myId = sessionStorage.getItem('myId');
+    const my_id = sessionStorage.getItem('myId');
+
+    useEffect(() => {
+        if (my_id === null) {
+            navigate(route_enum.SIGNIN);
+        }
+    }, [navigate, my_id]);
 
     useEffect(() => {
         return () => {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: undefined,
                     message: '',
                 })
@@ -42,63 +48,57 @@ const Profile = () => {
         };
     }, [dispatch]);
 
-    const accountInformation: AccountInformationField | undefined = useSelector(
-        (state: RootState) => state.AppSlice.accountInformation
+    const account_information: Account_Information_Field | undefined = useSelector(
+        (state: RootState) => state.App_Slice.account_information
     );
 
-    const isAdmin = accountInformation?.accountType === accountType_enum.ADMIN;
+    const is_admin = account_information?.account_type === account_type_enum.ADMIN;
 
-    useEffect(() => {
-        if (myId === null) {
-            navigate(route_enum.SIGNIN);
-        }
-    }, [navigate, myId]);
-
-    const goToOa = () => {
+    const go_To_Oa = () => {
         navigate(route_enum.OA);
     };
 
-    const goToMember = () => {
+    const go_To_Member = () => {
         navigate(route_enum.MEMBER);
     };
 
-    const goToManageAgents = () => {
+    const go_To_Manage_Agents = () => {
         navigate(route_enum.MANAGE_AGENT);
     };
 
-    const goToAccountReceiveMessage = () => {
+    const go_To_Account_Receive_Message = () => {
         navigate(route_enum.ACCOUNT_RECEIVE_MESSAGE);
     };
 
-    const goToWallet = () => {
+    const go_To_Wallet = () => {
         navigate(route_enum.WALLET);
     };
 
-    const goToBank = () => {
+    const go_To_Bank = () => {
         navigate(route_enum.BANK);
     };
 
-    const goToPost = () => {
+    const go_To_Post = () => {
         navigate(route_enum.POST);
     };
 
-    const goToLeave = () => {
+    const go_To_Leave = () => {
         navigate(route_enum.LEAVE);
     };
 
-    const goToDashboard = () => {
+    const go_To_Dashboard = () => {
         navigate(route_enum.DASH_BOARD);
     };
 
-    const goToCheckInOut = () => {
+    const go_To_Check_In_Out = () => {
         navigate(route_enum.CHECK_IN_OUT);
     };
 
-    const goToSignout = () => {
+    const go_To_Signout = () => {
         navigate(route_enum.SIGNOUT);
     };
 
-    const handleBack = () => {
+    const handle_Back = () => {
         navigate(-1);
     };
 
@@ -107,70 +107,70 @@ const Profile = () => {
             <div className={style.main}>
                 <div className={style.header}>
                     <div>{PROFILE}</div>
-                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                    <IoChevronBack onClick={() => handle_Back()} size={20} color="white" />
                 </div>
                 <div className={style.list}>
                     <Infor />
                     <div className={style.options}>
                         <div className={style.optionGroup}>
                             <div className={style.optionGroupName}>Zalo</div>
-                            <div className={style.option} onClick={() => goToOa()}>
+                            <div className={style.option} onClick={() => go_To_Oa()}>
                                 {OA}
                             </div>
                         </div>
-                        {isAdmin && (
+                        {is_admin && (
                             <div className={style.optionGroup}>
                                 <div className={style.optionGroupName}>Quản lý thành viên</div>
-                                <div className={style.option} onClick={() => goToMember()}>
+                                <div className={style.option} onClick={() => go_To_Member()}>
                                     {MEMBER}
                                 </div>
 
-                                <div className={style.option} onClick={() => goToManageAgents()}>
+                                <div className={style.option} onClick={() => go_To_Manage_Agents()}>
                                     {MANAGE_AGENT}
                                 </div>
 
-                                <div className={style.option} onClick={() => goToAccountReceiveMessage()}>
+                                <div className={style.option} onClick={() => go_To_Account_Receive_Message()}>
                                     {ACCOUNT_RECEIVE_MESSAGE}
                                 </div>
                             </div>
                         )}
                         <div className={style.optionGroup}>
                             <div className={style.optionGroupName}>Tiền</div>
-                            <div className={style.option} onClick={() => goToWallet()}>
+                            <div className={style.option} onClick={() => go_To_Wallet()}>
                                 {WALLET}
                             </div>
-                            <div className={style.option} onClick={() => goToBank()}>
+                            <div className={style.option} onClick={() => go_To_Bank()}>
                                 {BANK}
                             </div>
                         </div>
-                        {isAdmin && (
+                        {is_admin && (
                             <div className={style.optionGroup}>
                                 <div className={style.optionGroupName}>Đăng tin</div>
-                                <div className={style.option} onClick={() => goToPost()}>
+                                <div className={style.option} onClick={() => go_To_Post()}>
                                     {POST}
                                 </div>
                             </div>
                         )}
-                        {!isAdmin && (
+                        {!is_admin && (
                             <div className={style.optionGroup}>
                                 <div className={style.optionGroupName}>{LEAVE}</div>
-                                <div className={style.option} onClick={() => goToLeave()}>
+                                <div className={style.option} onClick={() => go_To_Leave()}>
                                     {LEAVE}
                                 </div>
                             </div>
                         )}
                         <div className={style.optionGroup}>
                             <div className={style.optionGroupName}>Thống kê</div>
-                            <div className={style.option} onClick={() => goToDashboard()}>
+                            <div className={style.option} onClick={() => go_To_Dashboard()}>
                                 Dash board
                             </div>
                         </div>
                         <div className={style.optionGroup}>
                             <div className={style.optionGroupName}>Mở rộng</div>
-                            <div className={style.option} onClick={() => goToCheckInOut()}>
+                            <div className={style.option} onClick={() => go_To_Check_In_Out()}>
                                 {CHECK_IN_OUT}
                             </div>
-                            <div className={style.option} onClick={() => goToSignout()}>
+                            <div className={style.option} onClick={() => go_To_Signout()}>
                                 {SIGNOUT}
                             </div>
                         </div>

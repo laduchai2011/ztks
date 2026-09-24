@@ -2,56 +2,56 @@ import { memo, useState } from 'react';
 import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
-import { set_getRegisterPostsBody } from '@src/redux/slice/Register_Post';
-import { AccountField } from '@src/dataStruct/account';
+import { set__get_register_posts_body } from '@src/redux/slice/Register_Post';
+import { Account_Field } from '@src/data_struct/account';
 import { SEARCH } from '@src/const/text';
 
 const Filter = () => {
     const dispatch = useDispatch<AppDispatch>();
 
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
 
-    const [isDel, setIsDel] = useState<boolean>(false);
-    const [isNDel, setIsNDel] = useState<boolean>(false);
+    const [is_del, set__is_del] = useState<boolean>(false);
+    const [is_n_del, set__is_n_del] = useState<boolean>(false);
 
-    const hadleDel = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setIsDel(e.target.checked);
+    const hadle_Del = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__is_del(e.target.checked);
     };
 
-    const hadleNDel = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setIsNDel(e.target.checked);
+    const hadle_N_Del = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__is_n_del(e.target.checked);
     };
 
-    const handleSearch = () => {
-        let isDelete: boolean | undefined = undefined;
+    const handle_Search = () => {
+        let is_delete: boolean | undefined = undefined;
 
         if (!account) return;
 
-        if ((isDel && isNDel) || (!isDel && !isNDel)) {
-            isDelete = undefined;
-        } else if (isDel) {
-            isDelete = true;
-        } else if (isNDel) {
-            isDelete = false;
+        if ((is_del && is_n_del) || (!is_del && !is_n_del)) {
+            is_delete = undefined;
+        } else if (is_del) {
+            is_delete = true;
+        } else if (is_n_del) {
+            is_delete = false;
         }
 
-        dispatch(set_getRegisterPostsBody({ page: 1, size: 10, isDelete: isDelete, accountId: account.id }));
+        dispatch(set__get_register_posts_body({ page: 1, size: 10, is_delete: is_delete, account_id: account.id }));
     };
 
     return (
         <div className={style.parent}>
             <div className={style.options}>
                 <div>
-                    <input checked={isDel} onChange={(e) => hadleDel(e)} type="checkbox" />
+                    <input checked={is_del} onChange={(e) => hadle_Del(e)} type="checkbox" />
                     <div>Đã xóa</div>
                 </div>
                 <div>
-                    <input checked={isNDel} onChange={(e) => hadleNDel(e)} type="checkbox" />
+                    <input checked={is_n_del} onChange={(e) => hadle_N_Del(e)} type="checkbox" />
                     <div>Chưa xóa</div>
                 </div>
             </div>
             <div className={style.btn}>
-                <div onClick={() => handleSearch()}>{SEARCH}</div>
+                <div onClick={() => handle_Search()}>{SEARCH}</div>
             </div>
         </div>
     );

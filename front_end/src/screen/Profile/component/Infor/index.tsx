@@ -4,88 +4,104 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { avatarnull } from '@src/utility/string';
 import {
-    AccountField,
-    AccountInformationField,
-    accountType_enum,
-    accountType_type,
-    RecommendField,
-} from '@src/dataStruct/account';
-import { CreateAccountInformationBodyField } from '@src/dataStruct/account/body';
+    Account_Field,
+    Account_Information_Field,
+    account_type_enum,
+    account_type_type,
+    Recommend_Field,
+} from '@src/data_struct/account';
+import { Create_Account_Information_Body_Field } from '@src/data_struct/account/body';
 import { ADMIN, MEMBER } from '@src/const/text';
-import { SelectedTypeField } from './type';
+import { Selected_Type_Field } from './type';
 import axiosInstance from '@src/api/axiosInstance';
-import { MyResponse } from '@src/dataStruct/response';
-import { set_isLoading, setData_toastMessage, setIsShow_editInforDialog } from '@src/redux/slice/Profile';
-import { set_accountInformation } from '@src/redux/slice/App';
+import { My_Response_Field } from '@src/data_struct/response';
+import { set__is_loading, set__data__toast_message, set__is_show__edit_infor_dialog } from '@src/redux/slice/Profile';
+import { set__account_information } from '@src/redux/slice/App';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { IoAddCircleOutline } from 'react-icons/io5';
 import { IoIosEye, IoIosEyeOff } from 'react-icons/io';
 import { GoDotFill } from 'react-icons/go';
-import { useLazyGetMyRecommendQuery } from '@src/redux/query/account_RTK';
+import { useLazy_get_My_Recommend_Query } from '@src/redux/query/account_RTK';
 import { handleSrcImage } from '@src/utility/string';
 
 const Infor = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    const accountInformation: AccountInformationField | undefined = useSelector(
-        (state: RootState) => state.AppSlice.accountInformation
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
+    const account_information: Account_Information_Field | undefined = useSelector(
+        (state: RootState) => state.App_Slice.account_information
     );
-    const [accountType, setAccountType] = useState<accountType_type | undefined>(undefined);
-    const [selectedType, setSelectedType] = useState<SelectedTypeField | null>(null);
-    const [isShowId, setIsShowId] = useState<boolean>(false);
-    const [recommend, setRecommend] = useState<RecommendField | undefined>(undefined);
-    const [isShowRecommentCode, setIsShowRecommentCode] = useState<boolean>(false);
-    const [avatarUrl, setAvatarUrl] = useState<string>(avatarnull);
-    const maxCount = 3;
 
-    const [getMyRecommend] = useLazyGetMyRecommendQuery();
+    const [account_type, set__account_type] = useState<account_type_type | undefined>(undefined);
+    const [selected_type, set__selected_type] = useState<Selected_Type_Field | null>(null);
+    const [is_show_id, set__is_show_id] = useState<boolean>(false);
+    const [recommend, set__recommend] = useState<Recommend_Field | undefined>(undefined);
+    const [is_show_recomment_code, set__is_show_recomment_code] = useState<boolean>(false);
+    const [avatar_url, set__avatar_url] = useState<string>(avatarnull);
+    const max_count = 3;
 
-    useEffect(() => {
-        if (accountInformation?.accountType === accountType_enum.ADMIN) {
-            setAccountType(accountType_enum.ADMIN);
-        }
-        if (accountInformation?.accountType === accountType_enum.MEMBER) {
-            setAccountType(accountType_enum.MEMBER);
-        }
-    }, [accountInformation]);
+    const [get_My_Recommend] = useLazy_get_My_Recommend_Query();
 
     useEffect(() => {
-        const avatarUrl_ = account?.avatar ? handleSrcImage(account.avatar) : avatarnull;
-        setAvatarUrl(avatarUrl_);
+        if (account_information?.account_type === account_type_enum.ADMIN) {
+            set__account_type(account_type_enum.ADMIN);
+        }
+        if (account_information?.account_type === account_type_enum.MEMBER) {
+            set__account_type(account_type_enum.MEMBER);
+        }
+    }, [account_information]);
+
+    useEffect(() => {
+        const _avatar_url = account?.avatar ? handleSrcImage(account.avatar) : avatarnull;
+        set__avatar_url(_avatar_url);
     }, [account]);
 
-    const handleSelected = (type: accountType_enum) => {
+    const handle_Create_Account_Information = async (
+        create_account_information_body: Create_Account_Information_Body_Field
+    ) => {
+        try {
+            const response = await axiosInstance.post<My_Response_Field<Account_Information_Field>>(
+                '/service__account/mutate/create_account_information',
+                create_account_information_body
+            );
+            return response.data;
+        } catch (error) {
+            console.error('Error creating account information:', error);
+            throw error;
+        }
+    };
+
+    const handle_Selected = (type: account_type_enum) => {
         if (!account) return;
 
-        if (selectedType === null) {
-            setSelectedType({
+        if (selected_type === null) {
+            set__selected_type({
                 type,
                 count: 0,
             });
         } else {
-            if (selectedType.type === type) {
-                if (selectedType.count < 3) {
-                    setSelectedType({
+            if (selected_type.type === type) {
+                if (selected_type.count < 3) {
+                    set__selected_type({
                         type,
-                        count: selectedType.count + 1,
+                        count: selected_type.count + 1,
                     });
                 } else {
                     // sumit type to BE
-                    dispatch(set_isLoading(true));
-                    handle_createAccountInformation({ accountType: type, accountId: -1 })
+                    dispatch(set__is_loading(true));
+                    handle_Create_Account_Information({ account_type: type, account_id: '' })
                         .then((res) => {
-                            const resData = res;
-                            if (resData?.isSuccess && resData.data) {
-                                dispatch(set_accountInformation(resData.data));
+                            const res_data = res;
+                            if (res_data?.is_success && res_data.data) {
+                                dispatch(set__account_information(res_data.data));
                                 dispatch(
-                                    setData_toastMessage({
+                                    set__data__toast_message({
                                         type: messageType_enum.SUCCESS,
                                         message: res.message || 'Tạo thông tin tài khoản thành công !',
                                     })
                                 );
                             } else {
                                 dispatch(
-                                    setData_toastMessage({
+                                    set__data__toast_message({
                                         type: messageType_enum.ERROR,
                                         message: res.message || 'Tạo thông tin tài khoản KHÔNG thành công !',
                                     })
@@ -95,18 +111,18 @@ const Infor = () => {
                         .catch((err) => {
                             console.error('Error creating account information:', err);
                             dispatch(
-                                setData_toastMessage({
+                                set__data__toast_message({
                                     type: messageType_enum.ERROR,
                                     message: 'Đã có lỗi xảy ra',
                                 })
                             );
                         })
                         .finally(() => {
-                            dispatch(set_isLoading(false));
+                            dispatch(set__is_loading(false));
                         });
                 }
             } else {
-                setSelectedType({
+                set__selected_type({
                     type,
                     count: 0,
                 });
@@ -114,85 +130,72 @@ const Infor = () => {
         }
     };
 
-    const handleTextAccountType = (type: accountType_enum) => {
-        if (type === accountType_enum.ADMIN) {
+    const handle_Text_Account_Type = (type: account_type_enum) => {
+        if (type === account_type_enum.ADMIN) {
             return ADMIN;
         }
-        if (type === accountType_enum.MEMBER) {
+        if (type === account_type_enum.MEMBER) {
             return MEMBER;
         }
         return 'undefined';
     };
 
-    const handle_createAccountInformation = async (createAccountInformationBody: CreateAccountInformationBodyField) => {
-        try {
-            const response = await axiosInstance.post<MyResponse<AccountInformationField>>(
-                '/service_account/mutate/createAccountInformation',
-                createAccountInformationBody
-            );
-            return response.data;
-        } catch (error) {
-            console.error('Error creating account information:', error);
-            throw error;
-        }
+    const handle_Show_Edit = () => {
+        dispatch(set__is_show__edit_infor_dialog(true));
     };
 
-    const handleShowEdit = () => {
-        dispatch(setIsShow_editInforDialog(true));
-    };
-
-    const handleIsShowId = (isShow: boolean) => {
-        setIsShowId(isShow);
+    const handle_Is_Show_Id = (is_show: boolean) => {
+        set__is_show_id(is_show);
     };
 
     useEffect(() => {
         if (!account) return;
-        getMyRecommend({ accountId: account.id })
+        get_My_Recommend({ account_id: account.id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setRecommend(resData.data);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__recommend(res_data.data);
                 }
             })
             .catch((err) => {
                 console.error(err);
             });
-    }, [account, getMyRecommend]);
+    }, [account, get_My_Recommend]);
 
-    const handleIsShowRecommentCode = (isShow: boolean) => {
-        setIsShowRecommentCode(isShow);
+    const handle_Is_Show_Recomment_Code = (is_show: boolean) => {
+        set__is_show_recomment_code(is_show);
     };
 
     return (
         <div className={style.parent}>
             <div className={style.avatarContainer}>
-                <img className={style.avatar} src={avatarUrl} alt="avatar" />
-                <IoAddCircleOutline onClick={() => handleShowEdit()} size={20} />
+                <img className={style.avatar} src={avatar_url} alt="avatar" />
+                <IoAddCircleOutline onClick={() => handle_Show_Edit()} size={20} />
             </div>
-            <div className={style.name}>{`${account?.firstName} ${account?.lastName}`}</div>
-            {accountType && <div className={style.admin}>{handleTextAccountType(accountType)}</div>}
-            {!accountType && (
+            <div className={style.name}>{`${account?.first_name} ${account?.last_name}`}</div>
+            {account_type && <div className={style.admin}>{handle_Text_Account_Type(account_type)}</div>}
+            {!account_type && (
                 <div className={style.selectType}>
                     <div className={style.text}>Chọn loại tài khoản ( chỉ chọn 1 lần duy nhất )</div>
                     <div className={style.selections}>
-                        <div onClick={() => handleSelected(accountType_enum.ADMIN)}>
-                            {handleTextAccountType(accountType_enum.ADMIN)}
+                        <div onClick={() => handle_Selected(account_type_enum.ADMIN)}>
+                            {handle_Text_Account_Type(account_type_enum.ADMIN)}
                         </div>
-                        <div onClick={() => handleSelected(accountType_enum.MEMBER)}>
-                            {handleTextAccountType(accountType_enum.MEMBER)}
+                        <div onClick={() => handle_Selected(account_type_enum.MEMBER)}>
+                            {handle_Text_Account_Type(account_type_enum.MEMBER)}
                         </div>
                     </div>
-                    {selectedType && (
+                    {selected_type && (
                         <div
                             className={style.text1}
-                        >{`Còn ${maxCount - selectedType.count} lần chọn ( ${handleTextAccountType(selectedType.type)} )`}</div>
+                        >{`Còn ${max_count - selected_type.count} lần chọn ( ${handle_Text_Account_Type(selected_type.type)} )`}</div>
                     )}
                 </div>
             )}
             <div className={style.idContainer}>
                 <div>
                     <div>
-                        {!isShowId && (
+                        {!is_show_id && (
                             <div>
                                 <GoDotFill size={15} />
                                 <GoDotFill size={15} />
@@ -201,18 +204,18 @@ const Infor = () => {
                                 <GoDotFill size={15} />
                             </div>
                         )}
-                        {isShowId && <div>{account?.id}</div>}
+                        {is_show_id && <div>{account?.id}</div>}
                     </div>
                     <div>
-                        {!isShowId && <IoIosEye onClick={() => handleIsShowId(true)} size={20} />}
-                        {isShowId && <IoIosEyeOff onClick={() => handleIsShowId(false)} size={20} />}
+                        {!is_show_id && <IoIosEye onClick={() => handle_Is_Show_Id(true)} size={20} />}
+                        {is_show_id && <IoIosEyeOff onClick={() => handle_Is_Show_Id(false)} size={20} />}
                     </div>
                 </div>
             </div>
             <div className={style.recommendContainer}>
                 <div>
                     <div>
-                        {!isShowRecommentCode && (
+                        {!is_show_recomment_code && (
                             <div>
                                 <GoDotFill size={15} />
                                 <GoDotFill size={15} />
@@ -221,12 +224,14 @@ const Infor = () => {
                                 <GoDotFill size={15} />
                             </div>
                         )}
-                        {isShowRecommentCode && <div>{recommend?.myCode}</div>}
+                        {is_show_recomment_code && <div>{recommend?.my_code}</div>}
                     </div>
                     <div>
-                        {!isShowRecommentCode && <IoIosEye onClick={() => handleIsShowRecommentCode(true)} size={20} />}
-                        {isShowRecommentCode && (
-                            <IoIosEyeOff onClick={() => handleIsShowRecommentCode(false)} size={20} />
+                        {!is_show_recomment_code && (
+                            <IoIosEye onClick={() => handle_Is_Show_Recomment_Code(true)} size={20} />
+                        )}
+                        {is_show_recomment_code && (
+                            <IoIosEyeOff onClick={() => handle_Is_Show_Recomment_Code(false)} size={20} />
                         )}
                     </div>
                 </div>

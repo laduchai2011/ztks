@@ -9,47 +9,53 @@ import OneImageFile from './component/OneImageFile';
 import OneImageUrl from './component/OneImageUrl';
 import { CLOSE, AGREE, EXIT, EDIT_POST } from '@src/const/text';
 import {
-    setData_toastMessage,
-    set_isLoading,
-    setIsShow_editPostDialog,
-    setNewPost_editPostDialog,
+    set__data__toast_message,
+    set__is_loading,
+    set__is_show__edit_post_dialog,
+    set__new_post__edit_post_dialog,
 } from '@src/redux/slice/Post';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { AccountField } from '@src/dataStruct/account';
-import { PostField, RegisterPostField, RegisterPostTypeEnum, PostTypeEnum, PostTypeType } from '@src/dataStruct/post';
-import { EditPostBodyField } from '@src/dataStruct/post/body';
+import { Account_Field } from '@src/data_struct/account';
+import {
+    Post_Field,
+    Register_Post_Field,
+    Register_Post_Type_Enum,
+    Post_Type_Enum,
+    Post_Type_Type,
+} from '@src/data_struct/post';
+import { Edit_Post_Body_Field } from '@src/data_struct/post/body';
 import { isPositiveInteger } from '@src/utility/string';
 import { uploadImage } from '../../handle';
-import { useEditPostMutation } from '@src/redux/query/post_RTK';
+import { use_edit_Post_Mutation } from '@src/redux/query/post_RTK';
 
 const EditPostDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
     const imageInput_element = useRef<HTMLInputElement | null>(null);
 
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    const selectedRegisterPost: RegisterPostField | undefined = useSelector(
-        (state: RootState) => state.PostSlice.selectedRegisterPost
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
+    const selected_register_post: Register_Post_Field | undefined = useSelector(
+        (state: RootState) => state.Post_Slice.selected_register_post
     );
-    const isShow: boolean = useSelector((state: RootState) => state.PostSlice.editPostDialog.isShow);
-    const post: PostField | undefined = useSelector((state: RootState) => state.PostSlice.editPostDialog.post);
+    const is_show: boolean = useSelector((state: RootState) => state.Post_Slice.edit_post_dialog.is_show);
+    const post: Post_Field | undefined = useSelector((state: RootState) => state.Post_Slice.edit_post_dialog.post);
 
-    const [name, setName] = useState<string>('');
-    const [title, setTitle] = useState<string>('');
-    const [type, setType] = useState<PostTypeType>(PostTypeEnum.FREE);
-    const [index, setIndex] = useState<string>('1');
-    const [describe, setDescribe] = useState<string>('');
-    const [images, setImages] = useState<string[]>([]);
-    const [newImages, setNewImages] = useState<File[]>([]);
-    const id_imageInput = useId();
+    const [name, set__name] = useState<string>('');
+    const [title, set__title] = useState<string>('');
+    const [type, set__type] = useState<Post_Type_Type>(Post_Type_Enum.FREE);
+    const [index, set__index] = useState<string>('1');
+    const [describe, set__describe] = useState<string>('');
+    const [images, set__images] = useState<string[]>([]);
+    const [new_images, set__new_images] = useState<File[]>([]);
+    const id_image_input = useId();
 
-    const [editPost] = useEditPostMutation();
+    const [edit_Post] = use_edit_Post_Mutation();
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow) {
+        if (is_show) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -63,76 +69,125 @@ const EditPostDialog = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow]);
+    }, [is_show]);
 
     useEffect(() => {
         if (!post) return;
-        setName(post.name);
-        setTitle(post.title);
-        setType(post.type);
-        setIndex(post.index.toString());
-        setDescribe(post.describe);
-        setImages(JSON.parse(post.images));
+        set__name(post.name);
+        set__title(post.title);
+        set__type(post.type);
+        set__index(post.index.toString());
+        set__describe(post.describe);
+        set__images(JSON.parse(post.images));
 
         return () => {
-            setNewImages([]);
+            set__new_images([]);
         };
     }, [post]);
 
-    const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(e.target.value);
+    const handle_Name = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__name(e.target.value);
     };
 
-    const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setTitle(e.target.value);
+    const handle_Title = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__title(e.target.value);
     };
 
-    const handleType = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const value = e.target.value as PostTypeType;
-        setType(value);
+    const handle_Type = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = e.target.value as Post_Type_Type;
+        set__type(value);
     };
 
-    const handleIndex = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Index = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         if (!isPositiveInteger(value)) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Thứ tự phải là 1 số nguyên dương !',
                 })
             );
         }
 
-        setIndex(value);
+        set__index(value);
     };
 
-    const handleDescribe = (value: string) => {
-        setDescribe(value);
+    const handle_Describe = (value: string) => {
+        set__describe(value);
     };
 
-    const handleImageIconClick = () => {
+    const handle_Image_Icon_Click = () => {
         imageInput_element.current?.click();
     };
 
-    const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Image_Change = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
 
         if (!files) return;
 
-        setNewImages((prev) => [...prev, ...(files || [])]);
+        set__new_images((prev) => [...prev, ...(files || [])]);
     };
 
-    const handleClose = () => {
-        dispatch(setIsShow_editPostDialog(false));
+    const handle_Close = () => {
+        dispatch(set__is_show__edit_post_dialog(false));
     };
 
-    const handleAgree = async () => {
+    const handle_Close_Image_Url = useCallback((index: number) => {
+        set__images((prev) => prev.filter((_, i) => i !== index));
+    }, []);
+
+    const handle_Upload_Images = async (images: File[], account: Account_Field) => {
+        try {
+            dispatch(set__is_loading(true));
+            const file_names: string[] = [];
+
+            for (let i: number = 0; i < images.length; i++) {
+                const res_data_image = await uploadImage(images[i], account.id);
+                if (!res_data_image) {
+                    dispatch(
+                        set__data__toast_message({
+                            type: messageType_enum.ERROR,
+                            message: 'Đăng tải hình ảnh thất bại !',
+                        })
+                    );
+                    break;
+                }
+                dispatch(
+                    set__data__toast_message({
+                        type: messageType_enum.SUCCESS,
+                        message: 'Đăng tải hình ảnh thành công !',
+                    })
+                );
+
+                const file_name = res_data_image.file_name;
+                file_names.push(file_name);
+            }
+
+            return file_names;
+        } catch (error) {
+            console.error(error);
+            dispatch(
+                set__data__toast_message({
+                    type: messageType_enum.ERROR,
+                    message: 'Đã có lỗi xảy ra !',
+                })
+            );
+        } finally {
+            dispatch(set__is_loading(false));
+        }
+    };
+
+    const handle_Close_Image_File = useCallback((index: number) => {
+        set__new_images((prev) => prev.filter((_, i) => i !== index));
+    }, []);
+
+    const handle_Agree = async () => {
         if (!account) return;
         if (!post) return;
 
-        if (!selectedRegisterPost) {
+        if (!selected_register_post) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Vui lòng chọn 1 đăng ký !',
                 })
@@ -143,7 +198,7 @@ const EditPostDialog = () => {
         const name_t = name.trim();
         if (name_t.length === 0) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Tên không được để trống !',
                 })
@@ -154,7 +209,7 @@ const EditPostDialog = () => {
         const title_t = title.trim();
         if (title_t.length === 0) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Tiêu đề không được để trống !',
                 })
@@ -162,9 +217,9 @@ const EditPostDialog = () => {
             return;
         }
 
-        if (selectedRegisterPost.type === RegisterPostTypeEnum.FREE && type === PostTypeEnum.UPGRADE) {
+        if (selected_register_post.type === Register_Post_Type_Enum.FREE && type === Post_Type_Enum.UPGRADE) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Bạn đang dùng gói miễn phí không thể tùy chọn nâng cấp !',
                 })
@@ -175,7 +230,7 @@ const EditPostDialog = () => {
         const index_t = index.trim();
         if (!isPositiveInteger(index_t)) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Thứ tự phải là 1 số nguyên dương !',
                 })
@@ -184,36 +239,36 @@ const EditPostDialog = () => {
         }
 
         try {
-            dispatch(set_isLoading(true));
-            const r_newImages = await handleUploadImages(newImages, account);
+            dispatch(set__is_loading(true));
+            const r_new_images = await handle_Upload_Images(new_images, account);
 
-            const oleImages = [...images];
-            const allImages = oleImages.concat(r_newImages ?? []);
+            const ole_images = [...images];
+            const all_images = ole_images.concat(r_new_images ?? []);
 
-            const editPostBody: EditPostBodyField = {
+            const edit_post_body: Edit_Post_Body_Field = {
                 id: post.id,
                 index: post.index,
                 name: name_t,
                 title: title_t,
                 describe: describe,
-                images: JSON.stringify(allImages),
-                isActive: true,
-                accountId: account.id,
+                images: JSON.stringify(all_images),
+                is_active: true,
+                account_id: account.id,
             };
 
-            const r_edit = await editPost(editPostBody);
-            const resData = r_edit.data;
-            if (resData?.isSuccess && resData.data) {
-                dispatch(setNewPost_editPostDialog(resData.data));
+            const r_edit = await edit_Post(edit_post_body);
+            const res_data = r_edit.data;
+            if (res_data?.is_success && res_data.data) {
+                dispatch(set__new_post__edit_post_dialog(res_data.data));
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.SUCCESS,
                         message: 'Chỉnh sửa bài đăng thành công !',
                     })
                 );
             } else {
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Chỉnh sửa bài đăng không thành công !',
                     })
@@ -222,25 +277,25 @@ const EditPostDialog = () => {
         } catch (error) {
             console.error(error);
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Đã có lỗi xảy ra !',
                 })
             );
         } finally {
-            dispatch(set_isLoading(false));
+            dispatch(set__is_loading(false));
         }
     };
 
-    const list_type = [PostTypeEnum.FREE, PostTypeEnum.UPGRADE].map((item, index) => {
+    const list_type = [Post_Type_Enum.FREE, Post_Type_Enum.UPGRADE].map((item, index) => {
         let text: string = '';
 
         switch (item) {
-            case PostTypeEnum.FREE: {
+            case Post_Type_Enum.FREE: {
                 text = 'Miễn phí';
                 break;
             }
-            case PostTypeEnum.UPGRADE: {
+            case Post_Type_Enum.UPGRADE: {
                 text = 'Nâng cấp';
                 break;
             }
@@ -257,68 +312,19 @@ const EditPostDialog = () => {
         );
     });
 
-    const handleCloseImageUrl = useCallback((index: number) => {
-        setImages((prev) => prev.filter((_, i) => i !== index));
-    }, []);
-
-    const list_imageUrl = images.map((item, index) => {
-        return <OneImageUrl fileName={item} index={index} handleCloseImage={handleCloseImageUrl} key={index} />;
+    const list_image_url = images.map((item, index) => {
+        return <OneImageUrl file_name={item} index={index} handle_Close_Image={handle_Close_Image_Url} key={index} />;
     });
 
-    const handleUploadImages = async (images: File[], account: AccountField) => {
-        try {
-            dispatch(set_isLoading(true));
-            const fileNames: string[] = [];
-
-            for (let i: number = 0; i < images.length; i++) {
-                const resData_image = await uploadImage(images[i], account.id.toString());
-                if (!resData_image) {
-                    dispatch(
-                        setData_toastMessage({
-                            type: messageType_enum.ERROR,
-                            message: 'Đăng tải hình ảnh thất bại !',
-                        })
-                    );
-                    break;
-                }
-                dispatch(
-                    setData_toastMessage({
-                        type: messageType_enum.SUCCESS,
-                        message: 'Đăng tải hình ảnh thành công !',
-                    })
-                );
-
-                const fileName = resData_image.fileName;
-                fileNames.push(fileName);
-            }
-
-            return fileNames;
-        } catch (error) {
-            console.error(error);
-            dispatch(
-                setData_toastMessage({
-                    type: messageType_enum.ERROR,
-                    message: 'Đã có lỗi xảy ra !',
-                })
-            );
-        } finally {
-            dispatch(set_isLoading(false));
-        }
-    };
-
-    const handleCloseImageFile = useCallback((index: number) => {
-        setNewImages((prev) => prev.filter((_, i) => i !== index));
-    }, []);
-
-    const list_imageFile = newImages.map((item, index) => {
-        return <OneImageFile file={item} index={index} handleCloseImage={handleCloseImageFile} key={index} />;
+    const list_image_file = new_images.map((item, index) => {
+        return <OneImageFile file={item} index={index} handle_Close_Image={handle_Close_Image_File} key={index} />;
     });
 
     return (
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.closeContainer}>
-                    <IoMdClose onClick={() => handleClose()} size={25} title={CLOSE} />
+                    <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
                 <div className={style.contentContainer}>
                     <div className={style.header}>
@@ -327,45 +333,50 @@ const EditPostDialog = () => {
                     <div className={style.name}>
                         <input
                             value={name}
-                            onChange={(e) => handleName(e)}
+                            onChange={(e) => handle_Name(e)}
                             placeholder="Đặt tên dễ nhớ !"
                             maxLength={50}
                         />
                     </div>
                     <div className={style.title}>
-                        <input value={title} onChange={(e) => handleTitle(e)} placeholder="Tiêu đề !" maxLength={255} />
+                        <input
+                            value={title}
+                            onChange={(e) => handle_Title(e)}
+                            placeholder="Tiêu đề !"
+                            maxLength={255}
+                        />
                     </div>
                     <div className={style.type}>
-                        <select value={type} onChange={(e) => handleType(e)}>
+                        <select value={type} onChange={(e) => handle_Type(e)}>
                             {list_type}
                         </select>
                     </div>
                     <div className={style.index}>
                         <div>
                             <div>Chọn thứ tự hiển thị bài viết</div>
-                            <input value={index} onChange={(e) => handleIndex(e)} />
+                            <input value={index} onChange={(e) => handle_Index(e)} />
                         </div>
                     </div>
                     <div>
-                        <TextEditor value={post?.describe} onChange={(value) => handleDescribe(value)} />
+                        <TextEditor value={post?.describe} onChange={(value) => handle_Describe(value)} />
                     </div>
                     <div className={style.icons}>
-                        <CiImageOn id={id_imageInput} onClick={handleImageIconClick} size={25} color="green" />
+                        <CiImageOn id={id_image_input} onClick={handle_Image_Icon_Click} size={25} color="green" />
                         <input
                             ref={imageInput_element}
-                            onChange={handleImageChange}
+                            onChange={handle_Image_Change}
                             type="file"
-                            id={id_imageInput}
+                            id={id_image_input}
                             accept="image/*"
                             multiple
                         />
                     </div>
-                    <div className={style.images}>{list_imageUrl}</div>
-                    <div className={style.images}>{list_imageFile}</div>
+                    <div className={style.images}>{list_image_url}</div>
+                    <div className={style.images}>{list_image_file}</div>
                 </div>
                 <div className={style.buttonContainer}>
-                    <button onClick={() => handleAgree()}>{AGREE}</button>
-                    <button onClick={() => handleClose()}>{EXIT}</button>
+                    <button onClick={() => handle_Agree()}>{AGREE}</button>
+                    <button onClick={() => handle_Close()}>{EXIT}</button>
                 </div>
             </div>
         </div>

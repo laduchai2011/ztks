@@ -1,6 +1,6 @@
-import { accountType_type } from '@src/dataStruct/account';
+import { account_type_type } from '@src/data_struct/account';
 
-export interface SelectedTypeField {
-    type: accountType_type;
+export interface Selected_Type_Field {
+    type: account_type_type;
     count: number;
 }
