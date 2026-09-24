@@ -5,60 +5,63 @@ import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE } from '@src/const/text';
 import {
-    setData_toastMessage,
-    setIsShow_payDialog,
-    setOrder_payDialog,
-    setNewOrder_payDialog,
+    set__data__toast_message,
+    set__is_show__pay_dialog,
+    set__order__pay_dialog,
+    set__new_order__pay_dialog,
 } from '@src/redux/slice/Order';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { ZaloAppField } from '@src/dataStruct/zalo';
-import { OrderField } from '@src/dataStruct/order';
-import { AccountField } from '@src/dataStruct/account';
-import { VoucherField } from '@src/dataStruct/voucher';
+import { Zalo_App_Field } from '@src/data_struct/zalo';
+import { Order_Field } from '@src/data_struct/order';
+import { Account_Field } from '@src/data_struct/account';
+import { Voucher_Field } from '@src/data_struct/voucher';
 import { formatMoney } from '@src/utility/string';
-import { useLazyGetZaloOaWithIdQuery } from '@src/redux/query/zalo_RTK';
-import { useLazyGetOrderWithIdQuery } from '@src/redux/query/order_RTK';
-import { useLazyGetChatRoomsWithIdQuery } from '@src/redux/query/chat_room_RTK';
-import { useLazyGetLastMessageQuery } from '@src/redux/query/message_v1_RTK';
-import { getSocket } from '@src/socketIo';
-import { MessageImageBodyField } from '@src/dataStruct/zalo/hookData/body';
-import { useCreateMessageV1Mutation } from '@src/redux/query/message_v1_RTK';
-import { AccountInformationField } from '@src/dataStruct/account';
-import { CreateMessageV1BodyField } from '@src/dataStruct/message_v1/body';
-import { useLazyGetMyWalletWithTypeQuery } from '@src/redux/query/wallet_RTK';
-import { useLazyGetVoucherWithOrderIdQuery } from '@src/redux/query/voucher_RTK';
-import { WalletField, WalletEnum } from '@src/dataStruct/wallet';
+import { useLazy_get_Zalo_Oa_With_Id_Query } from '@src/redux/query/zalo_RTK';
+import { useLazy_get_Order_With_Id_Query } from '@src/redux/query/order_RTK';
+import { useLazy_get_Chat_Rooms_With_Id_Query } from '@src/redux/query/chat_room_RTK';
+import { useLazy_get_Last_Message_Query } from '@src/redux/query/message_v1_RTK';
+import { get_Socket } from '@src/socketIo';
+import { Message_Image_Body_Field } from '@src/data_struct/zalo/hook_data/body';
+import { use_create_Message_V1_Mutation } from '@src/redux/query/message_v1_RTK';
+import { Account_Information_Field } from '@src/data_struct/account';
+import { Create_Message_V1_Body_Field } from '@src/data_struct/message_v1/body';
+import { useLazy_get_My_Wallet_With_Type_Query } from '@src/redux/query/wallet_RTK';
+import { useLazy_get_Voucher_With_Order_Id_Query } from '@src/redux/query/voucher_RTK';
+import { Wallet_Field, Wallet_Enum } from '@src/data_struct/wallet';
 
 const Pay = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    const accountInformation: AccountInformationField | undefined = useSelector(
-        (state: RootState) => state.AppSlice.accountInformation
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
+    const account_information: Account_Information_Field | undefined = useSelector(
+        (state: RootState) => state.App_Slice.account_information
     );
-    const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
-    const isShow: boolean = useSelector((state: RootState) => state.OrderSlice.payDialog.isShow);
-    const order: OrderField | undefined = useSelector((state: RootState) => state.OrderSlice.payDialog.order);
-    const newOrder: OrderField | undefined = useSelector((state: RootState) => state.OrderSlice.payDialog.newOrder);
-    const [qrCode, setQrCode] = useState<string>('');
-    const [order1, setOrder1] = useState<OrderField | undefined>(undefined);
-    const [wallet, setWallet] = useState<WalletField | undefined>(undefined);
-    const [selectedVoucher, setSelectedVoucher] = useState<VoucherField | undefined>(undefined);
-    const [finalMoney, setFinalMoney] = useState<number>(0);
+    const zalo_app: Zalo_App_Field | undefined = useSelector((state: RootState) => state.App_Slice.zalo_app);
+    const is_show: boolean = useSelector((state: RootState) => state.Order_Slice.pay_dialog.is_show);
+    const order: Order_Field | undefined = useSelector((state: RootState) => state.Order_Slice.pay_dialog.order);
+    const new_order: Order_Field | undefined = useSelector(
+        (state: RootState) => state.Order_Slice.pay_dialog.new_order
+    );
 
-    const [getZaloOaWithId] = useLazyGetZaloOaWithIdQuery();
-    const [getOrderWithId] = useLazyGetOrderWithIdQuery();
-    const [createMessageV1] = useCreateMessageV1Mutation();
-    const [getChatRoomsWithId] = useLazyGetChatRoomsWithIdQuery();
-    const [getLastMessage] = useLazyGetLastMessageQuery();
-    const [getMyWalletWithType] = useLazyGetMyWalletWithTypeQuery();
-    const [getVoucherWithOrderId] = useLazyGetVoucherWithOrderIdQuery();
+    const [qr_code, set__qr_code] = useState<string>('');
+    const [order1, set__order1] = useState<Order_Field | undefined>(undefined);
+    const [wallet, set__wallet] = useState<Wallet_Field | undefined>(undefined);
+    const [selected_voucher, set__selected_voucher] = useState<Voucher_Field | undefined>(undefined);
+    const [final_money, set__final_money] = useState<number>(0);
+
+    const [get_Zalo_Oa_With_Id] = useLazy_get_Zalo_Oa_With_Id_Query();
+    const [get_Order_With_Id] = useLazy_get_Order_With_Id_Query();
+    const [create_Message_V1] = use_create_Message_V1_Mutation();
+    const [get_Chat_Rooms_With_Id] = useLazy_get_Chat_Rooms_With_Id_Query();
+    const [get_Last_Message] = useLazy_get_Last_Message_Query();
+    const [get_My_Wallet_With_Type] = useLazy_get_My_Wallet_With_Type_Query();
+    const [get_Voucher_With_Order_Id] = useLazy_get_Voucher_With_Order_Id_Query();
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow) {
+        if (is_show) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -72,40 +75,39 @@ const Pay = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow]);
+    }, [is_show]);
 
     useEffect(() => {
-        if (newOrder) {
-            setOrder1(newOrder);
+        if (new_order) {
+            set__order1(new_order);
         } else if (order) {
-            setOrder1(order);
+            set__order1(order);
         }
 
         return () => {
-            dispatch(setOrder_payDialog(undefined));
-            dispatch(setNewOrder_payDialog(undefined));
+            dispatch(set__order__pay_dialog(undefined));
+            dispatch(set__new_order__pay_dialog(undefined));
         };
-    }, [dispatch, order, newOrder]);
+    }, [dispatch, order, new_order]);
 
     useEffect(() => {
-        const socket = getSocket();
+        const socket = get_Socket();
 
-        const onSocketOrderPay = (orderS: OrderField) => {
-            console.log('onSocketOrderPay', orderS);
-            setOrder1((prev) => {
+        const on_Socket_Order_Pay = (orderS: Order_Field) => {
+            set__order1((prev) => {
                 if (!prev) return prev;
 
                 if (prev.id === orderS.id) {
-                    getOrderWithId({ id: orderS.id })
+                    get_Order_With_Id({ id: orderS.id })
                         .then((res) => {
-                            const resData = res.data;
+                            const res_data = res.data;
 
-                            if (resData?.isSuccess && resData.data) {
-                                dispatch(setNewOrder_payDialog(resData.data));
-                                dispatch(setIsShow_payDialog(false));
+                            if (res_data?.is_success && res_data.data) {
+                                dispatch(set__new_order__pay_dialog(res_data.data));
+                                dispatch(set__is_show__pay_dialog(false));
                             } else {
                                 dispatch(
-                                    setData_toastMessage({
+                                    set__data__toast_message({
                                         type: messageType_enum.ERROR,
                                         message: 'Thanh toán không thành công !',
                                     })
@@ -119,69 +121,68 @@ const Pay = () => {
             });
         };
 
-        socket.on('orderPay', onSocketOrderPay);
+        socket.on('orderPay', on_Socket_Order_Pay);
 
         return () => {
-            socket.off('orderPay', onSocketOrderPay);
+            socket.off('orderPay', on_Socket_Order_Pay);
         };
-    }, [dispatch, getOrderWithId]);
+    }, [dispatch, get_Order_With_Id]);
 
     useEffect(() => {
         if (!account) return;
-        getMyWalletWithType({ type: WalletEnum.TWO, accountId: account.id })
+        get_My_Wallet_With_Type({ type: Wallet_Enum.TWO, account_id: account.id })
             .then((res) => {
-                const resData = res.data;
-
-                if (resData?.isSuccess && resData.data) {
-                    setWallet(resData.data);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__wallet(res_data.data);
                 }
             })
             .catch((err) => {
                 console.log('getAllWallets err: ', err);
             });
-    }, [getMyWalletWithType, account]);
+    }, [get_My_Wallet_With_Type, account]);
 
     useEffect(() => {
         if (!order) return;
-        getVoucherWithOrderId({ orderId: order.id })
+        get_Voucher_With_Order_Id({ order_id: order.id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setSelectedVoucher(resData.data);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__selected_voucher(res_data.data);
                 }
             })
             .catch((err) => {
                 console.error(err);
             });
-    }, [order, getVoucherWithOrderId]);
+    }, [order, get_Voucher_With_Order_Id]);
 
     useEffect(() => {
         if (!order1) return;
-        if (selectedVoucher) {
+        if (selected_voucher) {
             const final_money: number =
-                order1.money - selectedVoucher.money >= 0 ? order1.money - selectedVoucher.money : 0;
-            setFinalMoney(final_money);
+                order1.money - selected_voucher.money >= 0 ? order1.money - selected_voucher.money : 0;
+            set__final_money(final_money);
         } else {
-            setFinalMoney(order1.money);
+            set__final_money(order1.money);
         }
-    }, [selectedVoucher, order1]);
+    }, [selected_voucher, order1]);
 
     useEffect(() => {
         if (!account || !order1 || !wallet) return;
         const des = `ztksPayjorderPayj${order1.id}j${wallet.id}j${account.id}`;
-        setQrCode(`https://qr.sepay.vn/img?acc=VQRQAHJHB9302&bank=MBBank&amount=${finalMoney}&des=${des}`);
-    }, [account, order1, wallet, finalMoney]);
+        set__qr_code(`https://qr.sepay.vn/img?acc=VQRQAHJHB9302&bank=MBBank&amount=${final_money}&des=${des}`);
+    }, [account, order1, wallet, final_money]);
 
-    const handleClose = () => {
-        dispatch(setIsShow_payDialog(false));
+    const handle_Close = () => {
+        dispatch(set__is_show__pay_dialog(false));
     };
 
-    const handleSendQr = async () => {
-        if (!zaloApp) return;
+    const handle_Send_Qr = async () => {
+        if (!zalo_app) return;
         if (!order1) return;
-        if (!accountInformation) return;
+        if (!account_information) return;
 
-        const newMessage: MessageImageBodyField = {
+        const new_message: Message_Image_Body_Field = {
             text: 'Bạn có đơn hàng chưa thanh toán',
             attachment: {
                 type: 'template',
@@ -190,7 +191,7 @@ const Pay = () => {
                     elements: [
                         {
                             media_type: 'image',
-                            url: qrCode,
+                            url: qr_code,
                         },
                     ],
                 },
@@ -198,90 +199,90 @@ const Pay = () => {
         };
 
         try {
-            const res_getChatRoom = await getChatRoomsWithId({ id: order1.chatRoomId });
-            const resData_getChatRoom = res_getChatRoom.data;
-            if (!(resData_getChatRoom?.isSuccess && resData_getChatRoom.data)) {
+            const res_get__chat_room = await get_Chat_Rooms_With_Id({ id: order1.chat_room_id });
+            const res_data__get_chat_room = res_get__chat_room.data;
+            if (!(res_data__get_chat_room?.is_success && res_data__get_chat_room.data)) {
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
                 return;
             }
-            const chatRoom = resData_getChatRoom.data;
+            const chat_room = res_data__get_chat_room.data;
 
-            const res_getZaloOa = await getZaloOaWithId({
-                id: chatRoom.zaloOaId,
-                accountId: accountInformation?.addedById || -1,
+            const res_get__get_zalo_oa = await get_Zalo_Oa_With_Id({
+                id: chat_room.zalo_oa_id,
+                account_id: account_information?.added_by_id || '',
             });
-            const resData_getZaloOa = res_getZaloOa.data;
-            if (!(resData_getZaloOa?.isSuccess && resData_getZaloOa.data)) {
+            const res_data__get_zalo_oa = res_get__get_zalo_oa.data;
+            if (!(res_data__get_zalo_oa?.is_success && res_data__get_zalo_oa.data)) {
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
                 return;
             }
-            const zaloOa = resData_getZaloOa.data;
+            const zalo_oa = res_data__get_zalo_oa.data;
 
-            const res_getLastMessage = await getLastMessage({ chatRoomId: chatRoom.id.toString() });
-            const resData_getLastMessage = res_getLastMessage.data;
-            if (!(resData_getLastMessage?.isSuccess && resData_getLastMessage.data)) {
+            const res_get__get_last_message = await get_Last_Message({ chat_room_id: chat_room.id });
+            const res_data__get_last_message = res_get__get_last_message.data;
+            if (!(res_data__get_last_message?.is_success && res_data__get_last_message.data)) {
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
                 return;
             }
-            const lastMessage = resData_getLastMessage.data;
+            const last_message = res_data__get_last_message.data;
 
-            let u_senderId: string = '';
+            let u_sender_id: string = '';
 
-            const isUserSend = lastMessage.event_name.startsWith('user_send');
-            const isOaSend = lastMessage.event_name.startsWith('oa_send');
+            const is_user_send = last_message.event_name.startsWith('user_send');
+            const is_oa_send = last_message.event_name.startsWith('oa_send');
 
-            if ('call_id' in lastMessage) {
-                u_senderId = lastMessage.user_id;
+            if ('call_id' in last_message) {
+                u_sender_id = last_message.user_id;
             } else {
-                if (isUserSend) {
-                    u_senderId = lastMessage.sender_id;
+                if (is_user_send) {
+                    u_sender_id = last_message.sender_id;
                 }
 
-                if (isOaSend) {
-                    u_senderId = lastMessage.recipient_id;
+                if (is_oa_send) {
+                    u_sender_id = last_message.recipient_id;
                 }
             }
 
-            const createMessageV1Body: CreateMessageV1BodyField = {
-                zaloApp: zaloApp,
-                zaloOa: zaloOa,
-                chatRoomId: order1.chatRoomId,
+            const create_message_v1_body: Create_Message_V1_Body_Field = {
+                zalo_app: zalo_app,
+                zalo_oa: zalo_oa,
+                chat_room_id: order1.chat_room_id,
                 payload: {
                     recipient: {
-                        user_id: u_senderId,
+                        user_id: u_sender_id,
                     },
-                    message: newMessage,
+                    message: new_message,
                 },
             };
 
-            const res_newMessage = await createMessageV1(createMessageV1Body);
-            const resData_newMessage = res_newMessage.data;
-            if (!(resData_newMessage?.isSuccess && resData_newMessage.data)) {
+            const res__new_message = await create_Message_V1(create_message_v1_body);
+            const res_data__new_message = res__new_message.data;
+            if (!(res_data__new_message?.is_success && res_data__new_message.data)) {
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
-                        message: resData_newMessage?.message ?? 'Gửi tin nhắn không thành công !',
+                        message: res_data__new_message?.message ?? 'Gửi tin nhắn không thành công !',
                     })
                 );
                 return;
             }
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.SUCCESS,
                     message: 'Gửi tin nhắn thành công !',
                 })
@@ -289,7 +290,7 @@ const Pay = () => {
         } catch (error) {
             console.error(error);
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Đã có lỗi xảy ra !',
                 })
@@ -301,19 +302,19 @@ const Pay = () => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.closeContainer}>
-                    <IoMdClose onClick={() => handleClose()} size={25} title={CLOSE} />
+                    <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
                 <div className={style.contentContainer}>
-                    {order1?.isPay && <div>Đơn hàng đã thanh toán</div>}
-                    {!order1?.isPay && <div>Vui lòng quét mã QR để thanh toán</div>}
-                    {!order1?.isPay && (
-                        <div className={style.sendQr} onClick={() => handleSendQr()}>
+                    {order1?.is_pay && <div>Đơn hàng đã thanh toán</div>}
+                    {!order1?.is_pay && <div>Vui lòng quét mã QR để thanh toán</div>}
+                    {!order1?.is_pay && (
+                        <div className={style.sendQr} onClick={() => handle_Send_Qr()}>
                             Gửi mã cho khách hàng
                         </div>
                     )}
-                    {!order1?.isPay && <div>{qrCode.length > 0 && <img src={qrCode} alt="qrCode" />}</div>}
-                    {order1 && !order1?.isPay && finalMoney > 0 && (
-                        <div className={style.money}>{formatMoney(finalMoney)}</div>
+                    {!order1?.is_pay && <div>{qr_code.length > 0 && <img src={qr_code} alt="qrCode" />}</div>}
+                    {order1 && !order1?.is_pay && final_money > 0 && (
+                        <div className={style.money}>{formatMoney(final_money)}</div>
                     )}
                 </div>
             </div>

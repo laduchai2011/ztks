@@ -7,12 +7,12 @@ import { CiImageOn } from 'react-icons/ci';
 import OneImage from './component/OneImage';
 import { CREATE_POST } from '@src/const/text';
 import TextEditor from '@src/component/TextEditor';
-import { useCreatePostMutation } from '@src/redux/query/post_RTK';
-import { AccountField } from '@src/dataStruct/account';
-import { set_isLoading, setData_toastMessage, add_postList } from '@src/redux/slice/Post';
+import { use_create_Post_Mutation } from '@src/redux/query/post_RTK';
+import { Account_Field } from '@src/data_struct/account';
+import { set__is_loading, set__data__toast_message, add__post_list } from '@src/redux/slice/Post';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { RegisterPostField, PostTypeEnum, PostTypeType, RegisterPostTypeEnum } from '@src/dataStruct/post';
-import { CreatePostBodyField } from '@src/dataStruct/post/body';
+import { Register_Post_Field, Post_Type_Enum, Post_Type_Type, Register_Post_Type_Enum } from '@src/data_struct/post';
+import { Create_Post_Body_Field } from '@src/data_struct/post/body';
 import { isPositiveInteger } from '@src/utility/string';
 import { uploadImage } from '../../handle';
 
@@ -21,87 +21,122 @@ const CreatePost = () => {
 
     const imageInput_element = useRef<HTMLInputElement | null>(null);
 
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    const selectedRegisterPost: RegisterPostField | undefined = useSelector(
-        (state: RootState) => state.PostSlice.selectedRegisterPost
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
+    const selected_register_post: Register_Post_Field | undefined = useSelector(
+        (state: RootState) => state.Post_Slice.selected_register_post
     );
 
-    const [isShowParent, setIsShowParent] = useState(false);
-    const [isDisplayBtn, setIsDisplayBtn] = useState(true);
-    const [isShowBtn, setIsShowBtn] = useState(true);
-    const [isDisplayIcon, setIsDisplayIcon] = useState(false);
-    const [isShowIcon, setIsShowIcon] = useState(false);
-    const [name, setName] = useState<string>('');
-    const [title, setTitle] = useState<string>('');
-    const [type, setType] = useState<PostTypeType>(PostTypeEnum.FREE);
-    const [index, setIndex] = useState<string>('1');
-    const [describe, setDescribe] = useState<string>('');
-    const [images, setImages] = useState<File[]>([]);
-    const id_imageInput = useId();
+    const [is_show_parent, set__is_show_parent] = useState(false);
+    const [is_display_btn, set__is_display_btn] = useState(true);
+    const [is_show_btn, set__is_show_btn] = useState(true);
+    const [is_display_icon, set__is_display_icon] = useState(false);
+    const [is_show_icon, set__is_show_icon] = useState(false);
+    const [name, set__name] = useState<string>('');
+    const [title, set__title] = useState<string>('');
+    const [type, set__type] = useState<Post_Type_Type>(Post_Type_Enum.FREE);
+    const [index, set__index] = useState<string>('1');
+    const [describe, set__describe] = useState<string>('');
+    const [images, set__images] = useState<File[]>([]);
+    const id_image_input = useId();
 
-    const [createPost] = useCreatePostMutation();
+    const [create_Post] = use_create_Post_Mutation();
 
-    const handleHBtn = () => {
-        setIsShowParent(true);
-        setIsShowBtn(false);
+    const handle_H_Btn = () => {
+        set__is_show_parent(true);
+        set__is_show_btn(false);
         setTimeout(() => {
-            setIsDisplayBtn(false);
+            set__is_display_btn(false);
         }, 300);
-        setIsDisplayIcon(true);
+        set__is_display_icon(true);
         setTimeout(() => {
-            setIsShowIcon(true);
+            set__is_show_icon(true);
         }, 10);
     };
 
-    const handleHIcon = () => {
-        setIsShowParent(false);
-        setIsShowIcon(false);
+    const handle_H_Icon = () => {
+        set__is_show_parent(false);
+        set__is_show_icon(false);
         setTimeout(() => {
-            setIsDisplayIcon(false);
+            set__is_display_icon(false);
         }, 300);
-        setIsDisplayBtn(true);
+        set__is_display_btn(true);
         setTimeout(() => {
-            setIsShowBtn(true);
+            set__is_show_btn(true);
         }, 10);
     };
 
-    const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(e.target.value);
+    const handle_Name = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__name(e.target.value);
     };
 
-    const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setTitle(e.target.value);
+    const handle_Title = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__title(e.target.value);
     };
 
-    const handleType = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const value = e.target.value as PostTypeType;
-        setType(value);
+    const handle_Type = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = e.target.value as Post_Type_Type;
+        set__type(value);
     };
 
-    const handleIndex = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Index = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         if (!isPositiveInteger(value)) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Thứ tự phải là 1 số nguyên dương !',
                 })
             );
         }
 
-        setIndex(value);
+        set__index(value);
     };
 
-    const handleDescribe = (value: string) => {
-        setDescribe(value);
+    const handle_Describe = (value: string) => {
+        set__describe(value);
     };
 
-    const handleCreate = async () => {
+    const handle_Upload_Images = async (images: File[], account: Account_Field) => {
+        try {
+            dispatch(set__is_loading(true));
+            const file_names: string[] = [];
+
+            for (let i: number = 0; i < images.length; i++) {
+                const res_data_image = await uploadImage(images[i], account.id);
+                if (!res_data_image) {
+                    dispatch(
+                        set__data__toast_message({
+                            type: messageType_enum.ERROR,
+                            message: 'Đăng tải hình ảnh thất bại !',
+                        })
+                    );
+                    break;
+                }
+
+                const file_name = res_data_image.file_name;
+                file_names.push(file_name);
+            }
+
+            return file_names;
+        } catch (error) {
+            console.error(error);
+            dispatch(
+                set__data__toast_message({
+                    type: messageType_enum.ERROR,
+                    message: 'Đã có lỗi xảy ra !',
+                })
+            );
+        } finally {
+            dispatch(set__is_loading(false));
+        }
+    };
+
+    const handle_Create = async () => {
         if (!account) return;
 
-        if (!selectedRegisterPost) {
+        if (!selected_register_post) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Vui lòng chọn 1 đăng ký !',
                 })
@@ -112,7 +147,7 @@ const CreatePost = () => {
         const name_t = name.trim();
         if (name_t.length === 0) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Tên không được để trống !',
                 })
@@ -123,7 +158,7 @@ const CreatePost = () => {
         const title_t = title.trim();
         if (title_t.length === 0) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Tiêu đề không được để trống !',
                 })
@@ -131,9 +166,9 @@ const CreatePost = () => {
             return;
         }
 
-        if (selectedRegisterPost.type === RegisterPostTypeEnum.FREE && type === PostTypeEnum.UPGRADE) {
+        if (selected_register_post.type === Register_Post_Type_Enum.FREE && type === Post_Type_Enum.UPGRADE) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Bạn đang dùng gói miễn phí không thể tùy chọn nâng cấp !',
                 })
@@ -144,7 +179,7 @@ const CreatePost = () => {
         const index_t = index.trim();
         if (!isPositiveInteger(index_t)) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Thứ tự phải là 1 số nguyên dương !',
                 })
@@ -153,35 +188,35 @@ const CreatePost = () => {
         }
 
         try {
-            dispatch(set_isLoading(true));
+            dispatch(set__is_loading(true));
 
-            const r_images = await handleUploadImages(images, account);
+            const r_images = await handle_Upload_Images(images, account);
 
-            const createPostBody: CreatePostBodyField = {
+            const create_post_body: Create_Post_Body_Field = {
                 index: Number(index_t),
                 name: name_t,
                 type: type,
                 title: title_t,
                 describe: describe,
                 images: JSON.stringify(r_images ?? []),
-                isActive: true,
-                registerPostId: selectedRegisterPost.id,
-                accountId: account.id,
+                is_active: true,
+                register_post_id: selected_register_post.id,
+                account_id: account.id,
             };
 
-            const r_create = await createPost(createPostBody);
-            const resData = r_create.data;
-            if (resData?.isSuccess && resData.data) {
-                dispatch(add_postList(resData.data));
+            const r_create = await create_Post(create_post_body);
+            const res_data = r_create.data;
+            if (res_data?.is_success && res_data.data) {
+                dispatch(add__post_list(res_data.data));
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.SUCCESS,
                         message: 'Tạo bài đăng thành công !',
                     })
                 );
             } else {
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Tạo bài đăng không thành công !',
                     })
@@ -190,86 +225,45 @@ const CreatePost = () => {
         } catch (error) {
             console.error(error);
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Đã có lỗi xảy ra !',
                 })
             );
         } finally {
-            dispatch(set_isLoading(false));
+            dispatch(set__is_loading(false));
         }
     };
 
-    const handleUploadImages = async (images: File[], account: AccountField) => {
-        try {
-            dispatch(set_isLoading(true));
-            const fileNames: string[] = [];
-
-            for (let i: number = 0; i < images.length; i++) {
-                const resData_image = await uploadImage(images[i], account.id.toString());
-                if (!resData_image) {
-                    dispatch(
-                        setData_toastMessage({
-                            type: messageType_enum.ERROR,
-                            message: 'Đăng tải hình ảnh thất bại !',
-                        })
-                    );
-                    break;
-                }
-                // dispatch(
-                //     setData_toastMessage({
-                //         type: messageType_enum.SUCCESS,
-                //         message: 'Đăng tải hình ảnh thành công !',
-                //     })
-                // );
-
-                const fileName = resData_image.fileName;
-                fileNames.push(fileName);
-            }
-
-            return fileNames;
-        } catch (error) {
-            console.error(error);
-            dispatch(
-                setData_toastMessage({
-                    type: messageType_enum.ERROR,
-                    message: 'Đã có lỗi xảy ra !',
-                })
-            );
-        } finally {
-            dispatch(set_isLoading(false));
-        }
-    };
-
-    const handleImageIconClick = () => {
+    const handle_Image_Icon_Click = () => {
         imageInput_element.current?.click();
     };
 
-    const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Image_Change = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
 
         if (!files) return;
 
-        setImages((prev) => [...prev, ...(files || [])]);
+        set__images((prev) => [...prev, ...(files || [])]);
     };
 
-    const handleCloseImage = useCallback((index: number) => {
-        setImages((prev) => prev.filter((_, i) => i !== index));
+    const handle_Close_Image = useCallback((index: number) => {
+        set__images((prev) => prev.filter((_, i) => i !== index));
     }, []);
 
     const list_image = images.map((item, index) => {
-        return <OneImage file={item} index={index} key={index} handleCloseImage={handleCloseImage} />;
+        return <OneImage file={item} index={index} key={index} handle_Close_Image={handle_Close_Image} />;
     });
 
-    const list_type = [PostTypeEnum.FREE, PostTypeEnum.UPGRADE].map((item, index) => {
+    const list_type = [Post_Type_Enum.FREE, Post_Type_Enum.UPGRADE].map((item, index) => {
         let text: string = '';
 
         switch (item) {
-            case PostTypeEnum.FREE: {
+            case Post_Type_Enum.FREE: {
                 text = 'Miễn phí';
                 break;
             }
-            case PostTypeEnum.UPGRADE: {
+            case Post_Type_Enum.UPGRADE: {
                 text = 'Nâng cấp';
                 break;
             }
@@ -287,55 +281,60 @@ const CreatePost = () => {
     });
 
     return (
-        <div className={`${style.parent} ${isShowParent ? style.show : ''}`}>
+        <div className={`${style.parent} ${is_show_parent ? style.show : ''}`}>
             <div className={style.header}>
                 <div
-                    className={`${style.btn} ${isDisplayBtn ? style.display : ''} ${isShowBtn ? style.show : ''}`}
-                    onClick={() => handleHBtn()}
+                    className={`${style.btn} ${is_display_btn ? style.display : ''} ${is_show_btn ? style.show : ''}`}
+                    onClick={() => handle_H_Btn()}
                 >
                     {CREATE_POST}
                 </div>
                 <IoCloseOutline
-                    className={`${style.icon} ${isDisplayIcon ? style.display : ''} ${isShowIcon ? style.show : ''}`}
-                    onClick={() => handleHIcon()}
+                    className={`${style.icon} ${is_display_icon ? style.display : ''} ${is_show_icon ? style.show : ''}`}
+                    onClick={() => handle_H_Icon()}
                     size={25}
                 />
             </div>
             <div className={style.content}>
                 <div className={style.name}>
-                    <input value={name} onChange={(e) => handleName(e)} placeholder="Đặt tên dễ nhớ !" maxLength={50} />
+                    <input
+                        value={name}
+                        onChange={(e) => handle_Name(e)}
+                        placeholder="Đặt tên dễ nhớ !"
+                        maxLength={50}
+                    />
                 </div>
                 <div className={style.title}>
-                    <input value={title} onChange={(e) => handleTitle(e)} placeholder="Tiêu đề !" maxLength={255} />
+                    <input value={title} onChange={(e) => handle_Title(e)} placeholder="Tiêu đề !" maxLength={255} />
                 </div>
                 <div className={style.type}>
-                    <select value={type} onChange={(e) => handleType(e)}>
+                    <select value={type} onChange={(e) => handle_Type(e)}>
                         {list_type}
                     </select>
                 </div>
                 <div className={style.index}>
                     <div>
                         <div>Chọn thứ tự hiển thị bài viết</div>
-                        <input value={index} onChange={(e) => handleIndex(e)} />
+                        <input value={index} onChange={(e) => handle_Index(e)} />
                     </div>
                 </div>
                 <div>
-                    <TextEditor onChange={(value) => handleDescribe(value)} />
+                    <TextEditor onChange={(value) => handle_Describe(value)} />
                 </div>
                 <div className={style.icons}>
-                    <CiImageOn id={id_imageInput} onClick={handleImageIconClick} size={25} color="green" />
+                    <CiImageOn id={id_image_input} onClick={handle_Image_Icon_Click} size={25} color="green" />
                     <input
                         ref={imageInput_element}
-                        onChange={handleImageChange}
+                        onChange={handle_Image_Change}
                         type="file"
-                        id={id_imageInput}
+                        id={id_image_input}
                         accept="image/*"
                         multiple
                     />
                 </div>
                 <div className={style.images}>{list_image}</div>
                 <div className={style.btnContainer}>
-                    <div onClick={() => handleCreate()}>{CREATE_POST}</div>
+                    <div onClick={() => handle_Create()}>{CREATE_POST}</div>
                 </div>
             </div>
         </div>

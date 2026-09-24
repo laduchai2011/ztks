@@ -5,136 +5,136 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { IoCloseOutline } from 'react-icons/io5';
 import { CREATE_ORDER, TITLE } from '@src/const/text';
-import { useCreateOrderMutation } from '@src/redux/query/order_RTK';
-import { CreateOrderBodyField } from '@src/dataStruct/order/body';
-import { setData_toastMessage, set_isLoading, setNewOrder_createOrder } from '@src/redux/slice/Order';
+import { use_create_Order_Mutation } from '@src/redux/query/order_RTK';
+import { Create_Order_Body_Field } from '@src/data_struct/order/body';
+import { set__data__toast_message, set__is_loading, set__new_order__create_order } from '@src/redux/slice/Order';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const CreateOrder = () => {
     const dispatch = useDispatch<AppDispatch>();
     const location = useLocation();
-    const [isShowParent, setIsShowParent] = useState<boolean>(false);
-    const [isDisplayBtn, setIsDisplayBtn] = useState<boolean>(true);
-    const [isShowBtn, setIsShowBtn] = useState<boolean>(true);
-    const [isDisplayIcon, setIsDisplayIcon] = useState<boolean>(false);
-    const [isShowIcon, setIsShowIcon] = useState<boolean>(false);
-    const [chatRoomId, setChatRoomId] = useState<string>(location.state?.chatRoomId ?? '');
-    const [title, setTitle] = useState<string>('');
 
-    const [createOrder] = useCreateOrderMutation();
+    const [is_show_parent, set__is_show_parent] = useState<boolean>(false);
+    const [is_display_btn, set__is_display_btn] = useState<boolean>(true);
+    const [is_show_btn, set__is_show_btn] = useState<boolean>(true);
+    const [is_display_icon, set__is_display_icon] = useState<boolean>(false);
+    const [is_show_icon, set__is_show_icon] = useState<boolean>(false);
+    const [chat_room_id, set__chat_room_id] = useState<string>(location.state?.chat_room_id ?? '');
+    const [title, set__title] = useState<string>('');
 
-    const handleHBtn = () => {
-        setIsShowParent(true);
-        setIsShowBtn(false);
+    const [create_Order] = use_create_Order_Mutation();
+
+    const handle_H_Btn = () => {
+        set__is_show_parent(true);
+        set__is_show_btn(false);
         setTimeout(() => {
-            setIsDisplayBtn(false);
+            set__is_display_btn(false);
         }, 300);
-        setIsDisplayIcon(true);
+        set__is_display_icon(true);
         setTimeout(() => {
-            setIsShowIcon(true);
+            set__is_show_icon(true);
         }, 10);
     };
 
-    const handleHIcon = () => {
-        setIsShowParent(false);
-        setIsShowIcon(false);
+    const handle_H_Icon = () => {
+        set__is_show_parent(false);
+        set__is_show_icon(false);
         setTimeout(() => {
-            setIsDisplayIcon(false);
+            set__is_display_icon(false);
         }, 300);
-        setIsDisplayBtn(true);
+        set__is_display_btn(true);
         setTimeout(() => {
-            setIsShowBtn(true);
+            set__is_show_btn(true);
         }, 10);
     };
 
-    const handleChatRoomId = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setChatRoomId(e.target.value);
+    const handle_Chat_Room_Id = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__chat_room_id(e.target.value);
     };
 
-    const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setTitle(e.target.value);
+    const handle_Title = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__title(e.target.value);
     };
 
-    const handleCreate = () => {
+    const handle_Create = () => {
         const label = title.trim();
-        const chatRoomId_num = Number(chatRoomId);
 
         if (label.length === 0) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Vui lòng nhập tiêu đề !',
                 })
             );
             return;
         }
-        if (isNaN(chatRoomId_num) || chatRoomId_num <= 0) {
-            dispatch(
-                setData_toastMessage({
-                    type: messageType_enum.ERROR,
-                    message: 'Vui lòng nhập Id phòng chat hợp lệ !',
-                })
-            );
-            return;
-        }
+        // if (isNaN(chatRoomId_num) || chatRoomId_num <= 0) {
+        //     dispatch(
+        //         setData_toastMessage({
+        //             type: messageType_enum.ERROR,
+        //             message: 'Vui lòng nhập Id phòng chat hợp lệ !',
+        //         })
+        //     );
+        //     return;
+        // }
 
-        const body: CreateOrderBodyField = {
+        const body: Create_Order_Body_Field = {
             uuid: '',
             label: label,
             content: '',
             money: 0,
             phone: '',
-            chatRoomId: chatRoomId_num,
-            accountId: -1,
+            chat_room_id: chat_room_id.trim(),
+            account_id: '',
         };
-        dispatch(set_isLoading(true));
-        createOrder(body)
+        dispatch(set__is_loading(true));
+        create_Order(body)
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    dispatch(setNewOrder_createOrder(resData.data));
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    dispatch(set__new_order__create_order(res_data.data));
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.SUCCESS,
-                            message: resData.message,
+                            message: res_data.message,
                         })
                     );
                 } else {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.ERROR,
-                            message: resData?.message || 'Tạo đơn hàng thất bại !',
+                            message: res_data?.message || 'Tạo đơn hàng thất bại !',
                         })
                     );
                 }
             })
             .catch((err) => {
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: err?.response?.data?.message || 'Tạo đơn hàng thất bại !',
                     })
                 );
             })
             .finally(() => {
-                setTitle('');
-                setChatRoomId('');
-                dispatch(set_isLoading(false));
+                set__title('');
+                set__chat_room_id('');
+                dispatch(set__is_loading(false));
             });
     };
 
     return (
-        <div className={`${style.parent} ${isShowParent ? style.show : ''}`}>
+        <div className={`${style.parent} ${is_show_parent ? style.show : ''}`}>
             <div className={style.header}>
                 <div
-                    className={`${style.btn} ${isDisplayBtn ? style.display : ''} ${isShowBtn ? style.show : ''}`}
-                    onClick={() => handleHBtn()}
+                    className={`${style.btn} ${is_display_btn ? style.display : ''} ${is_show_btn ? style.show : ''}`}
+                    onClick={() => handle_H_Btn()}
                 >
                     {CREATE_ORDER}
                 </div>
                 <IoCloseOutline
-                    className={`${style.icon} ${isDisplayIcon ? style.display : ''} ${isShowIcon ? style.show : ''}`}
-                    onClick={() => handleHIcon()}
+                    className={`${style.icon} ${is_display_icon ? style.display : ''} ${is_show_icon ? style.show : ''}`}
+                    onClick={() => handle_H_Icon()}
                     size={25}
                 />
             </div>
@@ -146,19 +146,19 @@ const CreateOrder = () => {
                     <div>
                         <div>
                             <div>Id phòng chat</div>
-                            <input value={chatRoomId} onChange={(e) => handleChatRoomId(e)} />
+                            <input value={chat_room_id} onChange={(e) => handle_Chat_Room_Id(e)} />
                         </div>
                     </div>
                     <div>
                         <div>
                             <div>{TITLE}</div>
-                            <input value={title} onChange={(e) => handleTitle(e)} />
+                            <input value={title} onChange={(e) => handle_Title(e)} />
                         </div>
                     </div>
                 </div>
             </div>
             <div className={style.btnContainer}>
-                <button onClick={() => handleCreate()}>{CREATE_ORDER}</button>
+                <button onClick={() => handle_Create()}>{CREATE_ORDER}</button>
             </div>
         </div>
     );

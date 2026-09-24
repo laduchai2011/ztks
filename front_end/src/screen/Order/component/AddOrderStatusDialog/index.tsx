@@ -17,58 +17,64 @@ import {
     RETURN,
 } from '@src/const/text';
 import {
-    setData_toastMessage,
-    set_isLoading,
-    set_addOrderStatusDialog,
-    setFinal_addOrderStatusDialog,
+    set__data__toast_message,
+    set__is_loading,
+    set__add_order_status_dialog,
+    set__final__add_order_status_dialog,
 } from '@src/redux/slice/Order';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { AccountField } from '@src/dataStruct/account';
-import { OrderField } from '@src/dataStruct/order';
-import { CreateOrderStatusBodyField } from '@src/dataStruct/order/body';
-import { orderStatusType_type, orderStatusType_enum, defaultContents, defaultContent_type } from '../../type';
-import { useCreateOrderStatusMutation } from '@src/redux/query/order_RTK';
+import { Account_Field } from '@src/data_struct/account';
+import { Order_Field } from '@src/data_struct/order';
+import { Create_Order_Status_Body_Field } from '@src/data_struct/order/body';
+import {
+    Order_Status_Type_Type,
+    Order_Status_Type_Enum,
+    Default_Contents_Enum,
+    Default_Contents_Type,
+} from '../../type';
+import { use_create_Order_Status_Mutation } from '@src/redux/query/order_RTK';
 
 const AddOrderStatusDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
     const options_element = useRef<HTMLDivElement | null>(null);
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    const isShow: boolean = useSelector((state: RootState) => state.OrderSlice.addOrderStatusDialog.isShow);
-    const order: OrderField | undefined = useSelector(
-        (state: RootState) => state.OrderSlice.addOrderStatusDialog.order
+
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
+    const is_show: boolean = useSelector((state: RootState) => state.Order_Slice.add_order_status_dialog.is_show);
+    const order: Order_Field | undefined = useSelector(
+        (state: RootState) => state.Order_Slice.add_order_status_dialog.order
     );
-    const defaultOrderStatusType: orderStatusType_type | undefined = useSelector(
-        (state: RootState) => state.OrderSlice.addOrderStatusDialog.defaultOrderStatusType
+    const default_order_status_type: Order_Status_Type_Type | undefined = useSelector(
+        (state: RootState) => state.Order_Slice.add_order_status_dialog.default_order_status_type
     );
 
-    const [orderStatusType, setOrderStatusType] = useState<orderStatusType_type>(orderStatusType_enum.FREEDOM);
-    const [selectedDefaultContent, setSelectedDefaultContent] = useState<defaultContent_type>(defaultContents.NOT_PAY);
-    const [newFreedomContent, setNewFreedomContent] = useState<string>('');
-    const [createOrderStatusBody, setCreateOrderStatusBody] = useState<CreateOrderStatusBodyField>({
+    const [order_status_type, set__order_status_type] = useState<Order_Status_Type_Type>(
+        Order_Status_Type_Enum.FREEDOM
+    );
+    const [selected_default_content, set__selected_default_content] = useState<Default_Contents_Type>(
+        Default_Contents_Enum.NOT_PAY
+    );
+    const [new_freedom_content, set__new_freedom_content] = useState<string>('');
+    const [create_order_status_body, set__create_order_status_body] = useState<Create_Order_Status_Body_Field>({
         type: '',
         content: '',
-        orderId: -1,
-        accountId: -1,
+        order_id: '',
+        account_id: '',
     });
 
-    const [createOrderStatus] = useCreateOrderStatusMutation();
-
-    // useEffect(() => {
-    //     console.log('createOrderStatusBody', createOrderStatusBody);
-    // }, [createOrderStatusBody]);
+    const [create_Order_Status] = use_create_Order_Status_Mutation();
 
     useEffect(() => {
         if (!account) return;
-        setCreateOrderStatusBody((prev) => ({
+        set__create_order_status_body((prev) => ({
             ...prev,
-            accountId: account.id,
+            account_id: account.id,
         }));
     }, [account]);
 
     useEffect(() => {
         if (!order) return;
-        setCreateOrderStatusBody((prev) => ({
+        set__create_order_status_body((prev) => ({
             ...prev,
             orderId: order.id,
         }));
@@ -78,7 +84,7 @@ const AddOrderStatusDialog = () => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow) {
+        if (is_show) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -92,15 +98,15 @@ const AddOrderStatusDialog = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow]);
+    }, [is_show]);
 
     useEffect(() => {
-        if (defaultOrderStatusType) {
-            setOrderStatusType(defaultOrderStatusType);
+        if (default_order_status_type) {
+            set__order_status_type(default_order_status_type);
         } else {
-            setOrderStatusType(orderStatusType_enum.FREEDOM);
+            set__order_status_type(Order_Status_Type_Enum.FREEDOM);
         }
-    }, [defaultOrderStatusType]);
+    }, [default_order_status_type]);
 
     useEffect(() => {
         if (!options_element.current) return;
@@ -108,13 +114,13 @@ const AddOrderStatusDialog = () => {
         const freedomElement = optionsElement.children[0];
         const defaultElement = optionsElement.children[1];
 
-        switch (orderStatusType) {
-            case orderStatusType_enum.FREEDOM: {
+        switch (order_status_type) {
+            case Order_Status_Type_Enum.FREEDOM: {
                 freedomElement.classList.add(style.selected);
                 defaultElement.classList.remove(style.selected);
                 break;
             }
-            case orderStatusType_enum.DEFAULT: {
+            case Order_Status_Type_Enum.DEFAULT: {
                 freedomElement.classList.remove(style.selected);
                 defaultElement.classList.add(style.selected);
                 break;
@@ -126,39 +132,40 @@ const AddOrderStatusDialog = () => {
             }
         }
 
-        setCreateOrderStatusBody((prev) => ({
+        set__create_order_status_body((prev) => ({
             ...prev,
-            type: orderStatusType,
+            type: order_status_type,
         }));
-    }, [orderStatusType]);
+    }, [order_status_type]);
 
-    const handleOrderStatusType = (orderStatusType: orderStatusType_type) => {
-        setOrderStatusType(orderStatusType);
+    const handle_Order_Status_Type = (order_status_type: Order_Status_Type_Type) => {
+        set__order_status_type(order_status_type);
     };
 
-    const handSelectedDefaultContent = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const value = e.target.value as defaultContent_type;
-        setSelectedDefaultContent(value);
+    const hand_Selected_Default_Content = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = e.target.value as Default_Contents_Type;
+        set__selected_default_content(value);
     };
 
-    const handleNewFreedomContent = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_New_Freedom_Content = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setNewFreedomContent(value);
+        set__new_freedom_content(value);
     };
 
-    const handleClose = () => {
-        dispatch(set_addOrderStatusDialog({ isShow: false, order: undefined }));
+    const handle_Close = () => {
+        dispatch(set__add_order_status_dialog({ is_show: false, order: undefined }));
     };
 
-    const handleAgree = () => {
-        const createOrderStatusBody_cp = { ...createOrderStatusBody };
-        if (createOrderStatusBody_cp.type === orderStatusType_enum.DEFAULT) {
-            createOrderStatusBody_cp.content = selectedDefaultContent;
-        } else if (createOrderStatusBody_cp.type === orderStatusType_enum.FREEDOM) {
-            createOrderStatusBody_cp.content = newFreedomContent.trim();
+    const handle_Agree = () => {
+        const create_order_status_body_cp = { ...create_order_status_body };
+
+        if (create_order_status_body_cp.type === Order_Status_Type_Enum.DEFAULT) {
+            create_order_status_body_cp.content = selected_default_content;
+        } else if (create_order_status_body_cp.type === Order_Status_Type_Enum.FREEDOM) {
+            create_order_status_body_cp.content = new_freedom_content.trim();
         } else {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.NORMAL,
                     message: 'Kiểu trạng thái khôg hợp lệ !',
                 })
@@ -166,15 +173,15 @@ const AddOrderStatusDialog = () => {
             return;
         }
 
-        dispatch(set_isLoading(true));
-        createOrderStatus(createOrderStatusBody_cp)
+        dispatch(set__is_loading(true));
+        create_Order_Status(create_order_status_body_cp)
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    dispatch(setFinal_addOrderStatusDialog({ isShow: false, newOrderStatus: resData.data }));
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    dispatch(set__final__add_order_status_dialog({ is_show: false, new_order_status: res_data.data }));
                 } else {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.ERROR,
                             message: 'Thêm trạng thái không thành công !',
                         })
@@ -184,14 +191,14 @@ const AddOrderStatusDialog = () => {
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
     };
 
@@ -199,7 +206,7 @@ const AddOrderStatusDialog = () => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.closeContainer}>
-                    <IoMdClose onClick={() => handleClose()} size={25} title={CLOSE} />
+                    <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
                 <div className={style.contentContainer}>
                     <div className={style.label}>
@@ -207,35 +214,39 @@ const AddOrderStatusDialog = () => {
                     </div>
                     <div className={style.optionContainer}>
                         <div className={style.options} ref={options_element}>
-                            <div onClick={() => handleOrderStatusType(orderStatusType_enum.FREEDOM)}>{FREEDOM}</div>
-                            <div onClick={() => handleOrderStatusType(orderStatusType_enum.DEFAULT)}>{DEFAULT}</div>
+                            <div onClick={() => handle_Order_Status_Type(Order_Status_Type_Enum.FREEDOM)}>
+                                {FREEDOM}
+                            </div>
+                            <div onClick={() => handle_Order_Status_Type(Order_Status_Type_Enum.DEFAULT)}>
+                                {DEFAULT}
+                            </div>
                         </div>
                     </div>
                     <div className={style.selectedContentContainer}>
-                        {orderStatusType === orderStatusType_enum.DEFAULT && (
+                        {order_status_type === Order_Status_Type_Enum.DEFAULT && (
                             <div className={style.defaultSelection}>
                                 <div>Lựa chọn trạng thái mặc định</div>
                                 <div>
                                     <select
-                                        value={selectedDefaultContent}
-                                        onChange={(e) => handSelectedDefaultContent(e)}
+                                        value={selected_default_content}
+                                        onChange={(e) => hand_Selected_Default_Content(e)}
                                     >
-                                        <option value={defaultContents.NOT_PAY}>{NOT_PAY}</option>
-                                        <option value={defaultContents.PAID}>{PAID}</option>
-                                        <option value={defaultContents.NOT_SEND}>{NOT_SEND}</option>
-                                        <option value={defaultContents.SENT}>{SENT}</option>
-                                        <option value={defaultContents.RETURN}>{RETURN}</option>
+                                        <option value={Default_Contents_Enum.NOT_PAY}>{NOT_PAY}</option>
+                                        <option value={Default_Contents_Enum.PAID}>{PAID}</option>
+                                        <option value={Default_Contents_Enum.NOT_SEND}>{NOT_SEND}</option>
+                                        <option value={Default_Contents_Enum.SENT}>{SENT}</option>
+                                        <option value={Default_Contents_Enum.RETURN}>{RETURN}</option>
                                     </select>
                                 </div>
                             </div>
                         )}
-                        {orderStatusType === orderStatusType_enum.FREEDOM && (
+                        {order_status_type === Order_Status_Type_Enum.FREEDOM && (
                             <div className={style.freedomSelection}>
                                 <div>Điền trạng thái tùy chỉnh của bạn</div>
                                 <div>
                                     <input
-                                        value={newFreedomContent}
-                                        onChange={(e) => handleNewFreedomContent(e)}
+                                        value={new_freedom_content}
+                                        onChange={(e) => handle_New_Freedom_Content(e)}
                                         placeholder="Trạng thái mới"
                                     />
                                 </div>
@@ -244,8 +255,8 @@ const AddOrderStatusDialog = () => {
                     </div>
                 </div>
                 <div className={style.buttonContainer}>
-                    <button onClick={() => handleAgree()}>{AGREE}</button>
-                    <button onClick={() => handleClose()}>{EXIT}</button>
+                    <button onClick={() => handle_Agree()}>{AGREE}</button>
+                    <button onClick={() => handle_Close()}>{EXIT}</button>
                 </div>
             </div>
         </div>

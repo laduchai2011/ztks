@@ -15,30 +15,30 @@ import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import Header from '../Header';
 import { IoChevronBack } from 'react-icons/io5';
-import { setData_toastMessage } from '@src/redux/slice/Order';
+import { set__data__toast_message } from '@src/redux/slice/Order';
 import { route_enum } from '@src/router/type';
 
 const Order = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
-    const myId = sessionStorage.getItem('myId');
+    const my_id = sessionStorage.getItem('myId');
 
     useEffect(() => {
-        if (myId === null) {
+        if (my_id === null) {
             navigate(route_enum.SIGNIN);
         }
-    }, [navigate, myId]);
+    }, [navigate, my_id]);
 
     useEffect(() => {
         dispatch(
-            setData_toastMessage({
+            set__data__toast_message({
                 type: undefined,
                 message: '',
             })
         );
     }, [dispatch]);
 
-    const handleBack = () => {
+    const handle_Back = () => {
         navigate(-1);
     };
 
@@ -47,7 +47,7 @@ const Order = () => {
             <div className={style.main}>
                 <div className={style.header}>
                     <div>{ORDER}</div>
-                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                    <IoChevronBack onClick={() => handle_Back()} size={20} color="white" />
                 </div>
                 <CreateOrder />
                 <OrderList />

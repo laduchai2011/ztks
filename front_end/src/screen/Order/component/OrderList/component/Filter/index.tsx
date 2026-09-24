@@ -4,53 +4,56 @@ import { useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { PAY, MONEY, FROM, TO, SEARCH } from '@src/const/text';
-import { SelectFilterEnum, SelectFilterType } from './type';
-import { OrdersFilterBodyField } from '@src/dataStruct/order/body';
+import { Select_Filter_Enum, Select_Filter_Type } from './type';
+import { Orders_Filter_Body_Field } from '@src/data_struct/order/body';
 import { formatMoney } from '@src/utility/string';
 import { BsPinFill } from 'react-icons/bs';
 import { IoIosClose } from 'react-icons/io';
 import { isPositiveInteger } from '@src/utility/string';
-import { setData_toastMessage } from '@src/redux/slice/Order';
+import { set__data__toast_message } from '@src/redux/slice/Order';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
-const Filter: FC<{ handleGetOrders: (ordersFilterBody: OrdersFilterBodyField) => void }> = ({ handleGetOrders }) => {
+const Filter: FC<{ handle_Get_Orders: (orders_filter_body: Orders_Filter_Body_Field) => void }> = ({
+    handle_Get_Orders,
+}) => {
     const dispatch = useDispatch<AppDispatch>();
     const location = useLocation();
-    const [isPay, setIsPay] = useState<boolean>(true);
-    const [isNotPay, setIsNotPay] = useState<boolean>(true);
-    const [isDelete, setIsDelete] = useState<boolean>(true);
-    const [isNotDelete, setIsNotDelete] = useState<boolean>(true);
-    const [moneyFrom, setMoneyFrom] = useState<string>('');
-    const [isFormattingMoneyFrom, setIsFormattingMoneyFrom] = useState(false);
-    const [moneyTo, setMoneyTo] = useState<string>('');
-    const [isFormattingMoneyTo, setIsFormattingMoneyTo] = useState(false);
-    const [selectedValue, setSelectedValue] = useState<string>('');
-    const [selectedOption, setSelectedOption] = useState<SelectFilterType>(SelectFilterEnum.ChatRoomId);
-    const chatRoomId = location.state?.chatRoomId;
-    const [chatRoomId1, setChatRoomId1] = useState<string>('');
-    const [phoneNumber, setPhoneNumber] = useState<string>('');
-    const [orderUuid, setOrderUuid] = useState<string>('');
+
+    const [is_pay, set__is_pay] = useState<boolean>(true);
+    const [is_not_pay, set__is_not_pay] = useState<boolean>(true);
+    const [is_delete, set__is_delete] = useState<boolean>(true);
+    const [is_not_delete, set__is_not_delete] = useState<boolean>(true);
+    const [money_from, set__money_from] = useState<string>('');
+    const [is_formatting_money_from, set__is_formatting_money_from] = useState(false);
+    const [money_to, set__money_to] = useState<string>('');
+    const [is_formatting_money_to, set__is_formatting_money_to] = useState(false);
+    const [selected_value, set__selected_value] = useState<string>('');
+    const [selected_option, set__selected_option] = useState<Select_Filter_Type>(Select_Filter_Enum.Chat_Room_Id);
+    const chat_room_id = location.state?.chat_room_id;
+    const [chat_room_id1, set__chat_room_id1] = useState<string>('');
+    const [phone_number, set__phone_number] = useState<string>('');
+    const [order_uuid, set__order_uuid] = useState<string>('');
 
     useEffect(() => {
-        if (chatRoomId) {
-            setSelectedOption(SelectFilterEnum.ChatRoomId);
-            setSelectedValue(chatRoomId);
-            setChatRoomId1(chatRoomId);
+        if (chat_room_id) {
+            set__selected_option(Select_Filter_Enum.Chat_Room_Id);
+            set__selected_value(chat_room_id);
+            set__chat_room_id1(chat_room_id);
         }
-    }, [chatRoomId]);
+    }, [chat_room_id]);
 
     useEffect(() => {
-        switch (selectedOption) {
-            case SelectFilterEnum.ChatRoomId: {
-                setChatRoomId1(selectedValue.trim());
+        switch (selected_option) {
+            case Select_Filter_Enum.Chat_Room_Id: {
+                set__chat_room_id1(selected_value.trim());
                 break;
             }
-            case SelectFilterEnum.OrderUuid: {
-                setOrderUuid(selectedValue.trim());
+            case Select_Filter_Enum.Order_Uuid: {
+                set__order_uuid(selected_value.trim());
                 break;
             }
-            case SelectFilterEnum.PhoneNumber: {
-                setPhoneNumber(selectedValue.trim());
+            case Select_Filter_Enum.Phone_Number: {
+                set__phone_number(selected_value.trim());
                 break;
             }
             default: {
@@ -58,72 +61,72 @@ const Filter: FC<{ handleGetOrders: (ordersFilterBody: OrdersFilterBodyField) =>
                 break;
             }
         }
-    }, [selectedOption, selectedValue]);
+    }, [selected_option, selected_value]);
 
-    const handleSelected = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const value = e.target.value as SelectFilterType;
-        setSelectedOption(value);
+    const handle_Selected = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = e.target.value as Select_Filter_Type;
+        set__selected_option(value);
     };
 
-    const handleSelectedValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Selected_Value = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setSelectedValue(value);
+        set__selected_value(value);
     };
 
-    const handleCloseChatRoomId1 = () => {
-        setChatRoomId1('');
+    const handle_Close_Chat_Room_Id1 = () => {
+        set__chat_room_id1('');
     };
 
-    const handleClosePhoneNumber = () => {
-        setPhoneNumber('');
+    const handle_Close_Phone_Number = () => {
+        set__phone_number('');
     };
 
-    const handleCloseOrderUuid = () => {
-        setOrderUuid('');
+    const handle_Close_Order_Uuid = () => {
+        set__order_uuid('');
     };
 
-    const handleIsPay = () => {
-        setIsPay(!isPay);
+    const handle_Is_Pay = () => {
+        set__is_pay(!is_pay);
     };
 
-    const handleIsNotPay = () => {
-        setIsNotPay(!isNotPay);
+    const handle_Is_Not_Pay = () => {
+        set__is_not_pay(!is_not_pay);
     };
 
-    const handleIsDelete = () => {
-        setIsDelete(!isDelete);
+    const handle_Is_Delete = () => {
+        set__is_delete(!is_delete);
     };
 
-    const handleIsNotDelete = () => {
-        setIsNotDelete(!isNotDelete);
+    const handle_Is_Not_Delete = () => {
+        set__is_not_delete(!is_not_delete);
     };
 
-    const handleMoneyFrom = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        const raw = value.replace(/\D/g, '');
-        setMoneyFrom(raw);
-    };
-
-    const handleMoneyFromTo = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Money_From = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         const raw = value.replace(/\D/g, '');
-        setMoneyTo(raw);
+        set__money_from(raw);
     };
 
-    const handlePin = () => {
-        const inputValue = selectedValue.trim();
+    const handle_Money_From_To = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        const raw = value.replace(/\D/g, '');
+        set__money_to(raw);
+    };
 
-        switch (selectedOption) {
-            case SelectFilterEnum.ChatRoomId: {
-                setChatRoomId1(inputValue);
+    const handle_Pin = () => {
+        const input_value = selected_value.trim();
+
+        switch (selected_option) {
+            case Select_Filter_Enum.Chat_Room_Id: {
+                set__chat_room_id1(input_value);
                 break;
             }
-            case SelectFilterEnum.OrderUuid: {
-                setOrderUuid(inputValue);
+            case Select_Filter_Enum.Order_Uuid: {
+                set__order_uuid(input_value);
                 break;
             }
-            case SelectFilterEnum.PhoneNumber: {
-                setPhoneNumber(inputValue);
+            case Select_Filter_Enum.Phone_Number: {
+                set__phone_number(input_value);
                 break;
             }
             default: {
@@ -133,10 +136,10 @@ const Filter: FC<{ handleGetOrders: (ordersFilterBody: OrdersFilterBodyField) =>
         }
     };
 
-    const handleSearch = () => {
-        if (chatRoomId1.trim().length === 0) {
+    const handle_Search = () => {
+        if (chat_room_id1.trim().length === 0) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Vui lòng thêm Id phòng hội thoại !',
                 })
@@ -144,9 +147,9 @@ const Filter: FC<{ handleGetOrders: (ordersFilterBody: OrdersFilterBodyField) =>
             return;
         }
 
-        if (!isPositiveInteger(chatRoomId1)) {
+        if (!isPositiveInteger(chat_room_id1)) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Id phòng chat phải là 1 số nguyên dương !',
                 })
@@ -154,98 +157,98 @@ const Filter: FC<{ handleGetOrders: (ordersFilterBody: OrdersFilterBodyField) =>
             return;
         }
 
-        if (selectedValue.length === 0) return;
+        if (selected_value.length === 0) return;
 
-        const filterBody: OrdersFilterBodyField = {
+        const filter_body: Orders_Filter_Body_Field = {
             page: 1,
             size: 5,
-            chatRoomId: Number(chatRoomId1),
-            accountId: -1,
+            chat_room_id: chat_room_id1,
+            account_id: '',
         };
 
-        const newFilterBody = { ...filterBody };
+        const new_filter_body = { ...filter_body };
 
-        if (isPay && isNotPay) {
-            newFilterBody.isPay = undefined;
-        } else if (isPay) {
-            newFilterBody.isPay = true;
-        } else if (isNotPay) {
-            newFilterBody.isPay = false;
+        if (is_pay && is_not_pay) {
+            new_filter_body.is_pay = undefined;
+        } else if (is_pay) {
+            new_filter_body.is_pay = true;
+        } else if (is_not_pay) {
+            new_filter_body.is_pay = false;
         }
 
-        if (moneyFrom.length > 0) {
-            newFilterBody.moneyFrom = Number(moneyFrom);
+        if (money_from.length > 0) {
+            new_filter_body.money_from = Number(money_from);
         }
 
-        if (moneyTo.length > 0) {
-            newFilterBody.moneyTo = Number(moneyTo);
+        if (money_to.length > 0) {
+            new_filter_body.money_to = Number(money_to);
         }
 
-        if (phoneNumber.trim().length > 0) {
-            newFilterBody.phone = phoneNumber.trim();
+        if (phone_number.trim().length > 0) {
+            new_filter_body.phone = phone_number.trim();
         }
 
-        if (orderUuid.trim().length > 0) {
-            newFilterBody.uuid = phoneNumber.trim();
+        if (order_uuid.trim().length > 0) {
+            new_filter_body.uuid = order_uuid.trim();
         }
 
-        if (isDelete && isNotDelete) {
-            newFilterBody.isDelete = undefined;
-        } else if (isDelete) {
-            newFilterBody.isDelete = true;
-        } else if (isNotDelete) {
-            newFilterBody.isDelete = false;
+        if (is_delete && is_not_delete) {
+            new_filter_body.is_delete = undefined;
+        } else if (is_delete) {
+            new_filter_body.is_delete = true;
+        } else if (is_not_delete) {
+            new_filter_body.is_delete = false;
         }
 
-        handleGetOrders(newFilterBody);
+        handle_Get_Orders(new_filter_body);
     };
 
     return (
         <div className={style.parent}>
             <div className={style.searchInput}>
-                <select onChange={(e) => handleSelected(e)} value={selectedOption}>
-                    <option value={SelectFilterEnum.ChatRoomId}>Mã phòng chat</option>
-                    <option value={SelectFilterEnum.OrderUuid}>Mã đơn hàng</option>
-                    <option value={SelectFilterEnum.PhoneNumber}>Số điện thoại</option>
+                <select onChange={(e) => handle_Selected(e)} value={selected_option}>
+                    <option value={Select_Filter_Enum.Chat_Room_Id}>Mã phòng chat</option>
+                    <option value={Select_Filter_Enum.Order_Uuid}>Mã đơn hàng</option>
+                    <option value={Select_Filter_Enum.Phone_Number}>Số điện thoại</option>
                 </select>
-                <input value={selectedValue} onChange={(e) => handleSelectedValue(e)} placeholder="Mã" />
-                <BsPinFill onClick={() => handlePin()} />
+                <input value={selected_value} onChange={(e) => handle_Selected_Value(e)} placeholder="Mã" />
+                <BsPinFill onClick={() => handle_Pin()} />
             </div>
             <div className={style.selectedValue}>
-                {chatRoomId1.trim().length > 0 && (
+                {chat_room_id1.trim().length > 0 && (
                     <div>
-                        <div>{`Phòng chat (${chatRoomId1})`}</div>
-                        <IoIosClose onClick={() => handleCloseChatRoomId1()} />
+                        <div>{`Phòng chat (${chat_room_id1})`}</div>
+                        <IoIosClose onClick={() => handle_Close_Chat_Room_Id1()} />
                     </div>
                 )}
-                {phoneNumber.trim().length > 0 && (
+                {phone_number.trim().length > 0 && (
                     <div>
-                        <div>{`Sđt (${phoneNumber})`}</div>
-                        <IoIosClose onClick={() => handleClosePhoneNumber()} />
+                        <div>{`Sđt (${phone_number})`}</div>
+                        <IoIosClose onClick={() => handle_Close_Phone_Number()} />
                     </div>
                 )}
-                {orderUuid.trim().length > 0 && (
+                {order_uuid.trim().length > 0 && (
                     <div>
-                        <div>{`Đơn hàng (${orderUuid})`}</div>
-                        <IoIosClose onClick={() => handleCloseOrderUuid()} />
+                        <div>{`Đơn hàng (${order_uuid})`}</div>
+                        <IoIosClose onClick={() => handle_Close_Order_Uuid()} />
                     </div>
                 )}
             </div>
             <div className={style.checks}>
                 <div>
-                    <input type="checkbox" checked={isPay} onChange={() => handleIsPay()} />
+                    <input type="checkbox" checked={is_pay} onChange={() => handle_Is_Pay()} />
                     <div>{PAY}</div>
                 </div>
                 <div>
-                    <input type="checkbox" checked={isNotPay} onChange={() => handleIsNotPay()} />
+                    <input type="checkbox" checked={is_not_pay} onChange={() => handle_Is_Not_Pay()} />
                     <div>{PAY}</div>
                 </div>
                 <div>
-                    <input type="checkbox" checked={isDelete} onChange={() => handleIsDelete()} />
+                    <input type="checkbox" checked={is_delete} onChange={() => handle_Is_Delete()} />
                     <div>Đã xóa</div>
                 </div>
                 <div>
-                    <input type="checkbox" checked={isNotDelete} onChange={() => handleIsNotDelete()} />
+                    <input type="checkbox" checked={is_not_delete} onChange={() => handle_Is_Not_Delete()} />
                     <div>Chưa xóa</div>
                 </div>
             </div>
@@ -253,23 +256,23 @@ const Filter: FC<{ handleGetOrders: (ordersFilterBody: OrdersFilterBodyField) =>
                 <div>{MONEY}</div>
                 <div className={style.txt}>{FROM}</div>
                 <input
-                    value={isFormattingMoneyFrom && moneyFrom ? formatMoney(moneyFrom) : moneyFrom}
-                    onChange={handleMoneyFrom}
-                    onFocus={() => setIsFormattingMoneyFrom(false)}
-                    onBlur={() => setIsFormattingMoneyFrom(true)}
+                    value={is_formatting_money_from && money_from ? formatMoney(money_from) : money_from}
+                    onChange={handle_Money_From}
+                    onFocus={() => set__is_formatting_money_from(false)}
+                    onBlur={() => set__is_formatting_money_from(true)}
                     placeholder="VND"
                 />
                 <div className={style.txt}>{TO}</div>
                 <input
-                    value={isFormattingMoneyTo && moneyTo ? formatMoney(moneyTo) : moneyTo}
-                    onChange={handleMoneyFromTo}
-                    onFocus={() => setIsFormattingMoneyTo(false)}
-                    onBlur={() => setIsFormattingMoneyTo(true)}
+                    value={is_formatting_money_to && money_to ? formatMoney(money_to) : money_to}
+                    onChange={handle_Money_From_To}
+                    onFocus={() => set__is_formatting_money_to(false)}
+                    onBlur={() => set__is_formatting_money_to(true)}
                     placeholder="VND"
                 />
             </div>
             <div className={style.searchContainer}>
-                <div onClick={() => handleSearch()}>{SEARCH}</div>
+                <div onClick={() => handle_Search()}>{SEARCH}</div>
             </div>
         </div>
     );

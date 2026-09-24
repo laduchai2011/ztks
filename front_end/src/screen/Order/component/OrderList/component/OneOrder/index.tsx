@@ -22,165 +22,170 @@ import { CiEdit } from 'react-icons/ci';
 import { MdDelete } from 'react-icons/md';
 import { IoAddCircle } from 'react-icons/io5';
 import {
-    set_editOrderDialog,
-    setIsShow_payDialog,
-    set_addOrderStatusDialog,
-    setData_toastMessage,
-    set_isLoading,
-    setOrder_payDialog,
-    setIsShow_voucherDialog,
-    setOrder_voucherDialog,
+    set__edit_order_dialog,
+    set__is_show__pay_dialog,
+    set__add_order_status_dialog,
+    set__data__toast_message,
+    set__is_loading,
+    set__order__pay_dialog,
+    set__is_show__voucher_dialog,
+    set__order__voucher_dialog,
 } from '@src/redux/slice/Order';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { OrderField, OrderStatusField } from '@src/dataStruct/order';
-import { VoucherField } from '@src/dataStruct/voucher';
+import { Order_Field, Order_Status_Field } from '@src/data_struct/order';
+import { Voucher_Field } from '@src/data_struct/voucher';
 import { formatMoney } from '@src/utility/string';
 import { timeAgoSmart } from '@src/utility/time';
-import { orderStatusType_enum, orderStatusType_type, defaultContents } from '@src/screen/Order/type';
-import { useLazyGetAllOrderStatusQuery } from '@src/redux/query/order_RTK';
-import { useLazyGetVoucherWithOrderIdQuery } from '@src/redux/query/voucher_RTK';
+import { Order_Status_Type_Enum, Order_Status_Type_Type, Default_Contents_Enum } from '@src/screen/Order/type';
+import { useLazy_get_All_Order_Status_Query } from '@src/redux/query/order_RTK';
+import { useLazy_get_Voucher_With_Order_Id_Query } from '@src/redux/query/voucher_RTK';
 
-const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
+const OneOrder: FC<{ index: number; data: Order_Field }> = ({ index, data }) => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
-    const newOrderEdit: OrderField | undefined = useSelector(
-        (state: RootState) => state.OrderSlice.editOrderDialog.newOrder
-    );
-    const newOrderStatus: OrderStatusField | undefined = useSelector(
-        (state: RootState) => state.OrderSlice.addOrderStatusDialog.newOrderStatus
-    );
-    const newOrderPaid: OrderField | undefined = useSelector((state: RootState) => state.OrderSlice.payDialog.newOrder);
-    const payText_element = useRef<HTMLDivElement | null>(null);
-    const [order, setOrder] = useState<OrderField>(data);
-    const [payText, setPayText] = useState<string>('Chưa thanh toán');
-    const [orderStatus, setOrderStatus] = useState<OrderStatusField[]>([]);
-    const [selectedVoucher, setSelectedVoucher] = useState<VoucherField | undefined>(undefined);
-    const [finalMoney, setFinalMoney] = useState<number>(0);
 
-    const [getAllOrderStatus] = useLazyGetAllOrderStatusQuery();
-    const [getVoucherWithOrderId] = useLazyGetVoucherWithOrderIdQuery();
+    const new_order_edit: Order_Field | undefined = useSelector(
+        (state: RootState) => state.Order_Slice.edit_order_dialog.new_order
+    );
+    const new_order_status: Order_Status_Field | undefined = useSelector(
+        (state: RootState) => state.Order_Slice.add_order_status_dialog.new_order_status
+    );
+    const new_order_paid: Order_Field | undefined = useSelector(
+        (state: RootState) => state.Order_Slice.pay_dialog.new_order
+    );
+
+    const payText_element = useRef<HTMLDivElement | null>(null);
+
+    const [order, set__order] = useState<Order_Field>(data);
+    const [pay_text, set__pay_text] = useState<string>('Chưa thanh toán');
+    const [order_status, set__order_status] = useState<Order_Status_Field[]>([]);
+    const [selected_voucher, set__selected_voucher] = useState<Voucher_Field | undefined>(undefined);
+    const [final_money, set__final_money] = useState<number>(0);
+
+    const [get_All_Order_Status] = useLazy_get_All_Order_Status_Query();
+    const [get_Voucher_With_Order_Id] = useLazy_get_Voucher_With_Order_Id_Query();
 
     useEffect(() => {
         if (!payText_element.current) return;
         const payTextElement = payText_element.current;
-        if (order.isPay) {
-            setPayText('Đã thanh toán');
+        if (order.is_pay) {
+            set__pay_text('Đã thanh toán');
             payTextElement.classList.add(style.paid);
         } else {
-            setPayText('Chưa thanh toán');
+            set__pay_text('Chưa thanh toán');
             payTextElement.classList.remove(style.paid);
         }
     }, [order]);
 
     useEffect(() => {
-        if (!newOrderEdit) return;
-        setOrder((prev) => {
-            if (newOrderEdit.id === prev.id) {
-                return newOrderEdit;
+        if (!new_order_edit) return;
+        set__order((prev) => {
+            if (new_order_edit.id === prev.id) {
+                return new_order_edit;
             } else {
                 return prev;
             }
         });
-    }, [newOrderEdit]);
+    }, [new_order_edit]);
 
     useEffect(() => {
-        if (!newOrderPaid) return;
-        setOrder((prev) => {
-            if (newOrderPaid.id === prev.id) {
-                return newOrderPaid;
+        if (!new_order_paid) return;
+        set__order((prev) => {
+            if (new_order_paid.id === prev.id) {
+                return new_order_paid;
             } else {
                 return prev;
             }
         });
-    }, [newOrderPaid]);
+    }, [new_order_paid]);
 
     useEffect(() => {
-        if (!newOrderStatus) return;
-        if (newOrderStatus.orderId === order.id) {
-            setOrderStatus((prev) => [newOrderStatus, ...prev]);
+        if (!new_order_status) return;
+        if (new_order_status.order_id === order.id) {
+            set__order_status((prev) => [new_order_status, ...prev]);
         }
-    }, [newOrderStatus, order.id]);
+    }, [new_order_status, order.id]);
 
     useEffect(() => {
         if (!order) return;
-        if (selectedVoucher) {
+        if (selected_voucher) {
             const final_money: number =
-                order.money - selectedVoucher.money >= 0 ? order.money - selectedVoucher.money : 0;
-            setFinalMoney(final_money);
+                order.money - selected_voucher.money >= 0 ? order.money - selected_voucher.money : 0;
+            set__final_money(final_money);
         } else {
-            setFinalMoney(order.money);
+            set__final_money(order.money);
         }
-    }, [selectedVoucher, order]);
+    }, [selected_voucher, order]);
 
     useEffect(() => {
-        dispatch(set_isLoading(true));
-        getAllOrderStatus({ orderId: order.id })
+        dispatch(set__is_loading(true));
+        get_All_Order_Status({ order_id: order.id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setOrderStatus(resData.data);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__order_status(res_data.data);
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Đã có lỗi xảy ra !',
                     })
                 );
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
-    }, [dispatch, getAllOrderStatus, order.id]);
+    }, [dispatch, get_All_Order_Status, order.id]);
 
     useEffect(() => {
-        getVoucherWithOrderId({ orderId: order.id })
+        get_Voucher_With_Order_Id({ order_id: order.id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setSelectedVoucher(resData.data);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__selected_voucher(res_data.data);
                 }
             })
             .catch((err) => {
                 console.error(err);
             });
-    }, [order, getVoucherWithOrderId]);
+    }, [order, get_Voucher_With_Order_Id]);
 
-    const handleOpenEdit = () => {
-        dispatch(set_editOrderDialog({ isShow: true, order: order }));
+    const handle_Open_Edit = () => {
+        dispatch(set__edit_order_dialog({ is_show: true, order: order }));
     };
 
-    const handleDelete = () => {
+    const handle_Delete = () => {
         dispatch(
-            setData_toastMessage({
+            set__data__toast_message({
                 type: messageType_enum.NORMAL,
                 message: 'Tính năng chưa hoạt động !',
             })
         );
     };
 
-    const handleGoToChat = () => {
-        navigate(route_enum.MESSAGE1 + '/' + `${order.chatRoomId}`);
+    const handle_Go_To_Chat = () => {
+        navigate(route_enum.MESSAGE1 + '/' + `${order.chat_room_id}`);
     };
 
-    const handleOpenPay = () => {
-        dispatch(setIsShow_payDialog(true));
-        dispatch(setOrder_payDialog(order));
+    const handle_Open_Pay = () => {
+        dispatch(set__is_show__pay_dialog(true));
+        dispatch(set__order__pay_dialog(order));
     };
 
-    const handleOpenVoucherList = () => {
-        dispatch(setIsShow_voucherDialog(true));
-        dispatch(setOrder_voucherDialog(order));
+    const handle_Open_Voucher_List = () => {
+        dispatch(set__is_show__voucher_dialog(true));
+        dispatch(set__order__voucher_dialog(order));
     };
 
-    const handleOpenOrderStatus = (option: orderStatusType_type) => {
-        dispatch(set_addOrderStatusDialog({ isShow: true, order: order, defaultOrderStatusType: option }));
+    const handle_Open_Order_Status = (option: Order_Status_Type_Type) => {
+        dispatch(set__add_order_status_dialog({ is_show: true, order: order, default_order_status_type: option }));
     };
 
-    const list_orderStatus = orderStatus.map((item, index) => {
-        if (item.type === orderStatusType_enum.FREEDOM) {
+    const list_order_status = order_status.map((item, index) => {
+        if (item.type === Order_Status_Type_Enum.FREEDOM) {
             return (
                 <div key={index}>
                     <div>{item.content}</div>
@@ -188,26 +193,26 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
                 </div>
             );
         }
-        if (item.type === orderStatusType_enum.DEFAULT) {
+        if (item.type === Order_Status_Type_Enum.DEFAULT) {
             let content: string = '';
             switch (item.content) {
-                case defaultContents.NOT_PAY: {
+                case Default_Contents_Enum.NOT_PAY: {
                     content = NOT_PAY;
                     break;
                 }
-                case defaultContents.PAID: {
+                case Default_Contents_Enum.PAID: {
                     content = PAID;
                     break;
                 }
-                case defaultContents.NOT_SEND: {
+                case Default_Contents_Enum.NOT_SEND: {
                     content = NOT_SEND;
                     break;
                 }
-                case defaultContents.SENT: {
+                case Default_Contents_Enum.SENT: {
                     content = SENT;
                     break;
                 }
-                case defaultContents.RETURN: {
+                case Default_Contents_Enum.RETURN: {
                     content = RETURN;
                     break;
                 }
@@ -232,8 +237,8 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
                 <div>{index}</div>
                 <div>{order.uuid}</div>
                 <div>
-                    <CiEdit onClick={() => handleOpenEdit()} size={22} color="green" />
-                    <MdDelete onClick={() => handleDelete()} size={22} color="red" />
+                    <CiEdit onClick={() => handle_Open_Edit()} size={22} color="green" />
+                    <MdDelete onClick={() => handle_Delete()} size={22} color="red" />
                 </div>
             </div>
             <div className={style.label}>
@@ -249,23 +254,23 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
                 <div>{order.phone}</div>
             </div>
             <div className={style.chat}>
-                <div onClick={() => handleGoToChat()}>{CHAT}</div>
-                <div>{order.chatRoomId}</div>
+                <div onClick={() => handle_Go_To_Chat()}>{CHAT}</div>
+                <div>{order.chat_room_id}</div>
             </div>
             <div className={style.isPay}>
                 <div>{PAY}</div>
-                <div>{formatMoney(finalMoney)}</div>
-                <div ref={payText_element}>{payText}</div>
-                <div>{!order.isPay && <button onClick={() => handleOpenPay()}>{PAY}</button>}</div>
+                <div>{formatMoney(final_money)}</div>
+                <div ref={payText_element}>{pay_text}</div>
+                <div>{!order.is_pay && <button onClick={() => handle_Open_Pay()}>{PAY}</button>}</div>
             </div>
             <div className={style.voucher}>
                 <div className={style.text}>
-                    {!selectedVoucher && <div className={style.not}>Chưa áp dụng voucher</div>}
-                    {selectedVoucher && <div className={style.ed}>Đã áp dụng voucher</div>}
+                    {!selected_voucher && <div className={style.not}>Chưa áp dụng voucher</div>}
+                    {selected_voucher && <div className={style.ed}>Đã áp dụng voucher</div>}
                 </div>
-                <div className={style.isUsed}>{selectedVoucher && <div>Voucher</div>}</div>
+                <div className={style.isUsed}>{selected_voucher && <div>Voucher</div>}</div>
                 <div className={style.list}>
-                    <div onClick={() => handleOpenVoucherList()}>Danh sách</div>
+                    <div onClick={() => handle_Open_Voucher_List()}>Danh sách</div>
                 </div>
             </div>
             <div className={style.status}>
@@ -273,7 +278,7 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
                     <div>
                         <div>{FREEDOM}</div>
                         <IoAddCircle
-                            onClick={() => handleOpenOrderStatus(orderStatusType_enum.FREEDOM)}
+                            onClick={() => handle_Open_Order_Status(Order_Status_Type_Enum.FREEDOM)}
                             size={20}
                             color="greenyellow"
                         />
@@ -281,15 +286,15 @@ const OneOrder: FC<{ index: number; data: OrderField }> = ({ index, data }) => {
                     <div>
                         <div>{DEFAULT}</div>
                         <IoAddCircle
-                            onClick={() => handleOpenOrderStatus(orderStatusType_enum.DEFAULT)}
+                            onClick={() => handle_Open_Order_Status(Order_Status_Type_Enum.DEFAULT)}
                             size={20}
                             color="greenyellow"
                         />
                     </div>
                 </div>
-                {list_orderStatus}
+                {list_order_status}
             </div>
-            <div className={style.time}>{timeAgoSmart(data.createTime)}</div>
+            <div className={style.time}>{timeAgoSmart(data.create_time)}</div>
         </div>
     );
 };

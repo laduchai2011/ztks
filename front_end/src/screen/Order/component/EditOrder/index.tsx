@@ -5,43 +5,46 @@ import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE, AGREE, EXIT, PHONE_NUMBER, CONTENT, TITLE, MONEY } from '@src/const/text';
 import {
-    setData_toastMessage,
-    set_isLoading,
-    set_editOrderDialog,
-    setFinal_editOrderDialog,
+    set__data__toast_message,
+    set__is_loading,
+    set__edit_order_dialog,
+    set__final__edit_order_dialog,
 } from '@src/redux/slice/Order';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import TextEditor from '@src/component/TextEditor';
-import { AccountField } from '@src/dataStruct/account';
-import { OrderField } from '@src/dataStruct/order';
-import { UpdateOrderBodyField } from '@src/dataStruct/order/body';
+import { Account_Field } from '@src/data_struct/account';
+import { Order_Field } from '@src/data_struct/order';
+import { Update_Order_Body_Field } from '@src/data_struct/order/body';
 import { isValidPhoneNumber } from '@src/utility/string';
 import { formatMoney } from '@src/utility/string';
-import { useUpdateOrderMutation } from '@src/redux/query/order_RTK';
+import { use_update_Order_Mutation } from '@src/redux/query/order_RTK';
 
 const EditOrder = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    const isShow: boolean = useSelector((state: RootState) => state.OrderSlice.editOrderDialog.isShow);
-    const order: OrderField | undefined = useSelector((state: RootState) => state.OrderSlice.editOrderDialog.order);
-    const [newOrder, setNewOrder] = useState<OrderField | undefined>(order);
-    const [content, setContent] = useState<string>('');
-    const [money, setMoney] = useState<string>('');
-    const [isFormattingMoney, setIsFormattingMoney] = useState(false);
-    const [updateOrder] = useUpdateOrderMutation();
+
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
+    const is_show: boolean = useSelector((state: RootState) => state.Order_Slice.edit_order_dialog.is_show);
+    const order: Order_Field | undefined = useSelector((state: RootState) => state.Order_Slice.edit_order_dialog.order);
+
+    const [new_order, set__new_order] = useState<Order_Field | undefined>(order);
+    const [content, set__content] = useState<string>('');
+    const [money, set__money] = useState<string>('');
+    const [is_formatting_money, set__is_formatting_money] = useState(false);
+
+    const [update_Order] = use_update_Order_Mutation();
 
     useEffect(() => {
         if (!order) return;
-        setNewOrder(order);
-        setMoney(order.money.toString());
+        set__new_order(order);
+        set__money(order.money.toString());
     }, [order]);
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow) {
+        if (is_show) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -55,125 +58,132 @@ const EditOrder = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow]);
+    }, [is_show]);
 
-    const handleClose = () => {
-        dispatch(set_editOrderDialog({ isShow: false, order: undefined }));
+    const handle_Close = () => {
+        dispatch(set__edit_order_dialog({ is_show: false, order: undefined }));
     };
 
-    const handleAgree = () => {
+    const handle_Agree = () => {
         if (!account) return;
-        if (!newOrder) return;
+        if (!new_order) return;
 
-        const label_t = newOrder.label.trim();
+        const label_t = new_order.label.trim();
         if (label_t.length === 0) {
-            dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Tiêu đề không được để trống !' }));
+            dispatch(
+                set__data__toast_message({ type: messageType_enum.ERROR, message: 'Tiêu đề không được để trống !' })
+            );
             return;
         }
 
-        const phone_t = newOrder.phone.trim();
+        const phone_t = new_order.phone.trim();
         if (phone_t.length > 0 && !isValidPhoneNumber(phone_t)) {
-            dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Số điện thoại không hợp lệ !' }));
+            dispatch(
+                set__data__toast_message({ type: messageType_enum.ERROR, message: 'Số điện thoại không hợp lệ !' })
+            );
             return;
         }
 
-        const orderBody: UpdateOrderBodyField = {
-            id: newOrder.id,
+        const order_body: Update_Order_Body_Field = {
+            id: new_order.id,
             label: label_t,
             content: content,
             money: Number(money),
             phone: phone_t,
-            accountId: account.id,
+            account_id: account.id,
         };
 
-        dispatch(set_isLoading(true));
-        updateOrder(orderBody)
+        dispatch(set__is_loading(true));
+        update_Order(order_body)
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    dispatch(setFinal_editOrderDialog({ isShow: false, newOrder: resData.data }));
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    dispatch(set__final__edit_order_dialog({ is_show: false, new_order: res_data.data }));
                     dispatch(
-                        setData_toastMessage({ type: messageType_enum.SUCCESS, message: 'Cập nhật thành công !' })
+                        set__data__toast_message({ type: messageType_enum.SUCCESS, message: 'Cập nhật thành công !' })
                     );
                 } else {
                     dispatch(
-                        setData_toastMessage({ type: messageType_enum.ERROR, message: 'Cập nhật không thành công !' })
+                        set__data__toast_message({
+                            type: messageType_enum.ERROR,
+                            message: 'Cập nhật không thành công !',
+                        })
                     );
                 }
             })
             .catch((err) => {
                 dispatch(
-                    setData_toastMessage({ type: messageType_enum.ERROR, message: 'Cập nhật không thành công !' })
+                    set__data__toast_message({ type: messageType_enum.ERROR, message: 'Cập nhật không thành công !' })
                 );
                 console.error(err);
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
     };
 
-    const handleLabel = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!newOrder) return;
-        setNewOrder({ ...newOrder, label: e.target.value });
+    const handle_Label = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!new_order) return;
+        set__new_order({ ...new_order, label: e.target.value });
     };
 
-    const handleContent = (value: string) => {
-        setContent(value);
+    const handle_Content = (value: string) => {
+        set__content(value);
     };
 
-    const handlePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!newOrder) return;
-        setNewOrder({ ...newOrder, phone: e.target.value });
+    const handle_Phone = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!new_order) return;
+        set__new_order({ ...new_order, phone: e.target.value });
     };
 
-    const handleMoney = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Money = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         const raw = value.replace(/\D/g, '');
-        setMoney(raw);
+        set__money(raw);
     };
 
     return (
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.closeContainer}>
-                    <IoMdClose onClick={() => handleClose()} size={25} title={CLOSE} />
+                    <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
-                <div className={style.uuidContainer}>{newOrder?.uuid}</div>
+                <div className={style.uuidContainer}>{new_order?.uuid}</div>
                 <div className={style.contentContainer}>
                     <div className={style.label}>
                         <div>{TITLE}</div>
                         <div>
-                            <input value={newOrder?.label || ''} onChange={(e) => handleLabel(e)} />
+                            <input value={new_order?.label || ''} onChange={(e) => handle_Label(e)} />
                         </div>
                     </div>
                     <div className={style.content}>
                         <div>{CONTENT}</div>
                         <div>
-                            <TextEditor value={newOrder?.content} onChange={(value) => handleContent(value)} />
+                            <TextEditor value={new_order?.content} onChange={(value) => handle_Content(value)} />
                         </div>
                     </div>
                     <div className={style.phone}>
                         <div>{PHONE_NUMBER}</div>
                         <div>
-                            <input value={newOrder?.phone || ''} onChange={(e) => handlePhone(e)} />
+                            <input value={new_order?.phone || ''} onChange={(e) => handle_Phone(e)} />
                         </div>
                     </div>
                     <div className={style.money}>
                         <div>{MONEY}</div>
                         <div>
                             <input
-                                value={isFormattingMoney && money ? formatMoney(money) : money}
-                                onChange={handleMoney}
-                                onFocus={() => setIsFormattingMoney(false)}
-                                onBlur={() => setIsFormattingMoney(true)}
+                                value={is_formatting_money && money ? formatMoney(money) : money}
+                                onChange={handle_Money}
+                                onFocus={() => set__is_formatting_money(false)}
+                                onBlur={() => set__is_formatting_money(true)}
                                 placeholder="VND"
                             />
                         </div>
                     </div>
                 </div>
                 <div className={style.buttonContainer}>
-                    <button onClick={() => handleAgree()}>{AGREE}</button>
-                    <button onClick={() => handleClose()}>{EXIT}</button>
+                    <button onClick={() => handle_Agree()}>{AGREE}</button>
+                    <button onClick={() => handle_Close()}>{EXIT}</button>
                 </div>
             </div>
         </div>

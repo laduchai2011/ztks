@@ -2,31 +2,31 @@ import { memo, FC, useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { IoIosCloseCircle } from 'react-icons/io';
 
-const OneImage: FC<{ file: File; index: number; handleCloseImage: (index: number) => void }> = ({
+const OneImage: FC<{ file: File; index: number; handle_Close_Image: (index: number) => void }> = ({
     file,
     index,
-    handleCloseImage,
+    handle_Close_Image,
 }) => {
-    const [preView, setPreView] = useState<string>('');
+    const [pre_view, set__pre_view] = useState<string>('');
 
     useEffect(() => {
         const _preView = URL.createObjectURL(file);
-        setPreView(_preView);
+        set__pre_view(_preView);
 
         return () => {
             URL.revokeObjectURL(_preView);
-            setPreView('');
+            set__pre_view('');
         };
     }, [file]);
 
-    const handleClose = () => {
-        handleCloseImage(index);
+    const handle_Close = () => {
+        handle_Close_Image(index);
     };
 
     return (
         <div className={style.parent}>
-            {preView.length > 0 && <img src={preView} alt="image" />}
-            <IoIosCloseCircle onClick={() => handleClose()} color="white" />
+            {pre_view.length > 0 && <img src={pre_view} alt="image" />}
+            <IoIosCloseCircle onClick={() => handle_Close()} color="white" />
         </div>
     );
 };

@@ -3,24 +3,24 @@ import style from './style.module.scss';
 import { IoIosCloseCircle } from 'react-icons/io';
 import { BASE_URL_API } from '@src/const/api/base_url';
 
-const OneImageUrl: FC<{ fileName: string; index: number; handleCloseImage: (index: number) => void }> = ({
+const OneImageUrl: FC<{ fileName: string; index: number; handle_Close_Image: (index: number) => void }> = ({
     fileName,
     index,
-    handleCloseImage,
+    handle_Close_Image,
 }) => {
-    const handleSrcImage = () => {
+    const handle_Src_Image = () => {
         const url = `${BASE_URL_API}/service_image_v1/query/image/${fileName}`;
         return url;
     };
 
-    const handleClose = () => {
-        handleCloseImage(index);
+    const handle_Close = () => {
+        handle_Close_Image(index);
     };
 
     return (
         <div className={style.parent}>
-            <img src={handleSrcImage()} alt="image" />
-            <IoIosCloseCircle onClick={() => handleClose()} color="white" />
+            <img src={handle_Src_Image()} alt="image" />
+            <IoIosCloseCircle onClick={() => handle_Close()} color="white" />
         </div>
     );
 };

@@ -27,15 +27,15 @@ export async function uploadAImageToZalo(file: File, zalo_app: Zalo_App_Field, z
 const CHUNK_SIZE = 1 * 1024 * 1024; // 2MB
 
 export const uploadVideo = async (file: File, id: string) => {
-    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+    const total_chunks = Math.ceil(file.size / CHUNK_SIZE);
 
     // ✅ fileId backend đang dùng
     const timestamp = Date.now();
-    const fileId = `${timestamp}-${id}`;
-    const finalFileName = `${timestamp}-${id}-${file.name}`;
+    const file_id = `${timestamp}-${id}`;
+    const final_file_name = `${timestamp}-${id}-${file.name}`;
 
     // 🔹 Upload từng chunk
-    for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+    for (let chunkIndex = 0; chunkIndex < total_chunks; chunkIndex++) {
         const start = chunkIndex * CHUNK_SIZE;
         const end = Math.min(start + CHUNK_SIZE, file.size);
 
@@ -43,7 +43,7 @@ export const uploadVideo = async (file: File, id: string) => {
 
         const formData = new FormData();
         formData.append('chunk', chunk); // ⚡ field name phải đúng
-        formData.append('file_id', fileId);
+        formData.append('file_id', file_id);
         formData.append('chunk_index', chunkIndex.toString());
 
         const response1 = await axiosInstance.post<My_Response_Field<any>, any, any>(
@@ -63,9 +63,9 @@ export const uploadVideo = async (file: File, id: string) => {
     const response2 = await axiosInstance.post<My_Response_Field<any>, any, any>(
         VIDEO_V1_API.MERGE_CHUNK,
         {
-            fileId,
-            totalChunks,
-            finalFileName,
+            file_id,
+            total_chunks,
+            final_file_name,
         },
         {
             headers: { 'Content-Type': 'application/json' },
