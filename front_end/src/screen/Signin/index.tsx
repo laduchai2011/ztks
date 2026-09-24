@@ -3,65 +3,64 @@ import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
 import { SIGNIN, ACCOUNT, PASSWORD, SIGNUP, FORGET_PASSWORD } from '@src/const/text';
 import { route_enum } from '@src/router/type';
-import { useSigninMutation } from '@src/redux/query/account_RTK';
-import { AccountField } from '@src/dataStruct/account';
+import { use_signin_Mutation } from '@src/redux/query/account_RTK';
+import { Account_Field } from '@src/data_struct/account';
 import axiosInstance from '@src/api/axiosInstance';
-import { MyResponse } from '@src/dataStruct/response';
+import { My_Response_Field } from '@src/data_struct/response';
 import { handleSrcImage } from '@src/utility/string';
 
 const Signin = () => {
     const navigate = useNavigate();
-    const myId = sessionStorage.getItem('myId');
+    const my_id = sessionStorage.getItem('myId');
 
-    const [account, setAccount] = useState<AccountField>({
-        id: -1,
-        userName: '',
+    const [account, set__account] = useState<Account_Field>({
+        id: '',
+        user_name: '',
         password: '',
         phone: '',
-        firstName: '',
-        lastName: '',
+        first_name: '',
+        last_name: '',
         avatar: null,
-        status: '',
-        updateTime: '',
-        createTime: '',
+        is_delete: false,
+        update_time: '',
+        create_time: '',
     });
-    const [note, setNote] = useState<string>('');
+    const [note, set__note] = useState<string>('');
 
-    const [signin] = useSigninMutation();
+    const [signin] = use_signin_Mutation();
 
     useEffect(() => {
-        if (myId !== null) {
+        if (my_id !== null) {
             navigate(route_enum.HOME);
         }
-    }, [navigate, myId]);
+    }, [navigate, my_id]);
 
-    const handleInput = (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
+    const handle_Input = (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
         const value = e.target.value;
-        if (type === 'userName') {
-            setAccount({ ...account, userName: value });
+        if (type === 'user_name') {
+            set__account({ ...account, user_name: value });
         }
         if (type === 'password') {
-            setAccount({ ...account, password: value });
+            set__account({ ...account, password: value });
         }
     };
 
-    const handleSignin = () => {
+    const handle_Signin = () => {
         signin(account)
             .then((res) => {
-                const resData = res.data;
-                console.log('signin', resData);
-                if (resData?.isSuccess) {
-                    setNote('');
+                const res_data1 = res.data;
+                if (res_data1?.is_success) {
+                    set__note('');
                     setTimeout(() => {
-                        const fetchCheckSignin = async () => {
+                        const fetch_Check_Signin = async () => {
                             try {
-                                const response = await axiosInstance.get<MyResponse<number>>(
-                                    `/service_account/query/isSignin`
+                                const response = await axiosInstance.get<My_Response_Field<string>>(
+                                    `/service__account/query/is_signin`
                                 );
-                                const resData = response.data;
-                                if (resData.isSuccess) {
-                                    if (resData.data) {
-                                        sessionStorage.setItem('myId', `${resData.data}`);
+                                const res_data2 = response.data;
+                                if (res_data2.is_success) {
+                                    if (res_data2.data) {
+                                        sessionStorage.setItem('myId', `${res_data2.data}`);
                                     } else {
                                         sessionStorage.removeItem('myId');
                                     }
@@ -73,31 +72,30 @@ const Signin = () => {
                             }
                         };
 
-                        fetchCheckSignin();
+                        fetch_Check_Signin();
                     }, 1500);
-                    // navigate(route_enum.HOME);
                 } else {
-                    setNote('Đăng nhập thất bại');
+                    set__note('Đăng nhập thất bại');
                 }
             })
             .catch((err) => {
                 console.error(err);
-                setNote('Đã có lỗi xảy ra');
+                set__note('Đã có lỗi xảy ra');
             });
     };
 
-    const gotoForgetPassword = () => {
+    const goto_Forget_Password = () => {
         navigate(route_enum.FORGET_PASSWORD);
     };
 
-    const gotoSignup = () => {
+    const goto_Signup = () => {
         navigate(route_enum.SIGNUP);
     };
 
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                {myId === null && (
+                {my_id === null && (
                     <div className={style.main1}>
                         <div className={style.logo}>
                             <img src={handleSrcImage('logo.jpg')} alt="logo" />
@@ -106,23 +104,23 @@ const Signin = () => {
                         <div className={style.inputContainer}>
                             <div className={style.aInput}>
                                 <div>{ACCOUNT}</div>
-                                <input value={account.userName} onChange={(e) => handleInput(e, 'userName')} />
+                                <input value={account.user_name} onChange={(e) => handle_Input(e, 'user_name')} />
                             </div>
                             <div className={style.aInput}>
                                 <div>{PASSWORD}</div>
                                 <input
                                     value={account.password}
-                                    onChange={(e) => handleInput(e, 'password')}
+                                    onChange={(e) => handle_Input(e, 'password')}
                                     type="password"
                                 />
                             </div>
                         </div>
                         <div className={style.btnContainer}>
-                            <div onClick={() => handleSignin()}>{SIGNIN}</div>
+                            <div onClick={() => handle_Signin()}>{SIGNIN}</div>
                         </div>
                         <div className={style.navContainer}>
-                            <div onClick={() => gotoForgetPassword()}>{FORGET_PASSWORD}</div>
-                            <div onClick={() => gotoSignup()}>{SIGNUP}</div>
+                            <div onClick={() => goto_Forget_Password()}>{FORGET_PASSWORD}</div>
+                            <div onClick={() => goto_Signup()}>{SIGNUP}</div>
                         </div>
                         {note.length > 0 && <div className={style.note}>{note}</div>}
                     </div>

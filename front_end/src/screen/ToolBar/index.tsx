@@ -5,30 +5,30 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { avatarnull } from '@src/utility/string';
 import { handleSrcImage } from '@src/utility/string';
-import { AccountField } from '@src/dataStruct/account';
+import { Account_Field } from '@src/data_struct/account';
 import { route_enum, selected_type, select_enum } from '@src/router/type';
 
 const ToolBar: FC<{ selected: selected_type }> = ({ selected }) => {
     const navigate = useNavigate();
 
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
 
-    const [avatarUrl, setAvatarUrl] = useState<string>(avatarnull);
+    const [avatar_url, set__avatar_url] = useState<string>(avatarnull);
 
     useEffect(() => {
-        const avatarUrl_ = account?.avatar ? handleSrcImage(account.avatar) : avatarnull;
-        setAvatarUrl(avatarUrl_);
+        const _avatarUrl = account?.avatar ? handleSrcImage(account.avatar) : avatarnull;
+        set__avatar_url(_avatarUrl);
     }, [account]);
 
-    const handleGoToHome = () => {
+    const handle_Go_To_Home = () => {
         navigate(route_enum.HOME);
     };
 
-    const handleGoToProfile = () => {
+    const handle_Go_To_Profile = () => {
         navigate(route_enum.PROFILE);
     };
 
-    const handleSelectedClass = (selected1: selected_type) => {
+    const handle_Selected_Class = (selected1: selected_type) => {
         if (selected === selected1) {
             return style.selected;
         } else {
@@ -36,7 +36,7 @@ const ToolBar: FC<{ selected: selected_type }> = ({ selected }) => {
         }
     };
 
-    const handleGoTo = (selected2: selected_type) => {
+    const handle_Go_To = (selected2: selected_type) => {
         switch (selected2) {
             case select_enum.DASH_BOARD:
                 navigate(route_enum.DASH_BOARD);
@@ -54,24 +54,24 @@ const ToolBar: FC<{ selected: selected_type }> = ({ selected }) => {
     return (
         <div className={style.parent}>
             <div className={style.logoZtks}>
-                <img src={handleSrcImage('logo.jpg')} onClick={() => handleGoToHome()} alt="logoZtks" />
+                <img src={handleSrcImage('logo.jpg')} onClick={() => handle_Go_To_Home()} alt="logoZtks" />
             </div>
             <div className={style.options}>
                 <div
-                    className={handleSelectedClass(select_enum.DASH_BOARD)}
-                    onClick={() => handleGoTo(select_enum.DASH_BOARD)}
+                    className={handle_Selected_Class(select_enum.DASH_BOARD)}
+                    onClick={() => handle_Go_To(select_enum.DASH_BOARD)}
                 >
                     Dash board
                 </div>
                 <div
-                    className={handleSelectedClass(select_enum.CHECK_IN_OUT_MANAGER)}
-                    onClick={() => handleGoTo(select_enum.CHECK_IN_OUT_MANAGER)}
+                    className={handle_Selected_Class(select_enum.CHECK_IN_OUT_MANAGER)}
+                    onClick={() => handle_Go_To(select_enum.CHECK_IN_OUT_MANAGER)}
                 >
                     Check In/Out
                 </div>
             </div>
             <div className={style.avatar}>
-                <img onClick={() => handleGoToProfile()} src={avatarUrl} alt="logoZtks" />
+                <img onClick={() => handle_Go_To_Profile()} src={avatar_url} alt="logoZtks" />
             </div>
         </div>
     );

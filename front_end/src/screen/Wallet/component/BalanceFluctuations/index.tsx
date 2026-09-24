@@ -2,57 +2,58 @@ import { FC, memo, useState, useEffect } from 'react';
 import style from './style.module.scss';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
-import { WalletField, BalanceFluctuationField } from '@src/dataStruct/wallet';
+import { Wallet_Field, Balance_Fluctuation_Field } from '@src/data_struct/wallet';
 import { SEE_MORE } from '@src/const/text';
-import { useLazyGetBalanceFluctuationsQuery } from '@src/redux/query/wallet_RTK';
+import { useLazy_get_Balance_Fluctuations_Query } from '@src/redux/query/wallet_RTK';
 import ACluster from './component/ACluster';
-import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Wallet';
+import { set__data__toast_message, set__is_loading } from '@src/redux/slice/Wallet';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
-const BalanceFluctuations: FC<{ wallet: WalletField }> = ({ wallet }) => {
+const BalanceFluctuations: FC<{ wallet: Wallet_Field }> = ({ wallet }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const [clusters, setClusters] = useState<BalanceFluctuationField[][]>([]);
-    const [hasMore, setHasMore] = useState<boolean>(true);
-    const [page, setPage] = useState<number>(1);
 
-    const [getBalanceFluctuations] = useLazyGetBalanceFluctuationsQuery();
+    const [clusters, set__clusters] = useState<Balance_Fluctuation_Field[][]>([]);
+    const [has_more, set__has_more] = useState<boolean>(true);
+    const [page, set__page] = useState<number>(1);
+
+    const [get_Balance_Fluctuations] = useLazy_get_Balance_Fluctuations_Query();
 
     useEffect(() => {
-        setClusters([]);
-        setHasMore(true);
+        set__clusters([]);
+        set__has_more(true);
     }, [wallet]);
 
     useEffect(() => {
-        getBalanceFluctuations({ page: page, size: 1, walletId: wallet.id })
+        get_Balance_Fluctuations({ page: page, size: 1, wallet_id: wallet.id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
                     if (page === 1) {
-                        setClusters([resData.data]);
+                        set__clusters([res_data.data]);
                     } else {
-                        setClusters((prev) => [...prev, resData.data ?? []]);
+                        set__clusters((prev) => [...prev, res_data.data ?? []]);
                     }
-                    setHasMore(true);
+                    set__has_more(true);
                 } else {
-                    setHasMore(false);
+                    set__has_more(false);
                 }
             })
             .catch((err) => {
                 console.error(err);
-                dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
+                dispatch(set__data__toast_message({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
-    }, [dispatch, getBalanceFluctuations, wallet, page]);
+    }, [dispatch, get_Balance_Fluctuations, wallet, page]);
 
-    const handleSeeMore = () => {
-        if (!hasMore) return;
-        setPage((prev) => prev + 1);
+    const handle_See_More = () => {
+        if (!has_more) return;
+        set__page((prev) => prev + 1);
     };
 
     const list_cluster = clusters.map((item, index) => {
-        return <ACluster key={index} balanceFluctuations={item} />;
+        return <ACluster key={index} balance_fluctuations={item} />;
     });
 
     return (
@@ -60,7 +61,9 @@ const BalanceFluctuations: FC<{ wallet: WalletField }> = ({ wallet }) => {
             <div className={style.list}>
                 <div className={style.cluster}>{list_cluster}</div>
             </div>
-            <div className={style.btnContainer}>{hasMore && <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>}</div>
+            <div className={style.btnContainer}>
+                {has_more && <div onClick={() => handle_See_More()}>{SEE_MORE}</div>}
+            </div>
         </div>
     );
 };

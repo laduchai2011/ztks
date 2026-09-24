@@ -4,198 +4,194 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux';
 import { useNavigate } from 'react-router-dom';
 import { route_enum } from '@src/router/type';
-import { ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
-import { MessageV1Field, NewMessageV1Field, CallV1Field } from '@src/dataStruct/message_v1';
-import { ZaloMessageType, ZaloCallType } from '@src/dataStruct/zalo/hookData';
-import { ZaloOaField, ZaloAppField } from '@src/dataStruct/zalo';
-import { ZaloUserField } from '@src/dataStruct/zalo/user';
-import { AccountField } from '@src/dataStruct/account';
+import { Chat_Room_Role_Schema } from '@src/data_struct/chat_room';
+import { Message_V1_Field, New_Message_V1_Field, Call_V1_Field } from '@src/data_struct/message_v1';
+import { Zalo_Message_Type, Zalo_Call_Type } from '@src/data_struct/zalo/hook_data';
+import { Zalo_Oa_Field, Zalo_App_Field } from '@src/data_struct/zalo';
+import { Zalo_User_Field } from '@src/data_struct/zalo/user';
+import { Account_Field } from '@src/data_struct/account';
 import {
-    useLazyGetLastMessageQuery,
-    useLazyGetAllNewMessagesQuery,
-    useLazyGetMessageWithIdQuery,
+    useLazy_get_Last_Message_Query,
+    useLazy_get_All_New_Messages_Query,
+    // useLazy_get_Message_With_Id_Query,
 } from '@src/redux/query/message_v1_RTK';
-import { useGetZaloUserQuery } from '@src/redux/query/zalo_RTK';
-import { useGetAccountWithIdQuery } from '@src/redux/query/account_RTK';
+import { use_get_Zalo_User_Query } from '@src/redux/query/zalo_RTK';
+import { use_get_Account_With_Id_Query } from '@src/redux/query/account_RTK';
 import { timeAgoSmart } from '@src/utility/time';
 import { handleNewMsgAmount } from './handle';
-import { getSocket } from '@src/socketIo';
-import { SocketMessageField } from '@src/dataStruct/message_v1';
+import { get_Socket } from '@src/socketIo';
+import { Socket_Message_Field } from '@src/data_struct/message_v1';
 import { avatarnull } from '@src/utility/string';
 
-const ARoom: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSchema }) => {
+const ARoom: FC<{ chat_room_role_schema: Chat_Room_Role_Schema }> = ({ chat_room_role_schema }) => {
     const navigate = useNavigate();
     const read_element = useRef<HTMLDivElement | null>(null);
     const send_element = useRef<HTMLDivElement | null>(null);
-    const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
-    const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.SupportRoomSlice.selectedOa);
-    const chatRoomRole: ChatRoomRoleSchema = chatRoomRoleSchema;
-    const [lastMessage, setLastMessage] = useState<
-        MessageV1Field<ZaloMessageType> | CallV1Field<ZaloCallType> | undefined
+
+    const zalo_app: Zalo_App_Field | undefined = useSelector((state: RootState) => state.App_Slice.zalo_app);
+    const selected_oa: Zalo_Oa_Field | undefined = useSelector(
+        (state: RootState) => state.Support_Room_Slice.selected_oa
+    );
+    const chat_room_role: Chat_Room_Role_Schema = chat_room_role_schema;
+    const [last_message, set__last_message] = useState<
+        Message_V1_Field<Zalo_Message_Type> | Call_V1_Field<Zalo_Call_Type> | undefined
     >(undefined);
-    const [zaloUser, setZaloUser] = useState<ZaloUserField | undefined>(undefined);
-    const [accountWId, setAccountWId] = useState<AccountField | undefined>(undefined);
-    const [newMessage, setNewMessage] = useState<NewMessageV1Field<ZaloMessageType>[]>([]);
 
-    const [getLastMessage] = useLazyGetLastMessageQuery();
-    const [getMessageWithId] = useLazyGetMessageWithIdQuery();
-    const [getAllNewMessages] = useLazyGetAllNewMessagesQuery();
+    const [zalo_user, set__zalo_user] = useState<Zalo_User_Field | undefined>(undefined);
+    const [account_WId, set__account_WId] = useState<Account_Field | undefined>(undefined);
+    const [new_message, set__new_message] = useState<New_Message_V1_Field<Zalo_Message_Type>[]>([]);
 
-    const handleGetAllNewMessages = useCallback(
-        (chatRoomId: number) => {
-            getAllNewMessages({ chatRoomId: chatRoomId.toString() })
+    const [get_Last_Message] = useLazy_get_Last_Message_Query();
+    // const [get_Message_With_Id] = useLazy_get_Message_With_Id_Query();
+    const [get_All_New_Messages] = useLazy_get_All_New_Messages_Query();
+
+    const handle_Get_All_New_Messages = useCallback(
+        (chat_room_id: string) => {
+            get_All_New_Messages({ chat_room_id: chat_room_id })
                 .then((res) => {
-                    const resData = res.data;
-                    if (resData?.isSuccess && resData.data) {
-                        setNewMessage(resData.data);
+                    const res_data = res.data;
+                    if (res_data?.is_success && res_data.data) {
+                        set__new_message(res_data.data);
                     }
                 })
                 .catch((err) => {
                     console.error(err);
                 });
         },
-        [getAllNewMessages]
+        [get_All_New_Messages]
     );
 
     useEffect(() => {
-        const chatRoomId = chatRoomRoleSchema.chat_room_id;
-        handleGetAllNewMessages(chatRoomId);
-        getLastMessage({ chatRoomId: chatRoomId.toString() })
+        const chat_room_id = chat_room_role_schema.chat_room_id;
+        handle_Get_All_New_Messages(chat_room_id);
+        get_Last_Message({ chat_room_id: chat_room_id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setLastMessage(resData.data);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__last_message(res_data.data);
                 }
             })
             .catch((err) => console.error(err));
-    }, [chatRoomRoleSchema, handleGetAllNewMessages, getLastMessage]);
+    }, [chat_room_role_schema, handle_Get_All_New_Messages, get_Last_Message]);
 
     useEffect(() => {
-        const socket = getSocket();
-        const chatRoomId = chatRoomRoleSchema.chat_room_id;
+        const socket = get_Socket();
+        const chat_room_id = chat_room_role_schema.chat_room_id;
 
-        const onSocketMessage = (socketMsg: SocketMessageField) => {
-            if (socketMsg.chatRoomId !== chatRoomId) return;
-            handleGetAllNewMessages(chatRoomId);
-            getLastMessage({ chatRoomId: chatRoomId.toString() })
+        const on_Socket_Message = (socket_msg: Socket_Message_Field) => {
+            if (socket_msg.chat_room_id !== chat_room_id) return;
+            handle_Get_All_New_Messages(chat_room_id);
+            get_Last_Message({ chat_room_id: chat_room_id })
                 .then((res) => {
-                    const resData = res.data;
-                    if (resData?.isSuccess && resData.data) {
-                        setLastMessage(resData.data);
+                    const res_data = res.data;
+                    if (res_data?.is_success && res_data.data) {
+                        set__last_message(res_data.data);
                     }
                 })
                 .catch((err) => console.error(err));
         };
 
-        // socket.on('connect', onConnect);
-        socket.on('socketMessageAllRoom', onSocketMessage);
-
-        // nếu socket đã connect sẵn từ trước thì join luôn
-        // if (socket.connected) {
-        //     onConnect();
-        // }
+        socket.on('socketMessageAllRoom', on_Socket_Message);
 
         return () => {
-            socket.off('socketMessageAllRoom', onSocketMessage);
-            // socket.emit('leaveRoom', chatRoomId);
-            // socket.off('connect', onConnect);
+            socket.off('socketMessageAllRoom', on_Socket_Message);
         };
-    }, [chatRoomRoleSchema.chat_room_id, getMessageWithId, getLastMessage, handleGetAllNewMessages]);
+    }, [chat_room_role_schema.chat_room_id, get_Last_Message, handle_Get_All_New_Messages]);
 
     const {
-        data: data_zaloUser,
+        data: data__zalo_user,
         // isFetching,
-        isLoading: isLoading_zaloUser,
-        isError: isError_zaloUser,
-        error: error_zaloUser,
-    } = useGetZaloUserQuery(
-        { zaloApp: zaloApp!, zaloOa: selectedOa!, userIdByApp: lastMessage?.user_id_by_app || '' },
-        { skip: zaloApp === undefined || selectedOa === undefined || lastMessage === undefined }
+        isLoading: is_loading__zalo_user,
+        isError: is_error__zalo_user,
+        error: error__zalo_user,
+    } = use_get_Zalo_User_Query(
+        { zalo_app: zalo_app!, zalo_oa: selected_oa!, user_id_by_app: last_message?.user_id_by_app || '' },
+        { skip: zalo_app === undefined || selected_oa === undefined || last_message === undefined }
     );
     useEffect(() => {
-        if (isError_zaloUser && error_zaloUser) {
-            console.error(error_zaloUser);
+        if (is_error__zalo_user && error__zalo_user) {
+            console.error(error__zalo_user);
         }
-    }, [isError_zaloUser, error_zaloUser]);
+    }, [is_error__zalo_user, error__zalo_user]);
     useEffect(() => {
         // dispatch(set_isLoading(isLoading_chatRoom));
-    }, [isLoading_zaloUser]);
+    }, [is_loading__zalo_user]);
     useEffect(() => {
-        const resData = data_zaloUser;
-        if (resData?.isSuccess && resData.data && resData.data) {
-            setZaloUser(resData.data);
+        const res_data = data__zalo_user;
+        if (res_data?.is_success && res_data.data) {
+            set__zalo_user(res_data.data);
         }
-    }, [data_zaloUser]);
+    }, [data__zalo_user]);
 
     const {
-        data: data_account_wid,
+        data: data__account_wid,
         // isFetching,
-        isLoading: isLoading_account_wid,
-        isError: isError_account_wid,
-        error: error_account_wid,
-    } = useGetAccountWithIdQuery({ id: chatRoomRole?.account_id || -1 }, { skip: chatRoomRole === undefined });
+        isLoading: is_loading__account_wid,
+        isError: is_error__account_wid,
+        error: error__account_wid,
+    } = use_get_Account_With_Id_Query({ id: chat_room_role?.account_id || '' }, { skip: chat_room_role === undefined });
     useEffect(() => {
-        if (isError_account_wid && error_account_wid) {
-            console.error(error_account_wid);
+        if (is_error__account_wid && error__account_wid) {
+            console.error(error__account_wid);
         }
-    }, [isError_account_wid, error_account_wid]);
+    }, [is_error__account_wid, error__account_wid]);
     useEffect(() => {
         // dispatch(set_isLoading(isLoading_account));
-    }, [isLoading_account_wid]);
+    }, [is_loading__account_wid]);
     useEffect(() => {
-        const resData = data_account_wid;
-        if (resData?.isSuccess && resData.data) {
-            setAccountWId(resData.data);
+        const res_data = data__account_wid;
+        if (res_data?.is_success && res_data.data) {
+            set__account_WId(res_data.data);
         }
-    }, [data_account_wid]);
+    }, [data__account_wid]);
 
     useEffect(() => {
         if (!read_element.current || !send_element.current) return;
         const readElement = read_element.current;
         const sendElement = send_element.current;
 
-        const isRead = chatRoomRole.is_read;
-        const isSend = chatRoomRole.is_send;
+        const is_read = chat_room_role.is_read;
+        const is_send = chat_room_role.is_send;
 
-        if (isRead) {
+        if (is_read) {
             readElement.classList.add(style.pass);
         }
 
-        if (isSend) {
+        if (is_send) {
             sendElement.classList.add(style.pass);
         }
-    }, [chatRoomRole]);
+    }, [chat_room_role]);
 
     useEffect(() => {
-        const chatRoomId = chatRoomRole.chat_room_id;
-        getAllNewMessages({ chatRoomId: chatRoomId.toString() })
+        const chat_room_id = chat_room_role.chat_room_id;
+        get_All_New_Messages({ chat_room_id: chat_room_id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setNewMessage(resData.data);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__new_message(res_data.data);
                 }
             })
             .catch((err) => {
                 console.error(err);
             });
-    }, [chatRoomRole, getAllNewMessages]);
+    }, [chat_room_role, get_All_New_Messages]);
 
-    const handleGotoMessage1 = () => {
-        navigate(route_enum.MESSAGE1 + '/' + `${chatRoomRole.chat_room_id}`);
+    const handle_Goto_Message1 = () => {
+        navigate(route_enum.MESSAGE1 + '/' + `${chat_room_role.chat_room_id}`);
     };
 
     return (
-        <div className={style.parent} onClick={() => handleGotoMessage1()}>
+        <div className={style.parent} onClick={() => handle_Goto_Message1()}>
             <div className={style.avatarContainer}>
-                <img src={zaloUser?.data.avatar || avatarnull} alt="avatar" />
+                <img src={zalo_user?.data.avatar || avatarnull} alt="avatar" />
             </div>
             <div className={style.contentContainer}>
                 <div className={style.nameContainer}>
-                    <div className={style.name}>{zaloUser?.data.display_name}</div>
+                    <div className={style.name}>{zalo_user?.data.display_name}</div>
                 </div>
                 <div className={style.inforContainer}>
                     <div className={style.infor}>
-                        <div>{`${accountWId?.firstName} ${accountWId?.lastName}`}</div>
+                        <div>{`${account_WId?.first_name} ${account_WId?.last_name}`}</div>
                     </div>
                     <div className={style.infor}>
                         <div className={`${style.role} ${style.read}`} ref={read_element}>
@@ -206,11 +202,11 @@ const ARoom: FC<{ chatRoomRoleSchema: ChatRoomRoleSchema }> = ({ chatRoomRoleSch
                         </div>
                     </div>
                     <div className={style.infor}>
-                        {newMessage.length === 0 && lastMessage && (
-                            <div className={style.time}>{timeAgoSmart(lastMessage.timestamp)}</div>
+                        {new_message.length === 0 && last_message && (
+                            <div className={style.time}>{timeAgoSmart(last_message.timestamp)}</div>
                         )}
-                        {newMessage.length > 0 && (
-                            <div className={style.newMsgAmount}>{handleNewMsgAmount(newMessage.length)}</div>
+                        {new_message.length > 0 && (
+                            <div className={style.newMsgAmount}>{handleNewMsgAmount(new_message.length)}</div>
                         )}
                     </div>
                 </div>

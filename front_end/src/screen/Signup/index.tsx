@@ -4,52 +4,52 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { SIGNIN, SIGNUP, ACCOUNT, PASSWORD, PHONE_NUMBER, FIRST_NAME, LAST_NAME } from '@src/const/text';
-import { AccountField } from '@src/dataStruct/account';
+import { Account_Field } from '@src/data_struct/account';
 import { account_field_type, account_enum } from './type';
 import { isSpace, isFirstNumber, containsSpecialCharacters, isValidPhoneNumber } from '@src/utility/string';
-import { useSignupMutation } from '@src/redux/query/account_RTK';
+import { use_signup_Mutation } from '@src/redux/query/account_RTK';
 import { router_res_type } from '@src/interface';
 import { route_enum } from '@src/router/type';
 import { sendOtp } from '@src/otp/handle';
 import OtpInput from './component/OtpInput';
 import { formatPhone } from '@src/utility/string';
-import { setIsShow_otpDialog, setToken_otpDialog, set_isLoading } from '@src/redux/slice/Signup';
+import { set__is_show__otp_dialog, set__token__otp_dialog, set__is_loading } from '@src/redux/slice/Signup';
 import { handleSrcImage } from '@src/utility/string';
 
 const Signup = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
 
-    const token: string = useSelector((state: RootState) => state.SignupSlice.otpDialog.token);
+    const token: string = useSelector((state: RootState) => state.Signup_Slice.otp_dialog.token);
 
-    const [account, setAccount] = useState<AccountField>({
-        id: 0,
-        userName: '',
+    const [account, setAccount] = useState<Account_Field>({
+        id: '',
+        user_name: '',
         password: '',
         phone: '',
-        firstName: '',
-        lastName: '',
+        first_name: '',
+        last_name: '',
         avatar: null,
-        status: '',
-        updateTime: '',
-        createTime: '',
+        is_delete: false,
+        update_time: '',
+        create_time: '',
     });
-    const [userNameWarn, setUserNameWarn] = useState<string>('');
-    const [passwordWarn, setPasswordWarn] = useState<string>('');
-    const [phoneWarn, setPhoneWarn] = useState<string>('');
-    const [firstNameWarn, setFirstNameWarn] = useState<string>('');
-    const [lastNameWarn, setLastNameWarn] = useState<string>('');
-    const [myRes, setMyRes] = useState<router_res_type | undefined>(undefined);
-    const [confirmation, setConfirmation] = useState<any>(null);
+    const [user_name_warn, set__user_name_warn] = useState<string>('');
+    const [password_warn, set__password_warn] = useState<string>('');
+    const [phone_warn, set__phone_warn] = useState<string>('');
+    const [first_name_warn, set__first_name_warn] = useState<string>('');
+    const [last_name_warn, set__last_name_warn] = useState<string>('');
+    const [my_res, set__my_res] = useState<router_res_type | undefined>(undefined);
+    const [confirmation, set__confirmation] = useState<any>(null);
 
-    const [signup] = useSignupMutation();
+    const [signup] = use_signup_Mutation();
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>, field: account_field_type) => {
+    const handle_Change = (e: React.ChangeEvent<HTMLInputElement>, field: account_field_type) => {
         const value = e.target.value;
-        checkString(value, field);
+        check_String(value, field);
         switch (field) {
             case account_enum.USERNAME: {
-                setAccount({ ...account, userName: value });
+                setAccount({ ...account, user_name: value });
                 break;
             }
             case account_enum.PASSWORD: {
@@ -61,11 +61,11 @@ const Signup = () => {
                 break;
             }
             case account_enum.FIRST_NAME: {
-                setAccount({ ...account, firstName: value });
+                setAccount({ ...account, first_name: value });
                 break;
             }
             case account_enum.LAST_NAME: {
-                setAccount({ ...account, lastName: value });
+                setAccount({ ...account, last_name: value });
                 break;
             }
             default: {
@@ -74,55 +74,55 @@ const Signup = () => {
         }
     };
 
-    const checkString = (str: string, field: account_field_type) => {
+    const check_String = (str: string, field: account_field_type) => {
         switch (field) {
             case account_enum.USERNAME: {
                 if (isSpace(str)) {
-                    setUserNameWarn('Không được có khoảng trắng !');
+                    set__user_name_warn('Không được có khoảng trắng !');
                 } else if (isFirstNumber(str)) {
-                    setUserNameWarn('Ký tự đầu tiên không được là số !');
+                    set__user_name_warn('Ký tự đầu tiên không được là số !');
                 } else if (containsSpecialCharacters(str)) {
-                    setUserNameWarn('Tên tài khoản không được chứa ký tự đặc biệt !');
+                    set__user_name_warn('Tên tài khoản không được chứa ký tự đặc biệt !');
                 } else {
-                    setUserNameWarn('');
+                    set__user_name_warn('');
                 }
                 break;
             }
             case account_enum.PASSWORD: {
                 if (isSpace(str)) {
-                    setPasswordWarn('Không được có khoảng trắng !');
+                    set__password_warn('Không được có khoảng trắng !');
                 } else if (containsSpecialCharacters(str)) {
-                    setPasswordWarn('Mật khẩu không được chứa ký tự đặc biệt !');
+                    set__password_warn('Mật khẩu không được chứa ký tự đặc biệt !');
                 } else {
-                    setPasswordWarn('');
+                    set__password_warn('');
                 }
                 break;
             }
             case account_enum.PHONE: {
                 if (isSpace(str)) {
-                    setPhoneWarn('Không được có khoảng trắng !');
+                    set__phone_warn('Không được có khoảng trắng !');
                 } else if (containsSpecialCharacters(str)) {
-                    setPhoneWarn('Số điện thoại không được chứa ký tự đặc biệt !');
+                    set__phone_warn('Số điện thoại không được chứa ký tự đặc biệt !');
                 } else if (!isValidPhoneNumber(str)) {
-                    setPhoneWarn('Không phải là số điện thoại !');
+                    set__phone_warn('Không phải là số điện thoại !');
                 } else {
-                    setPhoneWarn('');
+                    set__phone_warn('');
                 }
                 break;
             }
             case account_enum.FIRST_NAME: {
                 if (containsSpecialCharacters(str)) {
-                    setFirstNameWarn('Tên không được chứa ký tự đặc biệt !');
+                    set__first_name_warn('Tên không được chứa ký tự đặc biệt !');
                 } else {
-                    setFirstNameWarn('');
+                    set__first_name_warn('');
                 }
                 break;
             }
             case account_enum.LAST_NAME: {
                 if (containsSpecialCharacters(str)) {
-                    setLastNameWarn('Tên không được chứa ký tự đặc biệt !');
+                    set__last_name_warn('Tên không được chứa ký tự đặc biệt !');
                 } else {
-                    setLastNameWarn('');
+                    set__last_name_warn('');
                 }
                 break;
             }
@@ -134,33 +134,33 @@ const Signup = () => {
 
     useEffect(() => {
         if (token.length === 0) return;
-        dispatch(set_isLoading(true));
+        dispatch(set__is_loading(true));
         signup({ body: account, token: token })
             .then((res) => {
-                setMyRes(res.data);
+                set__my_res(res.data);
                 // console.log(res.data);
             })
             .catch((err) => console.error(err))
             .finally(() => {
-                dispatch(setToken_otpDialog(''));
-                dispatch(set_isLoading(false));
+                dispatch(set__token__otp_dialog(''));
+                dispatch(set__is_loading(false));
             });
     }, [dispatch, token, account, signup]);
 
-    const handleSignup = () => {
-        handleSendOtp();
+    const handle_Signup = () => {
+        handle_Send_Otp();
     };
 
-    const handleGoToSignin = () => {
+    const handle_Go_To_Signin = () => {
         navigate(route_enum.SIGNIN);
     };
 
-    const handleSendOtp = async () => {
+    const handle_Send_Otp = async () => {
         const phone = formatPhone(account.phone.trim());
         if (phone.length === 0) return;
         const res = await sendOtp(phone);
-        setConfirmation(res);
-        dispatch(setIsShow_otpDialog(true));
+        set__confirmation(res);
+        dispatch(set__is_show__otp_dialog(true));
     };
 
     return (
@@ -179,10 +179,10 @@ const Signup = () => {
                             <input
                                 type="text"
                                 maxLength={100}
-                                value={account.userName}
-                                onChange={(e) => handleChange(e, account_enum.USERNAME)}
+                                value={account.user_name}
+                                onChange={(e) => handle_Change(e, account_enum.USERNAME)}
                             />
-                            {userNameWarn.length > 0 && <p>{userNameWarn}</p>}
+                            {user_name_warn.length > 0 && <p>{user_name_warn}</p>}
                         </div>
                     </div>
                 </div>
@@ -194,9 +194,9 @@ const Signup = () => {
                                 type="password"
                                 maxLength={100}
                                 value={account.password}
-                                onChange={(e) => handleChange(e, account_enum.PASSWORD)}
+                                onChange={(e) => handle_Change(e, account_enum.PASSWORD)}
                             />
-                            {passwordWarn.length > 0 && <p>{passwordWarn}</p>}
+                            {password_warn.length > 0 && <p>{password_warn}</p>}
                         </div>
                     </div>
                 </div>
@@ -208,9 +208,9 @@ const Signup = () => {
                                 type="text"
                                 maxLength={15}
                                 value={account.phone}
-                                onChange={(e) => handleChange(e, account_enum.PHONE)}
+                                onChange={(e) => handle_Change(e, account_enum.PHONE)}
                             />
-                            {phoneWarn.length > 0 && <p>{phoneWarn}</p>}
+                            {phone_warn.length > 0 && <p>{phone_warn}</p>}
                         </div>
                     </div>
                 </div>
@@ -221,10 +221,10 @@ const Signup = () => {
                             <input
                                 type="text"
                                 maxLength={20}
-                                value={account.firstName}
-                                onChange={(e) => handleChange(e, account_enum.FIRST_NAME)}
+                                value={account.first_name}
+                                onChange={(e) => handle_Change(e, account_enum.FIRST_NAME)}
                             />
-                            {firstNameWarn.length > 0 && <p>{firstNameWarn}</p>}
+                            {first_name_warn.length > 0 && <p>{first_name_warn}</p>}
                         </div>
                     </div>
                 </div>
@@ -235,18 +235,18 @@ const Signup = () => {
                             <input
                                 type="text"
                                 maxLength={20}
-                                value={account.lastName}
-                                onChange={(e) => handleChange(e, account_enum.LAST_NAME)}
+                                value={account.last_name}
+                                onChange={(e) => handle_Change(e, account_enum.LAST_NAME)}
                             />
-                            {lastNameWarn.length > 0 && <p>{lastNameWarn}</p>}
+                            {last_name_warn.length > 0 && <p>{last_name_warn}</p>}
                         </div>
                     </div>
                 </div>
                 <div className={style.signupBtn}>
-                    <button onClick={() => handleSignup()}>{SIGNUP}</button>
+                    <button onClick={() => handle_Signup()}>{SIGNUP}</button>
                 </div>
-                <div onClick={() => handleGoToSignin()}>{`${SIGNIN} !`}</div>
-                {<div style={{ color: myRes?.status === 'error' ? 'red' : 'black' }}>{myRes?.message}</div>}
+                <div onClick={() => handle_Go_To_Signin()}>{`${SIGNIN} !`}</div>
+                {<div style={{ color: my_res?.status === 'error' ? 'red' : 'black' }}>{my_res?.message}</div>}
                 <div id="recaptcha-container"></div>
             </div>
             <div>

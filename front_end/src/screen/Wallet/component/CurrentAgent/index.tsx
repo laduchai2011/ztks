@@ -3,56 +3,56 @@ import style from './style.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { formatMoney } from '@src/utility/string';
-// import { WalletField } from '@src/dataStruct/wallet';
-import { AccountField, AccountInformationField } from '@src/dataStruct/account';
-import { AgentField, AgentPayField } from '@src/dataStruct/agent';
-import { WalletField } from '@src/dataStruct/wallet';
+import { Account_Field, Account_Information_Field } from '@src/data_struct/account';
+import { Agent_Field, Agent_Pay_Field } from '@src/data_struct/agent';
+import { Wallet_Field } from '@src/data_struct/wallet';
 import {
-    useLazyGetAgentWithAgentAccountIdQuery,
-    useCreateAgentPayMutation,
-    useLazyGetLastAgentPayQuery,
+    useLazy_get_Agent_With_Agent_Account_Id_Query,
+    use_create_Agent_Pay_Mutation,
+    useLazy_get_Last_Agent_Pay_Query,
 } from '@src/redux/query/agent_RTK';
-import { usePayAgentFromWalletMutation } from '@src/redux/query/wallet_RTK';
+import { use_pay_Agent_From_Wallet_Mutation } from '@src/redux/query/wallet_RTK';
 import { PAY } from '@src/const/text';
-import { set_isLoading, setData_toastMessage } from '@src/redux/slice/Wallet';
+import { set__is_loading, set__data__toast_message } from '@src/redux/slice/Wallet';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 
 const CurrentAgent: FC<{
-    wallet: WalletField;
-    setWallet: React.Dispatch<React.SetStateAction<WalletField | undefined>>;
-}> = ({ wallet, setWallet }) => {
+    wallet: Wallet_Field;
+    set__wallet: React.Dispatch<React.SetStateAction<Wallet_Field | undefined>>;
+}> = ({ wallet, set__wallet }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    const accountInformation: AccountInformationField | undefined = useSelector(
-        (state: RootState) => state.AppSlice.accountInformation
+
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
+    const account_information: Account_Information_Field | undefined = useSelector(
+        (state: RootState) => state.App_Slice.account_information
     );
 
-    const [agent, setAgent] = useState<AgentField | null>(null);
-    const [counter, setCounter] = useState<number | null>(null);
-    const [agentPay, setAgentPay] = useState<AgentPayField | undefined>(undefined);
+    const [agent, set__agent] = useState<Agent_Field | null>(null);
+    const [counter, set__counter] = useState<number | null>(null);
+    const [agent_pay, set__agent_pay] = useState<Agent_Pay_Field | undefined>(undefined);
 
-    const [getAgentWithAgentAccountId] = useLazyGetAgentWithAgentAccountIdQuery();
-    const [payAgentFromWallet] = usePayAgentFromWalletMutation();
-    const [createAgentPay] = useCreateAgentPayMutation();
-    const [getLastAgentPay] = useLazyGetLastAgentPayQuery();
+    const [get_Agent_With_Agent_Account_Id] = useLazy_get_Agent_With_Agent_Account_Id_Query();
+    const [pay_Agent_From_Wallet] = use_pay_Agent_From_Wallet_Mutation();
+    const [create_Agent_Pay] = use_create_Agent_Pay_Mutation();
+    const [get_Last_Agent_Pay] = useLazy_get_Last_Agent_Pay_Query();
 
     useEffect(() => {
         if (!account) return;
-        getAgentWithAgentAccountId({ agentAccountId: account.id })
+        get_Agent_With_Agent_Account_Id({ agent_account_id: account.id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setAgent(resData.data);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__agent(res_data.data);
                 }
             })
             .catch((err) => console.error(err));
-    }, [getAgentWithAgentAccountId, account]);
+    }, [get_Agent_With_Agent_Account_Id, account]);
 
-    const handlePay = () => {
+    const handle_Pay = () => {
         if (!account) return;
         if (!agent) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Bạn không ở trong 1 agent nào !',
                 })
@@ -60,16 +60,16 @@ const CurrentAgent: FC<{
             return;
         }
         if (!counter) {
-            dispatch(set_isLoading(true));
-            getLastAgentPay({ agentId: agent.id, accountId: accountInformation?.addedById || -1 }, false)
+            dispatch(set__is_loading(true));
+            get_Last_Agent_Pay({ agent_id: agent.id, account_id: account_information?.added_by_id || '' }, false)
                 .then((res) => {
-                    const resData = res.data;
-                    if (resData?.isSuccess && resData.data) {
-                        const newAgentPay = resData.data;
-                        if (!newAgentPay.isPay) {
-                            setAgentPay(resData.data);
+                    const res_data = res.data;
+                    if (res_data?.is_success && res_data.data) {
+                        const new_agent_pay = res_data.data;
+                        if (!new_agent_pay.is_pay) {
+                            set__agent_pay(res_data.data);
                             dispatch(
-                                setData_toastMessage({
+                                set__data__toast_message({
                                     type: messageType_enum.SUCCESS,
                                     message: 'Lấy apent-pay thành công !',
                                 })
@@ -80,35 +80,35 @@ const CurrentAgent: FC<{
                 .catch((err) => {
                     console.error(err);
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.ERROR,
                             message: 'Đã có lỗi xảy ra !',
                         })
                     );
                 })
                 .finally(() => {
-                    dispatch(set_isLoading(false));
+                    dispatch(set__is_loading(false));
                 });
-            setCounter(2);
+            set__counter(2);
             return;
         } else {
             if (counter > 1) {
-                if (!agentPay) {
-                    dispatch(set_isLoading(true));
-                    createAgentPay({ agentId: agent.id, accountId: accountInformation?.addedById || -1 })
+                if (!agent_pay) {
+                    dispatch(set__is_loading(true));
+                    create_Agent_Pay({ agent_id: agent.id, account_id: account_information?.added_by_id || '' })
                         .then((res) => {
-                            const resData = res.data;
-                            if (resData?.isSuccess && resData.data) {
-                                setAgentPay(resData.data);
+                            const res_data = res.data;
+                            if (res_data?.is_success && res_data.data) {
+                                set__agent_pay(res_data.data);
                                 dispatch(
-                                    setData_toastMessage({
+                                    set__data__toast_message({
                                         type: messageType_enum.SUCCESS,
                                         message: 'Tạo Agent-Pay thành công !',
                                     })
                                 );
                             } else {
                                 dispatch(
-                                    setData_toastMessage({
+                                    set__data__toast_message({
                                         type: messageType_enum.ERROR,
                                         message: 'Tạo Agent-Pay không thành công !',
                                     })
@@ -118,24 +118,24 @@ const CurrentAgent: FC<{
                         .catch((err) => {
                             console.error(err);
                             dispatch(
-                                setData_toastMessage({
+                                set__data__toast_message({
                                     type: messageType_enum.ERROR,
                                     message: 'Đã có lỗi xảy ra !',
                                 })
                             );
                         })
                         .finally(() => {
-                            dispatch(set_isLoading(false));
+                            dispatch(set__is_loading(false));
                         });
                 }
-                setCounter(counter - 1);
+                set__counter(counter - 1);
                 return;
             }
 
             if (wallet.amount < 50000) {
-                setCounter(null);
+                set__counter(null);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Số dư không đủ !',
                     })
@@ -143,9 +143,9 @@ const CurrentAgent: FC<{
                 return;
             }
 
-            if (!agentPay) {
+            if (!agent_pay) {
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Chưa tồn tại 1 agent-pay !',
                     })
@@ -153,22 +153,22 @@ const CurrentAgent: FC<{
                 return;
             }
 
-            setCounter(null);
-            dispatch(set_isLoading(true));
-            payAgentFromWallet({ walletId: wallet.id, agentPayId: agentPay.id, accountId: account.id })
+            set__counter(null);
+            dispatch(set__is_loading(true));
+            pay_Agent_From_Wallet({ wallet_id: wallet.id, agent_pay_id: agent_pay.id, account_id: account.id })
                 .then((res) => {
-                    const resData = res.data;
-                    if (resData?.isSuccess && resData.data) {
-                        setWallet(resData.data);
+                    const res_data = res.data;
+                    if (res_data?.is_success && res_data.data) {
+                        set__wallet(res_data.data);
                         dispatch(
-                            setData_toastMessage({
+                            set__data__toast_message({
                                 type: messageType_enum.SUCCESS,
                                 message: 'Thanh toán thành công !',
                             })
                         );
                     } else {
                         dispatch(
-                            setData_toastMessage({
+                            set__data__toast_message({
                                 type: messageType_enum.ERROR,
                                 message: 'Thanh toán không thành công !',
                             })
@@ -178,15 +178,15 @@ const CurrentAgent: FC<{
                 .catch((err) => {
                     console.error(err);
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.ERROR,
                             message: 'Đã có lỗi xảy ra !',
                         })
                     );
                 })
                 .finally(() => {
-                    dispatch(set_isLoading(false));
-                    setAgentPay(undefined);
+                    dispatch(set__is_loading(false));
+                    set__agent_pay(undefined);
                 });
         }
     };
@@ -200,7 +200,7 @@ const CurrentAgent: FC<{
                     {!agent && <div className={style.ko}>Không</div>}
                 </div>
                 <div>
-                    <div onClick={() => handlePay()}>
+                    <div onClick={() => handle_Pay()}>
                         <div>{PAY}</div>
                         <div>{formatMoney(50000)}</div>
                     </div>

@@ -1,26 +1,26 @@
 import { FC, memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
-import { BalanceFluctuationField } from '@src/dataStruct/wallet';
+import { Balance_Fluctuation_Field } from '@src/data_struct/wallet';
 import ABalanceFluctuation from './component/ABalanceFluctuation';
 import { detailTime } from '@src/utility/time';
 
-const ACluster: FC<{ balanceFluctuations: BalanceFluctuationField[] }> = ({ balanceFluctuations }) => {
-    const [thisDay, setThisDay] = useState<string>('');
+const ACluster: FC<{ balance_fluctuations: Balance_Fluctuation_Field[] }> = ({ balance_fluctuations }) => {
+    const [this_day, set__this_day] = useState<string>('');
 
     useEffect(() => {
-        if (balanceFluctuations.length === 0) return;
+        if (balance_fluctuations.length === 0) return;
 
-        const value = detailTime(balanceFluctuations[0].createTime);
+        const value = detailTime(balance_fluctuations[0].create_time);
         const date = value.split(' ')[1];
-        setThisDay(date);
-    }, [balanceFluctuations]);
+        set__this_day(date);
+    }, [balance_fluctuations]);
 
-    const list_balanceFluctuation = balanceFluctuations.map((item, index) => {
-        return <ABalanceFluctuation key={index} balanceFluctuation={item} />;
+    const list_balanceFluctuation = balance_fluctuations.map((item, index) => {
+        return <ABalanceFluctuation key={index} balance_fluctuation={item} />;
     });
     return (
         <div className={style.parent}>
-            <div>{thisDay}</div>
+            <div>{this_day}</div>
             <div>{list_balanceFluctuation}</div>
         </div>
     );

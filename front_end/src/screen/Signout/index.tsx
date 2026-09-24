@@ -5,31 +5,31 @@ import { SIGNOUT, SIGNIN } from '@src/const/text';
 import Loading from '@src/component/Loading';
 import { LoadProps, LineCircleLoadProps } from '@src/component/Loading/type';
 import { LOAD_COMPONENTS_CONST } from '@src/component/Loading/const';
-import { useSignoutMutation } from '@src/redux/query/account_RTK';
+import { use_signout_Mutation } from '@src/redux/query/account_RTK';
 import { route_enum } from '@src/router/type';
 import { handleSrcImage } from '@src/utility/string';
 
 const Signout = () => {
     const navigate = useNavigate();
-    const myId = sessionStorage.getItem('myId');
+    const my_id = sessionStorage.getItem('myId');
 
     const overlay_element = useRef<HTMLDivElement | null>(null);
-    const [isSignouting, setIsSignouting] = useState<boolean>(false);
-    const [note, setNote] = useState<string>('');
+    const [is_signouting, set__is_signouting] = useState<boolean>(false);
+    const [note, set__note] = useState<string>('');
 
-    const [signout] = useSignoutMutation();
+    const [signout] = use_signout_Mutation();
 
     useEffect(() => {
-        if (myId === null) {
+        if (my_id === null) {
             navigate(route_enum.SIGNIN);
         }
-    }, [navigate, myId]);
+    }, [navigate, my_id]);
 
     useEffect(() => {
         if (!overlay_element.current) return;
         const overlayElement = overlay_element.current;
 
-        if (isSignouting) {
+        if (is_signouting) {
             overlayElement.classList.add(style.display);
             const timeout1 = setTimeout(() => {
                 overlayElement.classList.add(style.opacity);
@@ -42,26 +42,26 @@ const Signout = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isSignouting]);
+    }, [is_signouting]);
 
-    const handleSignout = () => {
-        setIsSignouting(true);
+    const handle_Signout = () => {
+        set__is_signouting(true);
         signout()
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess) {
+                const res_data = res.data;
+                if (res_data?.is_success) {
                     sessionStorage.removeItem('myId');
                     navigate(route_enum.HOME);
-                    setNote('');
+                    set__note('');
                 } else {
-                    setNote('Đăng xuất không thành công !');
+                    set__note('Đăng xuất không thành công !');
                 }
             })
             .catch((err) => console.error(err))
-            .finally(() => setIsSignouting(false));
+            .finally(() => set__is_signouting(false));
     };
 
-    const goToSignin = () => {
+    const go_To_Signin = () => {
         navigate(route_enum.SIGNIN);
     };
 
@@ -76,7 +76,7 @@ const Signout = () => {
         infor: lineCircleLoad,
     };
 
-    const handleBack = () => {
+    const handle_Back = () => {
         navigate(-1);
     };
 
@@ -97,16 +97,16 @@ const Signout = () => {
                         />
                     </div>
                     <div className={style.text}>Quay lại sớm nhé !!!</div>
-                    <div className={style.backBtn} onClick={() => handleBack()}>
+                    <div className={style.backBtn} onClick={() => handle_Back()}>
                         Quay lại
                     </div>
-                    {myId !== null && (
-                        <div className={style.btnSignout} onClick={() => handleSignout()}>
+                    {my_id !== null && (
+                        <div className={style.btnSignout} onClick={() => handle_Signout()}>
                             {SIGNOUT}
                         </div>
                     )}
-                    {myId === null && (
-                        <div className={style.btnSignin} onClick={() => goToSignin()}>
+                    {my_id === null && (
+                        <div className={style.btnSignin} onClick={() => go_To_Signin()}>
                             {SIGNIN}
                         </div>
                     )}

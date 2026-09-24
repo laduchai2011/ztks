@@ -3,38 +3,42 @@ import style from './style.module.scss';
 import ARoom from './component/ARoom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
-import { useLazyGetChatRoomsMongoQuery } from '@src/redux/query/chat_room_RTK';
-import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Support_Room';
+import { useLazy_get_Chat_Rooms_Mongo_Query } from '@src/redux/query/chat_room_RTK';
+import { set__data__toast_message, set__is_loading } from '@src/redux/slice/Support_Room';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { AccountField } from '@src/dataStruct/account';
-import { ChatRoomRoleSchema } from '@src/dataStruct/chatRoom';
-import { ZaloOaField } from '@src/dataStruct/zalo';
+import { Account_Field } from '@src/data_struct/account';
+import { Chat_Room_Role_Schema } from '@src/data_struct/chat_room';
+import { Zalo_Oa_Field } from '@src/data_struct/zalo';
 import { SEE_MORE } from '@src/const/text';
-import { getSocket } from '@src/socketIo';
-import { SocketMessageField } from '@src/dataStruct/message_v1';
+import { get_Socket } from '@src/socketIo';
+import { Socket_Message_Field } from '@src/data_struct/message_v1';
 
 const RoomList = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.SupportRoomSlice.selectedOa);
-    const [chatRoomRoleSchemas, setChatRoomRoleSchemas] = useState<ChatRoomRoleSchema[]>([]);
-    const [cursor, setCursor] = useState<string | null>(null);
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
+    const selected_oa: Zalo_Oa_Field | undefined = useSelector(
+        (state: RootState) => state.Support_Room_Slice.selected_oa
+    );
+
+    const [chat_room_role_schemas, set__chat_room_role_schemas] = useState<Chat_Room_Role_Schema[]>([]);
+    const [cursor, set__cursor] = useState<string | null>(null);
     const limit = 30;
-    const [hasMore, setHasMore] = useState<boolean>(true);
-    const [getChatRoomsMongo] = useLazyGetChatRoomsMongoQuery();
-    const [socketMsg, setSocketMsg] = useState<SocketMessageField | undefined>(undefined);
+    const [has_more, set__has_more] = useState<boolean>(true);
+    // const [socket_msg, set__socket_msg] = useState<Socket_Message_Field | undefined>(undefined);
+
+    const [get_Chat_Rooms_Mongo] = useLazy_get_Chat_Rooms_Mongo_Query();
 
     useEffect(() => {
-        const socket = getSocket();
+        const socket = get_Socket();
 
-        const onSocketMessageAllRoom = (socketMsg: SocketMessageField) => {
-            const chatRoomId = socketMsg.chatRoomId;
+        const on_Socket_Message_All_Room = (socket_msg: Socket_Message_Field) => {
+            const chat_room_id = socket_msg.chat_room_id;
 
             setTimeout(() => {
-                setChatRoomRoleSchemas((prev) => {
-                    const index = prev.findIndex((item) => item.chat_room_id === chatRoomId);
+                set__chat_room_role_schemas((prev) => {
+                    const index = prev.findIndex((item) => item.chat_room_id === chat_room_id);
                     if (index < 0) {
-                        setSocketMsg(socketMsg);
+                        // set__socket_msg(socket_msg);
                         return prev;
                     }
 
@@ -42,7 +46,7 @@ const RoomList = () => {
                         return prev;
                     }
 
-                    const result = prev.filter((item) => item.chat_room_id !== chatRoomId);
+                    const result = prev.filter((item) => item.chat_room_id !== chat_room_id);
 
                     const item = prev[index];
 
@@ -51,121 +55,119 @@ const RoomList = () => {
             }, 10);
         };
 
-        socket.on('socketMessageAllRoom', onSocketMessageAllRoom);
+        socket.on('socketMessageAllRoom', on_Socket_Message_All_Room);
 
         return () => {
-            socket.off('socketMessageAllRoom', onSocketMessageAllRoom);
+            socket.off('socketMessageAllRoom', on_Socket_Message_All_Room);
         };
     }, []);
 
     useEffect(() => {
-        if (!selectedOa || !account) return;
-        if (!socketMsg) return;
-        dispatch(set_isLoading(true));
-        getChatRoomsMongo({
+        if (!selected_oa || !account) return;
+
+        dispatch(set__is_loading(true));
+        get_Chat_Rooms_Mongo({
             limit: 1,
             cursor: null,
-            isMy: true,
-            zaloOaId: selectedOa.id,
-            accountId: account.id,
+            is_my: true,
+            zalo_oa_id: selected_oa.id,
+            account_id: account.id,
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setChatRoomRoleSchemas((prev) => [...(resData.data?.items || []), ...prev]);
-                    // setCursor(resData.data.cursor);
-                    // setHasMore(resData.data.items.length === limit);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__chat_room_role_schemas((prev) => [...(res_data.data?.items || []), ...prev]);
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Lấy danh sách phòng chat KHÔNG thành công !',
                     })
                 );
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
-                setSocketMsg(undefined);
+                dispatch(set__is_loading(false));
+                // set__socket_msg(undefined);
             });
-    }, [socketMsg, dispatch, getChatRoomsMongo, selectedOa, account]);
+    }, [dispatch, get_Chat_Rooms_Mongo, selected_oa, account]);
 
     useEffect(() => {
-        if (!selectedOa || !account) return;
-        dispatch(set_isLoading(true));
-        getChatRoomsMongo({
+        if (!selected_oa || !account) return;
+        dispatch(set__is_loading(true));
+        get_Chat_Rooms_Mongo({
             limit: limit,
             cursor: null,
-            isMy: false,
-            authorizedAccountId: account.id,
-            zaloOaId: selectedOa.id,
+            is_my: false,
+            authorized_account_id: account.id,
+            zalo_oa_id: selected_oa.id,
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setChatRoomRoleSchemas(resData.data.items);
-                    setCursor(resData.data.cursor);
-                    setHasMore(resData.data.items.length === limit);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__chat_room_role_schemas(res_data.data.items);
+                    set__cursor(res_data.data.cursor);
+                    set__has_more(res_data.data.items.length === limit);
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Lấy danh sách phòng chat KHÔNG thành công !',
                     })
                 );
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
-    }, [dispatch, getChatRoomsMongo, selectedOa, account]);
+    }, [dispatch, get_Chat_Rooms_Mongo, selected_oa, account]);
 
-    const handleSeeMore = () => {
-        if (!selectedOa || !account) return;
-        if (!hasMore) return;
-        dispatch(set_isLoading(true));
-        getChatRoomsMongo({
+    const handle_See_More = () => {
+        if (!selected_oa || !account) return;
+        if (!has_more) return;
+        dispatch(set__is_loading(true));
+        get_Chat_Rooms_Mongo({
             limit: 30,
             cursor: cursor,
-            isMy: false,
-            authorizedAccountId: account.id,
-            zaloOaId: selectedOa.id,
+            is_my: false,
+            authorized_account_id: account.id,
+            zalo_oa_id: selected_oa.id,
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setChatRoomRoleSchemas((prev) => [...prev, ...(resData.data?.items || [])]);
-                    setCursor(resData.data.cursor);
-                    setHasMore(resData.data.cursor !== cursor);
-                    setHasMore(resData.data.items.length === limit);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__chat_room_role_schemas((prev) => [...prev, ...(res_data.data?.items || [])]);
+                    set__cursor(res_data.data.cursor);
+                    set__has_more(res_data.data.cursor !== cursor);
+                    set__has_more(res_data.data.items.length === limit);
                 }
             })
             .catch((err) => {
                 console.error(err);
                 dispatch(
-                    setData_toastMessage({
+                    set__data__toast_message({
                         type: messageType_enum.ERROR,
                         message: 'Lấy danh sách phòng chat KHÔNG thành công !',
                     })
                 );
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
     };
 
-    const list_chatRoomRole = chatRoomRoleSchemas.map((item) => {
-        return <ARoom key={item.chat_room_id} chatRoomRoleSchema={item} />;
+    const list_chat_room_role = chat_room_role_schemas.map((item) => {
+        return <ARoom key={item.chat_room_id} chat_room_role_schema={item} />;
     });
 
     return (
         <div className={style.parent}>
-            {list_chatRoomRole}
-            <div className={style.seeMore}>{hasMore && <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>}</div>
+            {list_chat_room_role}
+            <div className={style.seeMore}>{has_more && <div onClick={() => handle_See_More()}>{SEE_MORE}</div>}</div>
         </div>
     );
 };

@@ -5,45 +5,51 @@ import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE, AGREE, EXIT, CHOOSE } from '@src/const/text';
 import {
-    setData_toastMessage,
-    set_isLoading,
-    setIsShow_takeMoneyDialog,
-    setNewRequireTakeMoney_takeMoneyDialog,
-    setRequiredTakeMoney_takeMoneyDialog,
+    set__data__toast_message,
+    set__is_loading,
+    set__is_show__take_money_dialog,
+    set__new_require_take_money__take_money_dialog,
+    set__required_take_money__take_money_dialog,
 } from '@src/redux/slice/Wallet';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { useLazyGetAllBanksQuery, useLazyGetBankWithIdQuery } from '@src/redux/query/bank_RTK';
-import { useCreateRequireTakeMoneyMutation, useEditRequireTakeMoneyMutation } from '@src/redux/query/wallet_RTK';
-import { BankField } from '@src/dataStruct/bank';
-import { RequireTakeMoneyField, WalletField, WalletEnum } from '@src/dataStruct/wallet';
+import { useLazy_get_All_Banks_Query, useLazy_get_Bank_With_Id_Query } from '@src/redux/query/bank_RTK';
+import {
+    use_create_Require_Take_Money_Mutation,
+    use_edit_Require_Take_Money_Mutation,
+} from '@src/redux/query/wallet_RTK';
+import { Bank_Field } from '@src/data_struct/bank';
+import { Require_Take_Money_Field, Wallet_Field, Wallet_Enum } from '@src/data_struct/wallet';
 import { isPositiveInteger, formatMoney } from '@src/utility/string';
 
 const TakeMoneyDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
-    const isShow: boolean = useSelector((state: RootState) => state.WalletSlice.takeMoneyDialog.isShow);
-    const wallet: WalletField | undefined = useSelector((state: RootState) => state.WalletSlice.takeMoneyDialog.wallet);
-    const requireTakeMoney: RequireTakeMoneyField | undefined = useSelector(
-        (state: RootState) => state.WalletSlice.takeMoneyDialog.requiredTakeMoney
+
+    const is_show: boolean = useSelector((state: RootState) => state.Wallet_Slice.take_money_dialog.is_show);
+    const wallet: Wallet_Field | undefined = useSelector(
+        (state: RootState) => state.Wallet_Slice.take_money_dialog.wallet
+    );
+    const require_take_money: Require_Take_Money_Field | undefined = useSelector(
+        (state: RootState) => state.Wallet_Slice.take_money_dialog.required_take_money
     );
 
-    const [title, setTitle] = useState<string>('Tạo yêu cầu rút tiền mới');
-    const [amount, setAmount] = useState<string>('');
-    const [isFormattingMoney, setIsFormattingMoney] = useState(false);
-    const [amountText, setAmountText] = useState<string>('');
-    const [allBanks, setAllBanks] = useState<BankField[]>([]);
-    const [selectedBank, setSelectedBank] = useState<BankField | undefined>(undefined);
+    const [title, set__title] = useState<string>('Tạo yêu cầu rút tiền mới');
+    const [amount, set__amount] = useState<string>('');
+    const [is_formatting_money, set__is_formatting_money] = useState(false);
+    const [amount_text, set__amount_text] = useState<string>('');
+    const [all_banks, set__all_banks] = useState<Bank_Field[]>([]);
+    const [selected_bank, set__selected_bank] = useState<Bank_Field | undefined>(undefined);
 
-    const [getAllBanks] = useLazyGetAllBanksQuery();
-    const [getBankWithId] = useLazyGetBankWithIdQuery();
-    const [createRequireTakeMoney] = useCreateRequireTakeMoneyMutation();
-    const [editRequireTakeMoney] = useEditRequireTakeMoneyMutation();
+    const [get_All_Banks] = useLazy_get_All_Banks_Query();
+    const [get_Bank_With_Id] = useLazy_get_Bank_With_Id_Query();
+    const [create_Require_Take_Money] = use_create_Require_Take_Money_Mutation();
+    const [edit_Require_Take_Money] = use_edit_Require_Take_Money_Mutation();
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow) {
+        if (is_show) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -57,76 +63,76 @@ const TakeMoneyDialog = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow]);
+    }, [is_show]);
 
     useEffect(() => {
         if (!wallet) return;
-        if (requireTakeMoney) {
-            setTitle(`Chỉnh sửa yêu cầu rút tiền trên ví ${wallet.type}`);
-            setAmount(requireTakeMoney.amount.toString());
+        if (require_take_money) {
+            set__title(`Chỉnh sửa yêu cầu rút tiền trên ví ${wallet.type}`);
+            set__amount(require_take_money.amount.toString());
         } else {
-            setTitle(`Tạo yêu cầu rút tiền mới trên ví ${wallet.type}`);
-            setAmount('');
+            set__title(`Tạo yêu cầu rút tiền mới trên ví ${wallet.type}`);
+            set__amount('');
         }
-    }, [requireTakeMoney, wallet]);
+    }, [require_take_money, wallet]);
 
     useEffect(() => {
-        dispatch(set_isLoading(true));
-        getAllBanks({ accountId: -1 })
+        dispatch(set__is_loading(true));
+        get_All_Banks({ account_id: '' })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setAllBanks(resData.data);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__all_banks(res_data.data);
                 }
             })
             .catch((err) => {
                 console.error(err);
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
-    }, [getAllBanks, dispatch]);
+    }, [get_All_Banks, dispatch]);
 
     useEffect(() => {
-        if (!requireTakeMoney) return;
+        if (!require_take_money) return;
 
-        dispatch(set_isLoading(true));
-        getBankWithId({ id: requireTakeMoney.bankId })
+        dispatch(set__is_loading(true));
+        get_Bank_With_Id({ id: require_take_money.bank_id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setSelectedBank(resData.data);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__selected_bank(res_data.data);
                 }
             })
             .catch((err) => {
                 console.error(err);
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
-    }, [getBankWithId, dispatch, requireTakeMoney]);
+    }, [get_Bank_With_Id, dispatch, require_take_money]);
 
-    const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Amount_Change = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         const raw = value.replace(/\D/g, '');
-        setAmount(raw);
-        setAmountText('');
+        set__amount(raw);
+        set__amount_text('');
     };
 
-    const handleSelectBank = (item: BankField) => {
-        setSelectedBank(item);
+    const handle_Select_Bank = (item: Bank_Field) => {
+        set__selected_bank(item);
     };
 
-    const handleClose = () => {
-        dispatch(setIsShow_takeMoneyDialog(false));
+    const handle_Close = () => {
+        dispatch(set__is_show__take_money_dialog(false));
     };
 
-    const handleAgree = () => {
+    const handle_Agree = () => {
         if (!wallet) return;
 
-        if (wallet.type === WalletEnum.ONE) {
+        if (wallet.type === Wallet_Enum.ONE) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     message: `Không thể rút tiền từ ví ${wallet.type}`,
                     type: messageType_enum.WARN,
                 })
@@ -135,23 +141,23 @@ const TakeMoneyDialog = () => {
         }
 
         if (!isPositiveInteger(amount)) {
-            setAmountText('Tiền phải là số nguyên dương');
+            set__amount_text('Tiền phải là số nguyên dương');
             return;
         }
 
         if (Number(amount.trim()) < 5000) {
-            setAmountText(`Tiền bạn yêu cầu không thể nhỏ hơn ${formatMoney(5000)}`);
+            set__amount_text(`Tiền bạn yêu cầu không thể nhỏ hơn ${formatMoney(5000)}`);
             return;
         }
 
         if (Number(amount.trim()) > wallet.amount) {
-            setAmountText('Tiền bạn yêu cầu lớn hơn trong ví của bạn');
+            set__amount_text('Tiền bạn yêu cầu lớn hơn trong ví của bạn');
             return;
         }
 
-        if (!selectedBank) {
+        if (!selected_bank) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     message: 'Chưa ngân hàng nào được chọn',
                     type: messageType_enum.WARN,
                 })
@@ -160,29 +166,29 @@ const TakeMoneyDialog = () => {
         }
 
         let txt: string = '';
-        if (requireTakeMoney) {
+        if (require_take_money) {
             txt = 'Chỉnh sửa';
-            dispatch(set_isLoading(true));
-            editRequireTakeMoney({
-                requireTakeMoneyId: requireTakeMoney.id,
+            dispatch(set__is_loading(true));
+            edit_Require_Take_Money({
+                require_take_money_id: require_take_money.id,
                 amount: Number(amount.trim()),
-                bankId: selectedBank.id,
-                walletId: wallet.id,
-                accountId: -1,
+                bank_id: selected_bank.id,
+                wallet_id: wallet.id,
+                account_id: '',
             })
                 .then((res) => {
-                    const resData = res.data;
-                    if (resData?.isSuccess && resData.data) {
-                        dispatch(setNewRequireTakeMoney_takeMoneyDialog(resData.data));
+                    const res_data = res.data;
+                    if (res_data?.is_success && res_data.data) {
+                        dispatch(set__new_require_take_money__take_money_dialog(res_data.data));
                         dispatch(
-                            setData_toastMessage({
+                            set__data__toast_message({
                                 message: `${txt} thành công`,
                                 type: messageType_enum.SUCCESS,
                             })
                         );
                     } else {
                         dispatch(
-                            setData_toastMessage({
+                            set__data__toast_message({
                                 message: `${txt} không thành công`,
                                 type: messageType_enum.ERROR,
                             })
@@ -191,7 +197,7 @@ const TakeMoneyDialog = () => {
                 })
                 .catch((err) => {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             message: 'Đã có lỗi xảy ra',
                             type: messageType_enum.ERROR,
                         })
@@ -199,31 +205,31 @@ const TakeMoneyDialog = () => {
                     console.error(err);
                 })
                 .finally(() => {
-                    dispatch(set_isLoading(false));
+                    dispatch(set__is_loading(false));
                 });
         } else {
             txt = 'Tạo';
-            dispatch(set_isLoading(true));
-            createRequireTakeMoney({
+            dispatch(set__is_loading(true));
+            create_Require_Take_Money({
                 amount: Number(amount.trim()),
-                bankId: selectedBank.id,
-                walletId: wallet.id,
-                accountId: -1,
+                bank_id: selected_bank.id,
+                wallet_id: wallet.id,
+                account_id: '',
             })
                 .then((res) => {
-                    const resData = res.data;
-                    if (resData?.isSuccess && resData.data) {
-                        dispatch(setNewRequireTakeMoney_takeMoneyDialog(resData.data));
-                        dispatch(setRequiredTakeMoney_takeMoneyDialog(resData.data));
+                    const res_data = res.data;
+                    if (res_data?.is_success && res_data.data) {
+                        dispatch(set__new_require_take_money__take_money_dialog(res_data.data));
+                        dispatch(set__required_take_money__take_money_dialog(res_data.data));
                         dispatch(
-                            setData_toastMessage({
+                            set__data__toast_message({
                                 message: `${txt} thành công`,
                                 type: messageType_enum.SUCCESS,
                             })
                         );
                     } else {
                         dispatch(
-                            setData_toastMessage({
+                            set__data__toast_message({
                                 message: `${txt} không thành công`,
                                 type: messageType_enum.ERROR,
                             })
@@ -232,7 +238,7 @@ const TakeMoneyDialog = () => {
                 })
                 .catch((err) => {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             message: 'Đã có lỗi xảy ra',
                             type: messageType_enum.ERROR,
                         })
@@ -240,18 +246,18 @@ const TakeMoneyDialog = () => {
                     console.error(err);
                 })
                 .finally(() => {
-                    dispatch(set_isLoading(false));
+                    dispatch(set__is_loading(false));
                 });
         }
     };
 
-    const list_bank = allBanks.map((item, index) => {
+    const list_bank = all_banks.map((item, index) => {
         return (
-            <div className={style.oneBank} key={index} onClick={() => handleSelectBank(item)}>
+            <div className={style.oneBank} key={index} onClick={() => handle_Select_Bank(item)}>
                 <div>
-                    <div>{item.bankCode}</div>
-                    <div>{item.accountNumber}</div>
-                    <div>{item.accountName}</div>
+                    <div>{item.bank_code}</div>
+                    <div>{item.account_number}</div>
+                    <div>{item.account_name}</div>
                 </div>
                 <div>
                     <div>{CHOOSE}</div>
@@ -264,34 +270,34 @@ const TakeMoneyDialog = () => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.closeContainer}>
-                    <IoMdClose onClick={() => handleClose()} size={25} title={CLOSE} />
+                    <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
                 <div className={style.contentContainer}>
                     <div className={style.title}>{title}</div>
                     <div className={style.inputContainer}>
                         <div className={style.inputBox}>
                             <input
-                                value={isFormattingMoney && amount ? formatMoney(amount) : amount}
-                                onChange={(e) => handleAmountChange(e)}
-                                onFocus={() => setIsFormattingMoney(false)}
-                                onBlur={() => setIsFormattingMoney(true)}
+                                value={is_formatting_money && amount ? formatMoney(amount) : amount}
+                                onChange={(e) => handle_Amount_Change(e)}
+                                onFocus={() => set__is_formatting_money(false)}
+                                onBlur={() => set__is_formatting_money(true)}
                                 placeholder="Nhập số tiền cần rút"
                             />
                         </div>
-                        {amountText && <div className={style.amountText}>{amountText}</div>}
+                        {amount_text && <div className={style.amountText}>{amount_text}</div>}
                     </div>
-                    {selectedBank && (
+                    {selected_bank && (
                         <div className={style.selectedBank}>
-                            <div>{selectedBank.bankCode}</div>
-                            <div>{selectedBank.accountNumber}</div>
-                            <div>{selectedBank.accountName}</div>
+                            <div>{selected_bank.bank_code}</div>
+                            <div>{selected_bank.account_number}</div>
+                            <div>{selected_bank.account_name}</div>
                         </div>
                     )}
                     <div className={style.bankList}>{list_bank}</div>
                 </div>
                 <div className={style.buttonContainer}>
-                    <button onClick={() => handleAgree()}>{AGREE}</button>
-                    <button onClick={() => handleClose()}>{EXIT}</button>
+                    <button onClick={() => handle_Agree()}>{AGREE}</button>
+                    <button onClick={() => handle_Close()}>{EXIT}</button>
                 </div>
             </div>
         </div>

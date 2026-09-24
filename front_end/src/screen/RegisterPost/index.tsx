@@ -33,7 +33,7 @@ const RegisterPost = () => {
         };
     }, [dispatch]);
 
-    const handleBack = () => {
+    const handle_Back = () => {
         navigate(-1);
     };
 
@@ -42,7 +42,7 @@ const RegisterPost = () => {
             <div className={style.main}>
                 <div className={style.header}>
                     <div>{REGISTER_POST}</div>
-                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                    <IoChevronBack onClick={() => handle_Back()} size={20} color="white" />
                 </div>
                 <CreateRegisterPost />
                 <Filter />
