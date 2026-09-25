@@ -11,7 +11,7 @@ class QueryDB_Get_All_Members {
     async run(): Promise<Account_Field[] | void> {
         if (this._all_members_body !== undefined) {
             try {
-                const result = await pool.query<Account_Field>(`SELECT * FROM get_all_members($1);`, [
+                const result = await pool.query<Account_Field>('SELECT * FROM get_all_members($1::UUID)', [
                     this._all_members_body.added_by_id,
                 ]);
 

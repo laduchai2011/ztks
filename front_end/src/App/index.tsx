@@ -135,6 +135,7 @@ const App = () => {
                     `/service__account/query/get_account_information`
                 );
                 const res_data = response.data;
+
                 if (res_data.is_success) {
                     if (res_data.data) {
                         dispatch(set__account_information(res_data.data));

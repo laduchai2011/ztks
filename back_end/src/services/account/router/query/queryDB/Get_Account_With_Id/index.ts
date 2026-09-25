@@ -11,7 +11,7 @@ class QueryDB_Get_Account_With_Id {
     async run(): Promise<Account_Field | void> {
         if (this._account_id !== undefined) {
             try {
-                const result = await pool.query<Account_Field>(`SELECT * FROM get_account_with_id($1);`, [
+                const result = await pool.query<Account_Field>('SELECT * FROM get_account_with_id($1::UUID)', [
                     this._account_id,
                 ]);
 

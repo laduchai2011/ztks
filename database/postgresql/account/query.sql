@@ -91,7 +91,7 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION get_all_members (
-    p_added_by_id UUID DEFAULT NULL
+    p_added_by_id UUID
 )
 RETURNS SETOF account
 LANGUAGE sql
@@ -101,7 +101,7 @@ AS $$
     JOIN account_information ai
         ON ai.account_id = a.id
     WHERE
-        a.status = 'normal'
+        a.is_delete = FALSE
         AND (
             p_added_by_id IS NULL
             OR ai.added_by_id = p_added_by_id
@@ -154,7 +154,7 @@ LANGUAGE sql
 AS $$
     SELECT *
     FROM account
-    WHERE status = 'normal'
+    WHERE is_delete = FALSE
       AND id = p_id;
 $$;
 

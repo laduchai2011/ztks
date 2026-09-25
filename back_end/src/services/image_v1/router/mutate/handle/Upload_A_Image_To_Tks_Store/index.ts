@@ -37,21 +37,21 @@ class Handle_Upload_A_Image_To_Tks_Store {
                 return;
             }
 
-            const { fileId, chunkIndex } = req.body;
+            const { file_id, chunk_index } = req.body;
 
-            if (!fileId || chunkIndex === undefined) {
+            if (!file_id || chunk_index === undefined) {
                 res.status(400).json({ message: 'Missing params' });
                 return;
             }
 
-            const index = Number(chunkIndex);
+            const index = Number(chunk_index);
             if (!Number.isInteger(index) || index < 0) {
                 res.status(400).json({ message: 'Invalid chunkIndex' });
                 return;
             }
 
             const filePath = req.file.path;
-            const objectName = `chunks/${fileId}/${index}`;
+            const objectName = `chunks/${file_id}/${index}`;
 
             const stream = fs.createReadStream(filePath);
 
