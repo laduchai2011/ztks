@@ -12,11 +12,13 @@ class QueryDB_Get_My_Recommend {
     async run(): Promise<Recommend_Field | void> {
         if (this._get_my_recommend_body !== undefined) {
             try {
-                const result = await pool.query<Recommend_Field>(`SELECT * FROM get_my_recommend($1);`, [
+                const result = await pool.query<Recommend_Field>('SELECT * FROM get_my_recommend($1::UUID);', [
                     this._get_my_recommend_body.account_id,
                 ]);
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             }

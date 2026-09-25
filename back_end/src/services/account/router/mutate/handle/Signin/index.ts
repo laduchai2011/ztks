@@ -56,7 +56,7 @@ class Handle_Signin {
             if (result) {
                 const id = result.id;
 
-                if (id === null) {
+                if (!id) {
                     my_response.message = 'Đăng nhập thất bại !';
                     res.status(500).json(my_response);
                     return;

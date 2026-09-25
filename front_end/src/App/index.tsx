@@ -135,7 +135,6 @@ const App = () => {
                     `/service__account/query/get_account_information`
                 );
                 const res_data = response.data;
-                // console.log('getAccountInformation', resData);
                 if (res_data.is_success) {
                     if (res_data.data) {
                         dispatch(set__account_information(res_data.data));
@@ -203,6 +202,8 @@ const App = () => {
 
     // connect call-center
     useEffect(() => {
+        if (!account) return;
+
         let sip: My_Sip | null = null;
         let mounted = true;
 
@@ -233,7 +234,7 @@ const App = () => {
                 void sip.disconnect_Sip();
             }
         };
-    }, [dispatch, get_Call_Agent_With_Account_Id]);
+    }, [dispatch, get_Call_Agent_With_Account_Id, account]);
 
     useEffect(() => {
         if (!my_sip) return;

@@ -49,6 +49,7 @@ const Signin = () => {
         signin(account)
             .then((res) => {
                 const res_data1 = res.data;
+                console.log('signin', res_data1);
                 if (res_data1?.is_success) {
                     set__note('');
                     setTimeout(() => {

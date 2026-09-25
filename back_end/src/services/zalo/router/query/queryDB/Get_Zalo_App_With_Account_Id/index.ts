@@ -14,11 +14,14 @@ class QueryDB_Get_Zalo_App_With_Account_Id {
     async run(): Promise<Zalo_App_Field | void> {
         if (this._zalo_app_with_account_id_body !== undefined) {
             try {
-                const result = await pool.query<Zalo_App_Field>(`SELECT * FROM get_zalo_app_with_account_id($1);`, [
-                    this._zalo_app_with_account_id_body.account_id,
-                ]);
+                const result = await pool.query<Zalo_App_Field>(
+                    `SELECT * FROM get_zalo_app_with_account_id($1::UUID);`,
+                    [this._zalo_app_with_account_id_body.account_id]
+                );
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             }

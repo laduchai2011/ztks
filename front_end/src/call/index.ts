@@ -76,6 +76,7 @@ export class My_Sip {
                     ],
                 },
             },
+            logBuiltinEnabled: false,
         });
     }
 

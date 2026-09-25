@@ -110,8 +110,8 @@ export function formatPhone(phone: string): string {
     return phone;
 }
 
-export const handleSrcImage = (fileName: string) => {
-    const url = `${BASE_URL_API}/service_image_v1/query/image/${fileName}`;
+export const handleSrcImage = (file_name: string) => {
+    const url = `${BASE_URL_API}/service__image_v1/query/image/${file_name}`;
     return url;
 };
 

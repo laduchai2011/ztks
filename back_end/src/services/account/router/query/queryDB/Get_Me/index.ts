@@ -11,9 +11,11 @@ class QueryDB_Get_Me {
     async run(): Promise<Account_Field | void> {
         if (this._account_id !== undefined) {
             try {
-                const result = await pool.query<Account_Field>(`SELECT * FROM get_me($1);`, [this._account_id]);
+                const result = await pool.query<Account_Field>('SELECT * FROM get_me($1::UUID)', [this._account_id]);
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             }

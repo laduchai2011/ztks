@@ -12,11 +12,13 @@ class QueryDB_Get_Account_Information {
         if (this._account_id !== undefined) {
             try {
                 const result = await pool.query<Account_Information_Field>(
-                    `SELECT * FROM get_account_information($1);`,
+                    'SELECT * FROM get_account_information($1::UUID)',
                     [this._account_id]
                 );
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             }

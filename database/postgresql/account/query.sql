@@ -108,8 +108,9 @@ AS $$
         );
 $$;
 
+-- DROP FUNCTION get_account_information(UUID);
 CREATE OR REPLACE FUNCTION get_account_information (
-    p_id UUID DEFAULT NULL
+    p_id UUID
 )
 RETURNS SETOF account_information
 LANGUAGE sql
@@ -118,7 +119,7 @@ AS $$
     FROM account_information ai
     JOIN account a ON a.id = ai.account_id
     WHERE
-        a.status = 'normal'
+        a.is_delete = FALSE
         AND (p_id IS NULL OR ai.account_id = p_id);
 $$;
 --> chuyen sang dung
@@ -141,7 +142,7 @@ LANGUAGE sql
 AS $$
     SELECT *
     FROM account
-    WHERE status = 'normal'
+    WHERE is_delete = FALSE
       AND id = p_id;
 $$;
 

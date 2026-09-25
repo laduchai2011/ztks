@@ -122,11 +122,11 @@ const ReplyMember = () => {
         }
     }, [data__not_reply_account]);
 
-    const handle_See_More__reply_Account = () => {
+    const handle_See_More_Reply_Account = () => {
         set__reply_account_index((pre) => pre + 1);
     };
 
-    const handle_See_More__not_reply_account = () => {
+    const handle_See_More_Not_Reply_Account = () => {
         set__not_reply_account_index((pre) => pre + 1);
     };
 
@@ -151,7 +151,7 @@ const ReplyMember = () => {
             <div className={style.addedList} ref={addedlList_element}>
                 {list_reply_account}
                 {reply_accounts.length < reply_account_total && (
-                    <div className={style.addedMore} onClick={() => handle_See_More__reply_Account()}>
+                    <div className={style.addedMore} onClick={() => handle_See_More_Reply_Account()}>
                         Xem thêm
                     </div>
                 )}
@@ -159,7 +159,7 @@ const ReplyMember = () => {
             <div className={style.notAddedList} ref={notAddedlList_element}>
                 {list_not_reply_account}
                 {not_reply_accounts.length < not_reply_account_total && (
-                    <div className={style.notAddedMore} onClick={() => handle_See_More__not_Reply_Account()}>
+                    <div className={style.notAddedMore} onClick={() => handle_See_More_Not_Reply_Account()}>
                         Xem thêm
                     </div>
                 )}

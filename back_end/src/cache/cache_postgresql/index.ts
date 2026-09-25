@@ -10,10 +10,13 @@ export async function postgresql_Get_Value(key: string): Promise<Res_Postgresql_
 
     try {
         const result = await pool.query<Cache_Redis_Field>(`SELECT * FROM get_a_cache_redis_with_key($1);`, [key]);
+        const data = result.rows[0];
+        if (data) {
+            res.is_success = true;
+            res.message = 'Lấy dữ liệu từ POSTGRESQL thành công !';
+            res.data = data;
+        }
 
-        res.is_success = true;
-        res.message = 'Lấy dữ liệu từ POSTGRESQL thành công !';
-        res.data = result.rows[0];
         return res;
     } catch (error) {
         res.message = 'Lỗi lấy dữ liệu từ POSTGRESQL !';
@@ -38,9 +41,13 @@ export async function postgresql_Set_Value(key: string, value: string): Promise<
 
         await client.query('COMMIT');
 
-        res.is_success = true;
-        res.message = 'Lấy dữ liệu từ POSTGRESQL thành công !';
-        res.data = result.rows[0];
+        const data = result.rows[0];
+        if (data) {
+            res.is_success = true;
+            res.message = 'Lấy dữ liệu từ POSTGRESQL thành công !';
+            res.data = result.rows[0];
+        }
+
         return res;
     } catch (error) {
         await client.query('ROLLBACK');
@@ -71,9 +78,13 @@ export async function postgresql_Update_Value(key: string, value: string): Promi
 
         await client.query('COMMIT');
 
-        res.is_success = true;
-        res.message = 'Lấy dữ liệu từ POSTGRESQL thành công !';
-        res.data = result.rows[0];
+        const data = result.rows[0];
+        if (data) {
+            res.is_success = true;
+            res.message = 'Lấy dữ liệu từ POSTGRESQL thành công !';
+            res.data = result.rows[0];
+        }
+
         return res;
     } catch (error) {
         res.message = 'Lỗi cập nhật dữ liệu vào POSTGRESQL !';
