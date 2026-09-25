@@ -13,27 +13,27 @@ import MyLoading from './component/MyLoading';
 import EditTemplateDialog from './component/EditTemplateDialog';
 import SendTemplateDialog from './component/SendTemplateDialog';
 import { IoChevronBack } from 'react-icons/io5';
-import { setData_toastMessage, clear_newZnsTemplates } from '@src/redux/slice/Zns';
+import { set__data__toast_message, clear__new_zns_templates } from '@src/redux/slice/Zns';
 
 const Zns = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
-    const myId = sessionStorage.getItem('myId');
+    const my_id = sessionStorage.getItem('myId');
 
     useEffect(() => {
-        if (myId === null) {
+        if (my_id === null) {
             navigate(route_enum.SIGNIN);
         }
-    }, [navigate, myId]);
+    }, [navigate, my_id]);
 
     useEffect(() => {
         return () => {
-            dispatch(setData_toastMessage({ type: undefined, message: '' }));
-            dispatch(clear_newZnsTemplates());
+            dispatch(set__data__toast_message({ type: undefined, message: '' }));
+            dispatch(clear__new_zns_templates());
         };
     }, [dispatch]);
 
-    const handleBack = () => {
+    const handle_Back = () => {
         navigate(-1);
     };
 
@@ -42,7 +42,7 @@ const Zns = () => {
             <div className={style.main}>
                 <div className={style.header}>
                     <div>ZNS</div>
-                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                    <IoChevronBack onClick={() => handle_Back()} size={20} color="white" />
                 </div>
                 <OaList />
                 <CreateTemplate />

@@ -8,16 +8,16 @@ import { CiImageOn } from 'react-icons/ci';
 import { IoIosAddCircle } from 'react-icons/io';
 import { CLOSE, AGREE, EXIT } from '@src/const/text';
 import {
-    setData_toastMessage,
-    set_isLoading,
-    setIsShow_editZnsTemplateDialog,
-    setNewZnsTemplate_editZnsTemplateDialog,
+    set__data__toast_message,
+    set__is_loading,
+    set__is_show__edit_zns_template_dialog,
+    set__new_zns_template__edit_zns_template_dialog,
 } from '@src/redux/slice/Zns';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { AccountField } from '@src/dataStruct/account';
-import { ZaloOaField, ZnsTemplateField } from '@src/dataStruct/zalo';
-import { EditZnsTemplateBodyField } from '@src/dataStruct/zalo/body';
-import { useEditZnsTemplateMutation } from '@src/redux/query/zalo_RTK';
+import { Account_Field } from '@src/data_struct/account';
+import { Zalo_Oa_Field, Zns_Template_Field } from '@src/data_struct/zalo';
+import { Edit_Zns_Template_Body_Field } from '@src/data_struct/zalo/body';
+import { use_edit_Zns_Template_Mutation } from '@src/redux/query/zalo_RTK';
 import { handleSrcImage } from '@src/utility/string';
 import { uploadImage } from '../../handle';
 import { isPositiveInteger } from '@src/utility/string';
@@ -26,44 +26,44 @@ const EditTemplateDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
 
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.ZnsSlice.selectedOa);
-    const isShow: boolean = useSelector((state: RootState) => state.ZnsSlice.editZnsTemplateDialog.isShow);
-    const znsTemplate: ZnsTemplateField | undefined = useSelector(
-        (state: RootState) => state.ZnsSlice.editZnsTemplateDialog.znsTemplate
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
+    const selected_oa: Zalo_Oa_Field | undefined = useSelector((state: RootState) => state.Zns_Slice.selected_oa);
+    const is_show: boolean = useSelector((state: RootState) => state.Zns_Slice.edit_zns_template_dialog.is_show);
+    const zns_template: Zns_Template_Field | undefined = useSelector(
+        (state: RootState) => state.Zns_Slice.edit_zns_template_dialog.zns_template
     );
 
     const imageInput_element = useRef<HTMLInputElement | null>(null);
-    const id_imageInput = useId();
-    const [image, setImage] = useState<File | undefined>(undefined);
-    const [preView, setPreView] = useState<string | undefined>(undefined);
-    const [temId, setTemId] = useState<string>('');
-    const [phoneCost, setPhoneCost] = useState<string>('');
-    const [uidCost, setUidCost] = useState<string>('');
-    const [parameters, setParameters] = useState<string[]>(['']);
+    const id_image_input = useId();
+    const [image, set__image] = useState<File | undefined>(undefined);
+    const [pre_view, set__pre_view] = useState<string | undefined>(undefined);
+    const [tem_id, set__tem_id] = useState<string>('');
+    const [phone_cost, set__phone_cost] = useState<string>('');
+    const [uid_cost, set__uid_cost] = useState<string>('');
+    const [parameters, set__parameters] = useState<string[]>(['']);
+    const [zns_template1, set__zns_template1] = useState<Zns_Template_Field | undefined>(undefined);
 
-    const [znsTemplate1, setZnsTemplate1] = useState<ZnsTemplateField | undefined>(undefined);
-    const [editZnsTemplate] = useEditZnsTemplateMutation();
-
-    useEffect(() => {
-        if (!znsTemplate) return;
-        setZnsTemplate1(znsTemplate);
-    }, [znsTemplate]);
+    const [edit_Zns_Template] = use_edit_Zns_Template_Mutation();
 
     useEffect(() => {
-        if (!znsTemplate1) return;
-        setTemId(znsTemplate1.temId);
-        setPhoneCost(znsTemplate1.phoneCost.toString());
-        setUidCost(znsTemplate1.uidCost.toString());
-        setParameters(JSON.parse(znsTemplate1.dataFields));
-        setPreView(handleSrcImage(JSON.parse(znsTemplate1.images)[0]));
-    }, [znsTemplate1]);
+        if (!zns_template) return;
+        set__zns_template1(zns_template);
+    }, [zns_template]);
+
+    useEffect(() => {
+        if (!zns_template1) return;
+        set__tem_id(zns_template1.tem_id);
+        set__phone_cost(zns_template1.phone_cost.toString());
+        set__uid_cost(zns_template1.uid_cost.toString());
+        set__parameters(JSON.parse(zns_template1.data_fields));
+        set__pre_view(handleSrcImage(JSON.parse(zns_template1.images)[0]));
+    }, [zns_template1]);
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow) {
+        if (is_show) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -77,44 +77,47 @@ const EditTemplateDialog = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow]);
+    }, [is_show]);
 
-    const handleTemId = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Tem_Id = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setTemId(value);
+        set__tem_id(value);
     };
 
-    const handlePhoneCost = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Phone_Cost = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setPhoneCost(value);
+        set__phone_cost(value);
     };
 
-    const handleUidCost = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Uid_Cost = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setUidCost(value);
+        set__uid_cost(value);
     };
 
-    const handleClose = () => {
-        dispatch(setIsShow_editZnsTemplateDialog(false));
+    const handle_Close = () => {
+        dispatch(set__is_show__edit_zns_template_dialog(false));
     };
 
-    const handleAgree = async () => {
+    const handle_Agree = async () => {
         if (!account) return;
-        if (!selectedOa) return;
-        if (!znsTemplate1) return;
+        if (!selected_oa) return;
+        if (!zns_template1) return;
 
-        const temId_t = temId.trim();
-        if (temId_t.length === 0) {
+        const tem_id_t = tem_id.trim();
+        if (tem_id_t.length === 0) {
             dispatch(
-                setData_toastMessage({ type: messageType_enum.ERROR, message: 'Định danh mẫu không được để trống !' })
+                set__data__toast_message({
+                    type: messageType_enum.ERROR,
+                    message: 'Định danh mẫu không được để trống !',
+                })
             );
             return;
         }
 
-        const phoneCost_t = phoneCost.trim();
-        if (!isPositiveInteger(phoneCost_t)) {
+        const phone_cost_t = phone_cost.trim();
+        if (!isPositiveInteger(phone_cost_t)) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Chi phí số điện thoại phải là 1 số nguyên dương !',
                 })
@@ -122,10 +125,10 @@ const EditTemplateDialog = () => {
             return;
         }
 
-        const uidCost_t = uidCost.trim();
-        if (!isPositiveInteger(uidCost_t)) {
+        const uid_cost_t = uid_cost.trim();
+        if (!isPositiveInteger(uid_cost_t)) {
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Chi phí uid phải là 1 số nguyên dương !',
                 })
@@ -138,99 +141,108 @@ const EditTemplateDialog = () => {
             const parameter_t = parameters[i].trim();
             if (parameter_t.length === 0) {
                 dispatch(
-                    setData_toastMessage({ type: messageType_enum.ERROR, message: 'Không được để trống các trường !' })
+                    set__data__toast_message({
+                        type: messageType_enum.ERROR,
+                        message: 'Không được để trống các trường !',
+                    })
                 );
                 return;
             }
             parameters_t.push(parameter_t);
         }
 
-        if (!preView) {
+        if (!pre_view) {
             dispatch(
-                setData_toastMessage({ type: messageType_enum.ERROR, message: 'Bắt buộc phải có hình ảnh minh họa !' })
+                set__data__toast_message({
+                    type: messageType_enum.ERROR,
+                    message: 'Bắt buộc phải có hình ảnh minh họa !',
+                })
             );
             return;
         }
 
         let r_images: string[] | undefined = undefined;
         if (image) {
-            r_images = await handleUploadImages([image], account);
+            r_images = await handle_Upload_Images([image], account);
         }
 
-        const final_images = r_images && r_images?.length > 0 ? JSON.stringify(r_images) : znsTemplate1.images;
-        const editZnsTemplateBody: EditZnsTemplateBodyField = {
-            id: znsTemplate1.id,
-            temId: temId_t,
+        const final_images = r_images && r_images?.length > 0 ? JSON.stringify(r_images) : zns_template1.images;
+        const edit_zns_template_body: Edit_Zns_Template_Body_Field = {
+            id: zns_template1.id,
+            tem_id: tem_id_t,
             images: final_images,
-            dataFields: JSON.stringify(parameters_t),
-            phoneCost: Number(phoneCost_t),
-            uidCost: Number(uidCost_t),
-            zaloOaId: selectedOa.id,
-            accountId: account.id,
+            data_fields: JSON.stringify(parameters_t),
+            phone_cost: Number(phone_cost_t),
+            uid_cost: Number(uid_cost_t),
+            zalo_oa_id: selected_oa.id,
+            account_id: account.id,
         };
 
-        dispatch(set_isLoading(true));
-        editZnsTemplate(editZnsTemplateBody)
+        dispatch(set__is_loading(true));
+        edit_Zns_Template(edit_zns_template_body)
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    dispatch(setNewZnsTemplate_editZnsTemplateDialog(resData.data));
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    dispatch(set__new_zns_template__edit_zns_template_dialog(res_data.data));
                     dispatch(
-                        setData_toastMessage({ type: messageType_enum.SUCCESS, message: 'Cập nhật thành công !' })
+                        set__data__toast_message({ type: messageType_enum.SUCCESS, message: 'Cập nhật thành công !' })
                     );
                 } else {
                     dispatch(
-                        setData_toastMessage({ type: messageType_enum.ERROR, message: 'Cập nhật không thành công !' })
+                        set__data__toast_message({
+                            type: messageType_enum.ERROR,
+                            message: 'Cập nhật không thành công !',
+                        })
                     );
                 }
             })
             .catch((err) => {
                 console.error(err);
-                dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
+                dispatch(set__data__toast_message({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
     };
 
-    const handleAddParameter = () => {
-        setParameters((prev) => [...prev, '']);
+    const handle_Add_Parameter = () => {
+        set__parameters((prev) => [...prev, '']);
     };
 
-    const handleValueParameter = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const handle_Value_Parameter = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = e.target.value;
-        const newParameters = [...parameters];
-        newParameters[index] = value;
-        setParameters(newParameters);
+        const new_parameters = [...parameters];
+        new_parameters[index] = value;
+        set__parameters(new_parameters);
     };
 
-    const handleSubParameter = (index: number) => {
-        const newParameters = [...parameters];
-        newParameters.splice(index, 1);
-        setParameters(newParameters);
+    const handle_Sub_Parameter = (index: number) => {
+        const new_parameters = [...parameters];
+        new_parameters.splice(index, 1);
+        set__parameters(new_parameters);
     };
 
     useEffect(() => {
         if (!image) return;
-        const preView_ = URL.createObjectURL(image);
-        setPreView(preView_);
+        const _pre_view = URL.createObjectURL(image);
+        set__pre_view(_pre_view);
 
         return () => {
-            URL.revokeObjectURL(preView_);
-            setPreView(undefined);
+            URL.revokeObjectURL(_pre_view);
+            set__pre_view(undefined);
         };
     }, [image]);
 
-    const handleUploadImages = async (images: File[], account: AccountField) => {
+    const handle_Upload_Images = async (images: File[], account: Account_Field) => {
         try {
-            dispatch(set_isLoading(true));
-            const fileNames: string[] = [];
+            dispatch(set__is_loading(true));
+            const file_names: string[] = [];
 
             for (let i: number = 0; i < images.length; i++) {
-                const resData_image = await uploadImage(images[i], account.id.toString());
-                if (!resData_image) {
+                const res_data_image = await uploadImage(images[i], account.id);
+                if (!res_data_image) {
                     dispatch(
-                        setData_toastMessage({
+                        set__data__toast_message({
                             type: messageType_enum.ERROR,
                             message: 'Đăng tải hình ảnh thất bại !',
                         })
@@ -238,44 +250,44 @@ const EditTemplateDialog = () => {
                     break;
                 }
 
-                const fileName = resData_image.fileName;
-                fileNames.push(fileName);
+                const file_name = res_data_image.file_name;
+                file_names.push(file_name);
             }
 
-            return fileNames;
+            return file_names;
         } catch (error) {
             console.error(error);
             dispatch(
-                setData_toastMessage({
+                set__data__toast_message({
                     type: messageType_enum.ERROR,
                     message: 'Đã có lỗi xảy ra !',
                 })
             );
         } finally {
-            dispatch(set_isLoading(false));
+            dispatch(set__is_loading(false));
         }
     };
 
-    const handleImageIconClick = () => {
+    const handle_Image_Icon_Click = () => {
         imageInput_element.current?.click();
     };
 
-    const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Image_Change = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
 
         if (!files) return;
 
         const file = files[0];
 
-        setImage(file);
+        set__image(file);
     };
 
     const paramter_list = parameters.map((item, index) => {
         return (
             <div className={style.inputContainer} key={index}>
                 <div>{`Tham số ${index + 1}`}</div>
-                <input value={item} onChange={(e) => handleValueParameter(e, index)} />
-                <GrSubtractCircle onClick={() => handleSubParameter(index)} />
+                <input value={item} onChange={(e) => handle_Value_Parameter(e, index)} />
+                <GrSubtractCircle onClick={() => handle_Sub_Parameter(index)} />
             </div>
         );
     });
@@ -284,44 +296,44 @@ const EditTemplateDialog = () => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.closeContainer}>
-                    <IoMdClose onClick={() => handleClose()} size={25} title={CLOSE} />
+                    <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
                 <div className={style.contentContainer}>
                     <div className={style.fieldContainer}>
                         <div className={style.inputContainer}>
                             <div>Định danh mẫu</div>
-                            <input value={temId} onChange={(e) => handleTemId(e)} />
+                            <input value={tem_id} onChange={(e) => handle_Tem_Id(e)} />
                         </div>
                     </div>
                     <div className={style.fieldContainer}>
                         <div className={style.inputContainer}>
                             <div>Chi phí quá sđt</div>
-                            <input value={phoneCost} onChange={(e) => handlePhoneCost(e)} />
+                            <input value={phone_cost} onChange={(e) => handle_Phone_Cost(e)} />
                         </div>
                     </div>
                     <div className={style.fieldContainer}>
                         <div className={style.inputContainer}>
                             <div>Chi phí qua uid</div>
-                            <input value={uidCost} onChange={(e) => handleUidCost(e)} />
+                            <input value={uid_cost} onChange={(e) => handle_Uid_Cost(e)} />
                         </div>
                     </div>
                     <div className={style.fieldContainer}>{paramter_list}</div>
                     <div className={style.iconContainer}>
                         <input
                             ref={imageInput_element}
-                            onChange={handleImageChange}
+                            onChange={handle_Image_Change}
                             type="file"
-                            id={id_imageInput}
+                            id={id_image_input}
                             accept="image/*"
                         />
-                        <CiImageOn id={id_imageInput} onClick={handleImageIconClick} size={25} color="green" />
-                        <IoIosAddCircle onClick={() => handleAddParameter()} size={25} color="gray" />
+                        <CiImageOn id={id_image_input} onClick={handle_Image_Icon_Click} size={25} color="green" />
+                        <IoIosAddCircle onClick={() => handle_Add_Parameter()} size={25} color="gray" />
                     </div>
-                    <div className={style.imgContainer}>{preView && <img src={preView} alt="" />}</div>
+                    <div className={style.imgContainer}>{pre_view && <img src={pre_view} alt="" />}</div>
                 </div>
                 <div className={style.buttonContainer}>
-                    <button onClick={() => handleAgree()}>{AGREE}</button>
-                    <button onClick={() => handleClose()}>{EXIT}</button>
+                    <button onClick={() => handle_Agree()}>{AGREE}</button>
+                    <button onClick={() => handle_Close()}>{EXIT}</button>
                 </div>
             </div>
         </div>

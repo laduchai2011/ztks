@@ -1,83 +1,26 @@
-// import axiosInstance from '@src/api/axiosInstance';
-// import { VIDEO_API } from '@src/const/api/video';
-import { IMAGEV1_API } from '@src/const/api/image_v1';
-// import { MyResponse } from '@src/dataStruct/response';
-// import { MessageField, SendVideoTdFailureBodyField, SendVideoTdSuccessBodyField } from '@src/dataStruct/message';
+import { IMAGE_V1_API } from '@src/const/api/image_v1';
 
 const CHUNK_SIZE = 2 * 1024 * 1024; // 2MB
 
-// export const uploadVideo = async (file: File, id: string) => {
-//     const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
-
-//     // ✅ fileId backend đang dùng
-//     const timestamp = Date.now();
-//     const fileId = `${timestamp}-${id}`;
-//     const finalFileName = `${timestamp}-${id}-${file.name}`;
-
-//     // 🔹 Upload từng chunk
-//     for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
-//         const start = chunkIndex * CHUNK_SIZE;
-//         const end = Math.min(start + CHUNK_SIZE, file.size);
-
-//         const chunk = file.slice(start, end);
-
-//         const formData = new FormData();
-//         formData.append('chunk', chunk); // ⚡ field name phải đúng
-//         formData.append('fileId', fileId);
-//         formData.append('chunkIndex', chunkIndex.toString());
-
-//         const response1 = await axiosInstance.post<MyResponse<any>, any, any>(VIDEO_API.UPLOAD_CHUNK, formData, {
-//             headers: { 'Content-Type': 'multipart/form-data' },
-//         });
-
-//         const res1Data = response1.data;
-//         if (!res1Data?.isSuccess) {
-//             throw new Error(`Upload chunk ${chunkIndex} thất bại`);
-//         }
-//     }
-
-//     const response2 = await axiosInstance.post<MyResponse<any>, any, any>(
-//         VIDEO_API.MERGE_CHUNK,
-//         {
-//             fileId,
-//             totalChunks,
-//             finalFileName,
-//         },
-//         {
-//             headers: { 'Content-Type': 'application/json' },
-//         }
-//     );
-
-//     const res2Data = response2.data;
-
-//     if (!res2Data?.isSuccess) {
-//         throw new Error(`Merge chunk thất bại !`);
-//     }
-
-//     const objectName = res2Data.data;
-
-//     return objectName;
-// };
-
-export const uploadImage = async (file: File, id: string): Promise<{ fileName: string }> => {
-    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+export const uploadImage = async (file: File, id: string): Promise<{ file_name: string }> => {
+    const total_chunks = Math.ceil(file.size / CHUNK_SIZE);
     const uploadId = `${Date.now()}-${id}-${file.name}`;
 
     const filename = `${Date.now()}_${id}_${file.name}`;
 
-    for (let index = 0; index < totalChunks; index++) {
+    for (let index = 0; index < total_chunks; index++) {
         const start = index * CHUNK_SIZE;
         const end = Math.min(start + CHUNK_SIZE, file.size);
         const chunk = file.slice(start, end);
 
         const formData = new FormData();
         formData.append('chunk', chunk);
-        formData.append('chunkIndex', index.toString());
-        formData.append('fileId', uploadId);
+        formData.append('chunk_index', index.toString());
+        formData.append('file_id', uploadId);
         // formData.append('filename', filename);
         // formData.append('totalChunks', totalChunks.toString());
 
-        await fetch(IMAGEV1_API.UPLOAD_CHUNK, {
+        await fetch(IMAGE_V1_API.UPLOAD_CHUNK, {
             method: 'POST',
             body: formData,
             credentials: 'include',
@@ -85,16 +28,16 @@ export const uploadImage = async (file: File, id: string): Promise<{ fileName: s
     }
 
     const mergeBody = {
-        fileId: uploadId,
-        totalChunks,
-        finalFileName: filename,
+        file_id: uploadId,
+        total_chunks,
+        final_file_name: filename,
     };
-    await fetch(IMAGEV1_API.MERGE_CHUNK, {
+    await fetch(IMAGE_V1_API.MERGE_CHUNKS, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(mergeBody),
         credentials: 'include', // 👈 thêm dòng này
     });
 
-    return { fileName: filename };
+    return { file_name: filename };
 };

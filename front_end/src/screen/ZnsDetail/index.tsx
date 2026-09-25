@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { route_enum } from '@src/router/type';
-import { setData_toastMessage } from '@src/redux/slice/Zns';
+import { set__data__toast_message } from '@src/redux/slice/Zns';
 import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import OverView from './component/OverView';
@@ -14,21 +14,21 @@ import { IoChevronBack } from 'react-icons/io5';
 const ZnsDetail = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
-    const myId = sessionStorage.getItem('myId');
+    const my_id = sessionStorage.getItem('myId');
 
     useEffect(() => {
-        if (myId === null) {
+        if (my_id === null) {
             navigate(route_enum.SIGNIN);
         }
-    }, [navigate, myId]);
+    }, [navigate, my_id]);
 
     useEffect(() => {
         return () => {
-            dispatch(setData_toastMessage({ type: undefined, message: '' }));
+            dispatch(set__data__toast_message({ type: undefined, message: '' }));
         };
     }, [dispatch]);
 
-    const handleBack = () => {
+    const handle_Back = () => {
         navigate(-1);
     };
 
@@ -37,7 +37,7 @@ const ZnsDetail = () => {
             <div className={style.main}>
                 <div className={style.header}>
                     <div>ZNS chi tiết</div>
-                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                    <IoChevronBack onClick={() => handle_Back()} size={20} color="white" />
                 </div>
                 <OverView />
                 <ZnsMessageList />

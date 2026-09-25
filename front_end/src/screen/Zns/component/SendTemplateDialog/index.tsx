@@ -4,51 +4,58 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE, AGREE, EXIT } from '@src/const/text';
-import { setData_toastMessage, set_isLoading, setIsShow_sendTemplateDialog } from '@src/redux/slice/Zns';
+import { set__data__toast_message, set__is_loading, set__is_show__send_template_dialog } from '@src/redux/slice/Zns';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { AccountField } from '@src/dataStruct/account';
-import { ZaloAppField, ZaloOaField, ZnsTemplateField, ZnsMessageEnum, ZnsMessageType } from '@src/dataStruct/zalo';
-import { CreateZnsMessageBodyField } from '@src/dataStruct/zalo/body';
-import { useCreateZnsMessageMutation } from '@src/redux/query/zalo_RTK';
+import { Account_Field } from '@src/data_struct/account';
+import {
+    Zalo_App_Field,
+    Zalo_Oa_Field,
+    Zns_Template_Field,
+    Zns_Message_Enum,
+    Zns_Message_Type,
+} from '@src/data_struct/zalo';
+import { Create_Zns_Message_Body_Field } from '@src/data_struct/zalo/body';
+import { use_create_Zns_Message_Mutation } from '@src/redux/query/zalo_RTK';
 import { handleSrcImage, formatPhone } from '@src/utility/string';
 
 const SendTemplateDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
 
-    const zaloApp: ZaloAppField | undefined = useSelector((state: RootState) => state.AppSlice.zaloApp);
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.ZnsSlice.selectedOa);
-    const isShow: boolean = useSelector((state: RootState) => state.ZnsSlice.sendTemplateDialog.isShow);
-    const znsTemplate: ZnsTemplateField | undefined = useSelector(
-        (state: RootState) => state.ZnsSlice.sendTemplateDialog.znsTemplate
+    const zns_template: Zns_Template_Field | undefined = useSelector(
+        (state: RootState) => state.Zns_Slice.send_template_dialog.zns_template
     );
 
-    const [temId, setTemId] = useState<string>('');
-    const [preView, setPreView] = useState<string | undefined>(undefined);
-    const [parameters, setParameters] = useState<string[]>(['']);
-    const [values, setValues] = useState<string[]>([]);
-    const [selectedValue, setSelectedValue] = useState<string>('');
-    const [selectedOption, setSelectedOption] = useState<ZnsMessageType>(ZnsMessageEnum.PHONE);
-    const [znsTemplate1, setZnsTemplate1] = useState<ZnsTemplateField | undefined>(undefined);
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
+    const zalo_app: Zalo_App_Field | undefined = useSelector((state: RootState) => state.App_Slice.zalo_app);
+    const selected_oa: Zalo_Oa_Field | undefined = useSelector((state: RootState) => state.Zns_Slice.selected_oa);
+    const is_show: boolean = useSelector((state: RootState) => state.Zns_Slice.send_template_dialog.is_show);
 
-    const [createZnsMessage] = useCreateZnsMessageMutation();
+    const [tem_id, set__tem_id] = useState<string>('');
+    const [pre_view, set__pre_view] = useState<string | undefined>(undefined);
+    const [parameters, set__parameters] = useState<string[]>(['']);
+    const [values, set__values] = useState<string[]>([]);
+    const [selected_value, set__selected_value] = useState<string>('');
+    const [selected_option, set__selected_option] = useState<Zns_Message_Type>(Zns_Message_Enum.PHONE);
+    const [zns_template1, set__zns_template1] = useState<Zns_Template_Field | undefined>(undefined);
+
+    const [create_Zns_Message] = use_create_Zns_Message_Mutation();
 
     useEffect(() => {
-        if (!znsTemplate) return;
-        setZnsTemplate1(znsTemplate);
-    }, [znsTemplate]);
+        if (!zns_template) return;
+        set__zns_template1(zns_template);
+    }, [zns_template]);
 
     useEffect(() => {
-        if (!znsTemplate1) return;
-        setTemId(znsTemplate1.temId);
-        setParameters(JSON.parse(znsTemplate1.dataFields));
-        setPreView(handleSrcImage(JSON.parse(znsTemplate1.images)[0]));
-    }, [znsTemplate1]);
+        if (!zns_template1) return;
+        set__tem_id(zns_template1.tem_id);
+        set__parameters(JSON.parse(zns_template1.data_fields));
+        set__pre_view(handleSrcImage(JSON.parse(zns_template1.images)[0]));
+    }, [zns_template1]);
 
     useEffect(() => {
         for (let i: number = 0; i < parameters.length; i++) {
-            setValues((prev) => [...prev, '']);
+            set__values((prev) => [...prev, '']);
         }
     }, [parameters]);
 
@@ -56,7 +63,7 @@ const SendTemplateDialog = () => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (isShow) {
+        if (is_show) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -70,89 +77,93 @@ const SendTemplateDialog = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [isShow]);
+    }, [is_show]);
 
-    const handleValues = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const newValue = e.target.value;
+    const handle_Values = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        const new_value = e.target.value;
         const values_cp = [...values];
-        values_cp[index] = newValue;
-        setValues(values_cp);
+        values_cp[index] = new_value;
+        set__values(values_cp);
     };
 
-    const handleSelectedOption = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const value = e.target.value as ZnsMessageType;
-        setSelectedOption(value);
+    const handle_Selected_Option = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const value = e.target.value as Zns_Message_Type;
+        set__selected_option(value);
     };
 
-    const handleSelectedValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Selected_Value = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setSelectedValue(value);
+        set__selected_value(value);
     };
 
-    const handleClose = () => {
-        dispatch(setIsShow_sendTemplateDialog(false));
+    const handle_Close = () => {
+        dispatch(set__is_show__send_template_dialog(false));
     };
 
-    const handleAgree = async () => {
-        if (!zaloApp) return;
+    const handle_Agree = async () => {
+        if (!zalo_app) return;
         if (!account) return;
-        if (!selectedOa) return;
-        if (!znsTemplate) return;
+        if (!selected_oa) return;
+        if (!zns_template) return;
 
         const data: Record<string, string | Record<string, string>> = {};
 
-        if (selectedOption === ZnsMessageEnum.PHONE) {
-            data[selectedOption] = formatPhone(selectedValue);
+        if (selected_option === Zns_Message_Enum.PHONE) {
+            data[selected_option] = formatPhone(selected_value);
         } else {
-            data[selectedOption] = selectedValue;
+            data[selected_option] = selected_value;
         }
 
-        data['template_id'] = temId;
+        data['template_id'] = tem_id;
         data['tracking_id'] = 'tracking_id';
 
-        const templateData: Record<string, string> = {};
+        const template_data: Record<string, string> = {};
 
         for (let i: number = 0; i < parameters.length; i++) {
-            templateData[parameters[i]] = values[i];
+            template_data[parameters[i]] = values[i];
         }
 
-        data['template_data'] = templateData;
+        data['template_data'] = template_data;
 
-        const createZnsMessageBody: CreateZnsMessageBodyField = {
-            type: selectedOption,
+        const create_zns_message_body: Create_Zns_Message_Body_Field = {
+            type: selected_option,
             data: JSON.stringify(data),
             cost: -1,
-            znsTemplateId: znsTemplate.id,
-            accountId: account.id,
-            zaloApp: zaloApp,
-            zaloOa: selectedOa,
+            zns_template_id: zns_template.id,
+            account_id: account.id,
+            zalo_app: zalo_app,
+            zalo_oa: selected_oa,
         };
 
-        if (selectedOption === ZnsMessageEnum.PHONE) {
-            createZnsMessageBody.cost = znsTemplate.phoneCost;
-        } else if (selectedOption === ZnsMessageEnum.HASH_PHONE) {
-            createZnsMessageBody.cost = znsTemplate.uidCost;
+        if (selected_option === Zns_Message_Enum.PHONE) {
+            create_zns_message_body.cost = zns_template.phone_cost;
+        } else if (selected_option === Zns_Message_Enum.HASH_PHONE) {
+            create_zns_message_body.cost = zns_template.uid_cost;
         }
 
-        dispatch(set_isLoading(true));
-        createZnsMessage(createZnsMessageBody)
+        dispatch(set__is_loading(true));
+        create_Zns_Message(create_zns_message_body)
             .then((res) => {
-                const resData = res.data;
-                console.log('createZnsMessage', resData);
-                if (resData?.isSuccess && resData.data) {
-                    dispatch(setData_toastMessage({ type: messageType_enum.SUCCESS, message: 'Gửi tin thành công !' }));
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    dispatch(
+                        set__data__toast_message({ type: messageType_enum.SUCCESS, message: 'Gửi tin thành công !' })
+                    );
                 } else {
                     dispatch(
-                        setData_toastMessage({ type: messageType_enum.ERROR, message: 'Gửi tin không thành công !' })
+                        set__data__toast_message({
+                            type: messageType_enum.ERROR,
+                            message: 'Gửi tin không thành công !',
+                        })
                     );
                 }
             })
             .catch((err) => {
                 console.error(err);
-                dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
+                dispatch(set__data__toast_message({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
     };
 
@@ -160,7 +171,7 @@ const SendTemplateDialog = () => {
         return (
             <div className={style.fieldContainer} key={index}>
                 <div>{item}</div>
-                <input value={values[index] ?? ''} onChange={(e) => handleValues(e, index)} />
+                <input value={values[index] ?? ''} onChange={(e) => handle_Values(e, index)} />
             </div>
         );
     });
@@ -169,22 +180,22 @@ const SendTemplateDialog = () => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.closeContainer}>
-                    <IoMdClose onClick={() => handleClose()} size={25} title={CLOSE} />
+                    <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
                 <div className={style.contentContainer}>
-                    <div className={style.imgContainer}>{preView && <img src={preView} alt="" />}</div>
+                    <div className={style.imgContainer}>{pre_view && <img src={pre_view} alt="" />}</div>
                     <div className={style.sendVia}>
-                        <select onChange={(e) => handleSelectedOption(e)} value={selectedOption}>
-                            <option value={ZnsMessageEnum.PHONE}>Số điện thoại</option>
-                            <option value={ZnsMessageEnum.UID}>Định danh</option>
+                        <select onChange={(e) => handle_Selected_Option(e)} value={selected_option}>
+                            <option value={Zns_Message_Enum.PHONE}>Số điện thoại</option>
+                            <option value={Zns_Message_Enum.UID}>Định danh</option>
                         </select>
-                        <input value={selectedValue} onChange={(e) => handleSelectedValue(e)} />
+                        <input value={selected_value} onChange={(e) => handle_Selected_Value(e)} />
                     </div>
                     <div className={style.fieldsContainer}>{paramter_list}</div>
                 </div>
                 <div className={style.buttonContainer}>
-                    <button onClick={() => handleAgree()}>{AGREE}</button>
-                    <button onClick={() => handleClose()}>{EXIT}</button>
+                    <button onClick={() => handle_Agree()}>{AGREE}</button>
+                    <button onClick={() => handle_Close()}>{EXIT}</button>
                 </div>
             </div>
         </div>

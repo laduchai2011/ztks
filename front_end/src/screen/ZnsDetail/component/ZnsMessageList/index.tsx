@@ -4,10 +4,10 @@ import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { SEE_MORE } from '@src/const/text';
-import { useLazyGetZnsMessagesQuery } from '@src/redux/query/zalo_RTK';
-import { AccountField } from '@src/dataStruct/account';
-import { ZnsMessageField } from '@src/dataStruct/zalo';
-import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Zns_Detail';
+import { useLazy_get_Zns_Messages_Query } from '@src/redux/query/zalo_RTK';
+import { Account_Field } from '@src/data_struct/account';
+import { Zns_Message_Field } from '@src/data_struct/zalo';
+import { set__data__toast_message, set__is_loading } from '@src/redux/slice/Zns_Detail';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import OneDay from './component/OneDay';
 
@@ -15,44 +15,45 @@ const ZnsMessageList = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { id } = useParams<{ id: string }>();
 
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    const [days, setDays] = useState<ZnsMessageField[][]>([[]]);
-    const [page, setPage] = useState<number>(1);
-    const [hasMore, setHasMore] = useState<boolean>(true);
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
 
-    const [getZnsMessages] = useLazyGetZnsMessagesQuery();
+    const [days, set__days] = useState<Zns_Message_Field[][]>([[]]);
+    const [page, set__page] = useState<number>(1);
+    const [has_more, set__has_more] = useState<boolean>(true);
+
+    const [get_Zns_Messages] = useLazy_get_Zns_Messages_Query();
 
     useEffect(() => {
         if (!account) return;
         if (!id) return;
 
-        dispatch(set_isLoading(true));
-        getZnsMessages({ page: page, size: 1, znsTemplateId: Number(id), accountId: account.id })
+        dispatch(set__is_loading(true));
+        get_Zns_Messages({ page: page, size: 1, zns_template_id: id, account_id: account.id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
                     if (page === 1) {
-                        setDays([resData.data]);
+                        set__days([res_data.data]);
                     } else {
-                        setDays((prev) => [...prev, resData.data ?? []]);
+                        set__days((prev) => [...prev, res_data.data ?? []]);
                     }
-                    setHasMore(true);
+                    set__has_more(true);
                 } else {
-                    setHasMore(false);
+                    set__has_more(false);
                 }
             })
             .catch((err) => {
                 console.error(err);
-                dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
+                dispatch(set__data__toast_message({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
-    }, [dispatch, getZnsMessages, account, id, page]);
+    }, [dispatch, get_Zns_Messages, account, id, page]);
 
-    const handleSeeMore = () => {
-        if (!hasMore) return;
-        setPage((prev) => prev + 1);
+    const handle_See_More = () => {
+        if (!has_more) return;
+        set__page((prev) => prev + 1);
     };
 
     const day_list = days.map((item, index) => {
@@ -62,7 +63,7 @@ const ZnsMessageList = () => {
     return (
         <div className={style.parent}>
             <div>{day_list}</div>
-            <div className={style.seeMore}>{hasMore && <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>}</div>
+            <div className={style.seeMore}>{has_more && <div onClick={() => handle_See_More()}>{SEE_MORE}</div>}</div>
         </div>
     );
 };

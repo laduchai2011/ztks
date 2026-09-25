@@ -3,59 +3,59 @@ import style from './style.module.scss';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
-import { useLazyGetZnsTemplateWithIdQuery } from '@src/redux/query/zalo_RTK';
-import { setData_toastMessage, set_isLoading } from '@src/redux/slice/Zns_Detail';
+import { useLazy_get_Zns_Template_With_Id_Query } from '@src/redux/query/zalo_RTK';
+import { set__data__toast_message, set__is_loading } from '@src/redux/slice/Zns_Detail';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { AccountField } from '@src/dataStruct/account';
-import { ZnsTemplateField } from '@src/dataStruct/zalo';
+import { Account_Field } from '@src/data_struct/account';
+import { Zns_Template_Field } from '@src/data_struct/zalo';
 import { handleSrcImage, formatMoney } from '@src/utility/string';
 
 const OverView = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { id } = useParams<{ id: string }>();
 
-    const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
+    const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
 
-    const [isShow, setIsShow] = useState<boolean>(false);
-    const [znsTemplate, setZnsTemplate] = useState<ZnsTemplateField | undefined>(undefined);
-    const [preView, setPreView] = useState<string | undefined>(undefined);
-    const [parameters, setParameters] = useState<string[]>(['']);
+    const [is_show, set__is_show] = useState<boolean>(false);
+    const [zns_template, set__zns_template] = useState<Zns_Template_Field | undefined>(undefined);
+    const [pre_view, set__pre_view] = useState<string | undefined>(undefined);
+    const [parameters, set__parameters] = useState<string[]>(['']);
 
-    const [getZnsTemplateWithId] = useLazyGetZnsTemplateWithIdQuery();
+    const [get_Zns_Template_With_Id] = useLazy_get_Zns_Template_With_Id_Query();
 
     useEffect(() => {
-        if (!znsTemplate) return;
-        setParameters(JSON.parse(znsTemplate.dataFields));
-        setPreView(handleSrcImage(JSON.parse(znsTemplate.images)[0]));
-    }, [znsTemplate]);
+        if (!zns_template) return;
+        set__parameters(JSON.parse(zns_template.data_fields));
+        set__pre_view(handleSrcImage(JSON.parse(zns_template.images)[0]));
+    }, [zns_template]);
 
     useEffect(() => {
         if (!account) return;
         if (!id) return;
 
-        dispatch(set_isLoading(true));
-        getZnsTemplateWithId({ id: Number(id), accountId: account.id })
+        dispatch(set__is_loading(true));
+        get_Zns_Template_With_Id({ id: id, account_id: account.id })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setZnsTemplate(resData.data);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__zns_template(res_data.data);
                 }
             })
             .catch((err) => {
                 console.error(err);
-                dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
+                dispatch(set__data__toast_message({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
-    }, [account, id, getZnsTemplateWithId, dispatch]);
+    }, [account, id, get_Zns_Template_With_Id, dispatch]);
 
-    const handleIsShow = () => {
-        setIsShow(!isShow);
+    const handle_Is_Show = () => {
+        set__is_show(!is_show);
     };
 
-    const handleIsShowStyle = () => {
-        if (isShow) {
+    const handle_Is_Show_Style = () => {
+        if (is_show) {
             return style.show;
         } else {
             return '';
@@ -68,9 +68,9 @@ const OverView = () => {
 
     return (
         <div className={style.parent}>
-            <div className={`${style.content} ${handleIsShowStyle()}`}>
-                <div className={style.temId}>{znsTemplate?.temId}</div>
-                <img className={style.image} src={preView} alt="" />
+            <div className={`${style.content} ${handle_Is_Show_Style()}`}>
+                <div className={style.temId}>{zns_template?.tem_id}</div>
+                <img className={style.image} src={pre_view} alt="" />
                 <div className={style.fieldsContainer}>
                     <div>Những trường dữ liệu</div>
                     <div>{paramter_list}</div>
@@ -78,16 +78,16 @@ const OverView = () => {
                 <div className={style.cost}>
                     <div>
                         <div>Số điện thoại</div>
-                        <div>{formatMoney(znsTemplate?.phoneCost ?? '')}</div>
+                        <div>{formatMoney(zns_template?.phone_cost ?? '')}</div>
                     </div>
                     <div>
                         <div>UID</div>
-                        <div>{formatMoney(znsTemplate?.uidCost ?? '')}</div>
+                        <div>{formatMoney(zns_template?.uid_cost ?? '')}</div>
                     </div>
                 </div>
             </div>
-            <div className={`${style.btn} ${handleIsShowStyle()}`} onClick={() => handleIsShow()}>
-                {isShow ? 'Thu gọn' : 'Mở rộng'}
+            <div className={`${style.btn} ${handle_Is_Show_Style()}`} onClick={() => handle_Is_Show()}>
+                {is_show ? 'Thu gọn' : 'Mở rộng'}
             </div>
         </div>
     );

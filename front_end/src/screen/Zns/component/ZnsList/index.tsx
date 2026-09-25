@@ -4,18 +4,18 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { SEE_MORE } from '@src/const/text';
-import { ZaloOaField, ZnsTemplateField } from '@src/dataStruct/zalo';
-import { AccountInformationField } from '@src/dataStruct/account';
+import { Zalo_Oa_Field, Zns_Template_Field } from '@src/data_struct/zalo';
+import { Account_Information_Field } from '@src/data_struct/account';
 import {
-    setData_toastMessage,
-    set_isLoading,
-    set_newZnsTemplate,
-    setIsShow_editZnsTemplateDialog,
-    setZnsTemplate_editZnsTemplateDialog,
-    setIsShow_sendTemplateDialog,
-    setZnsTemplate_sendTemplateDialog,
+    set__data__toast_message,
+    set__is_loading,
+    set__new_zns_template,
+    set__is_show__edit_zns_template_dialog,
+    set__zns_template__edit_zns_template_dialog,
+    set__is_show__send_template_dialog,
+    set__zns_template__send_template_dialog,
 } from '@src/redux/slice/Zns';
-import { useLazyGetZnsTemplatesQuery } from '@src/redux/query/zalo_RTK';
+import { useLazy_get_Zns_Templates_Query } from '@src/redux/query/zalo_RTK';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { handleSrcImage } from '@src/utility/string';
 import { route_enum } from '@src/router/type';
@@ -23,114 +23,116 @@ import { route_enum } from '@src/router/type';
 const ZnsList = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
-    // const account: AccountField | undefined = useSelector((state: RootState) => state.AppSlice.account);
-    const accountInformation: AccountInformationField | undefined = useSelector(
-        (state: RootState) => state.AppSlice.accountInformation
-    );
-    const selectedOa: ZaloOaField | undefined = useSelector((state: RootState) => state.ZnsSlice.selectedOa);
-    const newZnsTemplate: ZnsTemplateField | undefined = useSelector(
-        (state: RootState) => state.ZnsSlice.newZnsTemplate
-    );
-    const newZnsTemplates: ZnsTemplateField[] = useSelector((state: RootState) => state.ZnsSlice.newZnsTemplates);
 
-    const [hasMore, setHasMore] = useState<boolean>(true);
-    const [nextPage, setNextPage] = useState<number>(1);
+    const account_information: Account_Information_Field | undefined = useSelector(
+        (state: RootState) => state.App_Slice.account_information
+    );
+    const selected_oa: Zalo_Oa_Field | undefined = useSelector((state: RootState) => state.Zns_Slice.selected_oa);
+    const new_zns_template: Zns_Template_Field | undefined = useSelector(
+        (state: RootState) => state.Zns_Slice.new_zns_template
+    );
+    const new_zns_templates: Zns_Template_Field[] = useSelector(
+        (state: RootState) => state.Zns_Slice.new_zns_templates
+    );
+
+    const [has_more, set__has_more] = useState<boolean>(true);
+    const [next_page, set__next_page] = useState<number>(1);
     const size = 5;
-    const [znsTemplates, setZnsTemplates] = useState<ZnsTemplateField[]>([]);
+    const [zns_templates, set__zns_templates] = useState<Zns_Template_Field[]>([]);
 
-    const [getZnsTemplates] = useLazyGetZnsTemplatesQuery();
-
-    useEffect(() => {
-        if (!newZnsTemplate) return;
-        setZnsTemplates((prev) => [newZnsTemplate, ...prev]);
-        dispatch(set_newZnsTemplate(undefined));
-    }, [newZnsTemplate, dispatch]);
+    const [get_Zns_Templates] = useLazy_get_Zns_Templates_Query();
 
     useEffect(() => {
-        if (!accountInformation) return;
-        if (!selectedOa) return;
+        if (!new_zns_template) return;
+        set__zns_templates((prev) => [new_zns_template, ...prev]);
+        dispatch(set__new_zns_template(undefined));
+    }, [new_zns_template, dispatch]);
 
-        dispatch(set_isLoading(true));
-        getZnsTemplates({
+    useEffect(() => {
+        if (!account_information) return;
+        if (!selected_oa) return;
+
+        dispatch(set__is_loading(true));
+        get_Zns_Templates({
             page: 1,
             size: size,
             offset: 0,
-            zaloOaId: selectedOa.id,
-            accountId: accountInformation.addedById || -1,
+            zalo_oa_id: selected_oa.id,
+            account_id: account_information.added_by_id || '',
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setZnsTemplates(resData.data.items);
-                    setNextPage(2);
-                    setHasMore(resData.data.items.length === size);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__zns_templates(res_data.data.items);
+                    set__next_page(2);
+                    set__has_more(res_data.data.items.length === size);
                 } else {
-                    setHasMore(false);
+                    set__has_more(false);
                 }
             })
             .catch((err) => {
                 console.error(err);
-                dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
+                dispatch(set__data__toast_message({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
-    }, [accountInformation, selectedOa, dispatch, getZnsTemplates]);
+    }, [account_information, selected_oa, dispatch, get_Zns_Templates]);
 
-    const handleSeeMore = () => {
-        if (!accountInformation) return;
-        if (!selectedOa) return;
+    const handle_See_More = () => {
+        if (!account_information) return;
+        if (!selected_oa) return;
 
-        dispatch(set_isLoading(true));
-        getZnsTemplates({
-            page: nextPage,
+        dispatch(set__is_loading(true));
+        get_Zns_Templates({
+            page: next_page,
             size: size,
-            offset: newZnsTemplates.length,
-            zaloOaId: selectedOa.id,
-            accountId: accountInformation.addedById || -1,
+            offset: new_zns_templates.length,
+            zalo_oa_id: selected_oa.id,
+            account_id: account_information.added_by_id || '',
         })
             .then((res) => {
-                const resData = res.data;
-                if (resData?.isSuccess && resData.data) {
-                    setZnsTemplates((prev) => [...prev, ...(resData.data?.items || [])]);
-                    setNextPage((prev) => prev + 1);
-                    setHasMore(resData.data.items.length === size);
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    set__zns_templates((prev) => [...prev, ...(res_data.data?.items || [])]);
+                    set__next_page((prev) => prev + 1);
+                    set__has_more(res_data.data.items.length === size);
                 } else {
-                    setHasMore(false);
+                    set__has_more(false);
                 }
             })
             .catch((err) => {
                 console.error(err);
-                dispatch(setData_toastMessage({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
+                dispatch(set__data__toast_message({ type: messageType_enum.ERROR, message: 'Đã có lỗi xảy ra !' }));
             })
             .finally(() => {
-                dispatch(set_isLoading(false));
+                dispatch(set__is_loading(false));
             });
     };
 
-    const handleOpenSend = (item: ZnsTemplateField) => {
-        dispatch(setIsShow_sendTemplateDialog(true));
-        dispatch(setZnsTemplate_sendTemplateDialog(item));
+    const handle_Open_Send = (item: Zns_Template_Field) => {
+        dispatch(set__is_show__send_template_dialog(true));
+        dispatch(set__zns_template__send_template_dialog(item));
     };
 
-    const handleOpenEdit = (item: ZnsTemplateField) => {
-        dispatch(setIsShow_editZnsTemplateDialog(true));
-        dispatch(setZnsTemplate_editZnsTemplateDialog(item));
+    const handle_Open_Edit = (item: Zns_Template_Field) => {
+        dispatch(set__is_show__edit_zns_template_dialog(true));
+        dispatch(set__zns_template__edit_zns_template_dialog(item));
     };
 
-    const handleSeeDetail = (item: ZnsTemplateField) => {
+    const handle_See_Detail = (item: Zns_Template_Field) => {
         navigate(route_enum.ZNS_DETAIL + '/' + `${item.id}`);
     };
 
-    const znsTemplate_list = znsTemplates.map((item, index) => {
+    const zns_template_list = zns_templates.map((item, index) => {
         const images = JSON.parse(item.images);
         const url = images.length > 0 ? handleSrcImage(images[0]) : '';
         return (
             <div className={style.oneZnsTemplate} key={index}>
-                <img src={url} onClick={() => handleSeeDetail(item)} alt="" />
+                <img src={url} onClick={() => handle_See_Detail(item)} alt="" />
                 <div>
-                    <div onClick={() => handleOpenSend(item)}>Gửi tin với mẫu này</div>
-                    <div onClick={() => handleOpenEdit(item)}>Chỉnh sửa</div>
+                    <div onClick={() => handle_Open_Send(item)}>Gửi tin với mẫu này</div>
+                    <div onClick={() => handle_Open_Edit(item)}>Chỉnh sửa</div>
                 </div>
             </div>
         );
@@ -138,8 +140,8 @@ const ZnsList = () => {
 
     return (
         <div className={style.parent}>
-            <div className={style.list}>{znsTemplate_list}</div>
-            <div className={style.seeMore}>{hasMore && <div onClick={() => handleSeeMore()}>{SEE_MORE}</div>}</div>
+            <div className={style.list}>{zns_template_list}</div>
+            <div className={style.seeMore}>{has_more && <div onClick={() => handle_See_More()}>{SEE_MORE}</div>}</div>
         </div>
     );
 };
