@@ -13,11 +13,13 @@ class QueryDB_Get_Zalo_Oa_Token_With_Fk {
         if (this._get_zalo_oa_token_with_fk_body !== undefined) {
             try {
                 const result = await pool.query<Zalo_Oa_Token_Field>(
-                    `SELECT * FROM get_zalo_oa_token_with_fk($1, $2, $3);`,
+                    'SELECT * FROM get_zalo_oa_token_with_fk($1::UUID, $2::UUID)',
                     [this._get_zalo_oa_token_with_fk_body.zalo_oa_id, this._get_zalo_oa_token_with_fk_body.account_id]
                 );
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             }

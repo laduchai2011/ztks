@@ -14,9 +14,10 @@ class QueryDB_Check_Zalo_Oa_List_With_Zalo_App_Id {
     async run(): Promise<Zalo_Oa_Field[] | void> {
         if (this._check_zalo_oa_list_with_zalo_app_id_body !== undefined) {
             try {
-                const result = await pool.query<Zalo_Oa_Field>(`SELECT * FROM check_zalo_app_with_app_id($1);`, [
-                    this._check_zalo_oa_list_with_zalo_app_id_body.zalo_app_id,
-                ]);
+                const result = await pool.query<Zalo_Oa_Field>(
+                    'SELECT * FROM check_zalo_oa_list_with_zalo_app_id($1::UUID)',
+                    [this._check_zalo_oa_list_with_zalo_app_id_body.zalo_app_id]
+                );
 
                 return result.rows;
             } catch (error) {

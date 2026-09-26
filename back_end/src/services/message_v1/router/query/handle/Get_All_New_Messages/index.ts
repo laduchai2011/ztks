@@ -78,7 +78,7 @@ class Handle_Get_All_New_Messages {
 
         const chat_room_role_cache = await this._cache_get_chat_room_role_with_crid_aaid.get_Data();
         if (chat_room_role_cache) {
-            res.locals.chatRoomRole = chat_room_role_cache;
+            res.locals.chat_room_role = chat_room_role_cache;
             next();
             return;
         }

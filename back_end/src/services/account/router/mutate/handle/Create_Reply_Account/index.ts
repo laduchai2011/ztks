@@ -1,4 +1,3 @@
-import { mssql_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
 import { Request, Response, NextFunction } from 'express';
 import { My_Response_Field } from '@src/data_struct/response';
@@ -10,8 +9,8 @@ import {
 } from '@src/data_struct/account/body';
 import { Chat_Room_Role_Schema, Chat_Room_Field } from '@src/data_struct/chat_room';
 import { Get_Chat_Room_With_Id_Body_Field } from '@src/data_struct/chat_room/body';
-import { Chat_Room_Role_Zod_Schema } from '@src/schema/chatRoom';
-import { Chat_Room_Role_Schema_Type } from '@src/schema/chatRoom';
+import { Chat_Room_Role_Zod_Schema } from '@src/schema/chat_room';
+import { Chat_Room_Role_Schema_Type } from '@src/schema/chat_room';
 import { get_Db_Monggo } from '@src/connect/mongo';
 import MutateDB_Create_Reply_Account from '../../mutateDB/Create_Reply_Account';
 import QueryDB_Get_Chat_Room_With_Id from '@src/services/chat_room/router/query/queryDB/Get_Chat_Room_With_Id';
@@ -21,14 +20,12 @@ import { Cache_Get_Chat_Room_With_Id } from '@src/const/redisKey/chat_room';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Create_Reply_Account {
-    private _mssql_server = mssql_server;
     private _serviceRedis = ServiceRedis.getInstance();
     private _cache_get_chat_room_with_id = new Cache_Get_Chat_Room_With_Id({
         log_prameter: 'Handle_CreateReplyAccount',
     });
 
     constructor() {
-        this._mssql_server.init();
         this._serviceRedis.init();
         this._cache_get_chat_room_with_id.init();
     }

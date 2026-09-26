@@ -15,18 +15,20 @@ class QueryDB_Get_Reply_Account {
                 const result = await pool.query<{
                     items: Account_Field[];
                     total_count: string;
-                }>(`SELECT * FROM get_not_reply_accounts($1, $2, $3);`, [
+                }>('SELECT * FROM get_reply_accounts($1, $2, $3::UUID)', [
                     this._get_reply_account_body.page,
                     this._get_reply_account_body.size,
                     this._get_reply_account_body.chat_room_id,
                 ]);
 
-                const data: Paged_Account_Field = {
-                    items: result.rows[0].items,
-                    total_count: Number(result.rows[0].total_count),
-                };
+                if (result.rows.length > 0) {
+                    const data: Paged_Account_Field = {
+                        items: result.rows[0].items,
+                        total_count: Number(result.rows[0].total_count),
+                    };
 
-                return data;
+                    return data;
+                }
             } catch (error) {
                 console.error(error);
             }

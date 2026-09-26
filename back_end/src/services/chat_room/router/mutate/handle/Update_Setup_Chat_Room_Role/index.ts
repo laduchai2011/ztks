@@ -9,7 +9,7 @@ import {
     Cache_Get_Chat_Room_Role_With_Crid_Aaid,
     Cache_Get_All_Chat_Room_Role_With_Crid,
 } from '@src/const/redisKey/chat_room';
-import { Chat_Room_Role_Zod_Schema } from '@src/schema/chatRoom';
+import { Chat_Room_Role_Zod_Schema } from '@src/schema/chat_room';
 import { get_Db_Monggo } from '@src/connect/mongo';
 import { getRefreshToken } from '@src/device/getDevice';
 

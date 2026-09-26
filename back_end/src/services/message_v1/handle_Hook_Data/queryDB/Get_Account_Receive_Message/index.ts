@@ -15,14 +15,16 @@ class QueryDB_Get_Account_Receive_Message {
         if (this._get_account_receive_message_body !== undefined) {
             try {
                 const result = await pool.query<Account_Receive_Message_Field>(
-                    `SELECT * FROM get_account_receive_message($1, $2);`,
+                    'SELECT * FROM get_account_receive_message($1::UUID, $2::UUID)',
                     [
                         this._get_account_receive_message_body.zalo_oa_id,
                         this._get_account_receive_message_body.account_id,
                     ]
                 );
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             }

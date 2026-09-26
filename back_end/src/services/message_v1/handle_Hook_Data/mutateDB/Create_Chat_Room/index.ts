@@ -16,15 +16,20 @@ class MutateDB_Create_Chat_Room {
             try {
                 await client.query('BEGIN');
 
-                const result = await pool.query<Chat_Room_Field>(`SELECT * FROM create_chat_room($1, $2, $3);`, [
-                    this._chat_room_body.user_id_by_app,
-                    this._chat_room_body.zalo_oa_id,
-                    this._chat_room_body.account_id,
-                ]);
+                const result = await pool.query<Chat_Room_Field>(
+                    'SELECT * FROM create_chat_room($1, $2::UUID, $3::UUID)',
+                    [
+                        this._chat_room_body.user_id_by_app,
+                        this._chat_room_body.zalo_oa_id,
+                        this._chat_room_body.account_id,
+                    ]
+                );
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             } finally {

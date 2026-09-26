@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import process from 'process';
 import cors from 'cors';
-import { mssql_server } from '@src/connect';
 import { redis_server } from '@src/connect';
 import { rabbit_server } from '@src/connect';
 import ServiceRedis from '@src/cache/cacheRedis';
@@ -44,7 +43,6 @@ app.use(`${apiString}/hello`, (req, res) => {
 });
 
 (async () => {
-    await mssql_server.init();
     await redis_server.init();
     await rabbit_server.init();
 

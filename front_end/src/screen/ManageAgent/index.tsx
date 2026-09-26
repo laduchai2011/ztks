@@ -34,7 +34,7 @@ const ManageAgent = () => {
         );
     }, [dispatch]);
 
-    const handleBack = () => {
+    const handle_Back = () => {
         navigate(-1);
     };
 
@@ -43,7 +43,7 @@ const ManageAgent = () => {
             <div className={style.main}>
                 <div className={style.header}>
                     <div>{MANAGE_AGENT}</div>
-                    <IoChevronBack onClick={() => handleBack()} size={20} color="white" />
+                    <IoChevronBack onClick={() => handle_Back()} size={20} color="white" />
                 </div>
                 <CreateService />
                 <ServiceList />

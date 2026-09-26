@@ -71,7 +71,7 @@ const TakeTokenDialog = () => {
 
         const redirect_url = isProduct
             ? process.env.ZALO_REDIRECT_URI
-            : 'https://zalowebhookdev.taokosao.com/zalo/tokenCallback';
+            : 'https://zalowebhookdev.taokosao.com/zalo/token_callback';
 
         const url = `https://oauth.zaloapp.com/v4/oa/permission?app_id=${zalo_app.app_id}&redirect_uri=${redirect_url}`;
         window.open(url, '_blank');

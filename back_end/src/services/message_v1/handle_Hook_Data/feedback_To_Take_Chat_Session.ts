@@ -7,7 +7,6 @@ import ServiceRedis from '@src/cache/cacheRedis';
 import { Zalo_Event_Name_Enum } from '@src/data_struct/zalo/hook_data/common';
 import { User_Take_Session_To_Chat_Body_Field } from '@src/data_struct/chat_session/body';
 import QueryDB_User_Take_Session_To_Chat from './queryDB/User_Take_Session_To_Chat';
-import { my_log } from '@src/log';
 import { prefix_cache__zalo_message_wait_session_with_zalo_oa_id_user_id_by_app } from '@src/const/redisKey';
 
 // mssql_server.init();

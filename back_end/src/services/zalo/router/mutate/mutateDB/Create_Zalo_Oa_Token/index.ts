@@ -17,7 +17,7 @@ class MutateDB_Create_Zalo_Oa_Token {
                 await client.query('BEGIN');
 
                 const result = await pool.query<Zalo_Oa_Token_Field>(
-                    `SELECT * FROM create_zalo_oa_token($1, $2, $3);`,
+                    'SELECT * FROM create_zalo_oa_token($1, $2::UUID, $3::UUID)',
                     [
                         this._create_zalo_oa_token_body.refresh_token,
                         this._create_zalo_oa_token_body.zalo_oa_id,
@@ -27,7 +27,9 @@ class MutateDB_Create_Zalo_Oa_Token {
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             } finally {

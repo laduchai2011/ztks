@@ -1,4 +1,3 @@
-import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
 import { My_Response_Field } from '@src/data_struct/response';
 import { Agent_Pay_Field } from '@src/data_struct/agent';
@@ -8,12 +7,6 @@ import MutateDB_Create_Agent_Pay from '../../mutateDB/Create_Agent_Pay';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Create_Agent_Pay {
-    private _mssql_server = mssql_server;
-
-    constructor() {
-        this._mssql_server.init();
-    }
-
     setup = async (req: Request<any, any, Create_Agent_Pay_Body_Field>, res: Response, next: NextFunction) => {
         const my_response: My_Response_Field<Agent_Pay_Field> = {
             is_success: false,

@@ -310,7 +310,7 @@ BEGIN
             a.password,
             a.first_name,
             a.last_name,
-            a.status,
+            a.is_delete,
 
             -- Dùng để sort last_name
             (
@@ -349,7 +349,7 @@ BEGIN
             AND crr.status = 'normal'
 
         WHERE
-            a.status = 'normal'
+            a.is_delete = FALSE
             AND ai.added_by_id = v_added_by_id
             AND crr.id IS NULL
 

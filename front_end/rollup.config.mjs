@@ -54,7 +54,7 @@ const customResolver = resolve({
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.css', '.pcss', '.scss', '.png'],
 });
 
-let cache;
+// let cache;
 
 const rollup_dev = isDev && [
     {
@@ -77,7 +77,7 @@ const rollup_dev = isDev && [
             },
         ],
 
-        cache,
+        // cache,
 
         plugins: [
             // polyfillNode(),

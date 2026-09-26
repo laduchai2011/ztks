@@ -18,7 +18,7 @@ class Handle_Get_Zalo_User_Infor {
         this._serviceRedis.init();
     }
 
-    async get_Zalo_App(req: Request<any, any, Get_Zalo_User_Body_Field>, res: Response, next: NextFunction) {
+    get_Zalo_App = async (req: Request<any, any, Get_Zalo_User_Body_Field>, res: Response, next: NextFunction) => {
         const get_zalo_user_body = req.body;
         const zalo_app = get_zalo_user_body.zalo_app;
         const account_id = zalo_app.account_id;
@@ -69,7 +69,7 @@ class Handle_Get_Zalo_User_Infor {
             res.status(500).json(my_response);
             return;
         }
-    }
+    };
 
     main = async (req: Request<any, any, Get_Zalo_User_Body_Field>, res: Response) => {
         const get_zalo_user_body = req.body;

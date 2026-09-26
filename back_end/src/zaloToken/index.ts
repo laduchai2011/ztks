@@ -14,7 +14,7 @@ import MutateDB_Update_Refresh_Token_Of_Zalo_Oa from './Update_Refresh_Token_Of_
 const serviceRedis = ServiceRedis.getInstance();
 serviceRedis.init();
 
-const timeExpireat = 60 * 1; // 1p
+const time_expireat = 60 * 1; // 1p
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -24,7 +24,7 @@ export async function get_Access_Token(zalo_oa: Zalo_Oa_Field) {
         `${prefix_cache__zalo_access_token_with_zalo_oa_id}_${zalo_oa_id}`
     );
     if (!zalo_access_token) {
-        console.error('getAccessToken', 'Failed to get token in Redis');
+        console.error('get_Access_Token', 'Failed to get token in Redis');
         return;
     }
 
@@ -90,7 +90,7 @@ export async function refresh_Access_Token(zalo_app: Zalo_App_Field, zalo_oa: Za
         const result_u = await queryDB_u.run();
         if (!result_u) return;
 
-        const is_set = await serviceRedis.setData<string>(redis_key, new_access_token, timeExpireat);
+        const is_set = await serviceRedis.setData<string>(redis_key, new_access_token, time_expireat);
         if (!is_set) {
             console.error('Failed to set new token in cookie in Redis');
             return;

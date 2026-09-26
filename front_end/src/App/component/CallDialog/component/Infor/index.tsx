@@ -48,8 +48,7 @@ const Infor: FC<{
         })
             .then((res) => {
                 const res_data = res.data;
-                // console.log('checkConsent resData', resData);
-                if (res_data?.is_success && res_data.data) {
+                if (res_data?.is_success && res_data.data && res_data.data.data) {
                     const _expired_time = res_data.data.data.expired_time;
                     const _expired_date = new Date(_expired_time);
                     set__expried_time(_expired_date.toLocaleString('vi-VN'));

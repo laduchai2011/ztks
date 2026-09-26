@@ -18,7 +18,7 @@ class QueryDB_Get_Agents {
                 const result = await pool.query<{
                     items: Agent_Field[];
                     total_count: string;
-                }>(`SELECT * FROM get_agents($1, $2, $3, $4, $5);`, [
+                }>('SELECT * FROM get_agents($1, $2, $3, $4::UUID, $5::UUID)', [
                     this._get_agents_body.page,
                     this._get_agents_body.size,
                     this._get_agents_body.offset,
@@ -26,12 +26,14 @@ class QueryDB_Get_Agents {
                     agent_account_id,
                 ]);
 
-                const data: Paged_Agent_Field = {
-                    items: result.rows[0].items,
-                    total_count: Number(result.rows[0].total_count),
-                };
+                if (result.rows.length > 0) {
+                    const data: Paged_Agent_Field = {
+                        items: result.rows[0].items,
+                        total_count: Number(result.rows[0].total_count),
+                    };
 
-                return data;
+                    return data;
+                }
             } catch (error) {
                 console.error(error);
             }

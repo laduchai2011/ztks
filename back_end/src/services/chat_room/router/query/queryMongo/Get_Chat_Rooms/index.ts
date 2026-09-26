@@ -43,8 +43,8 @@ export async function get_Chat_Rooms_Mongo(
         {
             $lookup: {
                 from: 'last_message',
-                local_field: 'chat_room_id',
-                foreign_field: 'chat_room_id',
+                localField: 'chat_room_id',
+                foreignField: 'chat_room_id',
                 as: 'last_message',
             },
         },

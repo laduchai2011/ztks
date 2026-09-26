@@ -5,13 +5,14 @@ import {
     Message_Zod_Schema,
     New_Message_Schema_Type,
     New_Message_Zod_Schema,
+    New_Call_Zod_Schema,
     Message_Amount_In_Day_Schema,
     Message_Amount_In_Day_Type,
     Call_Zod_Schema,
     get_Date_Key_VN,
 } from '@src/schema/message';
 import { New_Message_V1_Field, Message_Amount_In_Day_Field, New_Call_V1_Field } from '@src/data_struct/message_v1';
-import { Chat_Room_Role_Zod_Schema, Chat_Room_Role_Schema_Type } from '@src/schema/chatRoom';
+import { Chat_Room_Role_Zod_Schema, Chat_Room_Role_Schema_Type } from '@src/schema/chat_room';
 import { Socket_Message_Field, Message_V1_Field } from '@src/data_struct/message_v1';
 import { get_Db_Monggo } from '@src/connect/mongo';
 import ServiceRedis from '@src/cache/cacheRedis';
@@ -98,6 +99,7 @@ export function hook_Data() {
                     let chat_room: Chat_Room_Field | undefined = undefined;
 
                     const { is_pass, zalo_app, zalo_oa } = await is_Pass_App_Oa(app_id, oa_id);
+
                     if (!is_pass) return;
                     if (!zalo_app) return;
                     if (!zalo_oa) return;
@@ -168,13 +170,13 @@ export function hook_Data() {
                                 created_at: new Date(),
                             };
 
-                            const parsed_new_message = New_Message_Zod_Schema.safeParse(newCall);
+                            const parsed_new_call = New_Call_Zod_Schema.safeParse(newCall);
 
-                            if (!parsed_new_message.success) {
-                                console.error('Invalid message format:', parsed_new_message.error);
+                            if (!parsed_new_call.success) {
+                                console.error('Invalid message format:', parsed_new_call.error);
                             } else {
                                 const db_monggo = get_Db_Monggo();
-                                const data_new_message_parse = parsed_new_message.data;
+                                const data_new_message_parse = parsed_new_call.data;
                                 await db_monggo
                                     .collection<New_Message_Schema_Type>('new_message')
                                     .insertOne(data_new_message_parse);
@@ -192,6 +194,7 @@ export function hook_Data() {
                     const app_id = data.app_id;
                     const oa_id = determine_Oa_Id(data);
                     const sender_id_of_user = determine_Sender_Id_Of_User(data);
+
                     if (!sender_id_of_user) return;
                     let chat_room: Chat_Room_Field | undefined = undefined;
 
@@ -205,7 +208,7 @@ export function hook_Data() {
 
                     // get chat room
                     chat_room = await get_Chat_Room(data, zalo_oa);
-                    // console.log(1111, chatRoom);
+
                     let is_feedback: boolean = false;
                     let wait_session: Wait_Session_Field | undefined = undefined;
 
@@ -237,6 +240,7 @@ export function hook_Data() {
                                 zalo_app.account_id,
                                 zalo_oa.id
                             );
+
                             if (get_account_receive_message?.account_id_receive_message) {
                                 chat_session_admin.selected_account_id =
                                     get_account_receive_message.account_id_receive_message;
@@ -261,6 +265,13 @@ export function hook_Data() {
 
                     // console.log(1111, chatRoom);
                     if (!chat_room) return;
+
+                    // phòng khi tạo được chat_room trên postgresql nhưng thất bại khi tạo trên mongo
+                    const chat_room_role_master = await get_Chat_Room_Role_Mongo(chat_room);
+
+                    if (!chat_room_role_master) {
+                        create_Chat_Room_Role_Mongo(chat_room, zalo_oa);
+                    }
 
                     // create callPermit
                     handle_Create_Call_Permit(sender_id_of_user, zalo_app.app_id, zalo_oa.oa_id, chat_room.account_id);
@@ -671,6 +682,22 @@ async function create_Chat_Room_Role_Mongo(chat_room: Chat_Room_Field, zalo_oa: 
         const data_parse = parsed_chat_room_role.data;
         await db_monggo.collection<Chat_Room_Role_Schema_Type>('chat_room_role').insertOne(data_parse);
     }
+}
+
+// chưa cache
+async function get_Chat_Room_Role_Mongo(chat_room: Chat_Room_Field) {
+    const db = get_Db_Monggo();
+    const col = db.collection<Chat_Room_Role_Schema_Type>('chat_room_role');
+
+    const data = await col
+        .find<Chat_Room_Role_Schema_Type>(
+            { chat_room_id: chat_room.id, authorized_account_id: chat_room.account_id },
+            { projection: { _id: 0 } }
+        )
+        .limit(1)
+        .toArray();
+
+    return data.length > 0 ? data[0] : undefined;
 }
 
 async function get_Account_Receive_Message(selected_account_id: string, zalo_oa_id: string) {

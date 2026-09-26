@@ -190,7 +190,7 @@ BEGIN
     RETURN QUERY
     SELECT *
     FROM zalo_oa_token
-    WHERE id = p_zalo_oa_id;
+    WHERE zalo_oa_id = p_zalo_oa_id;
 END;
 $$;
 

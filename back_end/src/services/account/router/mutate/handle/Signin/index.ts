@@ -1,4 +1,3 @@
-import { mssql_server } from '@src/connect';
 import { Request, Response } from 'express';
 import MutateDB_Signin from '../../mutateDB/Signin';
 import ServiceRedis from '@src/cache/cacheRedis';
@@ -28,17 +27,11 @@ const serviceRedis = ServiceRedis.getInstance();
 serviceRedis.init();
 
 class Handle_Signin {
-    private _mssql_server = mssql_server;
-
-    constructor() {}
-
     main = async (req: Request<any, any, signin_infor_type>, res: Response) => {
         const signinInfor = req.body;
         const user_name = signinInfor.user_name;
         const password = signinInfor.password;
         const device = req.headers['x-device-type'] as DeviceType;
-
-        await this._mssql_server.init();
 
         const my_response: My_Response_Field<Account_Field> = {
             is_success: false,

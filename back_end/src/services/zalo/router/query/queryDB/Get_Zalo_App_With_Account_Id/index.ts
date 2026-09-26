@@ -15,7 +15,7 @@ class QueryDB_Get_Zalo_App_With_Account_Id {
         if (this._zalo_app_with_account_id_body !== undefined) {
             try {
                 const result = await pool.query<Zalo_App_Field>(
-                    `SELECT * FROM get_zalo_app_with_account_id($1::UUID);`,
+                    'SELECT * FROM get_zalo_app_with_account_id($1::UUID)',
                     [this._zalo_app_with_account_id_body.account_id]
                 );
 

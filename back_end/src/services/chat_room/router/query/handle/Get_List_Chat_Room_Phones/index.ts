@@ -1,4 +1,3 @@
-import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
 import { My_Response_Field } from '@src/data_struct/response';
 import { Chat_Room_Phone_Field } from '@src/data_struct/chat_room';
@@ -8,12 +7,6 @@ import { verify_Refresh_Token } from '@src/token';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Get_List_Chat_Room_Phones {
-    private _mssql_server = mssql_server;
-
-    constructor() {
-        this._mssql_server.init();
-    }
-
     setup = async (req: Request<any, any, Get_List_Chat_Room_Phones_Body_Field>, res: Response, next: NextFunction) => {
         const my_response: My_Response_Field<Chat_Room_Phone_Field[]> = {
             is_success: false,

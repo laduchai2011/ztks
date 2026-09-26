@@ -12,12 +12,14 @@ class QueryDB_User_Take_Room_To_Chat {
     async run(): Promise<Chat_Room_Field | void> {
         if (this._user_take_room_to_chat_body !== undefined) {
             try {
-                const result = await pool.query<Chat_Room_Field>(`SELECT * FROM user_take_room_to_chat($1, $2);`, [
+                const result = await pool.query<Chat_Room_Field>('SELECT * FROM user_take_room_to_chat($1, $2::UUID)', [
                     this._user_take_room_to_chat_body.user_id_by_app,
                     this._user_take_room_to_chat_body.zalo_oa_id,
                 ]);
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             }

@@ -15,14 +15,16 @@ class QueryDB_Get_Chat_Room_Role_With_Crid_Aaid {
         if (this._get_chat_room_role_with_crid_aaid_body !== undefined) {
             try {
                 const result = await pool.query<Chat_Room_Role_Field>(
-                    `SELECT * FROM get_chat_room_role_with_crid_aaid($1, $2);`,
+                    'SELECT * FROM get_chat_room_role_with_crid_aaid($1::UUID, $2::UUID)',
                     [
                         this._get_chat_room_role_with_crid_aaid_body.authorized_account_id,
                         this._get_chat_room_role_with_crid_aaid_body.chat_room_id,
                     ]
                 );
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             }

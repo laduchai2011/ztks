@@ -20,7 +20,7 @@ class MutateDB_Update_Refresh_Token_Of_Zalo_Oa {
                     await client.query('BEGIN');
 
                     const result = await pool.query<Zalo_Oa_Token_Field>(
-                        `SELECT * FROM edit_zns_template($1, $2, $3);`,
+                        'SELECT * FROM update_refresh_token_of_zalo_oa($1, $2::UUID, $3::UUID)',
                         [
                             this._update_refresh_token_of_zalo_oa_body.refresh_token,
                             this._update_refresh_token_of_zalo_oa_body.zalo_oa_id,
@@ -30,7 +30,9 @@ class MutateDB_Update_Refresh_Token_Of_Zalo_Oa {
 
                     await client.query('COMMIT');
 
-                    return result.rows[0];
+                    if (result.rows.length > 0) {
+                        return result.rows[0];
+                    }
                 } catch (error) {
                     console.error(error);
                 } finally {

@@ -11,7 +11,7 @@ import {
     Cache_Get_All_Chat_Room_Role_With_Crid,
     Cache_Get_Chat_Room_With_Zalo_Oa_Id_User_Id_By_App,
 } from '@src/const/redisKey/chat_room';
-import { Chat_Room_Role_Zod_Schema, Chat_Room_Role_Schema_Type } from '@src/schema/chatRoom';
+import { Chat_Room_Role_Zod_Schema, Chat_Room_Role_Schema_Type } from '@src/schema/chat_room';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Change_Chat_Room_Master {
