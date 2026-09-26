@@ -59,13 +59,13 @@ const CHUNK_SIZE = 2 * 1024 * 1024; // 2MB
 //     return objectName;
 // };
 
-export const uploadImage = async (file: File, id: string): Promise<{ fileName: string }> => {
-    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+export const uploadImage = async (file: File, id: string): Promise<{ file_name: string }> => {
+    const total_chunks = Math.ceil(file.size / CHUNK_SIZE);
     const uploadId = `${Date.now()}-${id}-${file.name}`;
 
-    const filename = `${Date.now()}_${id}_${file.name}`;
+    const file_name = `${Date.now()}_${id}_${file.name}`;
 
-    for (let index = 0; index < totalChunks; index++) {
+    for (let index = 0; index < total_chunks; index++) {
         const start = index * CHUNK_SIZE;
         const end = Math.min(start + CHUNK_SIZE, file.size);
         const chunk = file.slice(start, end);
@@ -85,9 +85,9 @@ export const uploadImage = async (file: File, id: string): Promise<{ fileName: s
     }
 
     const mergeBody = {
-        fileId: uploadId,
-        totalChunks,
-        finalFileName: filename,
+        file_id: uploadId,
+        total_chunks,
+        final_file_name: file_name,
     };
     await fetch(IMAGE_V1_API.MERGE_CHUNKS, {
         method: 'POST',
@@ -96,5 +96,5 @@ export const uploadImage = async (file: File, id: string): Promise<{ fileName: s
         credentials: 'include', // 👈 thêm dòng này
     });
 
-    return { fileName: filename };
+    return { file_name: file_name };
 };

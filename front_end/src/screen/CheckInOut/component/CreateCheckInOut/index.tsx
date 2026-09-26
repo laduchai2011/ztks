@@ -161,7 +161,7 @@ const CreateCheckInOut = () => {
             })
         );
 
-        const file_name = res_data_image.fileName;
+        const file_name = res_data_image.file_name;
 
         const create_note_body: Create_Check_In_Out_Body_Field = {
             type: check_type,

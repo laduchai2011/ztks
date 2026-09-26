@@ -20,23 +20,23 @@ DECLARE
     v_first_date DATE;
     v_to_date DATE;
 BEGIN
-    -- Ngày tạo dữ liệu đầu tiên của account
-    SELECT MIN(create_time)::DATE
+    -- Ngày đầu tiên account có dữ liệu
+    SELECT MIN(c.create_time)::DATE
     INTO v_first_date
-    FROM check_in_out
-    WHERE account_id = p_account_id
-      AND is_delete = FALSE;
+    FROM check_in_out AS c
+    WHERE c.account_id = p_account_id
+      AND c.is_delete = FALSE;
 
-    -- Account chưa có dữ liệu
+    -- Không có dữ liệu
     IF v_first_date IS NULL THEN
         RETURN;
     END IF;
 
-    -- Không cho toDate nhỏ hơn ngày đầu tiên
-    v_to_date := p_to_date;
-
-    IF v_to_date < v_first_date THEN
+    -- Không lấy dữ liệu trước ngày đầu tiên
+    IF p_to_date < v_first_date THEN
         v_to_date := v_first_date;
+    ELSE
+        v_to_date := p_to_date;
     END IF;
 
     RETURN QUERY
@@ -48,19 +48,24 @@ BEGIN
         c.image,
         c.video,
         c.is_delete,
-        p_account_id AS account_id,
+        c.account_id,
         c.create_time
     FROM generate_series(
         p_from_date,
         v_to_date,
-        INTERVAL '1 day'
+        INTERVAL '-1 day'
     ) AS d(date)
 
-    LEFT JOIN check_in_out c
+    LEFT JOIN check_in_out AS c
         ON c.account_id = p_account_id
         AND c.is_delete = FALSE
-        AND c.create_time >= (d.date::DATE::TIMESTAMP AT TIME ZONE '+07:00')
-        AND c.create_time < ((d.date::DATE + 1)::TIMESTAMP AT TIME ZONE '+07:00')
+        AND c.create_time >= (
+            d.date::TIMESTAMP AT TIME ZONE 'Asia/Ho_Chi_Minh'
+        )
+        AND c.create_time < (
+            (d.date + INTERVAL '1 day')::TIMESTAMP
+                AT TIME ZONE 'Asia/Ho_Chi_Minh'
+        )
 
     ORDER BY
         d.date DESC,

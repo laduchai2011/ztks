@@ -76,7 +76,7 @@ BEGIN
         FROM account a
         JOIN account_information ai
             ON ai.account_id = a.id
-        WHERE a.status = 'normal'
+        WHERE a.is_delete = FALSE
           AND ai.added_by_id = v_added_by_id
           AND (
               p_searched_account_id IS NULL

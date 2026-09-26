@@ -13,7 +13,7 @@ class QueryDB_Get_My_Check_In_Outs {
         if (this._get_my_check_in_outs_body !== undefined) {
             try {
                 const result = await pool.query<Check_In_Out_With_Date_Field>(
-                    `SELECT * FROM get_my_check_in_outs($1, $2, $3);`,
+                    'SELECT * FROM get_my_check_in_outs($1, $2, $3::UUID)',
                     [
                         this._get_my_check_in_outs_body.from_date,
                         this._get_my_check_in_outs_body.to_date,

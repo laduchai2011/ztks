@@ -55,34 +55,31 @@ RETURNS TABLE (
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    -- Kiểm tra bank có thuộc account hay không
+    -- Kiểm tra bank có tồn tại, chưa bị xóa
+    -- và thuộc account hiện tại hay không
     IF NOT EXISTS (
         SELECT 1
-        FROM bank
-        WHERE account_id = p_account_id
-          AND id = p_id
+        FROM bank b
+        WHERE b.id = p_id
+          AND b.account_id = p_account_id
+          AND b.is_delete = FALSE
     ) THEN
-        RAISE EXCEPTION 'Ngân hàng này không phải của bạn.'
+        RAISE EXCEPTION 'Ngân hàng này không phải của bạn hoặc không tồn tại.'
             USING ERRCODE = 'P0001';
     END IF;
 
     -- Update
-    UPDATE bank
+    UPDATE bank b
     SET
         bank_code = p_bank_code,
         account_number = p_account_number,
         account_name = p_account_name,
         update_time = NOW()
-    WHERE id = p_id
-      AND is_delete = FALSE;
+    WHERE b.id = p_id
+      AND b.account_id = p_account_id
+      AND b.is_delete = FALSE;
 
-    -- Không update được
-    IF NOT FOUND THEN
-        RAISE EXCEPTION 'Thay đổi thông tin ngân hàng thất bại.'
-            USING ERRCODE = 'P0002';
-    END IF;
-
-    -- Trả về bank sau khi update
+    -- Trả về bank vừa update
     RETURN QUERY
     SELECT
         b.id,

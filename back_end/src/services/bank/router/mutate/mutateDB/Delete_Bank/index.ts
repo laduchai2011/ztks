@@ -16,14 +16,16 @@ class MutateDB_Delete_Bank {
             try {
                 await client.query('BEGIN');
 
-                const result = await pool.query<Bank_Field>(`SELECT * FROM delete_bank($1, $2);`, [
+                const result = await pool.query<Bank_Field>('SELECT * FROM delete_bank($1::UUID, $2::UUID)', [
                     this._delete_bank_body.id,
                     this._delete_bank_body.account_id,
                 ]);
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             } finally {

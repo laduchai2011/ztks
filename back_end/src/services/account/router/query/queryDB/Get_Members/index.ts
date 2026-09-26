@@ -19,7 +19,7 @@ class QueryDB_Get_Members {
                 const result = await pool.query<{
                     items: Account_Field[];
                     total_count: string;
-                }>(`SELECT * FROM get_members($1, $2, $3, $4);`, [
+                }>('SELECT * FROM get_members($1, $2, $3::UUID, $4::UUID)', [
                     this._get_members_body.page,
                     this._get_members_body.size,
                     this._get_members_body.account_id,

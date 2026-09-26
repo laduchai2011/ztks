@@ -16,7 +16,7 @@ class MutateDB_Add_Bank {
             try {
                 await client.query('BEGIN');
 
-                const result = await pool.query<Bank_Field>(`SELECT * FROM add_bank($1, $2, $3, $4);`, [
+                const result = await pool.query<Bank_Field>('SELECT * FROM add_bank($1, $2, $3, $4::UUID)', [
                     this._add_bank_body.bank_code,
                     this._add_bank_body.account_number,
                     this._add_bank_body.account_name,
@@ -25,7 +25,9 @@ class MutateDB_Add_Bank {
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             } finally {
