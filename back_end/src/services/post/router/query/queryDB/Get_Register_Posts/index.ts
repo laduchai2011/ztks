@@ -18,7 +18,7 @@ class QueryDB_Get_Register_Posts {
                 const result = await pool.query<{
                     items: Register_Post_Field[];
                     total_count: string;
-                }>(`SELECT * FROM get_register_posts($1, $2, $3::UUID, $4);`, [
+                }>('SELECT * FROM get_register_posts($1, $2, $3::UUID, $4)', [
                     this._get_register_posts_body.page,
                     this._get_register_posts_body.size,
                     this._get_register_posts_body.account_id,

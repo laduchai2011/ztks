@@ -17,7 +17,7 @@ class MutateDB_Edit_Post {
                 await client.query('BEGIN');
 
                 const result = await pool.query<Post_Field>(
-                    `SELECT * FROM edit_post($1, $2, $3, $4, $5, $6, $7, $8);`,
+                    'SELECT * FROM edit_post($1::UUID, $2, $3, $4, $5, $6, $7, $8::UUID)',
                     [
                         this._edit_post_body.id,
                         this._edit_post_body.index,
@@ -32,7 +32,9 @@ class MutateDB_Edit_Post {
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             } finally {

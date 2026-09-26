@@ -17,19 +17,21 @@ class QueryDB_Get_Posts {
                 const result = await pool.query<{
                     items: Post_Field[];
                     total_count: string;
-                }>(`SELECT * FROM get_posts($1, $2, $3, $4);`, [
+                }>('SELECT * FROM get_posts($1, $2, $3::UUID, $4)', [
                     this._get_posts_body.page,
                     this._get_posts_body.size,
                     this._get_posts_body.register_post_id,
                     is_active,
                 ]);
 
-                const data: Paged_Post_Field = {
-                    items: result.rows[0].items,
-                    total_count: Number(result.rows[0].total_count),
-                };
+                if (result.rows.length > 0) {
+                    const data: Paged_Post_Field = {
+                        items: result.rows[0].items,
+                        total_count: Number(result.rows[0].total_count),
+                    };
 
-                return data;
+                    return data;
+                }
             } catch (error) {
                 console.error(error);
             }

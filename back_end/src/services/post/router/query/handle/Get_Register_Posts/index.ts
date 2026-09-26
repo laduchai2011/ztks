@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { My_Response_Field } from '@src/data_struct/response';
-import { Register_Post_Field, Paged_Register_Post_Field } from '@src/data_struct/post';
+import { Paged_Register_Post_Field } from '@src/data_struct/post';
 import { Get_Register_Posts_Body_Field } from '@src/data_struct/post/body';
 import QueryDB_Get_Register_Posts from '../../queryDB/Get_Register_Posts';
 import { Cache_Get_Register_Posts } from '@src/const/redisKey/post';

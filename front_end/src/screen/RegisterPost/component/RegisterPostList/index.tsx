@@ -32,6 +32,7 @@ const RegisterPostList = () => {
 
     useEffect(() => {
         if (!get_register_posts_body) return;
+        console.log('get_Register_Posts', get_register_posts_body);
         set__filter(get_register_posts_body);
         dispatch(set__is_loading(true));
         get_Register_Posts(get_register_posts_body)
@@ -61,7 +62,7 @@ const RegisterPostList = () => {
         set__register_posts((prev) => [new_register_post_of_create, ...prev]);
         dispatch(set__new_register_post_of_create(undefined));
         setTimeout(() => {
-            window.location.reload();
+            // window.location.reload();
         }, 500);
     }, [dispatch, new_register_post_of_create]);
 

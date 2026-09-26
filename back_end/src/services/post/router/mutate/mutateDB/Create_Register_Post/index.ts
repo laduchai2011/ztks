@@ -17,7 +17,7 @@ class MutateDB_Create_Register_Post {
                 await client.query('BEGIN');
 
                 const result = await pool.query<Register_Post_Field>(
-                    `SELECT * FROM create_register_post($1, $2, $3, $4);`,
+                    'SELECT * FROM create_register_post($1, $2, $3::UUID, $4::UUID)',
                     [
                         this._create_register_post_body.name,
                         this._create_register_post_body.type,
@@ -28,7 +28,9 @@ class MutateDB_Create_Register_Post {
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             } finally {

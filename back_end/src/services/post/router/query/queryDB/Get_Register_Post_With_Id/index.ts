@@ -12,11 +12,14 @@ class QueryDB_Get_Register_Post_With_Id {
     async run(): Promise<Register_Post_Field | void> {
         if (this._get_register_post_with_id_body !== undefined) {
             try {
-                const result = await pool.query<Register_Post_Field>(`SELECT * FROM get_register_post_with_id($1);`, [
-                    this._get_register_post_with_id_body.id,
-                ]);
+                const result = await pool.query<Register_Post_Field>(
+                    'SELECT * FROM get_register_post_with_id($1::UUID)',
+                    [this._get_register_post_with_id_body.id]
+                );
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             }
