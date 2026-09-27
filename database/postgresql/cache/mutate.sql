@@ -61,9 +61,9 @@ BEGIN
             USING ERRCODE = 'P0001';
     END IF;
 
-    UPDATE cache_redis
-    SET value = p_value
-    WHERE id = v_cache_redis_id;
+    UPDATE cache_redis AS cr
+	SET value = p_value
+	WHERE cr.id = v_cache_redis_id;
 
     IF NOT FOUND THEN
         RAISE EXCEPTION 'Cập nhật cache_redis không thành công.'

@@ -17,7 +17,7 @@ class QueryDB_Get_Notes {
                 const result = await pool.query<{
                     items: Note_Field[];
                     total_count: string;
-                }>(`SELECT * FROM get_my_notes($1, $2, $3, $4, $5, $6);`, [
+                }>('SELECT * FROM get_my_notes($1, $2, $3, $4::UUID, $5::UUID, $6)', [
                     this._get_notes_body.page,
                     this._get_notes_body.size,
                     this._get_notes_body.offset,
@@ -26,12 +26,14 @@ class QueryDB_Get_Notes {
                     is_delete,
                 ]);
 
-                const data: Paged_Note_Field = {
-                    items: result.rows[0].items,
-                    total_count: Number(result.rows[0].total_count),
-                };
+                if (result.rows.length > 0) {
+                    const data: Paged_Note_Field = {
+                        items: result.rows[0].items,
+                        total_count: Number(result.rows[0].total_count),
+                    };
 
-                return data;
+                    return data;
+                }
             } catch (error) {
                 console.error(error);
             }

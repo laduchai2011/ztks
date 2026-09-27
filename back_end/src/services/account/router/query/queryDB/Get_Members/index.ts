@@ -26,12 +26,14 @@ class QueryDB_Get_Members {
                     searched_account_id,
                 ]);
 
-                const data: Paged_Account_Field = {
-                    items: result.rows[0].items,
-                    total_count: Number(result.rows[0].total_count),
-                };
+                if (result.rows.length > 0) {
+                    const data: Paged_Account_Field = {
+                        items: result.rows[0].items,
+                        total_count: Number(result.rows[0].total_count),
+                    };
 
-                return data;
+                    return data;
+                }
             } catch (error) {
                 console.error(error);
             }

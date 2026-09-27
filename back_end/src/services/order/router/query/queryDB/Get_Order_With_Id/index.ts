@@ -12,11 +12,13 @@ class QueryDB_Get_Order_With_Id {
     async run(): Promise<Order_Field | void> {
         if (this._get_order_with_id_body !== undefined) {
             try {
-                const result = await pool.query<Order_Field>(`SELECT * FROM get_order_with_id($1);`, [
+                const result = await pool.query<Order_Field>('SELECT * FROM get_order_with_id($1::UUID)', [
                     this._get_order_with_id_body.id,
                 ]);
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             }

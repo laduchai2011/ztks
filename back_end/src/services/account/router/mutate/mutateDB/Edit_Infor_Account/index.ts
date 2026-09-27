@@ -18,16 +18,21 @@ class MutateDB_Edit_Infor_Account {
 
                 await client.query('BEGIN');
 
-                const result = await pool.query<Account_Field>(`SELECT * FROM edit_infor_account($1, $2, $3, $4);`, [
-                    this._edit_infor_account_body.id,
-                    this._edit_infor_account_body.first_name,
-                    this._edit_infor_account_body.last_name,
-                    avatar,
-                ]);
+                const result = await pool.query<Account_Field>(
+                    'SELECT * FROM edit_infor_account($1::UUID, $2, $3, $4)',
+                    [
+                        this._edit_infor_account_body.id,
+                        this._edit_infor_account_body.first_name,
+                        this._edit_infor_account_body.last_name,
+                        avatar,
+                    ]
+                );
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             } finally {

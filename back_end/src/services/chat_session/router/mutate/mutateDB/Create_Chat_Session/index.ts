@@ -19,12 +19,14 @@ class MutateDB_Create_Chat_Session {
     async is_My_Oa(): Promise<Zalo_Oa_Field | undefined> {
         if (this._is_my_oa_body !== undefined) {
             try {
-                const result = await pool.query<Zalo_Oa_Field>(`SELECT * FROM is_my_oa($1, $2);`, [
+                const result = await pool.query<Zalo_Oa_Field>('SELECT * FROM is_my_oa($1::UUID, $2::UUID)', [
                     this._is_my_oa_body.id,
                     this._is_my_oa_body.account_id,
                 ]);
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             }
@@ -39,7 +41,7 @@ class MutateDB_Create_Chat_Session {
                 await client.query('BEGIN');
 
                 const result = await pool.query<Chat_Session_Field>(
-                    `SELECT * FROM create_chat_session($1, $2, $3, $4, $5, $6);`,
+                    'SELECT * FROM create_chat_session($1, $2, $3, $4::UUID, $5::UUID, $6::UUID)',
                     [
                         this._chat_session_body.label,
                         this._chat_session_body.code,
@@ -52,7 +54,9 @@ class MutateDB_Create_Chat_Session {
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             } finally {

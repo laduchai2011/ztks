@@ -69,7 +69,7 @@ const RoomList = () => {
         get_Chat_Rooms_Mongo({
             limit: 1,
             cursor: null,
-            is_my: true,
+            is_my: false,
             zalo_oa_id: selected_oa.id,
             account_id: account.id,
         })

@@ -62,7 +62,7 @@ const Message1 = () => {
         if (!id) return;
 
         const socket = get_Socket();
-        const chat_room_id = `chat_room_id_${id}`;
+        const chat_room_id = `chatRoomId_${id}`;
 
         const onConnect = () => {
             socket.emit('joinRoom', chat_room_id);

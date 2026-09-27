@@ -24,6 +24,7 @@ const LeaveAllAccountReceiveMessage = () => {
         leave_All_Account_Receive_Message({ account_id: account.id })
             .then((res) => {
                 const res_data = res.data;
+
                 if (res_data?.is_success && res_data.data) {
                     set__is_leave(res_data.data);
                 }

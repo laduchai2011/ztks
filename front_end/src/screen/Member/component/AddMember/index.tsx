@@ -44,9 +44,9 @@ const AddMember = () => {
         const account_id_t = account_id.trim();
 
         if (account_id_t.length === 0) return;
-        if (isNaN(Number(account_id_t))) {
-            return;
-        }
+        // if (isNaN(Number(account_id_t))) {
+        //     return;
+        // }
 
         dispatch(set__is_loading(true));
         add_Member_V1({ account_id: account_id_t, added_by_id: '' })

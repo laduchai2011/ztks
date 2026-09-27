@@ -21,7 +21,7 @@ export const prefix_cache__zalo_user = {
             ? 'prefix_cache__zalo_user_with_zalo_app_id_user_id_by_app'
             : 'prefix_cache__zalo_user_with_zalo_app_id_user_id_by_app_dev',
     },
-    time: 60 * 1, // 5p
+    time: 60 * 60 * 24, // 1 day
 };
 
 export const prefix_cache__zalo_oa = {

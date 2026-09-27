@@ -16,18 +16,23 @@ class MutateDB_Update_Order {
             try {
                 await client.query('BEGIN');
 
-                const result = await pool.query<Order_Field>(`SELECT * FROM update_order($1, $2, $3, $4, $5, $6);`, [
-                    this._update_order_body.id,
-                    this._update_order_body.label,
-                    this._update_order_body.content,
-                    this._update_order_body.money,
-                    this._update_order_body.phone,
-                    this._update_order_body.account_id,
-                ]);
+                const result = await pool.query<Order_Field>(
+                    'SELECT * FROM update_order($1::UUID, $2, $3, $4, $5, $6::UUID)',
+                    [
+                        this._update_order_body.id,
+                        this._update_order_body.label,
+                        this._update_order_body.content,
+                        this._update_order_body.money,
+                        this._update_order_body.phone,
+                        this._update_order_body.account_id,
+                    ]
+                );
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             } finally {

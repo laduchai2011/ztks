@@ -12,7 +12,7 @@ class QueryDB_Get_All_Order_Status {
     async run(): Promise<Order_Status_Field[] | void> {
         if (this._get_all_order_status_body !== undefined) {
             try {
-                const result = await pool.query<Order_Status_Field>(`SELECT * FROM get_all_order_status($1);`, [
+                const result = await pool.query<Order_Status_Field>('SELECT * FROM get_all_order_status($1::UUID)', [
                     this._get_all_order_status_body.order_id,
                 ]);
 

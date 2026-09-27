@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE FUNCTION create_order (
+﻿CREATE OR REPLACE FUNCTION create_order(
     p_uuid VARCHAR(255),
     p_label VARCHAR(255),
     p_content TEXT,
@@ -24,26 +24,30 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
 
+    -- Kiểm tra chat room thuộc account
     IF NOT EXISTS (
         SELECT 1
-        FROM chat_room
-        WHERE id = p_chat_room_id
-          AND account_id = p_account_id
+        FROM chat_room AS cr
+        WHERE cr.id = p_chat_room_id
+          AND cr.account_id = p_account_id
     ) THEN
-        RAISE EXCEPTION 'ChatRoom không tồn tại .'
+        RAISE EXCEPTION 'ChatRoom không tồn tại.'
             USING ERRCODE = 'P0001';
     END IF;
 
+    -- Kiểm tra chat room đã bị xóa
     IF EXISTS (
         SELECT 1
-        FROM chat_room
-        WHERE id = p_chat_room_id
-          AND status = 'delete'
+        FROM chat_room AS cr
+        WHERE cr.id = p_chat_room_id
+          AND cr.status = 'delete'
     ) THEN
-        RAISE EXCEPTION 'ChatRoom đã bị xóa .'
+        RAISE EXCEPTION 'ChatRoom đã bị xóa.'
             USING ERRCODE = 'P0002';
     END IF;
 
+    -- Tạo order và trả về chính record vừa tạo
+    RETURN QUERY
     INSERT INTO orderr (
         uuid,
         label,
@@ -79,21 +83,7 @@ BEGIN
         orderr.is_delete,
         orderr.chat_room_id,
         orderr.update_time,
-        orderr.create_time
-    INTO
-        id,
-        uuid,
-        label,
-        content,
-        money,
-        is_pay,
-        phone,
-        is_delete,
-        chat_room_id,
-        update_time,
-        create_time;
-
-    RETURN NEXT;
+        orderr.create_time;
 
 END;
 $$;

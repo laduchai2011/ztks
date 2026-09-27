@@ -15,13 +15,15 @@ class MutateDB_Leave_Admin {
             try {
                 await client.query('BEGIN');
 
-                const result = await pool.query<{ is_success: boolean }>(`SELECT * FROM leave_admin($1);`, [
+                const result = await pool.query<{ success: boolean }>('SELECT * FROM leave_admin($1::UUID)', [
                     this._leave_admin_body.account_id,
                 ]);
 
                 await client.query('COMMIT');
 
-                return result.rows[0].is_success;
+                if (result.rows.length > 0) {
+                    return result.rows[0].success;
+                }
             } catch (error) {
                 console.error(error);
             } finally {

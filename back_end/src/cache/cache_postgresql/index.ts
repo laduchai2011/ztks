@@ -9,7 +9,7 @@ export async function postgresql_Get_Value(key: string): Promise<Res_Postgresql_
     };
 
     try {
-        const result = await pool.query<Cache_Redis_Field>(`SELECT * FROM get_a_cache_redis_with_key($1);`, [key]);
+        const result = await pool.query<Cache_Redis_Field>('SELECT * FROM get_a_cache_redis_with_key($1)', [key]);
         const data = result.rows[0];
         if (data) {
             res.is_success = true;
@@ -37,7 +37,7 @@ export async function postgresql_Set_Value(key: string, value: string): Promise<
     try {
         await client.query('BEGIN');
 
-        const result = await pool.query<Cache_Redis_Field>(`SELECT * FROM create_cache_redis($1, $2);`, [key, value]);
+        const result = await pool.query<Cache_Redis_Field>('SELECT * FROM create_cache_redis($1, $2)', [key, value]);
 
         await client.query('COMMIT');
 
@@ -71,7 +71,7 @@ export async function postgresql_Update_Value(key: string, value: string): Promi
     try {
         await client.query('BEGIN');
 
-        const result = await pool.query<Cache_Redis_Field>(`SELECT * FROM update_value_cache_redis($1, $2);`, [
+        const result = await pool.query<Cache_Redis_Field>('SELECT * FROM update_value_cache_redis($1, $2)', [
             key,
             value,
         ]);
@@ -101,7 +101,7 @@ export async function postgresql_Delete_Cache_Redis_With_Key(key: string): Promi
     try {
         await client.query('BEGIN');
 
-        const result = await pool.query<{ r: boolean }>(`SELECT * FROM delete_cache_redis_with_key($1);`, [key]);
+        const result = await pool.query<{ r: boolean }>('SELECT * FROM delete_cache_redis_with_key($1)', [key]);
 
         await client.query('COMMIT');
 

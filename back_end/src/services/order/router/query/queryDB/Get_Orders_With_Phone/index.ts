@@ -15,18 +15,20 @@ class QueryDB_Get_Orders_With_Phone {
                 const result = await pool.query<{
                     items: Order_Field[];
                     total_count: string;
-                }>(`SELECT * FROM get_orders_with_phone($1, $2, $3);`, [
+                }>('SELECT * FROM get_orders_with_phone($1, $2, $3)', [
                     this._get_orders_with_phone_body.page,
                     this._get_orders_with_phone_body.size,
                     this._get_orders_with_phone_body.phone,
                 ]);
 
-                const data: Paged_Order_Field = {
-                    items: result.rows[0].items,
-                    total_count: Number(result.rows[0].total_count),
-                };
+                if (result.rows.length > 0) {
+                    const data: Paged_Order_Field = {
+                        items: result.rows[0].items,
+                        total_count: Number(result.rows[0].total_count),
+                    };
 
-                return data;
+                    return data;
+                }
             } catch (error) {
                 console.error(error);
             }

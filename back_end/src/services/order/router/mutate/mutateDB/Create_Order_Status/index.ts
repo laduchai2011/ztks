@@ -17,7 +17,7 @@ class MutateDB_Create_Order_Status {
                 await client.query('BEGIN');
 
                 const result = await pool.query<Order_Status_Field>(
-                    `SELECT * FROM create_order_status($1, $2, $3, $4);`,
+                    'SELECT * FROM create_order_status($1, $2, $3::UUID, $4::UUID)',
                     [
                         this._create_order_status_body.type,
                         this._create_order_status_body.content,
@@ -28,7 +28,9 @@ class MutateDB_Create_Order_Status {
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             } finally {

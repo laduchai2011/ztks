@@ -157,10 +157,17 @@ const Signup = () => {
 
     const handle_Send_Otp = async () => {
         const phone = formatPhone(account.phone.trim());
+
         if (phone.length === 0) return;
-        const res = await sendOtp(phone);
-        set__confirmation(res);
-        dispatch(set__is_show__otp_dialog(true));
+
+        try {
+            const confirmation = await sendOtp(phone);
+
+            set__confirmation(confirmation);
+            dispatch(set__is_show__otp_dialog(true));
+        } catch (error) {
+            console.error('Không thể gửi OTP:', error);
+        }
     };
 
     return (

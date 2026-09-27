@@ -17,7 +17,7 @@ class MutateDB_Create_Order {
                 await client.query('BEGIN');
 
                 const result = await pool.query<Order_Field>(
-                    `SELECT * FROM create_order($1, $2, $3, $4, $5, $6, $7);`,
+                    'SELECT * FROM create_order($1, $2, $3, $4, $5, $6::UUID, $7::UUID)',
                     [
                         this._create_order_body.uuid,
                         this._create_order_body.label,
@@ -31,7 +31,9 @@ class MutateDB_Create_Order {
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             } finally {

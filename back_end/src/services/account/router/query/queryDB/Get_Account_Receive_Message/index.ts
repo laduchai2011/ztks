@@ -22,7 +22,9 @@ class QueryDB_Get_Account_Receive_Message {
                     ]
                 );
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             }

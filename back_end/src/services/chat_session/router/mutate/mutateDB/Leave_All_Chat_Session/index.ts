@@ -15,13 +15,16 @@ class MutateDB_Leave_All_Chat_Session {
             try {
                 await client.query('BEGIN');
 
-                const result = await pool.query<{ is_success: boolean }>(`SELECT * FROM leave_all_chat_session($1);`, [
-                    this._leave_all_chat_session_body.account_id,
-                ]);
+                const result = await pool.query<{ success: boolean }>(
+                    'SELECT * FROM leave_all_chat_session($1::UUID)',
+                    [this._leave_all_chat_session_body.account_id]
+                );
 
                 await client.query('COMMIT');
 
-                return result.rows[0].is_success;
+                if (result.rows.length > 0) {
+                    return result.rows[0].success;
+                }
             } catch (error) {
                 console.error(error);
             } finally {

@@ -104,7 +104,7 @@ class Handle_Signin {
                                 JSON.stringify(store_auth_token)
                             );
                             if (!result_set?.is_success) {
-                                my_response.message = 'Login NOT successly, account or password is incorrect !';
+                                my_response.message = 'Login NOT successly, account or password is incorrect !!';
                                 res.status(200).json(my_response);
                                 return;
                             }

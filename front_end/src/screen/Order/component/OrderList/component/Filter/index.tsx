@@ -147,22 +147,22 @@ const Filter: FC<{ handle_Get_Orders: (orders_filter_body: Orders_Filter_Body_Fi
             return;
         }
 
-        if (!isPositiveInteger(chat_room_id1)) {
-            dispatch(
-                set__data__toast_message({
-                    type: messageType_enum.ERROR,
-                    message: 'Id phòng chat phải là 1 số nguyên dương !',
-                })
-            );
-            return;
-        }
+        // if (!isPositiveInteger(chat_room_id1)) {
+        //     dispatch(
+        //         set__data__toast_message({
+        //             type: messageType_enum.ERROR,
+        //             message: 'Id phòng chat phải là 1 số nguyên dương !',
+        //         })
+        //     );
+        //     return;
+        // }
 
         if (selected_value.length === 0) return;
 
         const filter_body: Orders_Filter_Body_Field = {
             page: 1,
             size: 5,
-            chat_room_id: chat_room_id1,
+            chat_room_id: chat_room_id1.trim(),
             account_id: '',
         };
 

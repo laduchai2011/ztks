@@ -26,6 +26,9 @@ export const sendOtp = async (phone: string) => {
         return confirmationResult;
     } catch (error) {
         console.error(error);
+        window.recaptchaVerifier?.clear();
+        window.recaptchaVerifier = undefined;
+        throw error;
     }
 };
 

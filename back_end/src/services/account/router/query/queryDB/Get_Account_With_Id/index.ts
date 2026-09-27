@@ -15,7 +15,9 @@ class QueryDB_Get_Account_With_Id {
                     this._account_id,
                 ]);
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             }

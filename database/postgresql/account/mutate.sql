@@ -296,12 +296,12 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION leave_all_account_receive_message (
+-- DROP FUNCTION leave_all_account_receive_message(UUID)
+CREATE OR REPLACE FUNCTION leave_all_account_receive_message(
     p_account_id UUID
 )
 RETURNS TABLE (
-    success BOOLEAN,
-    failure BOOLEAN
+    success BOOLEAN
 )
 LANGUAGE plpgsql
 AS $$
@@ -310,21 +310,20 @@ BEGIN
     SET account_id_receive_message = NULL
     WHERE account_id_receive_message = p_account_id;
 
+    -- Kiểm tra sau khi update
     IF NOT EXISTS (
         SELECT 1
         FROM account_receive_message
         WHERE account_id_receive_message = p_account_id
     ) THEN
         RETURN QUERY
-        SELECT TRUE, FALSE;
-    ELSE
-        RETURN QUERY
-        SELECT FALSE, TRUE;
+        SELECT TRUE;
+
+        RETURN;
     END IF;
 
-EXCEPTION
-    WHEN OTHERS THEN
-        RAISE;
+    RETURN QUERY
+    SELECT FALSE;
 END;
 $$;
 

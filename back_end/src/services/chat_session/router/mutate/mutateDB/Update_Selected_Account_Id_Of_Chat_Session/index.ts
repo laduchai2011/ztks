@@ -21,7 +21,7 @@ class MutateDB_Update_Selected_Account_Id_Of_Chat_Session {
                 await client.query('BEGIN');
 
                 const result = await pool.query<Chat_Session_Field>(
-                    `SELECT * FROM update_selected_account_id_of_chat_session($1, $2, $3);`,
+                    'SELECT * FROM update_selected_account_id_of_chat_session($1::UUID, $2::UUID, $3::UUID)',
                     [
                         this._update_selected_account_id_of_chat_session_body.id,
                         this._update_selected_account_id_of_chat_session_body.selected_account_id,
@@ -31,7 +31,9 @@ class MutateDB_Update_Selected_Account_Id_Of_Chat_Session {
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             } finally {

@@ -23,7 +23,7 @@ class QueryDB_Get_Orders {
                 const result = await pool.query<{
                     items: Order_Field[];
                     total_count: string;
-                }>(`SELECT * FROM get_orders($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`, [
+                }>('SELECT * FROM get_orders($1, $2, $3::UUID, $4::UUID, $5, $6, $7, $8, $9, $10)', [
                     this._orders_filter_body.page,
                     this._orders_filter_body.size,
                     this._orders_filter_body.chat_room_id,
@@ -36,12 +36,14 @@ class QueryDB_Get_Orders {
                     is_delete,
                 ]);
 
-                const data: Paged_Order_Field = {
-                    items: result.rows[0].items,
-                    total_count: Number(result.rows[0].total_count),
-                };
+                if (result.rows.length > 0) {
+                    const data: Paged_Order_Field = {
+                        items: result.rows[0].items,
+                        total_count: Number(result.rows[0].total_count),
+                    };
 
-                return data;
+                    return data;
+                }
             } catch (error) {
                 console.error(error);
             }

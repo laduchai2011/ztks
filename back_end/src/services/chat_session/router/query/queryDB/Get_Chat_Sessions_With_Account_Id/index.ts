@@ -23,19 +23,21 @@ class QueryDB_Get_Chat_Sessions_With_Account_Id {
                 const result = await pool.query<{
                     items: Chat_Session_Field[];
                     total_count: string;
-                }>(`SELECT * FROM get_chat_sessions_with_account_id($1, $2, $3, $4);`, [
+                }>('SELECT * FROM get_chat_sessions_with_account_id($1, $2, $3::UUID, $4::UUID)', [
                     this._chat_session__with_account_id_body.page,
                     this._chat_session__with_account_id_body.size,
                     zalo_oa_id,
                     account_id,
                 ]);
 
-                const data: Paged_Chat_Session_Field = {
-                    items: result.rows[0].items,
-                    total_count: Number(result.rows[0].total_count),
-                };
+                if (result.rows.length > 0) {
+                    const data: Paged_Chat_Session_Field = {
+                        items: result.rows[0].items,
+                        total_count: Number(result.rows[0].total_count),
+                    };
 
-                return data;
+                    return data;
+                }
             } catch (error) {
                 console.error(error);
             }

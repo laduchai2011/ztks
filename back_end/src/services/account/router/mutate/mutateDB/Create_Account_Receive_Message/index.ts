@@ -23,7 +23,7 @@ class MutateDB_Create_Account_Receive_Message {
                 await client.query('BEGIN');
 
                 const result = await pool.query<Account_Receive_Message_Field>(
-                    `SELECT * FROM create_account_receive_message($1, $2, $3);`,
+                    'SELECT * FROM create_account_receive_message($1::UUID, $2::UUID, $3::UUID)',
                     [
                         this._create_account_receive_message_body.zalo_oa_id,
                         this._create_account_receive_message_body.account_id,
@@ -33,7 +33,9 @@ class MutateDB_Create_Account_Receive_Message {
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             } finally {

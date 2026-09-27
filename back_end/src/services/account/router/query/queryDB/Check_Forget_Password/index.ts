@@ -12,12 +12,14 @@ class QueryDB_Check_Forget_Password {
     async run(): Promise<Account_Field | void> {
         if (this._check_forget_password_body !== undefined) {
             try {
-                const result = await pool.query<Account_Field>(`SELECT * FROM check_forget_password($1, $2);`, [
+                const result = await pool.query<Account_Field>('SELECT * FROM check_forget_password($1, $2)', [
                     this._check_forget_password_body.user_name,
                     this._check_forget_password_body.phone,
                 ]);
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             }

@@ -38,16 +38,16 @@ export async function refresh_Access_Token(zalo_app: Zalo_App_Field, zalo_oa: Za
 
     const redis_key = `${prefix_cache__zalo_access_token_with_zalo_oa_id}_${zalo_oa_id}`;
     const lock_key = `${prefix_cache__zalo_access_token_with_zalo_oa_id}_${zalo_oa_id}_lock`;
-    let lock: Awaited<ReturnType<typeof serviceRedlock.acquire>> | null = null;
+    // let lock: Awaited<ReturnType<typeof serviceRedlock.acquire>> | null = null;
+    let lock: any = null;
     if (repeat === 0) {
         console.error('FINISH repeat REFRESH ERROR');
         return;
     }
 
     try {
+        lock = await serviceRedlock.acquire([lock_key], 10000);
         await serviceRedis.deleteData(redis_key);
-
-        lock = await serviceRedlock.acquire([lock_key], 3000);
 
         const queryDB = new QueryDB_Get_Zalo_Oa_Token_With_Fk();
         queryDB.set_Get_Zalo_Oa_Token_With_Fk_Body({ zalo_oa_id: zalo_oa_id, account_id: zalo_oa.account_id });
@@ -56,8 +56,6 @@ export async function refresh_Access_Token(zalo_app: Zalo_App_Field, zalo_oa: Za
         if (!result) return;
 
         const zalo_oa_token: Zalo_Oa_Token_Field = result;
-
-        // console.log('zaloOaToken', zaloOaToken);
 
         const body = qs.stringify({
             app_id: app_id,
@@ -75,28 +73,28 @@ export async function refresh_Access_Token(zalo_app: Zalo_App_Field, zalo_oa: Za
         const new_access_token = res.data.access_token;
         const new_refresh_token = res.data.refresh_token;
 
-        if (!(new_access_token && new_refresh_token)) {
+        if (new_access_token && new_refresh_token) {
+            const queryDB_u = new MutateDB_Update_Refresh_Token_Of_Zalo_Oa();
+            queryDB_u.set_Update_Refresh_Token_Of_Zalo_Oa_Body({
+                refresh_token: new_refresh_token,
+                zalo_oa_id: zalo_oa_id,
+                account_id: zalo_oa.account_id,
+            });
+
+            const result_u = await queryDB_u.run();
+            if (!result_u) return;
+
+            const is_set = await serviceRedis.setData<string>(redis_key, new_access_token, time_expireat);
+            if (!is_set) {
+                console.error('Failed to set new token in cookie in Redis');
+                return;
+            }
+
+            return new_access_token;
+        } else {
             console.error('Failed to get new access token and refresh token');
             return;
         }
-
-        const queryDB_u = new MutateDB_Update_Refresh_Token_Of_Zalo_Oa();
-        queryDB_u.set_Update_Refresh_Token_Of_Zalo_Oa_Body({
-            refresh_token: new_refresh_token,
-            zalo_oa_id: zalo_oa_id,
-            account_id: zalo_oa.account_id,
-        });
-
-        const result_u = await queryDB_u.run();
-        if (!result_u) return;
-
-        const is_set = await serviceRedis.setData<string>(redis_key, new_access_token, time_expireat);
-        if (!is_set) {
-            console.error('Failed to set new token in cookie in Redis');
-            return;
-        }
-
-        return new_access_token;
     } catch (err: any) {
         if (err instanceof LockError) {
             await sleep(1000);

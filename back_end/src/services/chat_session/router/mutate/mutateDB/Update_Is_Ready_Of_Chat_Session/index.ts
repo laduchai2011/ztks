@@ -19,7 +19,7 @@ class MutateDB_Update_Is_Ready_Of_Chat_Session {
                 await client.query('BEGIN');
 
                 const result = await pool.query<Chat_Session_Field>(
-                    `SELECT * FROM update_is_ready_of_chat_session($1, $2, $3);`,
+                    'SELECT * FROM update_is_ready_of_chat_session($1::UUID, $2, $3::UUID)',
                     [
                         this._update_is_ready_of_chat_session_body.id,
                         this._update_is_ready_of_chat_session_body.is_ready,
@@ -29,7 +29,9 @@ class MutateDB_Update_Is_Ready_Of_Chat_Session {
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             } finally {

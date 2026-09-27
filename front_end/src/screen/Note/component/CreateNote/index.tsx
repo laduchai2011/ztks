@@ -72,10 +72,6 @@ const CreateNote = () => {
                 set__data__toast_message({ type: messageType_enum.ERROR, message: 'Id phòng hội thoại không hợp lệ !' })
             );
             return;
-        } else if (!isNumber(id_input_t)) {
-            dispatch(
-                set__data__toast_message({ type: messageType_enum.ERROR, message: 'Id phòng hội thoại phải là 1 số !' })
-            );
         }
 
         const create_note_body: Create_Note_Body_Field = {

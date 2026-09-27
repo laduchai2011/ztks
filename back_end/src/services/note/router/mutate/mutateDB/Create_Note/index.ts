@@ -16,7 +16,7 @@ class MutateDB_Create_Note {
             try {
                 await client.query('BEGIN');
 
-                const result = await pool.query<Note_Field>(`SELECT * FROM delete_note($1, $2, $3);`, [
+                const result = await pool.query<Note_Field>('SELECT * FROM create_note($1, $2::UUID, $3::UUID)', [
                     this._create_note_body.note,
                     this._create_note_body.chat_room_id,
                     this._create_note_body.account_id,
@@ -24,7 +24,9 @@ class MutateDB_Create_Note {
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             } finally {

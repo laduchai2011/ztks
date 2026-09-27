@@ -16,14 +16,16 @@ class MutateDB_Delete_Note {
             try {
                 await client.query('BEGIN');
 
-                const result = await pool.query<Note_Field>(`SELECT * FROM delete_note($1, $2);`, [
+                const result = await pool.query<Note_Field>('SELECT * FROM delete_note($1::UUID, $2::UUID)', [
                     this._delete_note_body.id,
                     this._delete_note_body.account_id,
                 ]);
 
                 await client.query('COMMIT');
 
-                return result.rows[0];
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error(error);
             } finally {

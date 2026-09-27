@@ -76,7 +76,7 @@ const AddOrderStatusDialog = () => {
         if (!order) return;
         set__create_order_status_body((prev) => ({
             ...prev,
-            orderId: order.id,
+            order_id: order.id,
         }));
     }, [order]);
 
