@@ -25,6 +25,7 @@ import Leave from '@src/screen/Leave';
 import CheckInOut from '@src/screen/CheckInOut';
 import DashBoard from '@src/screen/DashBoard';
 import CheckInOutManager from '@src/screen/CheckInOutManager';
+import Shop from '@src/screen/Shop';
 import { route_enum } from './type';
 
 const router = createBrowserRouter(
@@ -54,6 +55,7 @@ const router = createBrowserRouter(
         { path: route_enum.CHECK_IN_OUT, element: <CheckInOut /> },
         { path: route_enum.DASH_BOARD, element: <DashBoard /> },
         { path: route_enum.CHECK_IN_OUT_MANAGER, element: <CheckInOutManager /> },
+        { path: route_enum.SHOP, element: <Shop /> },
         { path: '*', element: <NotFoundPage /> }, // Trang 404
     ],
     {

@@ -3,6 +3,7 @@ import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
+
 import MyToastMessage from './component/MyToastMessage';
 import MyLoading from './component/MyLoading';
 import ToolBar from '@src/screen/ToolBar';
@@ -36,7 +37,9 @@ const CheckInOutManager = () => {
     return (
         <div className={style.parent}>
             <div className={style.main}>
-                <ToolBar selected={select_enum.CHECK_IN_OUT_MANAGER} />
+                <div className={style.toolbar}>
+                    <ToolBar selected={select_enum.CHECK_IN_OUT_MANAGER} />
+                </div>
                 <div className={style.main1}>
                     <div>
                         <div className={style.header}>Danh sách điểm danh</div>

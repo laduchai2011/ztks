@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import Global_Reducer from '@src/redux/slice/Global';
 import App_Reducer from '@src/redux/slice/App';
 import Home_V1_Reducer from '@src/redux/slice/Home_V1';
 import Message_V1_Reducer from '@src/redux/slice/Message_V1';
@@ -43,6 +44,7 @@ import { check_in_out_RTK } from './query/check_in_out_RTK';
 export const store = configureStore({
     reducer: {
         dummy: (state = {}) => state,
+        Global_Slice: Global_Reducer,
         App_Slice: App_Reducer,
         Home_V1_Slice: Home_V1_Reducer,
         Message_V1_Slice: Message_V1_Reducer,

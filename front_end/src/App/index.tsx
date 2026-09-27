@@ -34,7 +34,8 @@ import { SessionState } from 'sip.js';
 import CallDialog from './component/CallDialog';
 import { useLazy_get_Zalo_User_Query, useLazy_get_Zalo_Oa_With_Oa_Id_Query } from '@src/redux/query/zalo_RTK';
 import { Zalo_App_Field } from '@src/data_struct/zalo';
-// import { ZaloUserField } from '@src/dataStruct/zalo/user';
+import GlobalLoading from '../Global/GlobalLoading';
+import GlobalToastMessage from '../Global/GlobalToastMessage';
 
 const App = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -421,6 +422,8 @@ const App = () => {
             <AppRouter />
             <CallDialog />
             <audio style={{ display: 'hidden' }} ref={audioRef} />
+            <GlobalLoading />
+            <GlobalToastMessage />
         </div>
     );
 };
