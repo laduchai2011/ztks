@@ -2,35 +2,60 @@
 
 .parent {
     background-color: #eee;
-    @include center-of-column;
-    z-index: 0;
 
     > .main {
-        background-color: white;
-        width: 350px;
-        height: 100vh;
-        // height: 500px;
-        display: flex;
-        flex-direction: column;
+        @include center-of-row;
+        position: relative;
 
-        @include responsive(sm) {
-            width: 100%;
+        > .toolbar {
+            position: fixed;
+            width: 0;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            transition: width 0.3s linear;
+
+            &.is_show {
+                width: 50px;
+            }
+
+            &.is_max_show {
+                width: 150px;
+            }
         }
 
-        > .header {
-            box-sizing: border-box;
-            padding: 10px;
-            @include center-of-row;
-            justify-content: space-between;
-            background-color: #27a4f2;
-            position: sticky;
-            top: 0;
-            z-index: 1000000;
+        > .main1 {
+            width: 100%;
+            margin-left: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition:
+                width 0.3s linear,
+                margin-left 0.3s linear;
+
+            &.is_show {
+                width: calc(100% - 50px);
+                margin-left: 50px;
+            }
+
+            &.is_max_show {
+                width: calc(100% - 150px);
+                margin-left: 150px;
+            }
 
             > div {
-                font-size: 1.1rem;
-                font-weight: 600;
-                color: white;
+                background-color: white;
+                width: 100%;
+                min-height: 100vh;
+
+                > .header {
+                    width: 100%;
+                    box-sizing: border-box;
+                    padding: 10px;
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                }
             }
         }
     }

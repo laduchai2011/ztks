@@ -1,0 +1,61 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+
+    > .oneRow {
+        background-color: rgb(245, 245, 245);
+        margin: 5px;
+        box-sizing: border-box;
+        padding: 10px;
+        border-radius: 10px;
+
+        > .infor1 {
+            @include center-of-row;
+            justify-content: space-between;
+            height: 20px;
+
+            > div:nth-child(1) {
+                color: blue;
+            }
+
+            > div:nth-child(2) {
+                > svg {
+                    cursor: pointer;
+                }
+            }
+        }
+
+        > .infor2 {
+            @include center-of-row;
+            overflow-y: scroll;
+            @include small-scroll-y(3px);
+
+            > div {
+                @include center-of-rectangle;
+            }
+
+            > .name {
+                width: 200px;
+            }
+
+            > .des {
+                width: 250px;
+            }
+
+            > .content {
+                flex: 1;
+                min-width: 400px;
+            }
+
+            > .address {
+                width: 200px;
+            }
+
+            > .phone {
+                width: 200px;
+            }
+        }
+    }
+}

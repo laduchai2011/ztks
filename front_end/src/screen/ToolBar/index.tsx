@@ -1,8 +1,8 @@
 import { FC, memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '@src/redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '@src/redux';
 import { useWindowSize } from '@src/hook/useWindowSize';
 import { avatarnull } from '@src/utility/string';
 import { handleSrcImage } from '@src/utility/string';
@@ -12,24 +12,48 @@ import { CHECK_IN_OUT, SHOP } from '@src/const/text';
 import { MdDashboard } from 'react-icons/md';
 import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
 import { FcShop } from 'react-icons/fc';
+import { MdMenu } from 'react-icons/md';
+import { TbArrowsMoveHorizontal } from 'react-icons/tb';
+import { set__is_show, set__is_max_show } from '@src/redux/slice/Tool_Bar';
 
 const ToolBar: FC<{ selected: selected_type }> = ({ selected }) => {
     const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
 
     const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
+    const is_show: boolean = useSelector((state: RootState) => state.Tool_Bar_Slice.is_show);
+    const is_max_show: boolean = useSelector((state: RootState) => state.Tool_Bar_Slice.is_max_show);
 
     const [avatar_url, set__avatar_url] = useState<string>(avatarnull);
     const { is_md } = useWindowSize();
-    const [is_show, set__is_show] = useState<boolean>(false);
+    const [is_show1, set__is_show1] = useState<boolean>(is_show);
 
     useEffect(() => {
-        set__is_show(!is_md);
-    }, [is_md]);
+        dispatch(set__is_max_show(!is_md));
+    }, [dispatch, is_md]);
 
     useEffect(() => {
         const _avatarUrl = account?.avatar ? handleSrcImage(account.avatar) : avatarnull;
         set__avatar_url(_avatarUrl);
     }, [account]);
+
+    useEffect(() => {
+        if (!is_show) {
+            setTimeout(() => {
+                set__is_show1(is_show);
+            }, 300);
+        } else {
+            set__is_show1(is_show);
+        }
+    }, [is_show]);
+
+    const handle_Show = () => {
+        dispatch(set__is_show(!is_show));
+    };
+
+    const handle_show_In_Md = () => {
+        dispatch(set__is_max_show(!is_max_show));
+    };
 
     const handle_Go_To_Home = () => {
         navigate(route_enum.HOME);
@@ -66,8 +90,20 @@ const ToolBar: FC<{ selected: selected_type }> = ({ selected }) => {
         }
     };
 
+    if (!is_show1) {
+        return (
+            <div className={style.parent1}>
+                <MdMenu onClick={() => handle_Show()} size={25} />
+            </div>
+        );
+    }
+
     return (
         <div className={style.parent}>
+            <div className={style.menuIcon}>
+                <MdMenu onClick={() => handle_Show()} size={25} />
+                <TbArrowsMoveHorizontal onClick={() => handle_show_In_Md()} size={25} />
+            </div>
             <div className={style.logoZtks}>
                 <img src={handleSrcImage('logo.jpg')} onClick={() => handle_Go_To_Home()} alt="logoZtks" />
             </div>
@@ -76,19 +112,19 @@ const ToolBar: FC<{ selected: selected_type }> = ({ selected }) => {
                     className={handle_Selected_Class(select_enum.DASH_BOARD)}
                     onClick={() => handle_Go_To(select_enum.DASH_BOARD)}
                 >
-                    {is_show && <div>Dash board</div>}
-                    {!is_show && <MdDashboard />}
+                    {is_max_show && <div>Dash board</div>}
+                    {!is_max_show && <MdDashboard />}
                 </div>
                 <div
                     className={handle_Selected_Class(select_enum.CHECK_IN_OUT_MANAGER)}
                     onClick={() => handle_Go_To(select_enum.CHECK_IN_OUT_MANAGER)}
                 >
-                    {is_show && <div>{CHECK_IN_OUT}</div>}
-                    {!is_show && <IoIosCheckmarkCircleOutline />}
+                    {is_max_show && <div>{CHECK_IN_OUT}</div>}
+                    {!is_max_show && <IoIosCheckmarkCircleOutline />}
                 </div>
                 <div className={handle_Selected_Class(select_enum.SHOP)} onClick={() => handle_Go_To(select_enum.SHOP)}>
-                    {is_show && <div>{SHOP}</div>}
-                    {!is_show && <FcShop />}
+                    {is_max_show && <div>{SHOP}</div>}
+                    {!is_max_show && <FcShop />}
                 </div>
             </div>
             <div className={style.avatar}>
