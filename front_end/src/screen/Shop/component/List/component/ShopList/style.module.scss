@@ -7,54 +7,75 @@
     > .oneRow {
         background-color: rgb(245, 245, 245);
         margin: 5px;
-        box-sizing: border-box;
-        padding: 10px;
         border-radius: 10px;
+
+        &.selected {
+            background-color: rgb(219, 219, 219);
+        }
 
         > .infor1 {
             @include center-of-row;
             justify-content: space-between;
             height: 20px;
+            box-sizing: border-box;
+            padding: 0 5px;
 
-            > div:nth-child(1) {
+            > .index {
                 color: blue;
             }
 
-            > div:nth-child(2) {
+            > .infor {
+                @include center-of-row;
+
+                > div {
+                    margin: 0 5px;
+                    color: rgb(0, 162, 255);
+                }
+            }
+
+            > .icons {
+                @include center-of-row;
+
                 > svg {
                     cursor: pointer;
+                    margin: 0 5px;
                 }
             }
         }
 
         > .infor2 {
-            @include center-of-row;
-            overflow-y: scroll;
-            @include small-scroll-y(3px);
+            overflow-x: scroll;
+            @include small-scroll-xx(3px);
 
             > div {
-                @include center-of-rectangle;
-            }
+                @include center-of-row;
+                width: 1750px;
 
-            > .name {
-                width: 200px;
-            }
+                > div {
+                    @include center-of-rectangle;
+                    box-sizing: border-box;
+                    padding: 5px;
+                }
 
-            > .des {
-                width: 250px;
-            }
+                > .name {
+                    width: 200px;
+                }
 
-            > .content {
-                flex: 1;
-                min-width: 400px;
-            }
+                > .des {
+                    width: 250px;
+                }
 
-            > .address {
-                width: 200px;
-            }
+                > .content {
+                    flex: 1;
+                }
 
-            > .phone {
-                width: 200px;
+                > .address {
+                    width: 300px;
+                }
+
+                > .phone {
+                    width: 200px;
+                }
             }
         }
     }
