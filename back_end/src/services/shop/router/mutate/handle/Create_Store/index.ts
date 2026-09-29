@@ -1,19 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
 import { My_Response_Field } from '@src/data_struct/response';
-import { Shop_Field } from '@src/data_struct/shop';
-import { Create_Shop_Body_Field } from '@src/data_struct/shop/body';
+import { Store_Field } from '@src/data_struct/shop';
+import { Create_Store_Body_Field } from '@src/data_struct/shop/body';
 import { verify_Refresh_Token } from '@src/token';
-import MutateDB_Create_Shop from '../../mutateDB/Create_Shop';
+import MutateDB_Create_Store from '../../mutateDB/Create_Store';
 import { getRefreshToken } from '@src/device/getDevice';
 
-class Handle_Create_Shop {
-    setup = async (req: Request<any, any, Create_Shop_Body_Field>, res: Response, next: NextFunction) => {
-        const my_response: My_Response_Field<Shop_Field> = {
+class Handle_Create_Store {
+    setup = async (req: Request<any, any, Create_Store_Body_Field>, res: Response, next: NextFunction) => {
+        const my_response: My_Response_Field<Store_Field> = {
             is_success: false,
-            message: 'Bắt đầu (Handle_Create_Shop-setup)',
+            message: 'Bắt đầu (Handle_Create_Store-setup)',
         };
 
-        const create_shop_body = req.body;
+        const create_store_body = req.body;
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
@@ -32,9 +32,9 @@ class Handle_Create_Shop {
             }
 
             const { id } = verify_refreshToken;
-            create_shop_body.account_id = id;
+            create_store_body.account_id = id;
 
-            res.locals.create_shop_body = create_shop_body;
+            res.locals.create_store_body = create_store_body;
             next();
             return;
         } else {
@@ -45,26 +45,26 @@ class Handle_Create_Shop {
     };
 
     main = async (_: Request, res: Response) => {
-        const create_shop_body = res.locals.create_shop_body as Create_Shop_Body_Field;
+        const create_store_body = res.locals.create_store_body as Create_Store_Body_Field;
 
-        const my_response: My_Response_Field<Shop_Field> = {
+        const my_response: My_Response_Field<Store_Field> = {
             is_success: false,
-            message: 'Bắt đầu (Handle_Create_Shop-main)',
+            message: 'Bắt đầu (Handle_Create_Store-main)',
         };
 
-        const mutateDB = new MutateDB_Create_Shop();
-        mutateDB.set_Create_Shop_Body(create_shop_body);
+        const mutateDB = new MutateDB_Create_Store();
+        mutateDB.set_Create_Store_Body(create_store_body);
 
         try {
             const result = await mutateDB.run();
             if (result) {
-                my_response.message = 'Tạo cửa hàng thành công !';
+                my_response.message = 'Tạo gian hàng thành công !';
                 my_response.is_success = true;
                 my_response.data = result;
                 res.status(200).json(my_response);
                 return;
             } else {
-                my_response.message = 'Tạo cửa hàngKHÔNG thành công !';
+                my_response.message = 'Tạo gian hàng KHÔNG thành công !';
                 res.status(200).json(my_response);
                 return;
             }
@@ -77,4 +77,4 @@ class Handle_Create_Shop {
     };
 }
 
-export default Handle_Create_Shop;
+export default Handle_Create_Store;

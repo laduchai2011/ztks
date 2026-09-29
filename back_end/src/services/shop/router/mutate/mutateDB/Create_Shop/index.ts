@@ -11,8 +11,12 @@ class MutateDB_Create_Shop {
 
     async run(): Promise<Shop_Field | undefined> {
         if (this._create_shop_body !== undefined) {
+            const client = await pool.connect();
+
             try {
-                const result = await pool.query('SELECT * FROM Create_Shop($1, $2, $3, $4, $5, $6::UUID)', [
+                await client.query('BEGIN');
+
+                const result = await pool.query<Shop_Field>('SELECT * FROM create_shop($1, $2, $3, $4, $5, $6::UUID)', [
                     this._create_shop_body.name,
                     this._create_shop_body.description,
                     this._create_shop_body.content,
@@ -21,12 +25,16 @@ class MutateDB_Create_Shop {
                     this._create_shop_body.account_id,
                 ]);
 
+                await client.query('COMMIT');
+
                 if (result.rows.length > 0) {
                     return result.rows[0];
                 }
             } catch (error) {
                 console.error('PostgreSQL error:', error);
                 throw error;
+            } finally {
+                client.release();
             }
         }
     }

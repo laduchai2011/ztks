@@ -88,7 +88,8 @@ CREATE OR REPLACE FUNCTION create_depot (
     p_content TEXT,
     p_address VARCHAR(255),
     p_phone VARCHAR(255),
-    p_shop_id UUID
+    p_shop_id UUID,
+	p_account_id UUID
 )
 RETURNS TABLE (
     id UUID,
@@ -104,6 +105,16 @@ RETURNS TABLE (
 LANGUAGE plpgsql
 AS $$
 BEGIN
+	 IF NOT EXISTS (
+        SELECT 1
+        FROM shop s
+        WHERE s.account_id = p_account_id
+          AND s.is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Không phải SHOP của bạn.'
+            USING ERRCODE = 'P0001';
+    END IF;
+	
     RETURN QUERY
     INSERT INTO depot (
         name,
@@ -138,7 +149,8 @@ CREATE OR REPLACE FUNCTION create_store (
     p_name VARCHAR(50),
     p_description VARCHAR(255),
     p_content TEXT,
-    p_depot_id UUID
+    p_depot_id UUID,
+    p_account_id UUID
 )
 RETURNS TABLE (
     id UUID,
@@ -152,6 +164,21 @@ RETURNS TABLE (
 LANGUAGE plpgsql
 AS $$
 BEGIN
+    -- Kiểm tra depot có tồn tại và thuộc shop của account
+    IF NOT EXISTS (
+        SELECT 1
+        FROM depot d
+        INNER JOIN shop s
+            ON s.id = d.shop_id
+        WHERE d.id = p_depot_id
+          AND s.account_id = p_account_id
+          AND d.is_delete = FALSE
+          AND s.is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Depot does not belong to this account';
+    END IF;
+
+    -- Tạo store
     RETURN QUERY
     INSERT INTO store (
         name,

@@ -27,6 +27,11 @@ export interface Depot_Field {
     create_time: string;
 }
 
+export interface Cursor_Depot_Field {
+    items: Depot_Field[];
+    next_cursor: string | null;
+}
+
 export interface Store_Field {
     id: string;
     name: string;
@@ -35,6 +40,11 @@ export interface Store_Field {
     is_delete: boolean;
     depot_id: string;
     create_time: string;
+}
+
+export interface Cursor_Store_Field {
+    items: Store_Field[];
+    next_cursor: string | null;
 }
 
 export interface Shop_Pay_Field {

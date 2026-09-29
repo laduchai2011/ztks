@@ -149,10 +149,10 @@ app.use(`${apiString}/hello`, (req, res) => {
         handleStatistics();
     }
 
-    if (services.includes('post')) {
-        const service_post = (await import('@src/services/post')).default;
-        app.use(`${prefix}/service__post`, service_post);
-    }
+    // if (services.includes('post')) {
+    //     const service_post = (await import('@src/services/post')).default;
+    //     app.use(`${prefix}/service__post`, service_post);
+    // }
 
     if (services.includes('check_in_out')) {
         const service__check_in_out = (await import('@src/services/check_in_out')).default;

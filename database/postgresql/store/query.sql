@@ -90,6 +90,193 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION get_my_depots (
+    p_limit INTEGER DEFAULT 20,
+    p_cursor UUID DEFAULT NULL,
+    p_shop_id UUID DEFAULT NULL
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_items JSONB;
+    v_next_cursor UUID;
+BEGIN
+    -- Giới hạn limit để tránh request quá lớn
+    IF p_limit IS NULL OR p_limit <= 0 THEN
+        p_limit := 20;
+    END IF;
+
+    IF p_limit > 100 THEN
+        p_limit := 100;
+    END IF;
+
+    /*
+        Lấy danh sách shop
+        Cursor:
+            NULL -> trang đầu
+            Có cursor -> lấy các bản ghi có id nhỏ hơn cursor
+    */
+    SELECT
+        COALESCE(
+            jsonb_agg(
+                to_jsonb(t)
+                ORDER BY t.id DESC
+            ),
+            '[]'::JSONB
+        )
+    INTO v_items
+    FROM (
+        SELECT
+            d.id,
+            d.name,
+            d.description,
+            d.content,
+            d.address,
+            d.phone,
+            d.shop_id,
+            d.create_time
+        FROM depot d
+        WHERE d.is_delete = FALSE
+            AND (
+                p_shop_id IS NULL
+                OR d.shop_id = p_shop_id
+            )
+            AND (
+                p_cursor IS NULL
+                OR d.id < p_cursor
+            )
+        ORDER BY d.id DESC
+        LIMIT p_limit
+    ) t;
+
+    /*
+        Lấy cursor của bản ghi cuối cùng
+    */
+    SELECT
+        t.id
+    INTO v_next_cursor
+    FROM (
+        SELECT
+            d.id
+        FROM depot d
+        WHERE d.is_delete = FALSE
+            AND (
+                p_account_id IS NULL
+                OR d.account_id = p_account_id
+            )
+            AND (
+                p_cursor IS NULL
+                OR d.id < p_cursor
+            )
+        ORDER BY d.id DESC
+        LIMIT p_limit
+    ) t
+    ORDER BY t.id ASC
+    LIMIT 1;
+
+    RETURN jsonb_build_object(
+        'items', v_items,
+        'next_cursor', v_next_cursor
+    );
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_my_stores (
+    p_limit INTEGER DEFAULT 20,
+    p_cursor UUID DEFAULT NULL,
+    p_depot_id UUID DEFAULT NULL
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_items JSONB;
+    v_next_cursor UUID;
+BEGIN
+    -- Giới hạn limit để tránh request quá lớn
+    IF p_limit IS NULL OR p_limit <= 0 THEN
+        p_limit := 20;
+    END IF;
+
+    IF p_limit > 100 THEN
+        p_limit := 100;
+    END IF;
+
+    /*
+        Lấy danh sách store
+
+        Cursor:
+            NULL -> trang đầu
+            Có cursor -> lấy các bản ghi có id nhỏ hơn cursor
+
+        Sort:
+            id DESC
+    */
+    SELECT
+        COALESCE(
+            jsonb_agg(
+                to_jsonb(t)
+                ORDER BY t.id DESC
+            ),
+            '[]'::JSONB
+        )
+    INTO v_items
+    FROM (
+        SELECT
+            s.id,
+            s.name,
+            s.description,
+            s.content,
+            s.is_delete,
+            s.depot_id,
+            s.create_time
+        FROM store s
+        WHERE s.is_delete = FALSE
+            AND (
+                p_depot_id IS NULL
+                OR s.depot_id = p_depot_id
+            )
+            AND (
+                p_cursor IS NULL
+                OR s.id < p_cursor
+            )
+        ORDER BY s.id DESC
+        LIMIT p_limit
+    ) t;
+
+    /*
+        Lấy cursor của bản ghi cuối cùng
+    */
+    SELECT
+        t.id
+    INTO v_next_cursor
+    FROM (
+        SELECT
+            s.id
+        FROM store s
+        WHERE s.is_delete = FALSE
+            AND (
+                p_depot_id IS NULL
+                OR s.depot_id = p_depot_id
+            )
+            AND (
+                p_cursor IS NULL
+                OR s.id < p_cursor
+            )
+        ORDER BY s.id DESC
+        LIMIT p_limit
+    ) t
+    ORDER BY t.id ASC
+    LIMIT 1;
+
+    RETURN jsonb_build_object(
+        'items', v_items,
+        'next_cursor', v_next_cursor
+    );
+END;
+$$;
+
 -- DROP FUNCTION get_latest_shop_pay_with_shop_id(uuid)
 CREATE OR REPLACE FUNCTION get_latest_shop_pay_with_shop_id (
     p_shop_id UUID,

@@ -12,6 +12,7 @@ CREATE TABLE shop (
 	CONSTRAINT fk_shop_account FOREIGN KEY (account_id) REFERENCES account(id)
 );
 CREATE INDEX idx_shop_account_id ON shop(account_id);
+CREATE INDEX idx_shop_account_id_id ON shop(account_id, id DESC);
 
 CREATE TABLE depot (
     id UUID PRIMARY KEY DEFAULT uuidv7(),
@@ -27,6 +28,7 @@ CREATE TABLE depot (
 	CONSTRAINT fk_depot_shop FOREIGN KEY (shop_id) REFERENCES shop(id)
 );
 CREATE INDEX idx_depot_shop_id ON depot(shop_id);
+CREATE INDEX idx_depot_shop_id_id ON depot(shop_id, id DESC);
 
 CREATE TABLE store (
     id UUID PRIMARY KEY DEFAULT uuidv7(),
@@ -40,6 +42,7 @@ CREATE TABLE store (
 	CONSTRAINT fk_store_depot FOREIGN KEY (depot_id) REFERENCES depot(id)
 );
 CREATE INDEX idx_store_depot_id ON store(depot_id);
+CREATE INDEX idx_store_depot_id_id ON store(depot_id, id DESC);
 
 CREATE TABLE shop_pay (
     id UUID PRIMARY KEY DEFAULT uuidv7(),
