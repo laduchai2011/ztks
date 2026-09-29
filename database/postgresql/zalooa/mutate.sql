@@ -108,25 +108,25 @@ RETURNS SETOF zalo_oa
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    -- Kiểm tra zaloApp thuộc account
+    -- Kiểm tra zalo_app thuộc account
     IF NOT EXISTS (
         SELECT 1
         FROM zalo_app
         WHERE id = p_zalo_app_id
           AND account_id = p_account_id
     ) THEN
-        RAISE EXCEPTION 'Không phải zaloApp của bạn.'
+        RAISE EXCEPTION 'Không phải zalo_app của bạn.'
             USING ERRCODE = 'P0001';
     END IF;
 
-    -- Kiểm tra zaloOa thuộc zaloApp
+    -- Kiểm tra zalo_oa thuộc zalo_app
     IF NOT EXISTS (
         SELECT 1
         FROM zalo_oa
         WHERE id = p_id
           AND zalo_app_id = p_zalo_app_id
     ) THEN
-        RAISE EXCEPTION 'OA không phải của zaloApp này.'
+        RAISE EXCEPTION 'OA không phải của zalo_app này.'
             USING ERRCODE = 'P0002';
     END IF;
 
@@ -143,7 +143,7 @@ BEGIN
 
     -- Kiểm tra update có thành công không
     IF NOT FOUND THEN
-        RAISE EXCEPTION 'Cập nhật zaloOa không thành công.'
+        RAISE EXCEPTION 'Cập nhật zalo_oa không thành công.'
             USING ERRCODE = 'P0003';
     END IF;
 

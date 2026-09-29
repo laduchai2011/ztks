@@ -5,27 +5,25 @@ import { Create_Shop_Body_Field } from '@src/data_struct/shop/body';
 class MutateDB_Create_Shop {
     private _create_shop_body: Create_Shop_Body_Field | undefined;
 
-    constructor() {}
-
     set_Create_Shop_Body(create_shop_body: Create_Shop_Body_Field): void {
         this._create_shop_body = create_shop_body;
     }
 
-    async run() {
+    async run(): Promise<Shop_Field | undefined> {
         if (this._create_shop_body !== undefined) {
             try {
-                const result = await pool.query(`SELECT * FROM Create_Shop($1, $2, $3, $4, $5, $6);`, [
-                    this._create_shop_body.p_name,
-                    this._create_shop_body.p_description,
-                    this._create_shop_body.p_content,
-                    this._create_shop_body.p_address,
-                    this._create_shop_body.p_phone,
-                    this._create_shop_body.p_account_id,
+                const result = await pool.query('SELECT * FROM Create_Shop($1, $2, $3, $4, $5, $6::UUID)', [
+                    this._create_shop_body.name,
+                    this._create_shop_body.description,
+                    this._create_shop_body.content,
+                    this._create_shop_body.address,
+                    this._create_shop_body.phone,
+                    this._create_shop_body.account_id,
                 ]);
 
-                console.log(1111, result);
-
-                return result.rows;
+                if (result.rows.length > 0) {
+                    return result.rows[0];
+                }
             } catch (error) {
                 console.error('PostgreSQL error:', error);
                 throw error;

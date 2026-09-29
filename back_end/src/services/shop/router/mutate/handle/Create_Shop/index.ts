@@ -1,53 +1,45 @@
-import { mssql_server } from '@src/connect';
 import { Request, Response, NextFunction } from 'express';
-import { MyResponse } from '@src/data_struct/response';
+import { My_Response_Field } from '@src/data_struct/response';
 import { Shop_Field } from '@src/data_struct/shop';
 import { Create_Shop_Body_Field } from '@src/data_struct/shop/body';
-import { verifyRefreshToken } from '@src/token';
+import { verify_Refresh_Token } from '@src/token';
 import MutateDB_Create_Shop from '../../mutateDB/Create_Shop';
 import { getRefreshToken } from '@src/device/getDevice';
 
 class Handle_Create_Shop {
-    private _mssql_server = mssql_server;
-
-    constructor() {
-        this._mssql_server.init();
-    }
-
     setup = async (req: Request<any, any, Create_Shop_Body_Field>, res: Response, next: NextFunction) => {
-        const myResponse: MyResponse<Shop_Field> = {
-            isSuccess: false,
+        const my_response: My_Response_Field<Shop_Field> = {
+            is_success: false,
             message: 'Bắt đầu (Handle_Create_Shop-setup)',
         };
 
         const create_shop_body = req.body;
-        // const { refreshToken } = req.cookies;
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
-            const verify_refreshToken = verifyRefreshToken(refreshToken);
+            const verify_refreshToken = verify_Refresh_Token(refreshToken);
 
             if (verify_refreshToken === 'invalid') {
-                myResponse.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';
-                res.status(500).json(myResponse);
+                my_response.message = 'Refresh-Token không hợp lệ, hãy đăng nhập lại !';
+                res.status(500).json(my_response);
                 return;
             }
 
             if (verify_refreshToken === 'expired') {
-                myResponse.message = 'Refresh-Token hết hạn, hãy đăng nhập lại !';
-                res.status(500).json(myResponse);
+                my_response.message = 'Refresh-Token hết hạn, hãy đăng nhập lại !';
+                res.status(500).json(my_response);
                 return;
             }
 
             const { id } = verify_refreshToken;
-            create_shop_body.p_account_id = id;
+            create_shop_body.account_id = id;
 
             res.locals.create_shop_body = create_shop_body;
             next();
             return;
         } else {
-            myResponse.message = 'Vui lòng đăng nhập lại !';
-            res.status(500).json(myResponse);
+            my_response.message = 'Vui lòng đăng nhập lại !';
+            res.status(500).json(my_response);
             return;
         }
     };
@@ -55,8 +47,8 @@ class Handle_Create_Shop {
     main = async (_: Request, res: Response) => {
         const create_shop_body = res.locals.create_shop_body as Create_Shop_Body_Field;
 
-        const myResponse: MyResponse<Shop_Field> = {
-            isSuccess: false,
+        const my_response: My_Response_Field<Shop_Field> = {
+            is_success: false,
             message: 'Bắt đầu (Handle_Create_Shop-main)',
         };
 
@@ -66,9 +58,9 @@ class Handle_Create_Shop {
         try {
             const result = await mutateDB.run();
         } catch (error) {
-            myResponse.message = 'Tạo cửa hàng KHÔNG thành công !!';
-            myResponse.err = error;
-            res.status(500).json(myResponse);
+            my_response.message = 'Tạo cửa hàng KHÔNG thành công !!';
+            my_response.err = error;
+            res.status(500).json(my_response);
             return;
         }
     };

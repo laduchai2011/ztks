@@ -40,3 +40,19 @@ CREATE TABLE store (
 	CONSTRAINT fk_store_depot FOREIGN KEY (depot_id) REFERENCES depot(id)
 );
 CREATE INDEX idx_store_depot_id ON store(depot_id);
+
+CREATE TABLE shop_pay (
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
+	expiry TIMESTAMPTZ,
+	money DECIMAL(20,2) NOT NULL DEFAULT 0.00,
+	pay_hook_id UUID, 
+	shop_id UUID NOT NULL, 
+	account_id UUID NOT NULL, 
+	update_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    create_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+	CONSTRAINT fk_shop_pay_pay_hook_ FOREIGN KEY (pay_hook_id) REFERENCES pay_hook(id),
+	CONSTRAINT fk_shop_pay_shop FOREIGN KEY (shop_id) REFERENCES shop(id),
+	CONSTRAINT fk_shop_pay_account FOREIGN KEY (account_id) REFERENCES account(id)
+);
+CREATE INDEX idx_shop_pay_account_id_shop_id_create_time ON shop_pay(account_id, shop_id, create_time DESC);
