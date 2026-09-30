@@ -160,8 +160,8 @@ app.use(`${apiString}/hello`, (req, res) => {
     }
 
     if (services.includes('shop')) {
-        const service_shop = (await import('@src/services/shop')).default;
-        app.use(`${prefix}/service__shop`, service_shop);
+        const service__shop = (await import('@src/services/shop')).default;
+        app.use(`${prefix}/service__shop`, service__shop);
     }
 })();
 

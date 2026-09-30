@@ -41,6 +41,7 @@ import { bank_RTK } from './query/bank_RTK';
 import { post_RTK } from './query/post_RTK';
 import { statistics_RTK } from './query/statistics_RTK';
 import { check_in_out_RTK } from './query/check_in_out_RTK';
+import { shop_RTK } from './query/shop_RTK';
 
 export const store = configureStore({
     reducer: {
@@ -87,6 +88,7 @@ export const store = configureStore({
         [post_RTK.reducerPath]: post_RTK.reducer,
         [statistics_RTK.reducerPath]: statistics_RTK.reducer,
         [check_in_out_RTK.reducerPath]: check_in_out_RTK.reducer,
+        [shop_RTK.reducerPath]: shop_RTK.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
@@ -105,7 +107,8 @@ export const store = configureStore({
             bank_RTK.middleware,
             post_RTK.middleware,
             statistics_RTK.middleware,
-            check_in_out_RTK.middleware
+            check_in_out_RTK.middleware,
+            shop_RTK.middleware
         ),
 });
 
