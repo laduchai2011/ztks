@@ -69,7 +69,7 @@ class Handle_Create_Store {
                 return;
             }
         } catch (error) {
-            my_response.message = 'Tạo cửa hàng KHÔNG thành công !!';
+            my_response.message = 'Tạo gian hàng KHÔNG thành công !!';
             my_response.err = error;
             res.status(500).json(my_response);
             return;

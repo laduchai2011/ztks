@@ -203,6 +203,380 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION edit_shop (
+	p_id UUID,
+    p_name VARCHAR(50),
+    p_description VARCHAR(255),
+    p_content TEXT,
+    p_address VARCHAR(255),
+    p_phone VARCHAR(255),
+    p_account_id UUID
+)
+RETURNS TABLE (
+    id UUID,
+    name VARCHAR(50),
+    description VARCHAR(255),
+    content TEXT,
+    address VARCHAR(255),
+    phone VARCHAR(255),
+    is_delete BOOLEAN,
+    account_id UUID,
+    create_time TIMESTAMPTZ
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_shop_id UUID;
+BEGIN
+	UPDATE shop
+	SET
+	    name = p_name,
+	    description = p_description,
+		content = p_content,
+	    address = p_address,
+	    phone = p_phone
+	WHERE id = p_id AND account_id = p_account_id AND is_delete = FALSE
+	RETURNING
+	    id,
+	    name,
+	    description,
+	    content,
+	    address,
+	    phone,
+	    is_delete,
+	    account_id,
+	    create_time;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION delete_shop (
+	p_id UUID,
+    p_account_id UUID
+)
+RETURNS TABLE (
+    id UUID,
+    name VARCHAR(50),
+    description VARCHAR(255),
+    content TEXT,
+    address VARCHAR(255),
+    phone VARCHAR(255),
+    is_delete BOOLEAN,
+    account_id UUID,
+    create_time TIMESTAMPTZ
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_shop_id UUID;
+BEGIN
+	UPDATE shop
+	SET is_delete = TRUE
+	WHERE id = p_id AND account_id = p_account_id AND is_delete = FALSE
+	RETURNING
+	    id,
+	    name,
+	    description,
+	    content,
+	    address,
+	    phone,
+	    is_delete,
+	    account_id,
+	    create_time;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION edit_depot (
+    p_id UUID,
+    p_name VARCHAR(50),
+    p_description VARCHAR(255),
+    p_content TEXT,
+    p_address VARCHAR(255),
+    p_phone VARCHAR(255),
+    p_account_id UUID
+)
+RETURNS TABLE (
+    id UUID,
+    name VARCHAR(50),
+    description VARCHAR(255),
+    content TEXT,
+    address VARCHAR(255),
+    phone VARCHAR(255),
+    is_delete BOOLEAN,
+    shop_id UUID,
+    create_time TIMESTAMPTZ
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_shop_id UUID;
+BEGIN
+    -- 1. Lấy shop_id của depot
+    SELECT d.shop_id
+    INTO v_shop_id
+    FROM depot d
+    WHERE d.id = p_id
+      AND d.is_delete = FALSE;
+
+    -- Không tìm thấy depot
+    IF v_shop_id IS NULL THEN
+        RAISE EXCEPTION 'Depot không tồn tại.'
+            USING ERRCODE = 'P0001';
+    END IF;
+
+    -- 2. Kiểm tra shop có thuộc account hiện tại không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM shop s
+        WHERE s.id = v_shop_id
+          AND s.account_id = p_account_id
+          AND s.is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Depot không thuộc SHOP của bạn.'
+            USING ERRCODE = 'P0002';
+    END IF;
+
+    -- 3. Update depot
+    RETURN QUERY
+    UPDATE depot d
+    SET
+        name = p_name,
+        description = p_description,
+        content = p_content,
+        address = p_address,
+        phone = p_phone
+    WHERE d.id = p_id
+      AND d.is_delete = FALSE
+    RETURNING
+        d.id,
+        d.name,
+        d.description,
+        d.content,
+        d.address,
+        d.phone,
+        d.is_delete,
+        d.shop_id,
+        d.create_time;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION delete_depot (
+    p_id UUID,
+    p_account_id UUID
+)
+RETURNS TABLE (
+    id UUID,
+    name VARCHAR(50),
+    description VARCHAR(255),
+    content TEXT,
+    address VARCHAR(255),
+    phone VARCHAR(255),
+    is_delete BOOLEAN,
+    shop_id UUID,
+    create_time TIMESTAMPTZ
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_shop_id UUID;
+BEGIN
+    -- 1. Lấy shop_id của depot
+    SELECT d.shop_id
+    INTO v_shop_id
+    FROM depot d
+    WHERE d.id = p_id
+      AND d.is_delete = FALSE;
+
+    -- Không tìm thấy depot
+    IF v_shop_id IS NULL THEN
+        RAISE EXCEPTION 'Depot không tồn tại.'
+            USING ERRCODE = 'P0001';
+    END IF;
+
+    -- 2. Kiểm tra shop có thuộc account hiện tại không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM shop s
+        WHERE s.id = v_shop_id
+          AND s.account_id = p_account_id
+          AND s.is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Depot không thuộc SHOP của bạn.'
+            USING ERRCODE = 'P0002';
+    END IF;
+
+    -- 3. Update depot
+    RETURN QUERY
+    UPDATE depot d
+    SET d.is_delete = TRUE
+    WHERE d.id = p_id
+      AND d.is_delete = FALSE
+    RETURNING
+        d.id,
+        d.name,
+        d.description,
+        d.content,
+        d.address,
+        d.phone,
+        d.is_delete,
+        d.shop_id,
+        d.create_time;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION edit_store (
+    p_id UUID,
+    p_name VARCHAR(50),
+    p_description VARCHAR(255),
+    p_content TEXT,
+    p_account_id UUID
+)
+RETURNS TABLE (
+    id UUID,
+    name VARCHAR(50),
+    description VARCHAR(255),
+    content TEXT,
+    is_delete BOOLEAN,
+    depot_id UUID,
+    create_time TIMESTAMPTZ
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_shop_id UUID;
+	v_depot_id UUID;
+BEGIN
+	-- 1. Lấy depot_id của store
+    SELECT s.depot_id
+    INTO v_depot_id
+    FROM store s
+    WHERE s.id = p_id
+      AND s.is_delete = FALSE;
+
+    -- Không tìm thấy depot
+    IF v_depot_id IS NULL THEN
+        RAISE EXCEPTION 'Store không tồn tại.'
+            USING ERRCODE = 'P0001';
+    END IF;
+	
+    -- 2. Lấy shop_id của depot
+    SELECT d.shop_id
+    INTO v_shop_id
+    FROM depot d
+    WHERE d.id = v_depot_id
+      AND d.is_delete = FALSE;
+
+    -- Không tìm thấy depot
+    IF v_shop_id IS NULL THEN
+        RAISE EXCEPTION 'Depot không tồn tại.'
+            USING ERRCODE = 'P0002';
+    END IF;
+
+    -- 3. Kiểm tra shop có thuộc account hiện tại không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM shop s
+        WHERE s.id = v_shop_id
+          AND s.account_id = p_account_id
+          AND s.is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Depot không thuộc SHOP của bạn.'
+            USING ERRCODE = 'P0003';
+    END IF;
+
+    -- 3. Update store
+    RETURN QUERY
+    UPDATE store s
+    SET
+        name = p_name,
+        description = p_description,
+        content = p_content
+    WHERE s.id = p_id
+      AND s.is_delete = FALSE
+    RETURNING
+        s.id,
+        s.name,
+        s.description,
+        s.content,
+        s.is_delete,
+        s.depot_id,
+        s.create_time;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION delete_store (
+    p_id UUID,
+    p_account_id UUID
+)
+RETURNS TABLE (
+    id UUID,
+    name VARCHAR(50),
+    description VARCHAR(255),
+    content TEXT,
+    is_delete BOOLEAN,
+    depot_id UUID,
+    create_time TIMESTAMPTZ
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_shop_id UUID;
+	v_depot_id UUID;
+BEGIN
+	-- 1. Lấy depot_id của store
+    SELECT s.depot_id
+    INTO v_depot_id
+    FROM store s
+    WHERE s.id = p_id
+      AND s.is_delete = FALSE;
+
+    -- Không tìm thấy depot
+    IF v_depot_id IS NULL THEN
+        RAISE EXCEPTION 'Store không tồn tại.'
+            USING ERRCODE = 'P0001';
+    END IF;
+	
+    -- 2. Lấy shop_id của depot
+    SELECT d.shop_id
+    INTO v_shop_id
+    FROM depot d
+    WHERE d.id = v_depot_id
+      AND d.is_delete = FALSE;
+
+    -- Không tìm thấy depot
+    IF v_shop_id IS NULL THEN
+        RAISE EXCEPTION 'Depot không tồn tại.'
+            USING ERRCODE = 'P0002';
+    END IF;
+
+    -- 3. Kiểm tra shop có thuộc account hiện tại không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM shop s
+        WHERE s.id = v_shop_id
+          AND s.account_id = p_account_id
+          AND s.is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Depot không thuộc SHOP của bạn.'
+            USING ERRCODE = 'P0003';
+    END IF;
+
+    -- 3. Update store
+    RETURN QUERY
+    UPDATE store s
+    SET is_delete = TRUE
+    WHERE s.id = p_id
+      AND s.is_delete = FALSE
+    RETURNING
+        s.id,
+        s.name,
+        s.description,
+        s.content,
+        s.is_delete,
+        s.depot_id,
+        s.create_time;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION create_shop_pay (
 	p_money DECIMAL(20,2),
     p_shop_id UUID,

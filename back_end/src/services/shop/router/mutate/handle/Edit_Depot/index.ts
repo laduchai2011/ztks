@@ -1,19 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
 import { My_Response_Field } from '@src/data_struct/response';
 import { Depot_Field } from '@src/data_struct/shop';
-import { Create_Depot_Body_Field } from '@src/data_struct/shop/body';
+import { Edit_Depot_Body_Field } from '@src/data_struct/shop/body';
 import { verify_Refresh_Token } from '@src/token';
-import MutateDB_Create_Depot from '../../mutateDB/Create_Depot';
+import MutateDB_Edit_Depot from '../../mutateDB/Edit_Depot';
 import { getRefreshToken } from '@src/device/getDevice';
 
-class Handle_Create_Depot {
-    setup = async (req: Request<any, any, Create_Depot_Body_Field>, res: Response, next: NextFunction) => {
+class Handle_Edit_Depot {
+    setup = async (req: Request<any, any, Edit_Depot_Body_Field>, res: Response, next: NextFunction) => {
         const my_response: My_Response_Field<Depot_Field> = {
             is_success: false,
-            message: 'Bắt đầu (Handle_Create_Depot-setup)',
+            message: 'Bắt đầu (Handle_Edit_Depot-setup)',
         };
 
-        const create_depot_body = req.body;
+        const edit_depot_body = req.body;
         const refreshToken = getRefreshToken(req);
 
         if (typeof refreshToken === 'string') {
@@ -32,9 +32,9 @@ class Handle_Create_Depot {
             }
 
             const { id } = verify_refreshToken;
-            create_depot_body.account_id = id;
+            edit_depot_body.account_id = id;
 
-            res.locals.create_depot_body = create_depot_body;
+            res.locals.edit_depot_body = edit_depot_body;
             next();
             return;
         } else {
@@ -45,31 +45,31 @@ class Handle_Create_Depot {
     };
 
     main = async (_: Request, res: Response) => {
-        const create_depot_body = res.locals.create_depot_body as Create_Depot_Body_Field;
+        const edit_depot_body = res.locals.edit_depot_body as Edit_Depot_Body_Field;
 
         const my_response: My_Response_Field<Depot_Field> = {
             is_success: false,
-            message: 'Bắt đầu (Handle_Create_Depot-main)',
+            message: 'Bắt đầu (Handle_Edit_Depot-main)',
         };
 
-        const mutateDB = new MutateDB_Create_Depot();
-        mutateDB.set_Create_Depot_Body(create_depot_body);
+        const mutateDB = new MutateDB_Edit_Depot();
+        mutateDB.set_Edit_Depot_Body(edit_depot_body);
 
         try {
             const result = await mutateDB.run();
             if (result) {
-                my_response.message = 'Tạo kho thành công !';
+                my_response.message = 'Thay đổi thông tin kho thành công !';
                 my_response.is_success = true;
                 my_response.data = result;
                 res.status(200).json(my_response);
                 return;
             } else {
-                my_response.message = 'Tạo kho KHÔNG thành công !';
+                my_response.message = 'Thay đổi thông tin kho KHÔNG thành công !';
                 res.status(200).json(my_response);
                 return;
             }
         } catch (error) {
-            my_response.message = 'Tạo kho KHÔNG thành công !!';
+            my_response.message = 'Thay đổi thông tin kho KHÔNG thành công !!';
             my_response.err = error;
             res.status(500).json(my_response);
             return;
@@ -77,4 +77,4 @@ class Handle_Create_Depot {
     };
 }
 
-export default Handle_Create_Depot;
+export default Handle_Edit_Depot;
