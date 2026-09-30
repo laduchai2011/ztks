@@ -1,5 +1,13 @@
 @use 'src/utility/style/mixin.scss' as *;
 
+.parent1 {
+    @include center-of-rectangle;
+    box-sizing: border-box;
+    padding: 50px 10px;
+    font-weight: 500;
+    color: red;
+}
+
 .parent {
     box-sizing: border-box;
     padding: 10px;

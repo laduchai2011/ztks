@@ -92,3 +92,4 @@ export const CHECK_IN_OUT = 'Check In/Out';
 export const CHECK_IN_OUT_MANAGER = 'Quản lý check In/Out';
 export const CREATE_CHECK_IN_OUT = 'Tạo check In/Out';
 export const SHOP = 'Cửa hàng';
+export const CREATE = 'Tạo';

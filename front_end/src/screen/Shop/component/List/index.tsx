@@ -1,17 +1,26 @@
 import { memo } from 'react';
 import style from './style.module.scss';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '@src/redux';
 import { IoMdAdd } from 'react-icons/io';
 import ShopList from './component/ShopList';
 import DepotList from './component/DepotList';
 import StoreList from './component/StoreList';
+import { set__is_show_create_shop } from '@src/redux/slice/Shop';
 
 const List = () => {
+    const dispatch = useDispatch<AppDispatch>();
+
+    const open_Add_Shop = () => {
+        dispatch(set__is_show_create_shop(true));
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.block}>
                 <div className={style.header}>
                     <div>Danh sách cửa hàng</div>
-                    <IoMdAdd size={25} color="green" />
+                    <IoMdAdd onClick={() => open_Add_Shop()} size={25} color="green" />
                 </div>
                 <div>
                     <ShopList />

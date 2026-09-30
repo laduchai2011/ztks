@@ -12,6 +12,10 @@
             padding: 10px;
             background-color: rgb(180, 180, 180);
 
+            > div {
+                font-weight: 600;
+            }
+
             > svg {
                 cursor: pointer;
             }

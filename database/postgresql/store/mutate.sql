@@ -25,9 +25,9 @@ BEGIN
 	-- Kiểm tra tài khoản có phải admin không
     IF NOT EXISTS (
         SELECT 1
-        FROM account_information
-        WHERE account_id = p_account_id
-          AND account_type = 'admin'
+        FROM account_information ai
+        WHERE ai.account_id = p_account_id
+          AND ai.account_type = 'admin'
     ) THEN
         RAISE EXCEPTION 'Không phải tài khoản admin.'
             USING ERRCODE = 'P0001';

@@ -8,7 +8,7 @@ const isProd = process.env.NODE_ENV === 'production';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
-import external from 'rollup-plugin-peer-deps-external';
+// import external from 'rollup-plugin-peer-deps-external';
 import babel from '@rollup/plugin-babel';
 import terser from '@rollup/plugin-terser';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
@@ -84,10 +84,11 @@ const rollup_dev = isDev && [
             resolve({
                 browser: true, // Quan trọng: để build cho browser
                 preferBuiltins: false,
+                extensions: ['.mjs', '.js', '.jsx', '.json', '.ts', '.tsx'],
             }),
             // nodePolyfills(),
             peerDepsExternal(),
-            external(),
+            // external(),
             // resolve(),
             commonjs(),
             postcss({
@@ -100,11 +101,11 @@ const rollup_dev = isDev && [
                 },
                 sourceMap: true,
             }),
-            typescript({
-                tsconfig: './tsconfig.json',
-                // declarationDir: 'dist/types',
-                // sourcemap: true
-            }),
+            // typescript({
+            //     tsconfig: './tsconfig.json',
+            //     // declarationDir: 'dist/types',
+            //     // sourcemap: true
+            // }),
             babel({
                 babelHelpers: 'bundled',
                 extensions: ['.js', '.jsx', '.ts', '.tsx', '.css', '.pcss', '.scss'],
@@ -185,7 +186,7 @@ const rollup_prod = isProd && [
                 preferBuiltins: false,
             }),
             peerDepsExternal(),
-            external(),
+            // external(),
             // resolve(),
             commonjs(),
             postcss({

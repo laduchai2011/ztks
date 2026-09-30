@@ -8,7 +8,10 @@ import { route_enum } from '@src/router/type';
 import { SHOP } from '@src/const/text';
 import ToolBar from '@src/screen/ToolBar';
 import { select_enum } from '@src/router/type';
+import GlobalLoading from '@src/Global/GlobalLoading';
+import GlobalToastMessage from '@src/Global/GlobalToastMessage';
 import List from './component/List';
+import CreateShopDialog from './component/CreateShopDialog';
 
 const Shop = () => {
     const navigate = useNavigate();
@@ -58,6 +61,11 @@ const Shop = () => {
                         <div className={style.header}>{SHOP}</div>
                         <List />
                     </div>
+                </div>
+                <div>
+                    <GlobalLoading />
+                    <GlobalToastMessage />
+                    <CreateShopDialog />
                 </div>
             </div>
         </div>

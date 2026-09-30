@@ -8,7 +8,7 @@ import { LOAD_COMPONENTS_CONST } from '@src/component/Loading/const';
 
 const GlobalLoading = () => {
     const parent_element = useRef<HTMLDivElement | null>(null);
-    const is_loading = useSelector((state: RootState) => state.App_Slice.is_loading);
+    const is_loading = useSelector((state: RootState) => state.Global_Slice.is_loading);
 
     useEffect(() => {
         if (!parent_element.current) return;
