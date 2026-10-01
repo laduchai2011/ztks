@@ -53,7 +53,7 @@ const CreateShopDialog = () => {
         dispatch(set__is_show_create_shop(false));
     };
 
-    const handle_Create_Shop = (type: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Create_shop = (type: string, e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
 
         switch (type) {
@@ -158,7 +158,7 @@ const CreateShopDialog = () => {
                             <div className={style.input1}>
                                 <input
                                     value={create_shop.name}
-                                    onChange={(e) => handle_Create_Shop('name', e)}
+                                    onChange={(e) => handle_Create_shop('name', e)}
                                     placeholder="Tên của hàng"
                                     maxLength={50}
                                 />
@@ -166,7 +166,7 @@ const CreateShopDialog = () => {
                             <div className={style.input1}>
                                 <input
                                     value={create_shop.description}
-                                    onChange={(e) => handle_Create_Shop('description', e)}
+                                    onChange={(e) => handle_Create_shop('description', e)}
                                     placeholder="Diễn tả"
                                     maxLength={255}
                                 />
@@ -174,7 +174,7 @@ const CreateShopDialog = () => {
                             <div className={style.input1}>
                                 <input
                                     value={create_shop.address}
-                                    onChange={(e) => handle_Create_Shop('address', e)}
+                                    onChange={(e) => handle_Create_shop('address', e)}
                                     placeholder="Địa chỉ"
                                     maxLength={255}
                                 />
@@ -182,7 +182,7 @@ const CreateShopDialog = () => {
                             <div className={style.input1}>
                                 <input
                                     value={create_shop.phone}
-                                    onChange={(e) => handle_Create_Shop('phone', e)}
+                                    onChange={(e) => handle_Create_shop('phone', e)}
                                     placeholder="Số điện thoại"
                                     maxLength={255}
                                 />

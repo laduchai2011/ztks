@@ -10,7 +10,7 @@ class Handle_Delete_Shop {
     setup = async (req: Request<any, any, Delete_Shop_Body_Field>, res: Response, next: NextFunction) => {
         const my_response: My_Response_Field<Shop_Field> = {
             is_success: false,
-            message: 'Bắt đầu (Handle_Edit_Shop-setup)',
+            message: 'Bắt đầu (Handle_Delete_Shop-setup)',
         };
 
         const delete_shop_body = req.body;
@@ -49,7 +49,7 @@ class Handle_Delete_Shop {
 
         const my_response: My_Response_Field<Shop_Field> = {
             is_success: false,
-            message: 'Bắt đầu (Handle_Edit_Shop-main)',
+            message: 'Bắt đầu (Handle_Delete_Shop-main)',
         };
 
         const mutateDB = new MutateDB_Delete_Shop();

@@ -110,6 +110,7 @@ export const shop_RTK = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: [{ type: 'Shop', id: 'LIST' }],
         }),
         _delete_Shop_: builder.mutation<My_Response_Field<Shop_Field>, Delete_Shop_Body_Field>({
             query: (body) => ({

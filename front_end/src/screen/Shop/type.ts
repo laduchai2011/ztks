@@ -12,6 +12,12 @@ export interface state_props {
     deleted_shop?: Shop_Field;
 
     is_show_create_depot: boolean;
+    is_show_edit_depot: boolean;
+    is_show_delete_depot: boolean;
     selected_depot?: Depot_Field;
-    depot_list: Depot_Field[];
+    new_depot?: Depot_Field;
+    selected_edit_depot?: Depot_Field;
+    edited_depot?: Depot_Field;
+    selected_delete_depot?: Depot_Field;
+    deleted_depot?: Depot_Field;
 }

@@ -74,7 +74,7 @@ const EditShopDialog = () => {
         dispatch(set__is_show_edit_shop(false));
     };
 
-    const handle_Edit_shop = (type: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Edit_Shop = (type: string, e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
 
         switch (type) {
@@ -179,7 +179,7 @@ const EditShopDialog = () => {
                             <div className={style.input1}>
                                 <input
                                     value={edit_shop.name}
-                                    onChange={(e) => handle_Edit_shop('name', e)}
+                                    onChange={(e) => handle_Edit_Shop('name', e)}
                                     placeholder="Tên của hàng"
                                     maxLength={50}
                                 />
@@ -187,7 +187,7 @@ const EditShopDialog = () => {
                             <div className={style.input1}>
                                 <input
                                     value={edit_shop.description}
-                                    onChange={(e) => handle_Edit_shop('description', e)}
+                                    onChange={(e) => handle_Edit_Shop('description', e)}
                                     placeholder="Diễn tả"
                                     maxLength={255}
                                 />
@@ -195,7 +195,7 @@ const EditShopDialog = () => {
                             <div className={style.input1}>
                                 <input
                                     value={edit_shop.address}
-                                    onChange={(e) => handle_Edit_shop('address', e)}
+                                    onChange={(e) => handle_Edit_Shop('address', e)}
                                     placeholder="Địa chỉ"
                                     maxLength={255}
                                 />
@@ -203,7 +203,7 @@ const EditShopDialog = () => {
                             <div className={style.input1}>
                                 <input
                                     value={edit_shop.phone}
-                                    onChange={(e) => handle_Edit_shop('phone', e)}
+                                    onChange={(e) => handle_Edit_Shop('phone', e)}
                                     placeholder="Số điện thoại"
                                     maxLength={255}
                                 />

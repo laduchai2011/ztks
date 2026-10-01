@@ -16,6 +16,7 @@ const ShopList = () => {
     );
     const new_shop: Shop_Field | undefined = useSelector((state: RootState) => state.Shop_Slice.new_shop);
     const edited_shop: Shop_Field | undefined = useSelector((state: RootState) => state.Shop_Slice.edited_shop);
+    const deleted_shop: Shop_Field | undefined = useSelector((state: RootState) => state.Shop_Slice.deleted_shop);
 
     const [shop_list, set__shop_list] = useState<Shop_Field[]>([]);
     const limit = 5;
@@ -53,6 +54,10 @@ const ShopList = () => {
         if (!edited_shop) return;
         set__shop_list((prev) => prev.map((shop) => (shop.id === edited_shop.id ? edited_shop : shop)));
     }, [edited_shop]);
+    useEffect(() => {
+        if (!deleted_shop) return;
+        set__shop_list((prev) => prev.filter((shop) => shop.id !== deleted_shop.id));
+    }, [deleted_shop]);
 
     const handle_See_More = () => {
         if (!has_more) return;
