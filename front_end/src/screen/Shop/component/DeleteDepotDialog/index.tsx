@@ -9,7 +9,7 @@ import { use_delete_Depot_Mutation } from '@src/redux/query/shop_RTK';
 import { global_set__data__toast_message, global_set__is_loading } from '@src/redux/slice/Global';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { set__is_show_delete_depot, set__deleted_depot } from '@src/redux/slice/Shop';
-import { Shop_Field, Depot_Field } from '@src/data_struct/shop';
+import { Depot_Field } from '@src/data_struct/shop';
 
 const DeleteDepotDialog = () => {
     const dispatch = useDispatch<AppDispatch>();

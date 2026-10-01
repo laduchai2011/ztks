@@ -17,6 +17,7 @@ import DeleteShopDialog from './component/DeleteShopDialog';
 import CreateDepotDialog from './component/CreateDepotDialog';
 import EditDepotDialog from './component/EditDepotDialog';
 import DeleteDepotDialog from './component/DeleteDepotDialog';
+import CreateStoreDialog from './component/CreateStore/inedex';
 
 const Shop = () => {
     const navigate = useNavigate();
@@ -76,6 +77,7 @@ const Shop = () => {
                     <CreateDepotDialog />
                     <EditDepotDialog />
                     <DeleteDepotDialog />
+                    <CreateStoreDialog />
                 </div>
             </div>
         </div>

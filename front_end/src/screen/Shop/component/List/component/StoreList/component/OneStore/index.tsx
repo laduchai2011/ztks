@@ -4,20 +4,20 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { CiEdit } from 'react-icons/ci';
 import { MdDeleteOutline } from 'react-icons/md';
-import { Depot_Field } from '@src/data_struct/shop';
+import { Store_Field } from '@src/data_struct/shop';
 import {
-    set__selected_depot,
-    set__is_show_edit_depot,
-    set__selected_edit_depot,
-    set__is_show_delete_depot,
-    set__selected_delete_depot,
+    set__selected_store,
+    set__is_show_edit_store,
+    set__selected_edit_store,
+    set__is_show_delete_store,
+    set__selected_delete_store,
 } from '@src/redux/slice/Shop';
 
-const OneDepot: FC<{ data: Depot_Field; index: number }> = ({ data, index }) => {
+const OneStore: FC<{ data: Store_Field; index: number }> = ({ data, index }) => {
     const dispatch = useDispatch<AppDispatch>();
 
     const is_selected: boolean | undefined = useSelector(
-        (state: RootState) => state.Shop_Slice.selected_depot?.id === data.id
+        (state: RootState) => state.Shop_Slice.selected_store?.id === data.id
     );
 
     const handle_Selected_Class = () => {
@@ -28,17 +28,17 @@ const OneDepot: FC<{ data: Depot_Field; index: number }> = ({ data, index }) => 
     };
 
     const handle_Selected = () => {
-        dispatch(set__selected_depot(data));
+        dispatch(set__selected_store(data));
     };
 
     const handle_Open_Edit = () => {
-        dispatch(set__selected_edit_depot(data));
-        dispatch(set__is_show_edit_depot(true));
+        dispatch(set__selected_edit_store(data));
+        dispatch(set__is_show_edit_store(true));
     };
 
     const handle_Open_Delete = () => {
-        dispatch(set__selected_delete_depot(data));
-        dispatch(set__is_show_delete_depot(true));
+        dispatch(set__selected_delete_store(data));
+        dispatch(set__is_show_delete_store(true));
     };
 
     return (
@@ -57,12 +57,13 @@ const OneDepot: FC<{ data: Depot_Field; index: number }> = ({ data, index }) => 
                     <div className={style.content}>
                         <div dangerouslySetInnerHTML={{ __html: data.content }} />
                     </div>
-                    <div className={style.address}>{data.address}</div>
-                    <div className={style.phone}>{data.phone}</div>
+                    <div className={style.seeAmount}>
+                        <div>Xem</div>
+                    </div>
                 </div>
             </div>
         </div>
     );
 };
 
-export default memo(OneDepot);
+export default memo(OneStore);

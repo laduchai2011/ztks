@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { state_props } from '@src/screen/Shop/type';
-import { Shop_Field, Depot_Field } from '@src/data_struct/shop';
+import { Shop_Field, Depot_Field, Store_Field } from '@src/data_struct/shop';
 
 const initialState: state_props = {
+    // shop
     is_show_create_shop: false,
     is_show_edit_shop: false,
     is_show_delete_shop: false,
@@ -13,6 +14,7 @@ const initialState: state_props = {
     selected_delete_shop: undefined,
     deleted_shop: undefined,
 
+    // depot
     is_show_create_depot: false,
     is_show_edit_depot: false,
     is_show_delete_depot: false,
@@ -22,13 +24,24 @@ const initialState: state_props = {
     edited_depot: undefined,
     selected_delete_depot: undefined,
     deleted_depot: undefined,
+
+    // store
+    is_show_create_store: false,
+    is_show_edit_store: false,
+    is_show_delete_store: false,
+    selected_store: undefined,
+    new_store: undefined,
+    selected_edit_store: undefined,
+    edited_store: undefined,
+    selected_delete_store: undefined,
+    deleted_store: undefined,
 };
 
 const Shop_Slice = createSlice({
     name: 'Shop_Slice',
     initialState,
     reducers: {
-        //shop
+        // shop
         set__is_show_create_shop: (state, action: PayloadAction<boolean>) => {
             state.is_show_create_shop = action.payload;
         },
@@ -57,7 +70,7 @@ const Shop_Slice = createSlice({
             state.deleted_shop = action.payload;
         },
 
-        //depot
+        // depot
         set__is_show_create_depot: (state, action: PayloadAction<boolean>) => {
             state.is_show_create_depot = action.payload;
         },
@@ -85,11 +98,40 @@ const Shop_Slice = createSlice({
         set__deleted_depot: (state, action: PayloadAction<Depot_Field>) => {
             state.deleted_depot = action.payload;
         },
+
+        // store
+        set__is_show_create_store: (state, action: PayloadAction<boolean>) => {
+            state.is_show_create_store = action.payload;
+        },
+        set__is_show_edit_store: (state, action: PayloadAction<boolean>) => {
+            state.is_show_edit_store = action.payload;
+        },
+        set__is_show_delete_store: (state, action: PayloadAction<boolean>) => {
+            state.is_show_delete_store = action.payload;
+        },
+        set__selected_store: (state, action: PayloadAction<Store_Field>) => {
+            state.selected_store = action.payload;
+        },
+        set__new_store: (state, action: PayloadAction<Store_Field>) => {
+            state.new_store = action.payload;
+        },
+        set__selected_edit_store: (state, action: PayloadAction<Store_Field>) => {
+            state.selected_edit_store = action.payload;
+        },
+        set__edited_store: (state, action: PayloadAction<Store_Field>) => {
+            state.edited_store = action.payload;
+        },
+        set__selected_delete_store: (state, action: PayloadAction<Store_Field>) => {
+            state.selected_delete_store = action.payload;
+        },
+        set__deleted_store: (state, action: PayloadAction<Store_Field>) => {
+            state.deleted_store = action.payload;
+        },
     },
 });
 
 export const {
-    //shop
+    // shop
     set__is_show_create_shop,
     set__is_show_edit_shop,
     set__is_show_delete_shop,
@@ -100,7 +142,7 @@ export const {
     set__selected_delete_shop,
     set__deleted_shop,
 
-    //depot
+    // depot
     set__is_show_create_depot,
     set__is_show_edit_depot,
     set__is_show_delete_depot,
@@ -110,5 +152,16 @@ export const {
     set__edited_depot,
     set__selected_delete_depot,
     set__deleted_depot,
+
+    // store
+    set__is_show_create_store,
+    set__is_show_edit_store,
+    set__is_show_delete_store,
+    set__selected_store,
+    set__new_store,
+    set__selected_edit_store,
+    set__edited_store,
+    set__selected_delete_store,
+    set__deleted_store,
 } = Shop_Slice.actions;
 export default Shop_Slice.reducer;

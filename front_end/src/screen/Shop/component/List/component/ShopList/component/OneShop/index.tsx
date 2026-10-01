@@ -54,7 +54,9 @@ const OneShop: FC<{ data: Shop_Field; index: number }> = ({ data, index }) => {
                 <div>
                     <div className={style.name}>{data.name}</div>
                     <div className={style.des}>{data.description}</div>
-                    <div className={style.content}>{data.content}</div>
+                    <div className={style.content}>
+                        <div dangerouslySetInnerHTML={{ __html: data.content }} />
+                    </div>
                     <div className={style.address}>{data.address}</div>
                     <div className={style.phone}>{data.phone}</div>
                 </div>

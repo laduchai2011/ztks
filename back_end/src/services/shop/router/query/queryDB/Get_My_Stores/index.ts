@@ -14,13 +14,13 @@ class QueryDB_Get_My_Stores {
             const cursor = this._get_my_stores_body.cursor ? this._get_my_stores_body.cursor : null;
 
             try {
-                const result = await pool.query<Cursor_Store_Field>(
+                const result = await pool.query<{ get_my_stores: Cursor_Store_Field }>(
                     'SELECT * FROM get_my_stores($1, $2::UUID, $3::UUID)',
                     [this._get_my_stores_body.limit, cursor, this._get_my_stores_body.depot_id]
                 );
 
                 if (result.rows.length > 0) {
-                    return result.rows[0];
+                    return result.rows[0].get_my_stores;
                 }
             } catch (error) {
                 console.error(error);
