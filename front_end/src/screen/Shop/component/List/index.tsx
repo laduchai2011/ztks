@@ -6,13 +6,17 @@ import { IoMdAdd } from 'react-icons/io';
 import ShopList from './component/ShopList';
 import DepotList from './component/DepotList';
 import StoreList from './component/StoreList';
-import { set__is_show_create_shop } from '@src/redux/slice/Shop';
+import { set__is_show_create_shop, set__is_show_create_depot } from '@src/redux/slice/Shop';
 
 const List = () => {
     const dispatch = useDispatch<AppDispatch>();
 
     const open_Add_Shop = () => {
         dispatch(set__is_show_create_shop(true));
+    };
+
+    const open_Add_Depot = () => {
+        dispatch(set__is_show_create_depot(true));
     };
 
     return (
@@ -29,7 +33,7 @@ const List = () => {
             <div className={style.block}>
                 <div className={style.header}>
                     <div>Danh sách kho</div>
-                    <IoMdAdd size={25} color="green" />
+                    <IoMdAdd onClick={() => open_Add_Depot()} size={25} color="green" />
                 </div>
                 <div>
                     <DepotList />

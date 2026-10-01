@@ -36,7 +36,7 @@ export const shop_RTK = createApi({
             return headers;
         },
     }),
-    tagTypes: ['Shop'],
+    tagTypes: ['Shop', 'Depot', 'Store'],
     endpoints: (builder) => ({
         _get_My_Shops_: builder.query<My_Response_Field<Cursor_Shop_Field>, Get_My_Shops_Body_Field>({
             query: (body) => ({
@@ -59,6 +59,14 @@ export const shop_RTK = createApi({
                 method: 'POST',
                 body,
             }),
+            providesTags: (result) => [
+                { type: 'Depot', id: 'LIST' },
+
+                ...(result?.data?.items ?? []).map((depot) => ({
+                    type: 'Depot' as const,
+                    id: depot.id,
+                })),
+            ],
         }),
         _get_My_Stores_: builder.query<My_Response_Field<Cursor_Store_Field>, Get_My_Stores_Body_Field>({
             query: (body) => ({
@@ -66,6 +74,14 @@ export const shop_RTK = createApi({
                 method: 'POST',
                 body,
             }),
+            providesTags: (result) => [
+                { type: 'Store', id: 'LIST' },
+
+                ...(result?.data?.items ?? []).map((store) => ({
+                    type: 'Store' as const,
+                    id: store.id,
+                })),
+            ],
         }),
         _create_Shop_: builder.mutation<My_Response_Field<Shop_Field>, Create_Shop_Body_Field>({
             query: (body) => ({
@@ -81,6 +97,7 @@ export const shop_RTK = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: [{ type: 'Depot', id: 'LIST' }],
         }),
         _create_Store_: builder.mutation<My_Response_Field<Store_Field>, Create_Store_Body_Field>({
             query: (body) => ({
@@ -88,6 +105,7 @@ export const shop_RTK = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: [{ type: 'Store', id: 'LIST' }],
         }),
         _edit_Shop_: builder.mutation<My_Response_Field<Shop_Field>, Edit_Shop_Body_Field>({
             query: (body) => ({
@@ -103,6 +121,7 @@ export const shop_RTK = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: (_result, _error, body) => [{ type: 'Depot', id: body.id }],
         }),
         _edit_Store_: builder.mutation<My_Response_Field<Store_Field>, Edit_Store_Body_Field>({
             query: (body) => ({
@@ -110,7 +129,7 @@ export const shop_RTK = createApi({
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: [{ type: 'Shop', id: 'LIST' }],
+            invalidatesTags: (_result, _error, body) => [{ type: 'Store', id: body.id }],
         }),
         _delete_Shop_: builder.mutation<My_Response_Field<Shop_Field>, Delete_Shop_Body_Field>({
             query: (body) => ({
@@ -118,6 +137,7 @@ export const shop_RTK = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: [{ type: 'Shop', id: 'LIST' }],
         }),
         _delete_Depot_: builder.mutation<My_Response_Field<Depot_Field>, Delete_Depot_Body_Field>({
             query: (body) => ({
@@ -125,6 +145,7 @@ export const shop_RTK = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: [{ type: 'Depot', id: 'LIST' }],
         }),
         _delete_Store_: builder.mutation<My_Response_Field<Store_Field>, Delete_Store_Body_Field>({
             query: (body) => ({
@@ -132,6 +153,7 @@ export const shop_RTK = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: [{ type: 'Store', id: 'LIST' }],
         }),
     }),
 });

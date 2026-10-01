@@ -121,6 +121,16 @@ const EditShopDialog = () => {
     };
 
     const handle_Edit = () => {
+        if (edit_shop.name.trim().length === 0) {
+            dispatch(
+                global_set__data__toast_message({
+                    message: 'Vui lòng nhập tên cửa hàng !',
+                    type: messageType_enum.WARN,
+                })
+            );
+            return;
+        }
+
         const body: Edit_Shop_Body_Field = {
             id: edit_shop.id,
             name: edit_shop.name.trim(),

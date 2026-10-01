@@ -100,6 +100,16 @@ const CreateShopDialog = () => {
     };
 
     const handle_Create = () => {
+        if (create_shop.name.trim().length === 0) {
+            dispatch(
+                global_set__data__toast_message({
+                    message: 'Vui lòng nhập tên cửa hàng !',
+                    type: messageType_enum.WARN,
+                })
+            );
+            return;
+        }
+
         const body: Create_Shop_Body_Field = {
             name: create_shop.name.trim(),
             description: create_shop.description.trim(),

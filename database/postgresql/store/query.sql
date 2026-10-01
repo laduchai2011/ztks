@@ -162,8 +162,8 @@ BEGIN
         FROM depot d
         WHERE d.is_delete = FALSE
             AND (
-                p_account_id IS NULL
-                OR d.account_id = p_account_id
+                p_shop_id IS NULL
+                OR d.shop_id = p_shop_id
             )
             AND (
                 p_cursor IS NULL

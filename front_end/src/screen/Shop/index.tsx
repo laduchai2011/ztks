@@ -14,6 +14,9 @@ import List from './component/List';
 import CreateShopDialog from './component/CreateShopDialog';
 import EditShopDialog from './component/EditShopDialog';
 import DeleteShopDialog from './component/DeleteShopDialog';
+import CreateDepotDialog from './component/CreateDepotDialog';
+import EditDepotDialog from './component/EditDepotDialog';
+import DeleteDepotDialog from './component/DeleteDepotDialog';
 
 const Shop = () => {
     const navigate = useNavigate();
@@ -70,6 +73,9 @@ const Shop = () => {
                     <CreateShopDialog />
                     <EditShopDialog />
                     <DeleteShopDialog />
+                    <CreateDepotDialog />
+                    <EditDepotDialog />
+                    <DeleteDepotDialog />
                 </div>
             </div>
         </div>

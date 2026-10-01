@@ -14,13 +14,13 @@ class QueryDB_Get_My_Depots {
             const cursor = this._get_my_depots_body.cursor ? this._get_my_depots_body.cursor : null;
 
             try {
-                const result = await pool.query<Cursor_Depot_Field>(
+                const result = await pool.query<{ get_my_depots: Cursor_Depot_Field }>(
                     'SELECT * FROM get_my_depots($1, $2::UUID, $3::UUID)',
                     [this._get_my_depots_body.limit, cursor, this._get_my_depots_body.shop_id]
                 );
 
                 if (result.rows.length > 0) {
-                    return result.rows[0];
+                    return result.rows[0].get_my_depots;
                 }
             } catch (error) {
                 console.error(error);

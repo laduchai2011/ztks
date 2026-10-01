@@ -405,7 +405,7 @@ BEGIN
     -- 3. Update depot
     RETURN QUERY
     UPDATE depot d
-    SET d.is_delete = TRUE
+    SET is_delete = TRUE
     WHERE d.id = p_id
       AND d.is_delete = FALSE
     RETURNING
