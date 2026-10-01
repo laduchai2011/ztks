@@ -12,78 +12,17 @@
     box-sizing: border-box;
     padding: 10px;
 
-    > .oneRow {
-        background-color: rgb(245, 245, 245);
-        margin: 5px;
-        border-radius: 10px;
+    > div:nth-child(2) {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 10px;
 
-        &.selected {
-            background-color: rgb(219, 219, 219);
-        }
+        > div {
+            color: blue;
+            user-select: none;
 
-        > .infor1 {
-            @include center-of-row;
-            justify-content: space-between;
-            height: 20px;
-            box-sizing: border-box;
-            padding: 0 5px;
-
-            > .index {
-                color: blue;
-            }
-
-            > .infor {
-                @include center-of-row;
-
-                > div {
-                    margin: 0 5px;
-                    color: rgb(0, 162, 255);
-                }
-            }
-
-            > .icons {
-                @include center-of-row;
-
-                > svg {
-                    cursor: pointer;
-                    margin: 0 5px;
-                }
-            }
-        }
-
-        > .infor2 {
-            overflow-x: scroll;
-            @include small-scroll-xx(3px);
-
-            > div {
-                @include center-of-row;
-                width: 1750px;
-
-                > div {
-                    @include center-of-rectangle;
-                    box-sizing: border-box;
-                    padding: 5px;
-                }
-
-                > .name {
-                    width: 200px;
-                }
-
-                > .des {
-                    width: 250px;
-                }
-
-                > .content {
-                    flex: 1;
-                }
-
-                > .address {
-                    width: 300px;
-                }
-
-                > .phone {
-                    width: 200px;
-                }
+            &:hover {
+                text-decoration: underline;
             }
         }
     }

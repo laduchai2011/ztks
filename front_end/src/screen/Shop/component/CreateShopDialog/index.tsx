@@ -9,7 +9,7 @@ import { Create_Shop_Body_Field } from '@src/data_struct/shop/body';
 import { use_create_Shop_Mutation } from '@src/redux/query/shop_RTK';
 import { global_set__data__toast_message, global_set__is_loading } from '@src/redux/slice/Global';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { set__is_show_create_shop, add__new_shop } from '@src/redux/slice/Shop';
+import { set__is_show_create_shop, set__new_shop } from '@src/redux/slice/Shop';
 
 const CreateShopDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -114,7 +114,7 @@ const CreateShopDialog = () => {
             .then((res) => {
                 const res_data = res.data;
                 if (res_data?.is_success && res_data.data) {
-                    dispatch(add__new_shop(res_data.data));
+                    dispatch(set__new_shop(res_data.data));
                     dispatch(
                         global_set__data__toast_message({
                             message: 'Tạo cửa hàng mới thành công !',

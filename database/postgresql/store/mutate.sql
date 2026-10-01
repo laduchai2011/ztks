@@ -225,27 +225,26 @@ RETURNS TABLE (
 )
 LANGUAGE plpgsql
 AS $$
-DECLARE
-    v_shop_id UUID;
 BEGIN
-	UPDATE shop
+	RETURN QUERY
+	UPDATE shop s
 	SET
 	    name = p_name,
 	    description = p_description,
 		content = p_content,
 	    address = p_address,
 	    phone = p_phone
-	WHERE id = p_id AND account_id = p_account_id AND is_delete = FALSE
+	WHERE s.id = p_id AND s.account_id = p_account_id AND s.is_delete = FALSE
 	RETURNING
-	    id,
-	    name,
-	    description,
-	    content,
-	    address,
-	    phone,
-	    is_delete,
-	    account_id,
-	    create_time;
+	    s.id,
+	    s.name,
+	    s.description,
+	    s.content,
+	    s.address,
+	    s.phone,
+	    s.is_delete,
+	    s.account_id,
+	    s.create_time;
 END;
 $$;
 

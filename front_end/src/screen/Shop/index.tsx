@@ -12,6 +12,8 @@ import GlobalLoading from '@src/Global/GlobalLoading';
 import GlobalToastMessage from '@src/Global/GlobalToastMessage';
 import List from './component/List';
 import CreateShopDialog from './component/CreateShopDialog';
+import EditShopDialog from './component/EditShopDialog';
+import DeleteShopDialog from './component/DeleteShopDialog';
 
 const Shop = () => {
     const navigate = useNavigate();
@@ -66,6 +68,8 @@ const Shop = () => {
                     <GlobalLoading />
                     <GlobalToastMessage />
                     <CreateShopDialog />
+                    <EditShopDialog />
+                    <DeleteShopDialog />
                 </div>
             </div>
         </div>

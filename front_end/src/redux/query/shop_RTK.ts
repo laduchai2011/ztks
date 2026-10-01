@@ -36,7 +36,7 @@ export const shop_RTK = createApi({
             return headers;
         },
     }),
-    tagTypes: [],
+    tagTypes: ['Shop'],
     endpoints: (builder) => ({
         _get_My_Shops_: builder.query<My_Response_Field<Cursor_Shop_Field>, Get_My_Shops_Body_Field>({
             query: (body) => ({
@@ -44,6 +44,14 @@ export const shop_RTK = createApi({
                 method: 'POST',
                 body,
             }),
+            providesTags: (result) => [
+                { type: 'Shop', id: 'LIST' },
+
+                ...(result?.data?.items ?? []).map((shop) => ({
+                    type: 'Shop' as const,
+                    id: shop.id,
+                })),
+            ],
         }),
         _get_My_Depots_: builder.query<My_Response_Field<Cursor_Depot_Field>, Get_My_Depots_Body_Field>({
             query: (body) => ({
@@ -65,6 +73,7 @@ export const shop_RTK = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: [{ type: 'Shop', id: 'LIST' }],
         }),
         _create_Depot_: builder.mutation<My_Response_Field<Depot_Field>, Create_Depot_Body_Field>({
             query: (body) => ({
@@ -86,6 +95,7 @@ export const shop_RTK = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: (_result, _error, body) => [{ type: 'Shop', id: body.id }],
         }),
         _edit_Depot_: builder.mutation<My_Response_Field<Depot_Field>, Edit_Depot_Body_Field>({
             query: (body) => ({

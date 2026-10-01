@@ -3,22 +3,27 @@ import style from './style.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { IoCloseOutline } from 'react-icons/io5';
-import { CLOSE, PAY, CREATE } from '@src/const/text';
+import { CLOSE, PAY, EDIT } from '@src/const/text';
 import TextEditor from '@src/component/TextEditor';
-import { Create_Shop_Body_Field } from '@src/data_struct/shop/body';
-import { use_create_Shop_Mutation } from '@src/redux/query/shop_RTK';
+import { Edit_Shop_Body_Field } from '@src/data_struct/shop/body';
+import { use_edit_Shop_Mutation } from '@src/redux/query/shop_RTK';
 import { global_set__data__toast_message, global_set__is_loading } from '@src/redux/slice/Global';
 import { messageType_enum } from '@src/component/ToastMessage/type';
-import { set__is_show_create_shop, add__new_shop } from '@src/redux/slice/Shop';
+import { set__is_show_edit_shop, set__edited_shop } from '@src/redux/slice/Shop';
+import { Shop_Field } from '@src/data_struct/shop';
 
-const CreateShopDialog = () => {
+const EditShopDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
 
     const parent_element = useRef<HTMLDivElement | null>(null);
 
-    const is_show_create_shop: boolean = useSelector((state: RootState) => state.Shop_Slice.is_show_create_shop);
+    const is_show_edit_shop: boolean = useSelector((state: RootState) => state.Shop_Slice.is_show_edit_shop);
+    const selected_edit_shop: Shop_Field | undefined = useSelector(
+        (state: RootState) => state.Shop_Slice.selected_edit_shop
+    );
 
-    const [create_shop, set__create_shop] = useState<Create_Shop_Body_Field>({
+    const [edit_shop, set__edit_shop] = useState<Edit_Shop_Body_Field>({
+        id: '',
         name: '',
         description: '',
         content: '',
@@ -26,14 +31,15 @@ const CreateShopDialog = () => {
         phone: '',
         account_id: '',
     });
+    const [content_1, set__content_1] = useState<string>('');
 
-    const [create_Shop] = use_create_Shop_Mutation();
+    const [edit_Shop] = use_edit_Shop_Mutation();
 
     useEffect(() => {
         if (!parent_element.current) return;
         const parentElement = parent_element.current;
 
-        if (is_show_create_shop) {
+        if (is_show_edit_shop) {
             parentElement.classList.add(style.display);
             const timeout2 = setTimeout(() => {
                 parentElement.classList.add(style.opacity);
@@ -47,39 +53,54 @@ const CreateShopDialog = () => {
                 clearTimeout(timeout2);
             }, 550);
         }
-    }, [is_show_create_shop]);
+    }, [is_show_edit_shop]);
+
+    useEffect(() => {
+        if (!selected_edit_shop) return;
+        const _edit_shop: Edit_Shop_Body_Field = {
+            id: selected_edit_shop.id,
+            name: selected_edit_shop.name,
+            description: selected_edit_shop.description,
+            content: selected_edit_shop.content,
+            address: selected_edit_shop.address,
+            phone: selected_edit_shop.phone,
+            account_id: selected_edit_shop.account_id,
+        };
+        set__edit_shop(_edit_shop);
+        set__content_1(selected_edit_shop.content);
+    }, [selected_edit_shop]);
 
     const handle_Close = () => {
-        dispatch(set__is_show_create_shop(false));
+        dispatch(set__is_show_edit_shop(false));
     };
 
-    const handle_Create_shop = (type: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const handle_Edit_shop = (type: string, e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
 
         switch (type) {
             case 'name': {
-                set__create_shop((prev) => ({
+                set__edit_shop((prev) => ({
                     ...prev,
                     name: value,
                 }));
                 break;
             }
             case 'description': {
-                set__create_shop((prev) => ({
+                set__edit_shop((prev) => ({
                     ...prev,
                     description: value,
                 }));
                 break;
             }
             case 'address': {
-                set__create_shop((prev) => ({
+                set__edit_shop((prev) => ({
                     ...prev,
                     address: value,
                 }));
                 break;
             }
             case 'phone': {
-                set__create_shop((prev) => ({
+                set__edit_shop((prev) => ({
                     ...prev,
                     phone: value,
                 }));
@@ -93,39 +114,39 @@ const CreateShopDialog = () => {
     };
 
     const handle_Content = (value: string) => {
-        set__create_shop((prev) => ({
+        set__edit_shop((prev) => ({
             ...prev,
             content: value,
         }));
     };
 
-    const handle_Create = () => {
-        const body: Create_Shop_Body_Field = {
-            name: create_shop.name.trim(),
-            description: create_shop.description.trim(),
-            content: create_shop.content.trim(),
-            address: create_shop.address.trim(),
-            phone: create_shop.phone.trim(),
-            account_id: '',
+    const handle_Edit = () => {
+        const body: Edit_Shop_Body_Field = {
+            id: edit_shop.id,
+            name: edit_shop.name.trim(),
+            description: edit_shop.description.trim(),
+            content: edit_shop.content.trim(),
+            address: edit_shop.address.trim(),
+            phone: edit_shop.phone.trim(),
+            account_id: edit_shop.account_id,
         };
-
         dispatch(global_set__is_loading(true));
-        create_Shop(body)
+        edit_Shop(body)
             .then((res) => {
                 const res_data = res.data;
                 if (res_data?.is_success && res_data.data) {
-                    dispatch(add__new_shop(res_data.data));
+                    dispatch(set__edited_shop(res_data.data));
                     dispatch(
                         global_set__data__toast_message({
-                            message: 'Tạo cửa hàng mới thành công !',
+                            message: 'Thay đổi thông tin cửa hàng thành công !',
                             type: messageType_enum.SUCCESS,
                         })
                     );
-                    dispatch(set__is_show_create_shop(false));
+                    dispatch(set__is_show_edit_shop(false));
                 } else {
                     dispatch(
                         global_set__data__toast_message({
-                            message: 'Tạo cửa hàng mới không thành công !',
+                            message: 'Thay đổi thông tin cửa hàng không thành công !',
                             type: messageType_enum.WARN,
                         })
                     );
@@ -149,7 +170,7 @@ const CreateShopDialog = () => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.header}>
-                    <div>Tạo cửa hàng</div>
+                    <div>Thay đổi thông tin cửa hàng</div>
                     <IoCloseOutline onClick={() => handle_Close()} size={30} title={CLOSE} />
                 </div>
                 <div className={style.content}>
@@ -157,41 +178,41 @@ const CreateShopDialog = () => {
                         <div>
                             <div className={style.input1}>
                                 <input
-                                    value={create_shop.name}
-                                    onChange={(e) => handle_Create_shop('name', e)}
+                                    value={edit_shop.name}
+                                    onChange={(e) => handle_Edit_shop('name', e)}
                                     placeholder="Tên của hàng"
                                     maxLength={50}
                                 />
                             </div>
                             <div className={style.input1}>
                                 <input
-                                    value={create_shop.description}
-                                    onChange={(e) => handle_Create_shop('description', e)}
+                                    value={edit_shop.description}
+                                    onChange={(e) => handle_Edit_shop('description', e)}
                                     placeholder="Diễn tả"
                                     maxLength={255}
                                 />
                             </div>
                             <div className={style.input1}>
                                 <input
-                                    value={create_shop.address}
-                                    onChange={(e) => handle_Create_shop('address', e)}
+                                    value={edit_shop.address}
+                                    onChange={(e) => handle_Edit_shop('address', e)}
                                     placeholder="Địa chỉ"
                                     maxLength={255}
                                 />
                             </div>
                             <div className={style.input1}>
                                 <input
-                                    value={create_shop.phone}
-                                    onChange={(e) => handle_Create_shop('phone', e)}
+                                    value={edit_shop.phone}
+                                    onChange={(e) => handle_Edit_shop('phone', e)}
                                     placeholder="Số điện thoại"
                                     maxLength={255}
                                 />
                             </div>
                             <div className={style.input1}>
-                                <TextEditor onChange={(value) => handle_Content(value)} />
+                                <TextEditor value={content_1} onChange={(value) => handle_Content(value)} />
                             </div>
                             <div className={style.btn1}>
-                                <div onClick={() => handle_Create()}>{CREATE}</div>
+                                <div onClick={() => handle_Edit()}>{EDIT}</div>
                             </div>
                         </div>
                     </div>
@@ -209,4 +230,4 @@ const CreateShopDialog = () => {
     );
 };
 
-export default memo(CreateShopDialog);
+export default memo(EditShopDialog);
