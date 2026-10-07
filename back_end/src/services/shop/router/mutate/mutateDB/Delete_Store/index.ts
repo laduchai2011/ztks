@@ -16,7 +16,7 @@ class MutateDB_Delete_Store {
             try {
                 await client.query('BEGIN');
 
-                const result = await pool.query<Store_Field>('SELECT * FROM edit_store($1::UUID, $2::UUID)', [
+                const result = await pool.query<Store_Field>('SELECT * FROM delete_store($1::UUID, $2::UUID)', [
                     this._delete_store_body.id,
                     this._delete_store_body.account_id,
                 ]);

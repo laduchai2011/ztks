@@ -5,23 +5,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { global_set__data__toast_message } from '@src/redux/slice/Global';
 import { route_enum } from '@src/router/type';
-import { SHOP } from '@src/const/text';
+import { TEAM } from '@src/const/text';
 import ToolBar from '@src/screen/ToolBar';
 import { select_enum } from '@src/router/type';
 import GlobalLoading from '@src/Global/GlobalLoading';
 import GlobalToastMessage from '@src/Global/GlobalToastMessage';
 import List from './component/List';
-import CreateShopDialog from './component/CreateShopDialog';
-import EditShopDialog from './component/EditShopDialog';
-import DeleteShopDialog from './component/DeleteShopDialog';
-import CreateDepotDialog from './component/CreateDepotDialog';
-import EditDepotDialog from './component/EditDepotDialog';
-import DeleteDepotDialog from './component/DeleteDepotDialog';
-import CreateStoreDialog from './component/CreateStore/inedex';
-import EditStoreDialog from './component/EditStoreDialog/inedex';
-import DeleteStoreDialog from './component/DeleteStoreDialog/index';
 
-const Shop = () => {
+const Team = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
     const my_id = sessionStorage.getItem('myId');
@@ -62,30 +53,21 @@ const Shop = () => {
         <div className={style.parent}>
             <div className={style.main}>
                 <div className={`${style.toolbar} ${hand_Is_Show()} ${hand_Is_Max_Show()}`}>
-                    <ToolBar selected={select_enum.SHOP} />
+                    <ToolBar selected={select_enum.TEAM} />
                 </div>
                 <div className={`${style.main1} ${hand_Is_Show()} ${hand_Is_Max_Show()}`}>
                     <div>
-                        <div className={style.header}>{SHOP}</div>
+                        <div className={style.header}>{TEAM}</div>
                         <List />
                     </div>
                 </div>
                 <div>
                     <GlobalLoading />
                     <GlobalToastMessage />
-                    <CreateShopDialog />
-                    <EditShopDialog />
-                    <DeleteShopDialog />
-                    <CreateDepotDialog />
-                    <EditDepotDialog />
-                    <DeleteDepotDialog />
-                    <CreateStoreDialog />
-                    <EditStoreDialog />
-                    <DeleteStoreDialog />
                 </div>
             </div>
         </div>
     );
 };
 
-export default Shop;
+export default Team;

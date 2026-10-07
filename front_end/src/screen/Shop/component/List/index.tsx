@@ -45,7 +45,7 @@ const List = () => {
             </div>
             <div className={style.block}>
                 <div className={style.header}>
-                    <div>Gian hàng</div>
+                    <div>Danh sách gian hàng</div>
                     <IoMdAdd onClick={() => open_Add_Store()} size={25} color="green" />
                 </div>
                 <div>

@@ -277,6 +277,72 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION get_shop_role (
+    p_type VARCHAR(50),
+	p_is_lock BOOLEAN,
+    p_is_delete BOOLEAN,
+	p_shop_id UUID, 
+	p_account_id UUID
+)
+RETURNS SETOF shop_role
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT *
+    FROM shop_role
+    WHERE shop_id = p_shop_id 
+		AND account_id = p_account_id
+		AND type = p_type
+		AND is_lock = p_is_lock
+		AND is_delete = p_is_delete;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_depot_role (
+    p_type VARCHAR(50),
+	p_is_lock BOOLEAN,
+    p_is_delete BOOLEAN,
+	p_depot_id UUID, 
+	p_account_id UUID
+)
+RETURNS SETOF depot_role
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT *
+    FROM depot_role
+    WHERE depot_id = p_depot_id 
+		AND account_id = p_account_id
+		AND type = p_type
+		AND is_lock = p_is_lock
+		AND is_delete = p_is_delete;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_store_role (
+    p_type VARCHAR(50),
+	p_is_lock BOOLEAN,
+    p_is_delete BOOLEAN,
+	p_store_id UUID, 
+	p_account_id UUID
+)
+RETURNS SETOF store_role
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT *
+    FROM store_role
+    WHERE store_id = p_store_id 
+		AND account_id = p_account_id
+		AND type = p_type
+		AND is_lock = p_is_lock
+		AND is_delete = p_is_delete;
+END;
+$$;
+
 -- DROP FUNCTION get_latest_shop_pay_with_shop_id(uuid)
 CREATE OR REPLACE FUNCTION get_latest_shop_pay_with_shop_id (
     p_shop_id UUID,

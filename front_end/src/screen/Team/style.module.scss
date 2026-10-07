@@ -1,0 +1,62 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    background-color: #eee;
+
+    > .main {
+        @include center-of-row;
+        position: relative;
+
+        > .toolbar {
+            position: fixed;
+            width: 0;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            transition: width 0.3s linear;
+
+            &.is_show {
+                width: 50px;
+            }
+
+            &.is_max_show {
+                width: 150px;
+            }
+        }
+
+        > .main1 {
+            width: 100%;
+            margin-left: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition:
+                width 0.3s linear,
+                margin-left 0.3s linear;
+
+            &.is_show {
+                width: calc(100% - 50px);
+                margin-left: 50px;
+            }
+
+            &.is_max_show {
+                width: calc(100% - 150px);
+                margin-left: 150px;
+            }
+
+            > div {
+                background-color: white;
+                width: 100%;
+                min-height: 100vh;
+
+                > .header {
+                    width: 100%;
+                    box-sizing: border-box;
+                    padding: 10px;
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+}

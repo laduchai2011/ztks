@@ -1,0 +1,24 @@
+[
+  {
+    "depot": "sdfsdf",
+    "is_lock": true,
+    "accounts": [
+      {
+        "account_id": "sdfsdf",
+        "is_lock": true
+      }
+    ],
+    "stores": [
+      {
+        "store_id": "sdfsdf",
+        "is_lock": true,
+        "accounts": [
+          {
+            "account_id": "sdfsdf",
+            "is_lock": true
+          }
+        ]
+      }
+    ]
+  }
+]

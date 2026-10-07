@@ -24,6 +24,7 @@ import {
     CHECK_IN_OUT,
     CHECK_IN_OUT_MANAGER,
     SHOP,
+    TEAM,
 } from '@src/const/text';
 
 const _HOME = HOME;
@@ -52,6 +53,7 @@ const _DASH_BOARD = DASH_BOARD;
 const _CHECK_IN_OUT = CHECK_IN_OUT;
 const _CHECK_IN_OUT_MANAGER = CHECK_IN_OUT_MANAGER;
 const _SHOP = SHOP;
+const _TEAM = TEAM;
 
 export enum select_enum {
     HOME = _HOME,
@@ -82,6 +84,7 @@ export enum select_enum {
     CHECK_IN_OUT = _CHECK_IN_OUT,
     CHECK_IN_OUT_MANAGER = _CHECK_IN_OUT_MANAGER,
     SHOP = _SHOP,
+    TEAM = _TEAM,
 }
 export type selected_type =
     | select_enum.HOME
@@ -111,7 +114,8 @@ export type selected_type =
     | select_enum.DASH_BOARD
     | select_enum.CHECK_IN_OUT
     | select_enum.CHECK_IN_OUT_MANAGER
-    | select_enum.SHOP;
+    | select_enum.SHOP
+    | select_enum.TEAM;
 
 export enum route_enum {
     HOME = '/',
@@ -142,6 +146,7 @@ export enum route_enum {
     CHECK_IN_OUT = '/check_in_out',
     CHECK_IN_OUT_MANAGER = '/check_in_out_manager',
     SHOP = '/shop',
+    TEAM = '/team',
 }
 export type routed_type =
     | route_enum.HOME
@@ -171,4 +176,5 @@ export type routed_type =
     | route_enum.STATISTICS
     | route_enum.CHECK_IN_OUT
     | route_enum.CHECK_IN_OUT_MANAGER
-    | route_enum.SHOP;
+    | route_enum.SHOP
+    | route_enum.TEAM;

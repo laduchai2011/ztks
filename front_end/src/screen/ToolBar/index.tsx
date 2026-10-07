@@ -8,9 +8,10 @@ import { avatarnull } from '@src/utility/string';
 import { handleSrcImage } from '@src/utility/string';
 import { Account_Field } from '@src/data_struct/account';
 import { route_enum, selected_type, select_enum } from '@src/router/type';
-import { CHECK_IN_OUT, SHOP } from '@src/const/text';
+import { CHECK_IN_OUT, SHOP, TEAM } from '@src/const/text';
 import { MdDashboard } from 'react-icons/md';
 import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
+import { MdGroups } from 'react-icons/md';
 import { FcShop } from 'react-icons/fc';
 import { MdMenu } from 'react-icons/md';
 import { TbArrowsMoveHorizontal } from 'react-icons/tb';
@@ -85,6 +86,10 @@ const ToolBar: FC<{ selected: selected_type }> = ({ selected }) => {
                 navigate(route_enum.SHOP);
                 break;
 
+            case select_enum.TEAM:
+                navigate(route_enum.TEAM);
+                break;
+
             default:
                 console.log('Không xác định');
         }
@@ -125,6 +130,10 @@ const ToolBar: FC<{ selected: selected_type }> = ({ selected }) => {
                 <div className={handle_Selected_Class(select_enum.SHOP)} onClick={() => handle_Go_To(select_enum.SHOP)}>
                     {is_max_show && <div>{SHOP}</div>}
                     {!is_max_show && <FcShop />}
+                </div>
+                <div className={handle_Selected_Class(select_enum.TEAM)} onClick={() => handle_Go_To(select_enum.TEAM)}>
+                    {is_max_show && <div>{TEAM}</div>}
+                    {!is_max_show && <MdGroups />}
                 </div>
             </div>
             <div className={style.avatar}>

@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION create_shop (
+﻿CREATE OR REPLACE FUNCTION create_shop (
     p_name VARCHAR(50),
     p_description VARCHAR(255),
     p_content TEXT,
@@ -82,6 +82,54 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION set_shop_role (
+    p_role VARCHAR(50),
+	p_type VARCHAR(50),
+	is_lock BOOLEAN,
+    p_shop_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF shop_role
+LANGUAGE plpgsql
+AS $$
+BEGIN
+	IF EXISTS (
+	    SELECT 1
+	    FROM shop_role sr
+	    WHERE sr.shop_id = p_shop_id
+	      AND sr.account_id = p_account_id
+		  AND sr.type = p_type
+	) THEN
+	
+	    UPDATE shop_role
+	    SET
+	        type = p_type,
+	        is_lock = FALSE,
+	        is_delete = FALSE
+	    WHERE shop_id = p_shop_id
+	      AND account_id = p_account_id
+		  AND sr.type = p_type;
+	ELSE
+	
+	    INSERT INTO shop_role (
+	        type,
+	        is_lock,
+	        is_delete,
+	        shop_id,
+	        account_id
+	    )
+	    VALUES (
+	        p_type,
+	        FALSE,
+	        FALSE,
+	        p_shop_id,
+	        p_account_id
+	    );
+
+	END IF;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION create_depot (
     p_name VARCHAR(50),
     p_description VARCHAR(255),
@@ -145,6 +193,54 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION set_depot_role (
+    p_role VARCHAR(50),
+	p_type VARCHAR(50),
+	is_lock BOOLEAN,
+    p_depot_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF depot_role
+LANGUAGE plpgsql
+AS $$
+BEGIN
+	IF EXISTS (
+	    SELECT 1
+	    FROM depot_role sr
+	    WHERE sr.depot_id = p_depot_id
+	      AND sr.account_id = p_account_id
+		  AND sr.type = p_type
+	) THEN
+	
+	    UPDATE depot_role
+	    SET
+	        type = p_type,
+	        is_lock = FALSE,
+	        is_delete = FALSE
+	    WHERE depot_id = p_depot_id
+	      AND account_id = p_account_id
+		  AND sr.type = p_type;
+	ELSE
+	
+	    INSERT INTO depot_role (
+	        type,
+	        is_lock,
+	        is_delete,
+	        depot_id,
+	        account_id
+	    )
+	    VALUES (
+	        p_type,
+	        FALSE,
+	        FALSE,
+	        p_depot_id,
+	        p_account_id
+	    );
+
+	END IF;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION create_store (
     p_name VARCHAR(50),
     p_description VARCHAR(255),
@@ -200,6 +296,54 @@ BEGIN
         store.is_delete,
         store.depot_id,
         store.create_time;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION set_store_role (
+    p_role VARCHAR(50),
+	p_type VARCHAR(50),
+	is_lock BOOLEAN,
+    p_store_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF store_role
+LANGUAGE plpgsql
+AS $$
+BEGIN
+	IF EXISTS (
+	    SELECT 1
+	    FROM store_role sr
+	    WHERE sr.store_id = p_store_id
+	      AND sr.account_id = p_account_id
+		  AND sr.type = p_type
+	) THEN
+	
+	    UPDATE store_role
+	    SET
+	        type = p_type,
+	        is_lock = FALSE,
+	        is_delete = FALSE
+	    WHERE store_id = p_store_id
+	      AND account_id = p_account_id
+		  AND sr.type = p_type;
+	ELSE
+	
+	    INSERT INTO store_role (
+	        type,
+	        is_lock,
+	        is_delete,
+	        store_id,
+	        account_id
+	    )
+	    VALUES (
+	        p_type,
+	        FALSE,
+	        FALSE,
+	        p_store_id,
+	        p_account_id
+	    );
+
+	END IF;
 END;
 $$;
 

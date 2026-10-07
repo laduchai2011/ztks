@@ -1,0 +1,104 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    @include center-of-rectangle;
+    background-color: rgb(90, 90, 90, 0.3);
+    opacity: 0;
+    display: none;
+    transition: opacity 0.5s ease-in-out;
+
+    &.opacity {
+        opacity: 1;
+    }
+
+    &.display {
+        display: flex;
+    }
+
+    > .main {
+        width: 90%;
+        height: 80%;
+        background-color: white;
+        border-radius: 15px;
+        box-sizing: border-box;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        min-height: 0; // quan trọng
+
+        > .header {
+            @include center-of-row;
+            justify-content: space-between;
+
+            > div {
+                font-weight: 600;
+                font-size: 1.1rem;
+            }
+
+            > svg {
+                cursor: pointer;
+            }
+        }
+
+        > .content {
+            box-sizing: border-box;
+            padding: 10px;
+            flex: 1;
+            @include center-of-rectangle;
+
+            > div {
+                > div {
+                    margin: 15px 0;
+                }
+
+                > div:nth-child(1) {
+                    color: red;
+                }
+
+                > div:nth-child(2) {
+                    @include center-of-rectangle;
+
+                    > input {
+                        width: 300px;
+                        border: none;
+                        outline: none;
+                        box-sizing: border-box;
+                        padding: 5px;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+                    }
+                }
+
+                > div:nth-child(3) {
+                    @include center-of-rectangle;
+
+                    > div {
+                        width: max-content;
+                        box-sizing: border-box;
+                        padding: 5px 10px;
+                        border-radius: 10px;
+                        background-color: red;
+                        color: white;
+                        border: 1px solid red;
+                        cursor: pointer;
+                        user-select: none;
+
+                        &:hover {
+                            background-color: white;
+                            color: red;
+                        }
+
+                        &:active {
+                            background-color: red;
+                            color: white;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
