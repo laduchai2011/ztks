@@ -14,13 +14,14 @@ class QueryDB_Get_Teams {
             const cursor = this._get_teams_body.cursor ? this._get_teams_body.cursor : null;
 
             try {
-                const result = await pool.query<{ get_teams: Cursor_Team_Field }>(
-                    'SELECT * FROM get_teams($1::UUID, $2::UUID, $3)',
-                    [this._get_teams_body.admin_account_id, this._get_teams_body.limit, cursor]
-                );
+                const result = await pool.query<Cursor_Team_Field>('SELECT * FROM get_teams($1::UUID, $2, $3::UUID)', [
+                    this._get_teams_body.admin_account_id,
+                    this._get_teams_body.limit,
+                    cursor,
+                ]);
 
                 if (result.rows.length > 0) {
-                    return result.rows[0].get_teams;
+                    return result.rows[0];
                 }
             } catch (error) {
                 console.error(error);

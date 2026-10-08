@@ -14,12 +14,18 @@ import AddMember from './component/AddMember';
 import List from './component/List';
 
 const TeamDetail = () => {
+    const navigate = useNavigate();
+
+    const handle_Back = () => {
+        navigate(-1);
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.main}>
                 <div className={style.header}>
                     <div>Thông tin nhóm</div>
-                    <IoMdArrowBack size={30} />
+                    <IoMdArrowBack onClick={() => handle_Back()} size={30} />
                 </div>
                 <Overview />
                 <AddMember />

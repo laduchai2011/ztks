@@ -12,12 +12,23 @@
     }
 
     > .type {
-        color: #ff5f03;
         font-weight: 600;
         box-sizing: border-box;
         padding: 5px;
         @include center-of-row;
         justify-content: space-between;
+
+        > .type1 {
+            color: gray;
+
+            &.sale {
+                color: blue;
+            }
+
+            &.store {
+                color: rgb(255, 136, 0);
+            }
+        }
     }
 
     > .team_leader {
@@ -36,5 +47,13 @@
         > div {
             font-weight: 600;
         }
+    }
+
+    > .not_team_leader {
+        height: 100px;
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 5px;
+        color: red;
     }
 }

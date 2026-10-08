@@ -905,6 +905,29 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION edit_team (
+    p_id UUID,
+	p_name VARCHAR(255),
+	p_admin_account_id UUID
+)
+RETURNS team
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_team team;
+BEGIN
+    UPDATE team
+    SET name = p_name
+    WHERE id = p_id
+	  AND account_id = p_admin_account_id
+      AND is_delete = FALSE
+    RETURNING *
+    INTO v_team;
+
+    RETURN v_team;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION delete_team (
     p_id UUID,
 	p_admin_account_id UUID

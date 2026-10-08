@@ -1,5 +1,50 @@
 @use 'src/utility/style/mixin.scss' as *;
 
+.parent1 {
+    @include center-of-rectangle;
+    height: 350px;
+
+    > div {
+        @include center-of-row;
+
+        > div {
+            margin: 0 10px;
+        }
+
+        > div:nth-child(1) {
+            box-sizing: border-box;
+            padding: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            border-radius: 5px;
+
+            > input {
+                border: none;
+                outline: none;
+            }
+        }
+
+        > div:nth-child(2) {
+            box-sizing: border-box;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background-color: rgb(0, 255, 13);
+            border: 1px solid rgb(0, 255, 13);
+            user-select: none;
+            cursor: pointer;
+
+            &:hover {
+                background-color: white;
+                color: rgb(0, 255, 13);
+            }
+
+            &:active {
+                background-color: rgb(0, 255, 13);
+                color: white;
+            }
+        }
+    }
+}
+
 .parent {
     display: flex;
     flex-direction: column;

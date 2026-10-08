@@ -19,7 +19,7 @@ const DepotList = () => {
     const limit = 5;
     const [cursor, set__cursor] = useState<string | undefined>(undefined);
     const [next_cursor, set__next_cursor] = useState<string | undefined>(undefined);
-    const [has_more, set__has_more] = useState<boolean>(true);
+    const [has_more, set__has_more] = useState<boolean>(false);
 
     const [get_My_Depots] = useLazy_get_My_Depots_Query();
 

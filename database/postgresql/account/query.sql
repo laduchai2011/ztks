@@ -424,37 +424,33 @@ BEGIN
               OR t.id < p_cursor
           )
         ORDER BY t.id DESC
-        LIMIT v_limit + 1
-    ),
-    page AS (
-        SELECT *
-        FROM data
-        ORDER BY id DESC
         LIMIT v_limit
     )
     SELECT
         COALESCE(
             jsonb_agg(
                 jsonb_build_object(
-                    'id', id,
-                    'name', name,
-                    'type', type,
-                    'is_lock', is_lock,
-                    'is_delete', is_delete,
-                    'account_id', account_id,
-                    'create_time', create_time
+                    'id', d.id,
+                    'name', d.name,
+                    'type', d.type,
+                    'is_lock', d.is_lock,
+                    'is_delete', d.is_delete,
+                    'account_id', d.account_id,
+                    'create_time', d.create_time
                 )
-                ORDER BY id DESC
+                ORDER BY d.id DESC
             ),
             '[]'::JSONB
         ) AS items,
 
         (
-            SELECT id
-            FROM page
-            ORDER BY id ASC
+            SELECT d2.id
+            FROM data d2
+            ORDER BY d2.id ASC
             LIMIT 1
-        ) AS next_cursor;
+        ) AS next_cursor
+
+    FROM data d;
 END;
 $$;
 
@@ -486,6 +482,7 @@ BEGIN
             tm.create_time
         FROM team_member tm
         WHERE tm.team_id = p_team_id
+		  AND tm.role = 'member'
           AND tm.is_delete = FALSE
           AND (
               p_cursor IS NULL
@@ -523,5 +520,45 @@ BEGIN
             ORDER BY id ASC
             LIMIT 1
         ) AS next_cursor;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_team_leader(
+    p_team_id UUID
+)
+RETURNS team_member
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_team_member team_member;
+BEGIN
+    SELECT tm.*
+    INTO v_team_member
+    FROM team_member tm
+    WHERE tm.team_id = p_team_id
+      AND tm.role = 'leader'
+      AND tm.is_delete = FALSE
+    LIMIT 1;
+
+    RETURN v_team_member;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_team_by_id(
+    p_id UUID
+)
+RETURNS team
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_team team;
+BEGIN
+    SELECT *
+    INTO v_team
+    FROM team
+    WHERE id = p_id
+      AND is_delete = FALSE;
+
+    RETURN v_team;
 END;
 $$;
