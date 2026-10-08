@@ -56,6 +56,14 @@
         width: max-content;
     }
 
+    > .team_name {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 20px;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
     > .avatar {
         height: 200px;
 
@@ -79,6 +87,15 @@
         font-size: 1rem;
         box-sizing: border-box;
         padding: 5px;
+        color: gray;
+
+        &.sale {
+            color: blue;
+        }
+
+        &.store {
+            color: rgb(255, 136, 0);
+        }
     }
 
     > .icons {
@@ -86,5 +103,9 @@
         justify-content: space-around;
         box-sizing: border-box;
         padding: 5px;
+
+        > svg {
+            margin: 10px;
+        }
     }
 }

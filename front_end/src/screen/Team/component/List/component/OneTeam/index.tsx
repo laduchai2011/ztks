@@ -24,10 +24,8 @@ const OneTeam: FC<{ data: Team_Field }> = ({ data }) => {
                 const res_team_leader = await get_Team_Leader({ team_id: data.id });
                 const res_data_team_leader = res_team_leader.data;
                 if (res_data_team_leader?.is_success && res_data_team_leader.data) {
-                    console.log('Team_Leader', res_data_team_leader.data);
                     const res_account = await get_Account({ id: res_data_team_leader.data.account_id });
                     const res_data_account = res_account.data;
-                    console.log('leader_account', res_data_account?.data);
                     if (res_data_account?.is_success && res_data_account.data) {
                         set__leader_account(res_data_account.data);
                     }
