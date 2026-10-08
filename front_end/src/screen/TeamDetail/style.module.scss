@@ -1,0 +1,32 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #eee;
+
+    > .main {
+        width: 1280px;
+        background-color: #fff;
+
+        @include responsive(lg) {
+            width: 100%;
+        }
+
+        > .header {
+            @include center-of-row;
+            justify-content: space-between;
+            background-color: #02ccff;
+            box-sizing: border-box;
+            padding: 10px;
+
+            > div {
+                font-size: 1.5rem;
+                font-weight: 600;
+                box-sizing: border-box;
+                padding: 10px;
+            }
+        }
+    }
+}

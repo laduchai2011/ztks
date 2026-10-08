@@ -95,3 +95,4 @@ export const SHOP = 'Cửa hàng';
 export const STORE = 'Gian hàng';
 export const CREATE = 'Tạo';
 export const TEAM = 'Nhóm';
+export const TEAM_DETAIL = 'Chi tiết nhóm';

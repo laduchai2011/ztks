@@ -1,0 +1,105 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+
+    > .icon {
+        @include center-of-row;
+        justify-content: flex-end;
+    }
+
+    > .create_container {
+        @include center-of-rectangle;
+        height: 0;
+        overflow: hidden;
+        background-color: #f3f3f3;
+        transition: height 0.3s linear;
+
+        &.is_show {
+            height: 300px;
+        }
+
+        > .create {
+            box-sizing: border-box;
+            padding: 10px;
+            width: 300px;
+
+            > .name {
+                @include center-of-rectangle;
+
+                > input {
+                    width: 100%;
+                    box-sizing: border-box;
+                    padding: 5px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+                    border: none;
+                    outline: none;
+                    border-radius: 5px;
+                }
+            }
+
+            > .type {
+                @include center-of-row;
+                box-sizing: border-box;
+                padding: 10px 0;
+                width: 100%;
+
+                > div {
+                    margin: 0 5px;
+                    width: 50%;
+                    @include center-of-rectangle;
+
+                    > div {
+                        width: max-content;
+                        box-sizing: border-box;
+                        padding: 5px 10px;
+                        background-color: #e0e0e0;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        user-select: none;
+
+                        &:hover {
+                            background-color: #c0c0c0;
+                        }
+
+                        &.selected_sale {
+                            background-color: #0307ff;
+                            color: white;
+                        }
+
+                        &.selected_store {
+                            background-color: #ff5f03;
+                            color: white;
+                        }
+                    }
+                }
+            }
+
+            > .btn_container {
+                margin: 10px;
+
+                > div {
+                    @include center-of-rectangle;
+                    background-color: #2cff19;
+                    box-sizing: border-box;
+                    padding: 5px 10px;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    user-select: none;
+                    border: 1px solid #2cff19;
+
+                    &:hover {
+                        background-color: white;
+                        color: #2cff19;
+                    }
+
+                    &:active {
+                        background-color: #2cff19;
+                        color: white;
+                    }
+                }
+            }
+        }
+    }
+}

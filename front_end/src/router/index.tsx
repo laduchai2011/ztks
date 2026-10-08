@@ -27,6 +27,7 @@ import DashBoard from '@src/screen/DashBoard';
 import CheckInOutManager from '@src/screen/CheckInOutManager';
 import Shop from '@src/screen/Shop';
 import Team from '@src/screen/Team';
+import TeamDetail from '@src/screen/TeamDetail';
 import { route_enum } from './type';
 
 const router = createBrowserRouter(
@@ -58,6 +59,7 @@ const router = createBrowserRouter(
         { path: route_enum.CHECK_IN_OUT_MANAGER, element: <CheckInOutManager /> },
         { path: route_enum.SHOP, element: <Shop /> },
         { path: route_enum.TEAM, element: <Team /> },
+        { path: route_enum.TEAM_DETAIL + '/:id', element: <TeamDetail /> },
         { path: '*', element: <NotFoundPage /> }, // Trang 404
     ],
     {

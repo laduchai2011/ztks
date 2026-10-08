@@ -2,5 +2,39 @@
 
 .parent {
     width: 100%;
-    height: 100%;
+
+    > .name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        box-sizing: border-box;
+        padding: 5px;
+        @include line-clamp(1);
+    }
+
+    > .type {
+        color: #ff5f03;
+        font-weight: 600;
+        box-sizing: border-box;
+        padding: 5px;
+        @include center-of-row;
+        justify-content: space-between;
+    }
+
+    > .team_leader {
+        height: 100px;
+        @include center-of-row;
+        box-sizing: border-box;
+        padding: 5px;
+
+        > img {
+            height: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 50%;
+            object-fit: contain;
+        }
+
+        > div {
+            font-weight: 600;
+        }
+    }
 }

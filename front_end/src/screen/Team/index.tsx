@@ -10,6 +10,7 @@ import ToolBar from '@src/screen/ToolBar';
 import { select_enum } from '@src/router/type';
 import GlobalLoading from '@src/Global/GlobalLoading';
 import GlobalToastMessage from '@src/Global/GlobalToastMessage';
+import CreateTeam from './component/CreateTeam';
 import List from './component/List';
 
 const Team = () => {
@@ -58,6 +59,7 @@ const Team = () => {
                 <div className={`${style.main1} ${hand_Is_Show()} ${hand_Is_Max_Show()}`}>
                     <div>
                         <div className={style.header}>{TEAM}</div>
+                        <CreateTeam />
                         <List />
                     </div>
                 </div>
