@@ -17,7 +17,7 @@ CREATE TABLE account_information (
 	account_id UUID NOT NULL UNIQUE,
 	
 	CONSTRAINT FK_account_information_added_by FOREIGN KEY (added_by_id) REFERENCES account(id),
-	CONSTRAINT FK_account_information_account FOREIGN KEY (account_id) REFERENCES account(id)
+	CONSTRAINT FK_account_information_account FOREIGN KEY (account_id) REFERENCES account(id),
 
 	CONSTRAINT check_type_account CHECK (account_type IN ('admin', 'member', 'adminZtks', 'memberZtks'))
 );
@@ -72,5 +72,6 @@ CREATE TABLE team_member (
     CONSTRAINT team_member_role CHECK (role IN ('leader', 'member')),
     CONSTRAINT ux_team_member UNIQUE (team_id, account_id)
 );
-CREATE INDEX idx_team_member_account_id ON team(account_id);
+CREATE INDEX idx_team_member_team_id ON team_member(team_id);
+CREATE INDEX idx_team_member_account_id ON team_member(account_id);
 CREATE UNIQUE INDEX ux_team_member_one_leader ON team_member (team_id) WHERE role = 'leader' AND is_delete = FALSE;

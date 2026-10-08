@@ -389,3 +389,139 @@ AS $$
     FROM recommend
     WHERE account_id = p_account_id;
 $$;
+
+CREATE OR REPLACE FUNCTION get_teams (
+    p_admin_account_id UUID,
+    p_limit INT DEFAULT 20,
+    p_cursor UUID DEFAULT NULL
+)
+RETURNS TABLE (
+    items JSONB,
+    next_cursor UUID
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_limit INT;
+BEGIN
+    v_limit := LEAST(GREATEST(p_limit, 1), 100);
+
+    RETURN QUERY
+    WITH data AS (
+        SELECT
+            t.id,
+            t.name,
+            t.type,
+            t.is_lock,
+            t.is_delete,
+            t.account_id,
+            t.create_time
+        FROM team t
+        WHERE t.account_id = p_admin_account_id
+          AND t.is_delete = FALSE
+          AND (
+              p_cursor IS NULL
+              OR t.id < p_cursor
+          )
+        ORDER BY t.id DESC
+        LIMIT v_limit + 1
+    ),
+    page AS (
+        SELECT *
+        FROM data
+        ORDER BY id DESC
+        LIMIT v_limit
+    )
+    SELECT
+        COALESCE(
+            jsonb_agg(
+                jsonb_build_object(
+                    'id', id,
+                    'name', name,
+                    'type', type,
+                    'is_lock', is_lock,
+                    'is_delete', is_delete,
+                    'account_id', account_id,
+                    'create_time', create_time
+                )
+                ORDER BY id DESC
+            ),
+            '[]'::JSONB
+        ) AS items,
+
+        (
+            SELECT id
+            FROM page
+            ORDER BY id ASC
+            LIMIT 1
+        ) AS next_cursor;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION get_team_members (
+    p_team_id UUID,
+    p_limit INT DEFAULT 20,
+    p_cursor UUID DEFAULT NULL
+)
+RETURNS TABLE (
+    items JSONB,
+    next_cursor UUID
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_limit INT;
+BEGIN
+    v_limit := LEAST(GREATEST(p_limit, 1), 100);
+
+    RETURN QUERY
+    WITH data AS (
+        SELECT
+            tm.id,
+            tm.team_id,
+            tm.account_id,
+            tm.role,
+            tm.is_lock,
+            tm.is_delete,
+            tm.create_time
+        FROM team_member tm
+        WHERE tm.team_id = p_team_id
+          AND tm.is_delete = FALSE
+          AND (
+              p_cursor IS NULL
+              OR tm.id < p_cursor
+          )
+        ORDER BY tm.id DESC
+        LIMIT v_limit + 1
+    ),
+    page AS (
+        SELECT *
+        FROM data
+        ORDER BY id DESC
+        LIMIT v_limit
+    )
+    SELECT
+        COALESCE(
+            jsonb_agg(
+                jsonb_build_object(
+                    'id', id,
+                    'team_id', team_id,
+                    'account_id', account_id,
+                    'role', role,
+                    'is_lock', is_lock,
+                    'is_delete', is_delete,
+                    'create_time', create_time
+                )
+                ORDER BY id DESC
+            ),
+            '[]'::JSONB
+        ) AS items,
+
+        (
+            SELECT id
+            FROM page
+            ORDER BY id ASC
+            LIMIT 1
+        ) AS next_cursor;
+END;
+$$;

@@ -9,8 +9,9 @@ import { FaLock, FaLockOpen } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import GlobalLoading from '@src/Global/GlobalLoading';
 import GlobalToastMessage from '@src/Global/GlobalToastMessage';
-import { avatarnull } from '@src/utility/string';
 import Overview from './component/Overview';
+import AddMember from './component/AddMember';
+import List from './component/List';
 
 const TeamDetail = () => {
     return (
@@ -21,6 +22,8 @@ const TeamDetail = () => {
                     <IoMdArrowBack size={30} />
                 </div>
                 <Overview />
+                <AddMember />
+                <List />
                 <div>
                     <GlobalLoading />
                     <GlobalToastMessage />

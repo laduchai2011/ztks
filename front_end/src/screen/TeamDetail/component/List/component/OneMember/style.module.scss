@@ -1,0 +1,41 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    @include center-of-row;
+    box-sizing: border-box;
+    padding: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
+
+    > div {
+        height: 50px;
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 5px;
+    }
+
+    > .index {
+        width: 50px;
+    }
+
+    > .avatar {
+        > img {
+            height: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 50%;
+            object-fit: contain;
+        }
+    }
+
+    > .name {
+        flex-grow: 1;
+    }
+
+    > .role {
+        width: 100px;
+    }
+
+    > .name {
+        width: 100px;
+    }
+}

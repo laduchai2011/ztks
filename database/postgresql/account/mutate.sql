@@ -735,3 +735,110 @@ BEGIN
     WHERE account_id = p_account_id;
 END;
 $$;
+
+CREATE OR REPLACE FUNCTION create_team (
+    p_name VARCHAR(255),
+    p_type VARCHAR(255),
+    p_admin_account_id UUID
+)
+RETURNS team
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_team team;
+BEGIN
+    -- Kiểm tra tài khoản có phải admin không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM account_information ai
+        WHERE ai.account_id = p_admin_account_id
+          AND ai.account_type IN ('admin')
+    ) THEN
+        RAISE EXCEPTION 'Tài khoản không có quyền tạo team';
+    END IF;
+
+    -- Tạo team
+    INSERT INTO team (
+        name,
+        type,
+        account_id
+    )
+    VALUES (
+        p_name,
+        p_type,
+        p_admin_account_id
+    )
+    RETURNING *
+    INTO v_team;
+
+    RETURN v_team;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION add_team_member (
+    p_team_id UUID,
+    p_account_id UUID,
+    p_admin_account_id UUID,
+    p_role VARCHAR(50) DEFAULT 'member'
+)
+RETURNS team_member
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_team_member team_member;
+BEGIN
+    -- 1. Người thêm phải là admin
+    IF NOT EXISTS (
+        SELECT 1
+        FROM account_information ai
+        JOIN account a
+            ON a.id = ai.account_id
+        WHERE ai.account_id = p_admin_account_id
+          AND ai.account_type IN ('admin')
+          AND a.is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Tài khoản không có quyền thêm thành viên vào team';
+    END IF;
+
+    -- 2. Kiểm tra team tồn tại
+    IF NOT EXISTS (
+        SELECT 1
+        FROM team t
+        WHERE t.id = p_team_id
+          AND t.is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Team không tồn tại hoặc đã bị xóa';
+    END IF;
+
+    -- 3. Kiểm tra account được thêm tồn tại
+    IF NOT EXISTS (
+        SELECT 1
+        FROM account a
+        WHERE a.id = p_account_id
+          AND a.is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Tài khoản được thêm không tồn tại hoặc đã bị xóa';
+    END IF;
+
+    -- 4. Kiểm tra role
+    IF p_role NOT IN ('leader', 'member') THEN
+        RAISE EXCEPTION 'Role không hợp lệ: %', p_role;
+    END IF;
+
+    -- 5. Thêm thành viên
+    INSERT INTO team_member (
+        team_id,
+        account_id,
+        role
+    )
+    VALUES (
+        p_team_id,
+        p_account_id,
+        p_role
+    )
+    RETURNING *
+    INTO v_team_member;
+
+    RETURN v_team_member;
+END;
+$$;
