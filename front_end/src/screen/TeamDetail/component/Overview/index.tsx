@@ -4,12 +4,14 @@ import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { FaLock, FaLockOpen } from 'react-icons/fa';
+import { CiEdit } from 'react-icons/ci';
 import { MdDelete } from 'react-icons/md';
 import { avatarnull } from '@src/utility/string';
 import { Account_Field, Account_Information_Field } from '@src/data_struct/account';
 import { Team_Field, Team_Member_Field, Team_Member_Role_Enum, Team_Type_Enum } from '@src/data_struct/team';
 import { Add_Team_Member_Body_Field, Lock_Team_Body_Field } from '@src/data_struct/team/body';
 import { global_set__data__toast_message, global_set__is_loading } from '@src/redux/slice/Global';
+import { set__is_show_delete_team, set__selected_delete_team } from '@src/redux/slice/Team_Detail';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import {
     useLazy_get_Team_By_Id_Query,
@@ -18,6 +20,7 @@ import {
     use_lock_Team_Mutation,
 } from '@src/redux/query/team_RTK';
 import { useLazy_get_Account_With_Id_Query } from '@src/redux/query/account_RTK';
+import { handleSrcImage } from '@src/utility/string';
 
 const Overview = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -27,6 +30,7 @@ const Overview = () => {
     const account_information: Account_Information_Field | undefined = useSelector(
         (state: RootState) => state.App_Slice.account_information
     );
+    const edited_team: Team_Field | undefined = useSelector((state: RootState) => state.Team_Detail_Slice.edited_team);
 
     const [leader_account_id, set__leader_account_id] = useState<string>('');
     const [team, set__team] = useState<Team_Field | undefined>(undefined);
@@ -96,6 +100,11 @@ const Overview = () => {
         }
         get_Infor();
     }, [team_leader, get_Account, dispatch]);
+
+    useEffect(() => {
+        if (!edited_team) return;
+        set__team(edited_team);
+    }, [edited_team]);
 
     const handle_Type_Class = () => {
         switch (team?.type) {
@@ -169,6 +178,12 @@ const Overview = () => {
             .finally(() => {
                 dispatch(global_set__is_loading(false));
             });
+    };
+
+    const handle_Open_Delete = () => {
+        if (!team) return;
+        dispatch(set__is_show_delete_team(true));
+        dispatch(set__selected_delete_team(team));
     };
 
     const handle_Leader_Account_Id_Input = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -269,14 +284,18 @@ const Overview = () => {
             <div className={style.parent}>
                 <div className={style.team_name}>{team.name}</div>
                 <div className={style.avatar}>
-                    <img src={avatarnull} alt="Team Image" />
+                    <img
+                        src={leader_account.avatar ? handleSrcImage(leader_account.avatar) : avatarnull}
+                        alt="Team Image"
+                    />
                 </div>
                 <div className={style.name}>{`${leader_account.first_name} ${leader_account.last_name}`}</div>
                 <div className={`${style.type} ${handle_Type_Class()}`}>Sales</div>
                 <div className={style.icons}>
                     {team.is_lock && <FaLock onClick={() => handle_Lock(false)} size={20} color="red" />}
                     {!team.is_lock && <FaLockOpen onClick={() => handle_Lock(true)} size={20} color="gray" />}
-                    <MdDelete size={20} color="red" />
+                    <CiEdit size={20} color="green" />
+                    <MdDelete onClick={() => handle_Open_Delete()} size={20} color="red" />
                 </div>
             </div>
         );

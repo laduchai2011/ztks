@@ -8,6 +8,7 @@ import { Team_Field, Team_Type_Enum } from '@src/data_struct/team';
 import { Account_Field } from '@src/data_struct/account';
 import { useLazy_get_Team_Leader_Query } from '@src/redux/query/team_RTK';
 import { useLazy_get_Account_With_Id_Query } from '@src/redux/query/account_RTK';
+import { handleSrcImage } from '@src/utility/string';
 
 const OneTeam: FC<{ data: Team_Field }> = ({ data }) => {
     const navigate = useNavigate();
@@ -76,8 +77,11 @@ const OneTeam: FC<{ data: Team_Field }> = ({ data }) => {
             </div>
             {leader_account && (
                 <div className={style.team_leader}>
-                    <img src={avatarnull} alt="avatar" />
-                    <div>team leader</div>
+                    <img
+                        src={leader_account.avatar ? handleSrcImage(leader_account.avatar) : avatarnull}
+                        alt="Team Image"
+                    />
+                    <div>{`${leader_account.first_name} ${leader_account.last_name}`}</div>
                 </div>
             )}
             {!leader_account && <div className={style.not_team_leader}>Chưa có nhóm trưởng</div>}

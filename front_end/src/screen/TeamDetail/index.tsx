@@ -1,20 +1,37 @@
 import { useEffect } from 'react';
 import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '@src/redux';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@src/redux';
 import { global_set__data__toast_message } from '@src/redux/slice/Global';
+import { route_enum } from '@src/router/type';
 import { IoMdArrowBack } from 'react-icons/io';
-import { FaLock, FaLockOpen } from 'react-icons/fa';
-import { MdDelete } from 'react-icons/md';
 import GlobalLoading from '@src/Global/GlobalLoading';
 import GlobalToastMessage from '@src/Global/GlobalToastMessage';
 import Overview from './component/Overview';
 import AddMember from './component/AddMember';
 import List from './component/List';
+import DeleteTeamDialog from './component/DeleteTeamDialog';
 
 const TeamDetail = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
+    const my_id = sessionStorage.getItem('myId');
+
+    useEffect(() => {
+        if (my_id === null) {
+            navigate(route_enum.SIGNIN);
+        }
+
+        return () => {
+            dispatch(
+                global_set__data__toast_message({
+                    message: '',
+                    type: undefined,
+                })
+            );
+        };
+    }, [navigate, my_id, dispatch]);
 
     const handle_Back = () => {
         navigate(-1);
@@ -33,6 +50,7 @@ const TeamDetail = () => {
                 <div>
                     <GlobalLoading />
                     <GlobalToastMessage />
+                    <DeleteTeamDialog />
                 </div>
             </div>
         </div>

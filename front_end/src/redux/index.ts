@@ -27,6 +27,7 @@ import Check_In_Out_Manager_Reducer from '@src/redux/slice/Check_In_Out_Manager'
 import Tool_Bar_Reducer from '@src/redux/slice/Tool_Bar';
 import Shop_Reducer from '@src/redux/slice/Shop';
 import Team_Reducer from '@src/redux/slice/Team';
+import Team_Detail_Reducer from '@src/redux/slice/Team_Detail';
 import { account_RTK } from './query/account_RTK';
 import { call_RTK } from './query/call_RTK';
 import { call_agent_RTK } from './query/call_agent_RTK';
@@ -77,6 +78,7 @@ export const store = configureStore({
         Tool_Bar_Slice: Tool_Bar_Reducer,
         Shop_Slice: Shop_Reducer,
         Team_Slice: Team_Reducer,
+        Team_Detail_Slice: Team_Detail_Reducer,
         [account_RTK.reducerPath]: account_RTK.reducer,
         [call_RTK.reducerPath]: call_RTK.reducer,
         [call_agent_RTK.reducerPath]: call_agent_RTK.reducer,
