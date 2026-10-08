@@ -36,3 +36,13 @@ export interface Lock_Team_Member_Body_Field {
     is_lock: boolean;
     leader_account_id: string;
 }
+
+export interface Delete_Team_Body_Field {
+    id: string;
+    admin_account_id: string;
+}
+
+export interface Delete_Team_Member_Body_Field {
+    id: string;
+    leader_account_id: string;
+}

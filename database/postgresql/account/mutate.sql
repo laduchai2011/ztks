@@ -904,3 +904,63 @@ BEGIN
     RETURN v_team_member;
 END;
 $$;
+
+CREATE OR REPLACE FUNCTION delete_team (
+    p_id UUID,
+	p_admin_account_id UUID
+)
+RETURNS team
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_team team;
+BEGIN
+    UPDATE team
+    SET is_delete = TRUE
+    WHERE id = p_id
+	  AND account_id = p_admin_account_id
+      AND is_delete = FALSE
+    RETURNING *
+    INTO v_team;
+
+    RETURN v_team;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION delete_team_member (
+    p_id UUID,
+    p_leader_account_id UUID
+)
+RETURNS team_member
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_team_member team_member;
+BEGIN
+    -- Kiểm tra người thực hiện có phải leader của team hay không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM team_member tm_target
+        JOIN team_member tm_leader
+            ON tm_leader.team_id = tm_target.team_id
+        WHERE tm_target.id = p_id
+          AND tm_target.is_delete = FALSE
+          AND tm_leader.account_id = p_leader_account_id
+          AND tm_leader.role = 'leader'
+          AND tm_leader.is_delete = FALSE
+          AND tm_leader.is_lock = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Account is not the leader of this team';
+    END IF;
+
+    -- Cập nhật lock
+    UPDATE team_member
+    SET is_delete = TRUE
+    WHERE id = p_id
+      AND is_delete = FALSE
+    RETURNING *
+    INTO v_team_member;
+
+    RETURN v_team_member;
+END;
+$$;
