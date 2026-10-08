@@ -24,3 +24,15 @@ export interface Add_Team_Member_Body_Field {
     admin_account_id: string;
     role: Team_Member_Role_Type;
 }
+
+export interface Lock_Team_Body_Field {
+    id: string;
+    is_lock: boolean;
+    admin_account_id: string;
+}
+
+export interface Lock_Team_Member_Body_Field {
+    id: string;
+    is_lock: boolean;
+    leader_account_id: string;
+}

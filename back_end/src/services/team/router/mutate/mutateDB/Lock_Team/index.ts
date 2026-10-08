@@ -1,25 +1,25 @@
 import { pool } from '@src/connect/postgresql';
 import { Team_Field } from '@src/data_struct/team';
-import { Create_Team_Body_Field } from '@src/data_struct/team/body';
+import { Lock_Team_Body_Field } from '@src/data_struct/team/body';
 
-class MutateDB_Create_Team {
-    private _create_team_body: Create_Team_Body_Field | undefined;
+class MutateDB_Lock_Team {
+    private _lock_team_body: Lock_Team_Body_Field | undefined;
 
-    set_Create_Team_Body(create_team_body: Create_Team_Body_Field): void {
-        this._create_team_body = create_team_body;
+    set_Lock_Team_Body(lock_team_body: Lock_Team_Body_Field): void {
+        this._lock_team_body = lock_team_body;
     }
 
     async run(): Promise<Team_Field | undefined> {
-        if (this._create_team_body !== undefined) {
+        if (this._lock_team_body !== undefined) {
             const client = await pool.connect();
 
             try {
                 await client.query('BEGIN');
 
-                const result = await pool.query<Team_Field>('SELECT * FROM create_team($1, $2, $3::UUID)', [
-                    this._create_team_body.name,
-                    this._create_team_body.type,
-                    this._create_team_body.admin_account_id,
+                const result = await pool.query<Team_Field>('SELECT * FROM lock_team($1::UUID, $2, $3::UUID)', [
+                    this._lock_team_body.id,
+                    this._lock_team_body.is_lock,
+                    this._lock_team_body.admin_account_id,
                 ]);
 
                 await client.query('COMMIT');
@@ -37,4 +37,4 @@ class MutateDB_Create_Team {
     }
 }
 
-export default MutateDB_Create_Team;
+export default MutateDB_Lock_Team;
