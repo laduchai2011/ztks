@@ -4,11 +4,11 @@ WHERE user_name = 'admin1';
 
 SELECT *
 FROM signup(
-    'member1',
-    'member1',
-    '0789860856',
+    'member4',
+    'member4',
+    '0789860859',
     'Member',
-    '1'
+    '4'
 );
 
 EXEC dbo.GetNotReplyAccounts

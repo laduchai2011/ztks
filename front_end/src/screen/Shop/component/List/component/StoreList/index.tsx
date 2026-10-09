@@ -2,7 +2,6 @@ import { memo, useState, useEffect } from 'react';
 import style from './style.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
-import { Account_Information_Field } from '@src/data_struct/account';
 import { Depot_Field, Store_Field } from '@src/data_struct/shop';
 import { useLazy_get_My_Stores_Query } from '@src/redux/query/shop_RTK';
 import { SEE_MORE } from '@src/const/text';

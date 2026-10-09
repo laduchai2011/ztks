@@ -11,6 +11,7 @@ import GlobalToastMessage from '@src/Global/GlobalToastMessage';
 import Overview from './component/Overview';
 import AddMember from './component/AddMember';
 import List from './component/List';
+import EditTeamDialog from './component/EditTeamDialog';
 import DeleteTeamDialog from './component/DeleteTeamDialog';
 
 const TeamDetail = () => {
@@ -50,6 +51,7 @@ const TeamDetail = () => {
                 <div>
                     <GlobalLoading />
                     <GlobalToastMessage />
+                    <EditTeamDialog />
                     <DeleteTeamDialog />
                 </div>
             </div>

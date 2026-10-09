@@ -482,44 +482,40 @@ BEGIN
             tm.create_time
         FROM team_member tm
         WHERE tm.team_id = p_team_id
-		  AND tm.role = 'member'
+          AND tm.role = 'member'
           AND tm.is_delete = FALSE
           AND (
               p_cursor IS NULL
               OR tm.id < p_cursor
           )
         ORDER BY tm.id DESC
-        LIMIT v_limit + 1
-    ),
-    page AS (
-        SELECT *
-        FROM data
-        ORDER BY id DESC
         LIMIT v_limit
     )
     SELECT
         COALESCE(
             jsonb_agg(
                 jsonb_build_object(
-                    'id', id,
-                    'team_id', team_id,
-                    'account_id', account_id,
-                    'role', role,
-                    'is_lock', is_lock,
-                    'is_delete', is_delete,
-                    'create_time', create_time
+                    'id', d.id,
+                    'team_id', d.team_id,
+                    'account_id', d.account_id,
+                    'role', d.role,
+                    'is_lock', d.is_lock,
+                    'is_delete', d.is_delete,
+                    'create_time', d.create_time
                 )
-                ORDER BY id DESC
+                ORDER BY d.id DESC
             ),
             '[]'::JSONB
         ) AS items,
 
         (
-            SELECT id
-            FROM page
-            ORDER BY id ASC
+            SELECT d2.id
+            FROM data d2
+            ORDER BY d2.id ASC
             LIMIT 1
-        ) AS next_cursor;
+        ) AS next_cursor
+
+    FROM data d;
 END;
 $$;
 

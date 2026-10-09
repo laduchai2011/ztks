@@ -70,7 +70,7 @@ export const team_RTK = createApi({
                 ...(result?.data ? [{ type: 'Team' as const, id: result.data.id }] : []),
             ],
         }),
-        _get_Team_Leader_: builder.query<My_Response_Field<Team_Field>, Get_Team_Leader_Body_Field>({
+        _get_Team_Leader_: builder.query<My_Response_Field<Team_Member_Field>, Get_Team_Leader_Body_Field>({
             query: (body) => ({
                 url: TEAM_API.GET_TEAM_LEADER,
                 method: 'POST',
@@ -95,7 +95,7 @@ export const team_RTK = createApi({
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: [{ type: 'Team', id: 'LIST' }],
+            invalidatesTags: [{ type: 'Team_Member', id: 'LIST' }],
         }),
         _lock_Team_: builder.mutation<My_Response_Field<Team_Field>, Lock_Team_Body_Field>({
             query: (body) => ({

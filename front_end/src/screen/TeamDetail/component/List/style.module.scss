@@ -3,4 +3,19 @@
 .parent {
     box-sizing: border-box;
     padding: 10px;
+
+    > div:nth-child(2) {
+        @include center-of-rectangle;
+        box-sizing: border-box;
+        padding: 10px;
+
+        > div {
+            color: blue;
+            user-select: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
 }

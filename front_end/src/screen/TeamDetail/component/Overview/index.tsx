@@ -11,8 +11,14 @@ import { Account_Field, Account_Information_Field } from '@src/data_struct/accou
 import { Team_Field, Team_Member_Field, Team_Member_Role_Enum, Team_Type_Enum } from '@src/data_struct/team';
 import { Add_Team_Member_Body_Field, Lock_Team_Body_Field } from '@src/data_struct/team/body';
 import { global_set__data__toast_message, global_set__is_loading } from '@src/redux/slice/Global';
-import { set__is_show_delete_team, set__selected_delete_team } from '@src/redux/slice/Team_Detail';
 import { messageType_enum } from '@src/component/ToastMessage/type';
+import {
+    set__team_leader,
+    set__is_show_delete_team,
+    set__selected_delete_team,
+    set__is_show_edit_team,
+    set__selected_edit_team,
+} from '@src/redux/slice/Team_Detail';
 import {
     useLazy_get_Team_By_Id_Query,
     useLazy_get_Team_Leader_Query,
@@ -30,11 +36,14 @@ const Overview = () => {
     const account_information: Account_Information_Field | undefined = useSelector(
         (state: RootState) => state.App_Slice.account_information
     );
+    const team_leader: Team_Member_Field | undefined = useSelector(
+        (state: RootState) => state.Team_Detail_Slice.team_leader
+    );
     const edited_team: Team_Field | undefined = useSelector((state: RootState) => state.Team_Detail_Slice.edited_team);
 
     const [leader_account_id, set__leader_account_id] = useState<string>('');
     const [team, set__team] = useState<Team_Field | undefined>(undefined);
-    const [team_leader, set__team_leader] = useState<Team_Member_Field | undefined>(undefined);
+    // const [team_leader, set__team_leader] = useState<Team_Member_Field | undefined>(undefined);
     const [leader_account, set__leader_account] = useState<Account_Field | undefined>(undefined);
 
     const [get_Team_By_Id] = useLazy_get_Team_By_Id_Query();
@@ -67,6 +76,7 @@ const Overview = () => {
                 const res_team_leader = await get_Team_Leader({ team_id: id! });
                 const res_data_team_leader = res_team_leader.data;
                 if (res_data_team_leader?.is_success && res_data_team_leader.data) {
+                    dispatch(set__team_leader(res_data_team_leader.data));
                     const res_account = await get_Account({ id: res_data_team_leader.data.account_id });
                     const res_data_account = res_account.data;
                     if (res_data_account?.is_success && res_data_account.data) {
@@ -180,6 +190,12 @@ const Overview = () => {
             });
     };
 
+    const handle_Open_Edit = () => {
+        if (!team) return;
+        dispatch(set__is_show_edit_team(true));
+        dispatch(set__selected_edit_team(team));
+    };
+
     const handle_Open_Delete = () => {
         if (!team) return;
         dispatch(set__is_show_delete_team(true));
@@ -231,7 +247,7 @@ const Overview = () => {
             .then((res) => {
                 const res_data = res.data;
                 if (res_data?.is_success && res_data.data) {
-                    set__team_leader(res_data.data);
+                    dispatch(set__team_leader(res_data.data));
                     dispatch(
                         global_set__data__toast_message({
                             message: 'Thêm nhóm trưởng thành công !',
@@ -294,7 +310,7 @@ const Overview = () => {
                 <div className={style.icons}>
                     {team.is_lock && <FaLock onClick={() => handle_Lock(false)} size={20} color="red" />}
                     {!team.is_lock && <FaLockOpen onClick={() => handle_Lock(true)} size={20} color="gray" />}
-                    <CiEdit size={20} color="green" />
+                    <CiEdit onClick={() => handle_Open_Edit()} size={20} color="green" />
                     <MdDelete onClick={() => handle_Open_Delete()} size={20} color="red" />
                 </div>
             </div>

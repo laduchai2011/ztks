@@ -155,7 +155,7 @@ const EditTeamDialog = () => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.header}>
-                    <div>Thay đổi thông tin kho</div>
+                    <div>Thay đổi thông tin nhóm</div>
                     <IoCloseOutline onClick={() => handle_Close()} size={30} title={CLOSE} />
                 </div>
                 <div className={style.content}>
@@ -165,7 +165,7 @@ const EditTeamDialog = () => {
                                 <input
                                     value={edit_team.name}
                                     onChange={(e) => handle_Edit_Team('name', e)}
-                                    placeholder="Tên của hàng"
+                                    placeholder="Tên nhóm"
                                     maxLength={50}
                                 />
                             </div>
