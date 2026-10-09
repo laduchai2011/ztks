@@ -13,6 +13,7 @@ import AddMember from './component/AddMember';
 import List from './component/List';
 import EditTeamDialog from './component/EditTeamDialog';
 import DeleteTeamDialog from './component/DeleteTeamDialog';
+import DeleteTeamMemberDialog from './component/DeleteTeamMemberDialog';
 
 const TeamDetail = () => {
     const navigate = useNavigate();
@@ -53,6 +54,7 @@ const TeamDetail = () => {
                     <GlobalToastMessage />
                     <EditTeamDialog />
                     <DeleteTeamDialog />
+                    <DeleteTeamMemberDialog />
                 </div>
             </div>
         </div>

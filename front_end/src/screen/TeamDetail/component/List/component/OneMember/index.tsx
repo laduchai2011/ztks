@@ -13,6 +13,7 @@ import { use_lock_Team_Member_Mutation } from '@src/redux/query/team_RTK';
 import { handleSrcImage } from '@src/utility/string';
 import { global_set__data__toast_message, global_set__is_loading } from '@src/redux/slice/Global';
 import { messageType_enum } from '@src/component/ToastMessage/type';
+import { set__is_show_delete_team_member, set__selected_delete_team_member } from '@src/redux/slice/Team_Detail';
 
 const OneMember: FC<{ data: Team_Member_Field; index: number }> = ({ data, index }) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -99,6 +100,11 @@ const OneMember: FC<{ data: Team_Member_Field; index: number }> = ({ data, index
             });
     };
 
+    const handle_Open_Delete_Team_Member = () => {
+        dispatch(set__is_show_delete_team_member(true));
+        dispatch(set__selected_delete_team_member(team_member));
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.index}>{index + 1}</div>
@@ -113,7 +119,7 @@ const OneMember: FC<{ data: Team_Member_Field; index: number }> = ({ data, index
             <div className={style.icons}>
                 {team_member.is_lock && <FaLock onClick={() => handle_Lock(false)} size={20} color="red" />}
                 {!team_member.is_lock && <FaLockOpen onClick={() => handle_Lock(true)} size={20} color="gray" />}
-                <MdDelete size={20} color="red" />
+                <MdDelete onClick={() => handle_Open_Delete_Team_Member()} size={20} color="red" />
             </div>
         </div>
     );

@@ -16,6 +16,10 @@ const initialState: state_props = {
 
     // team_member
     new_team_member: undefined,
+
+    is_show_delete_team_member: false,
+    selected_delete_team_member: undefined,
+    deleted_team_member: undefined,
 };
 
 const Team_Detail_Slice = createSlice({
@@ -51,6 +55,16 @@ const Team_Detail_Slice = createSlice({
         set__new_team_member: (state, action: PayloadAction<Team_Member_Field>) => {
             state.new_team_member = action.payload;
         },
+
+        set__is_show_delete_team_member: (state, action: PayloadAction<boolean>) => {
+            state.is_show_delete_team_member = action.payload;
+        },
+        set__selected_delete_team_member: (state, action: PayloadAction<Team_Member_Field>) => {
+            state.selected_delete_team_member = action.payload;
+        },
+        set__deleted_team_member: (state, action: PayloadAction<Team_Member_Field>) => {
+            state.deleted_team_member = action.payload;
+        },
     },
 });
 
@@ -68,5 +82,9 @@ export const {
 
     //team_member
     set__new_team_member,
+
+    set__is_show_delete_team_member,
+    set__selected_delete_team_member,
+    set__deleted_team_member,
 } = Team_Detail_Slice.actions;
 export default Team_Detail_Slice.reducer;

@@ -14,4 +14,8 @@ export interface state_props {
 
     // team_member
     new_team_member?: Team_Member_Field;
+
+    is_show_delete_team_member: boolean;
+    selected_delete_team_member?: Team_Member_Field;
+    deleted_team_member?: Team_Member_Field;
 }
