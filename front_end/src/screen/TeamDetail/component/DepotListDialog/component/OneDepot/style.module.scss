@@ -1,0 +1,74 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+    background-color: rgb(245, 245, 245);
+    border-radius: 15px;
+    max-height: 100px;
+    overflow: hidden;
+    position: relative;
+    transition: max-height 0.5s ease-in-out;
+    margin: 5px 0;
+
+    &.is_show {
+        max-height: 500px;
+        overflow-y: auto;
+        @include small-scroll-yy(1px);
+    }
+
+    &:active {
+        background-color: white;
+    }
+
+    &:hover {
+        background-color: rgb(228, 228, 228);
+    }
+
+    > div {
+        box-sizing: border-box;
+        padding: 5px;
+    }
+
+    > .index {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
+
+    > .name {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    > .description {
+        color: gray;
+    }
+
+    > .content {
+        color: gray;
+    }
+
+    > .address {
+        color: gray;
+    }
+
+    > .phone {
+        color: gray;
+    }
+
+    > .see_more {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        color: gray;
+        user-select: none;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-style: italic;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}

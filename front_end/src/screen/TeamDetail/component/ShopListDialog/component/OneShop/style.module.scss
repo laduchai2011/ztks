@@ -17,13 +17,23 @@
         @include small-scroll-yy(1px);
     }
 
+    &:active {
+        background-color: white;
+    }
+
     &:hover {
-        background-color: rrgb(241, 241, 241);
+        background-color: rgb(228, 228, 228);
     }
 
     > div {
         box-sizing: border-box;
         padding: 5px;
+    }
+
+    > .index {
+        position: absolute;
+        top: 5px;
+        right: 5px;
     }
 
     > .name {

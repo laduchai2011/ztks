@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { state_props } from '@src/screen/TeamDetail/type';
 import { Team_Field, Team_Member_Field } from '@src/data_struct/team';
+import { Shop_Field, Depot_Field, Store_Field } from '@src/data_struct/shop';
 
 const initialState: state_props = {
     //common
@@ -21,8 +22,17 @@ const initialState: state_props = {
     selected_delete_team_member: undefined,
     deleted_team_member: undefined,
 
-    //shop list dialog
-    is_show_shop_list_dialog: true,
+    // shop list dialog
+    is_show_shop_list_dialog: false,
+    selected_shop: undefined,
+
+    // depot list dialog
+    is_show_depot_list_dialog: false,
+    selected_depot: undefined,
+
+    // store list dialog
+    is_show_store_list_dialog: false,
+    selected_store: undefined,
 };
 
 const Team_Detail_Slice = createSlice({
@@ -69,9 +79,28 @@ const Team_Detail_Slice = createSlice({
             state.deleted_team_member = action.payload;
         },
 
-        //shop list dialog
+        // shop list dialog
         set__is_show_shop_list_dialog: (state, action: PayloadAction<boolean>) => {
             state.is_show_shop_list_dialog = action.payload;
+        },
+        set__selected_shop: (state, action: PayloadAction<Shop_Field>) => {
+            state.selected_shop = action.payload;
+        },
+
+        // depot list dialog
+        set__is_show_depot_list_dialog: (state, action: PayloadAction<boolean>) => {
+            state.is_show_depot_list_dialog = action.payload;
+        },
+        set__selected_depot: (state, action: PayloadAction<Depot_Field>) => {
+            state.selected_depot = action.payload;
+        },
+
+        // store list dialog
+        set__is_show_store_list_dialog: (state, action: PayloadAction<boolean>) => {
+            state.is_show_store_list_dialog = action.payload;
+        },
+        set__selected_store: (state, action: PayloadAction<Store_Field>) => {
+            state.selected_store = action.payload;
         },
     },
 });
@@ -88,14 +117,23 @@ export const {
     set__selected_edit_team,
     set__edited_team,
 
-    //team_member
+    // team_member
     set__new_team_member,
 
     set__is_show_delete_team_member,
     set__selected_delete_team_member,
     set__deleted_team_member,
 
-    //shop list dialog
+    // shop list dialog
     set__is_show_shop_list_dialog,
+    set__selected_shop,
+
+    // depot list dialog
+    set__is_show_depot_list_dialog,
+    set__selected_depot,
+
+    // store list dialog
+    set__is_show_store_list_dialog,
+    set__selected_store,
 } = Team_Detail_Slice.actions;
 export default Team_Detail_Slice.reducer;

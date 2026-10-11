@@ -1,37 +1,15 @@
-import { memo, useState, useEffect } from 'react';
+import { memo } from 'react';
 import style from './style.module.scss';
-import { FaLock, FaLockOpen } from 'react-icons/fa';
+import SelectedShop from './component/SelectedShop';
+import SelectedDepot from './component/SelectedDepot';
+import SelectedStore from './component/SelectedStore';
 
 const StoreControl = () => {
     return (
         <div className={style.parent}>
-            <div className={style.option}>
-                <div className={style.text}>Cửa hàng</div>
-                <div className={style.btn}>Chọn</div>
-                <div className={style.icons}>
-                    <FaLock size={20} color="red" />
-                    <FaLockOpen size={20} color="gray" />
-                </div>
-                <div>sdsdgsdg</div>
-            </div>
-            <div className={style.option}>
-                <div className={style.text}>Chọn kho</div>
-                <div className={style.btn}>Chọn</div>
-                <div className={style.icons}>
-                    <FaLock size={20} color="red" />
-                    <FaLockOpen size={20} color="gray" />
-                </div>
-                <div>sdsdgsdg</div>
-            </div>
-            <div className={style.option}>
-                <div className={style.text}>Chọn gian</div>
-                <div className={style.btn}>Chọn</div>
-                <div className={style.icons}>
-                    <FaLock size={20} color="red" />
-                    <FaLockOpen size={20} color="gray" />
-                </div>
-                <div>sdsdgsdg</div>
-            </div>
+            <SelectedShop />
+            <SelectedDepot />
+            <SelectedStore />
         </div>
     );
 };

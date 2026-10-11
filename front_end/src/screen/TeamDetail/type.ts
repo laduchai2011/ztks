@@ -1,4 +1,5 @@
 import { Team_Field, Team_Member_Field } from '@src/data_struct/team';
+import { Shop_Field, Depot_Field, Store_Field } from '@src/data_struct/shop';
 
 export interface state_props {
     // common
@@ -19,6 +20,15 @@ export interface state_props {
     selected_delete_team_member?: Team_Member_Field;
     deleted_team_member?: Team_Member_Field;
 
-    //shop list dialog
+    // shop list dialog
     is_show_shop_list_dialog: boolean;
+    selected_shop?: Shop_Field;
+
+    // depot list dialog
+    is_show_depot_list_dialog: boolean;
+    selected_depot?: Depot_Field;
+
+    // store list dialog
+    is_show_store_list_dialog: boolean;
+    selected_store?: Store_Field;
 }
