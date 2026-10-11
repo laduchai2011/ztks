@@ -122,3 +122,15 @@ export interface Leader_Set_Shop_Role_For_One_Team_Body_Field {
     team_id: string;
     leader_account_id: string;
 }
+
+export interface Get_Shop_Role_Statistics_For_One_Team_Body_Field {
+    team_id: string;
+    shop_id: string;
+    type: string;
+}
+
+export interface Get_Shop_Role_For_One_Account_Body_Field {
+    account_id: string;
+    shop_id: string;
+    type: string;
+}

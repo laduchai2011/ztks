@@ -73,3 +73,8 @@ export interface Cursor_Shop_Role_Field {
     items: Shop_Role_Field[];
     next_cursor: string | null;
 }
+
+export interface Shop_Role_Statistics_Field {
+    total_members: number;
+    locked_members: number;
+}

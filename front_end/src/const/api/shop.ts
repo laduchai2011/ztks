@@ -21,4 +21,6 @@ export const SHOP_API = {
     ADMIN_SET_SHOP_ROLE_FOR_ONE_TEAM: `${BASE_URL}${apiString}/service__shop/mutate/admin_set_shop_role_for_one_team`,
     LEADER_SET_SHOP_ROLE_FOR_ONE_ACCOUNT: `${BASE_URL}${apiString}/service__shop/mutate/leader_set_shop_role_for_one_account`,
     LEADER_SET_SHOP_ROLE_FOR_ONE_TEAM: `${BASE_URL}${apiString}/service__shop/mutate/leader_set_shop_role_for_one_team`,
+    GET_SHOP_ROLE_STATISTICS_FOR_ONE_TEAM: `${BASE_URL}${apiString}/service__shop/query/get_shop_role_statistics_for_one_team`,
+    GET_SHOP_ROLE_FOR_ONE_ACCOUNT: `${BASE_URL}${apiString}/service__shop/query/get_shop_role_for_one_account`,
 };
