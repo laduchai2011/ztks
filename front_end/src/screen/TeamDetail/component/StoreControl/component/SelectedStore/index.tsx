@@ -19,7 +19,7 @@ const SelectedStore = () => {
 
     return (
         <div className={style.parent}>
-            <div className={style.text}>Cửa hàng</div>
+            <div className={style.text}>Gian hàng</div>
             <div className={style.btn} onClick={() => handle_Open_Store_List_Dialog()}>
                 Chọn
             </div>

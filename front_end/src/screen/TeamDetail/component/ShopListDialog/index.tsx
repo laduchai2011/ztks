@@ -88,7 +88,7 @@ const ShopListDialog = () => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.header}>
-                    <div>Danh sách shop</div>
+                    <div>Danh sách cửa hàng</div>
                     <IoCloseOutline onClick={() => handle_Close()} size={30} title={CLOSE} />
                 </div>
                 <div className={style.content}>

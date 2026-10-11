@@ -17,6 +17,7 @@ import DeleteTeamDialog from './component/DeleteTeamDialog';
 import DeleteTeamMemberDialog from './component/DeleteTeamMemberDialog';
 import ShopListDialog from './component/ShopListDialog';
 import DepotListDialog from './component/DepotListDialog';
+import StoreListDialog from './component/StoreListDialog';
 
 const TeamDetail = () => {
     const navigate = useNavigate();
@@ -61,6 +62,7 @@ const TeamDetail = () => {
                     <DeleteTeamMemberDialog />
                     <ShopListDialog />
                     <DepotListDialog />
+                    <StoreListDialog />
                 </div>
             </div>
         </div>

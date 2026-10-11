@@ -17,12 +17,8 @@
         @include small-scroll-yy(1px);
     }
 
-    &:active {
-        background-color: white;
-    }
-
     &:hover {
-        background-color: rgb(228, 228, 228);
+        background-color: rgb(209, 209, 209);
     }
 
     > div {

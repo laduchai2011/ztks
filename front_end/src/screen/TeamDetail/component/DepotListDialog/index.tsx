@@ -6,7 +6,6 @@ import { IoCloseOutline } from 'react-icons/io5';
 import { CLOSE, SEE_MORE } from '@src/const/text';
 import { set__is_show_depot_list_dialog } from '@src/redux/slice/Team_Detail';
 import { useLazy_get_My_Depots_Query } from '@src/redux/query/shop_RTK';
-import { Account_Information_Field } from '@src/data_struct/account';
 import { Shop_Field, Depot_Field } from '@src/data_struct/shop';
 import OneDepot from './component/OneDepot';
 
@@ -88,7 +87,7 @@ const DepotListDialog = () => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.header}>
-                    <div>Danh sách shop</div>
+                    <div>Danh sách kho</div>
                     <IoCloseOutline onClick={() => handle_Close()} size={30} title={CLOSE} />
                 </div>
                 <div className={style.content}>

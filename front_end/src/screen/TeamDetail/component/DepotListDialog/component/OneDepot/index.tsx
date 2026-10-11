@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@src/redux';
 import { SEE_MORE, HIDDEN } from '@src/const/text';
 import { Depot_Field } from '@src/data_struct/shop';
-import { set__selected_depot } from '@src/redux/slice/Team_Detail';
+import { set__selected_depot, set__is_show_depot_list_dialog } from '@src/redux/slice/Team_Detail';
 
 const OneDepot: FC<{ data: Depot_Field; index: number }> = ({ data, index }) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -26,9 +26,11 @@ const OneDepot: FC<{ data: Depot_Field; index: number }> = ({ data, index }) => 
 
     const handle_Selected = () => {
         dispatch(set__selected_depot(data));
+        dispatch(set__is_show_depot_list_dialog(false));
     };
 
-    const handle_See_More = () => {
+    const handle_See_More = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        e.stopPropagation();
         set__is_see_more(!is_see_more);
     };
 
@@ -42,7 +44,7 @@ const OneDepot: FC<{ data: Depot_Field; index: number }> = ({ data, index }) => 
             </div>
             <div className={style.address}>{data.address}</div>
             <div className={style.phone}>{data.phone}</div>
-            <div className={style.see_more} onClick={() => handle_See_More()}>
+            <div className={style.see_more} onClick={(e) => handle_See_More(e)}>
                 {is_see_more ? HIDDEN : SEE_MORE}
             </div>
         </div>

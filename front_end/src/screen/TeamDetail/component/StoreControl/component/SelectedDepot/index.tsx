@@ -19,7 +19,7 @@ const SelectedDepot = () => {
 
     return (
         <div className={style.parent}>
-            <div className={style.text}>Cửa hàng</div>
+            <div className={style.text}>Kho</div>
             <div className={style.btn} onClick={() => handle_Open_Depot_List_Dialog()}>
                 Chọn
             </div>
