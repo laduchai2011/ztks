@@ -82,51 +82,417 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION set_shop_role (
-    p_role VARCHAR(50),
-	p_type VARCHAR(50),
-	is_lock BOOLEAN,
+CREATE OR REPLACE FUNCTION admin_set_shop_role_for_one_account (
+    p_type VARCHAR(50),
+    p_is_lock BOOLEAN,
     p_shop_id UUID,
-    p_account_id UUID
+    p_account_id UUID,
+    p_admin_account_id UUID
 )
 RETURNS SETOF shop_role
 LANGUAGE plpgsql
 AS $$
 BEGIN
-	IF EXISTS (
-	    SELECT 1
-	    FROM shop_role sr
-	    WHERE sr.shop_id = p_shop_id
-	      AND sr.account_id = p_account_id
-		  AND sr.type = p_type
-	) THEN
-	
-	    UPDATE shop_role
-	    SET
-	        type = p_type,
-	        is_lock = FALSE,
-	        is_delete = FALSE
-	    WHERE shop_id = p_shop_id
-	      AND account_id = p_account_id
-		  AND sr.type = p_type;
-	ELSE
-	
-	    INSERT INTO shop_role (
-	        type,
-	        is_lock,
-	        is_delete,
-	        shop_id,
-	        account_id
-	    )
-	    VALUES (
-	        p_type,
-	        FALSE,
-	        FALSE,
-	        p_shop_id,
-	        p_account_id
-	    );
+    -- 1. Kiểm tra tài khoản có phải admin không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM account_information ai
+        WHERE ai.account_id = p_admin_account_id
+          AND ai.account_type = 'admin'
+    ) THEN
+        RAISE EXCEPTION 'Không phải tài khoản admin.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-	END IF;
+    -- 2. Kiểm tra tài khoản có phải chủ shop không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM shop s
+        WHERE s.id = p_shop_id
+          AND s.account_id = p_admin_account_id
+          AND s.is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Không phải tài khoản chủ shop.'
+            USING ERRCODE = 'P0002';
+    END IF;
+
+    -- 3. Nếu đã có quyền thì cập nhật và trả về bản ghi
+    IF EXISTS (
+        SELECT 1
+        FROM shop_role sr
+        WHERE sr.shop_id = p_shop_id
+          AND sr.account_id = p_account_id
+          AND sr.type = p_type
+    ) THEN
+
+        RETURN QUERY
+        UPDATE shop_role sr
+        SET
+            is_lock = p_is_lock,
+            is_delete = FALSE
+        WHERE sr.shop_id = p_shop_id
+          AND sr.account_id = p_account_id
+          AND sr.type = p_type
+        RETURNING sr.*;
+
+    ELSE
+
+        -- 4. Nếu chưa có quyền thì thêm mới và trả về bản ghi
+        RETURN QUERY
+        INSERT INTO shop_role (
+            type,
+            is_lock,
+            is_delete,
+            shop_id,
+            account_id
+        )
+        VALUES (
+            p_type,
+            p_is_lock,
+            FALSE,
+            p_shop_id,
+            p_account_id
+        )
+        RETURNING *;
+
+    END IF;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION admin_set_shop_role_for_one_team (
+    p_type VARCHAR(50),
+    p_is_lock BOOLEAN,
+    p_shop_id UUID,
+    p_team_id UUID,
+    p_admin_account_id UUID
+)
+RETURNS SETOF shop_role
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Kiểm tra tài khoản admin
+    IF NOT EXISTS (
+        SELECT 1
+        FROM account_information ai
+        WHERE ai.account_id = p_admin_account_id
+          AND ai.account_type = 'admin'
+    ) THEN
+        RAISE EXCEPTION 'Không phải tài khoản admin.'
+            USING ERRCODE = 'P0001';
+    END IF;
+
+    -- Kiểm tra admin có phải chủ shop không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM shop s
+        WHERE s.id = p_shop_id
+          AND s.account_id = p_admin_account_id
+    ) THEN
+        RAISE EXCEPTION 'Không phải tài khoản chủ shop.'
+            USING ERRCODE = 'P0002';
+    END IF;
+
+    -- Kiểm tra team thuộc admin
+    IF NOT EXISTS (
+        SELECT 1
+        FROM team t
+        WHERE t.id = p_team_id
+          AND t.account_id = p_admin_account_id
+          AND t.is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Không phải team hợp lệ của admin.'
+            USING ERRCODE = 'P0003';
+    END IF;
+
+    -- Kiểm tra loại quyền
+    IF p_type NOT IN ('sales', 'store') THEN
+        RAISE EXCEPTION 'Loại quyền không hợp lệ.'
+            USING ERRCODE = 'P0004';
+    END IF;
+
+    -- Cập nhật hoặc thêm quyền cho tất cả thành viên
+    RETURN QUERY
+    INSERT INTO shop_role AS sr (
+        type,
+        is_lock,
+        is_delete,
+        shop_id,
+        account_id
+    )
+    SELECT
+        p_type,
+        p_is_lock,
+        FALSE,
+        p_shop_id,
+        tm.account_id
+    FROM team_member tm
+    WHERE tm.team_id = p_team_id
+      AND tm.is_delete = FALSE
+
+    ON CONFLICT (shop_id, account_id, type)
+    DO UPDATE SET
+        is_lock = EXCLUDED.is_lock,
+        is_delete = FALSE
+
+    RETURNING sr.*;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION leader_set_shop_role_for_one_account (
+    p_type VARCHAR(50),
+    p_is_lock BOOLEAN,
+    p_shop_id UUID,
+    p_account_id UUID,
+    p_leader_account_id UUID
+)
+RETURNS SETOF shop_role
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_admin_account_id UUID;
+    v_leader_team_id UUID;
+    v_result shop_role%ROWTYPE;
+BEGIN
+    -- 1. Lấy admin sở hữu shop từ shop_id
+    SELECT s.account_id
+    INTO v_admin_account_id
+    FROM shop s
+    JOIN account_information ai
+        ON ai.account_id = s.account_id
+    JOIN account a
+        ON a.id = s.account_id
+    WHERE s.id = p_shop_id
+      AND s.is_delete = FALSE
+      AND a.is_delete = FALSE
+      AND ai.account_type = 'admin';
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION
+            'Shop không tồn tại hoặc chủ shop không phải admin hợp lệ.'
+            USING ERRCODE = 'P0001';
+    END IF;
+
+    -- 2. Kiểm tra leader thuộc admin của shop
+    -- và lấy team mà leader quản lý
+    SELECT tm.team_id
+    INTO v_leader_team_id
+    FROM team_member tm
+    JOIN team t
+        ON t.id = tm.team_id
+    JOIN account_information ai
+        ON ai.account_id = tm.account_id
+    JOIN account a
+        ON a.id = tm.account_id
+    WHERE tm.account_id = p_leader_account_id
+      AND tm.role = 'leader'
+      AND tm.is_delete = FALSE
+      AND tm.is_lock = FALSE
+      AND t.is_delete = FALSE
+      AND t.is_lock = FALSE
+      AND a.is_delete = FALSE
+      AND COALESCE(ai.added_by_id, ai.account_id)
+          = v_admin_account_id
+    LIMIT 1;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION
+            'Leader không hợp lệ hoặc không thuộc admin của shop.'
+            USING ERRCODE = 'P0002';
+    END IF;
+
+    -- 3. Kiểm tra tài khoản cần phân quyền:
+    -- phải cùng team với leader và cùng admin sở hữu shop
+    IF NOT EXISTS (
+        SELECT 1
+        FROM team_member tm
+        JOIN account_information ai
+            ON ai.account_id = tm.account_id
+        JOIN account a
+            ON a.id = tm.account_id
+        WHERE tm.team_id = v_leader_team_id
+          AND tm.account_id = p_account_id
+          AND tm.is_delete = FALSE
+          AND tm.is_lock = FALSE
+          AND a.is_delete = FALSE
+          AND COALESCE(ai.added_by_id, ai.account_id)
+              = v_admin_account_id
+    ) THEN
+        RAISE EXCEPTION
+            'Tài khoản không thuộc cùng team hoặc không thuộc admin của shop.'
+            USING ERRCODE = 'P0003';
+    END IF;
+
+    -- 4. Cập nhật quyền đã tồn tại
+    UPDATE shop_role sr
+    SET
+        type = p_type,
+        is_lock = p_is_lock,
+        is_delete = FALSE
+    WHERE sr.shop_id = p_shop_id
+      AND sr.account_id = p_account_id
+      AND sr.type = p_type
+    RETURNING sr.* INTO v_result;
+
+    -- 5. Nếu chưa có quyền thì thêm mới
+    IF NOT FOUND THEN
+        INSERT INTO shop_role (
+            type,
+            is_lock,
+            is_delete,
+            shop_id,
+            account_id
+        )
+        VALUES (
+            p_type,
+            p_is_lock,
+            FALSE,
+            p_shop_id,
+            p_account_id
+        )
+        RETURNING * INTO v_result;
+    END IF;
+
+    -- 6. Trả về record sau khi thêm hoặc cập nhật
+    RETURN NEXT v_result;
+    RETURN;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION leader_set_shop_role_for_one_team (
+    p_type VARCHAR(50),
+    p_is_lock BOOLEAN,
+    p_shop_id UUID,
+    p_team_id UUID,
+    p_leader_account_id UUID
+)
+RETURNS SETOF shop_role
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_admin_account_id UUID;
+BEGIN
+    -- 1. Lấy admin từ shop_id
+    SELECT s.account_id
+    INTO v_admin_account_id
+    FROM shop s
+    JOIN account_information ai
+        ON ai.account_id = s.account_id
+    JOIN account a
+        ON a.id = s.account_id
+    WHERE s.id = p_shop_id
+      AND s.is_delete = FALSE
+      AND a.is_delete = FALSE
+      AND ai.account_type = 'admin';
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION
+            'Shop không tồn tại hoặc chủ shop không phải admin hợp lệ.'
+            USING ERRCODE = 'P0001';
+    END IF;
+
+    -- 2. Kiểm tra loại quyền
+    IF p_type IS NULL OR p_type NOT IN ('sales', 'store') THEN
+        RAISE EXCEPTION 'Loại quyền không hợp lệ.'
+            USING ERRCODE = 'P0002';
+    END IF;
+
+    -- 3. Kiểm tra leader thuộc team được phân quyền
+    -- và cùng admin sở hữu shop
+    IF NOT EXISTS (
+        SELECT 1
+        FROM team_member tm
+        JOIN team t
+            ON t.id = tm.team_id
+        JOIN account_information ai
+            ON ai.account_id = tm.account_id
+        JOIN account a
+            ON a.id = tm.account_id
+        WHERE tm.team_id = p_team_id
+          AND tm.account_id = p_leader_account_id
+          AND tm.role = 'leader'
+          AND tm.is_delete = FALSE
+          AND tm.is_lock = FALSE
+          AND t.is_delete = FALSE
+          AND t.is_lock = FALSE
+          AND a.is_delete = FALSE
+          AND COALESCE(ai.added_by_id, ai.account_id)
+              = v_admin_account_id
+    ) THEN
+        RAISE EXCEPTION
+            'Leader không hợp lệ hoặc không thuộc admin của shop.'
+            USING ERRCODE = 'P0003';
+    END IF;
+
+    -- 4. Kiểm tra team thuộc admin sở hữu shop
+    IF NOT EXISTS (
+        SELECT 1
+        FROM team t
+        WHERE t.id = p_team_id
+          AND t.account_id = v_admin_account_id
+          AND t.is_delete = FALSE
+          AND t.is_lock = FALSE
+    ) THEN
+        RAISE EXCEPTION
+            'Team không tồn tại hoặc không thuộc admin của shop.'
+            USING ERRCODE = 'P0004';
+    END IF;
+
+    -- 5. Kiểm tra các thành viên hợp lệ đều thuộc admin
+    IF EXISTS (
+        SELECT 1
+        FROM team_member tm
+        JOIN account a
+            ON a.id = tm.account_id
+        LEFT JOIN account_information ai
+            ON ai.account_id = tm.account_id
+        WHERE tm.team_id = p_team_id
+          AND (
+              tm.is_lock = TRUE
+              OR a.is_delete = TRUE
+              OR COALESCE(ai.added_by_id, ai.account_id)
+                  IS DISTINCT FROM v_admin_account_id
+          )
+    ) THEN
+        RAISE EXCEPTION
+            'Team có thành viên bị khóa, đã xóa hoặc không thuộc admin của shop.'
+            USING ERRCODE = 'P0005';
+    END IF;
+
+    -- 6. Cập nhật hoặc thêm quyền cho tất cả thành viên hợp lệ
+    RETURN QUERY
+    INSERT INTO shop_role AS sr (
+        type,
+        is_lock,
+        is_delete,
+        shop_id,
+        account_id
+    )
+    SELECT
+        p_type,
+        p_is_lock,
+        FALSE,
+        p_shop_id,
+        tm.account_id
+    FROM team_member tm
+    JOIN account a
+        ON a.id = tm.account_id
+    JOIN account_information ai
+        ON ai.account_id = tm.account_id
+    WHERE tm.team_id = p_team_id
+      AND tm.is_delete = FALSE
+      AND tm.is_lock = FALSE
+      AND a.is_delete = FALSE
+      AND COALESCE(ai.added_by_id, ai.account_id)
+          = v_admin_account_id
+
+    ON CONFLICT (shop_id, account_id, type)
+    DO UPDATE SET
+        is_lock = EXCLUDED.is_lock,
+        is_delete = FALSE
+
+    RETURNING sr.*;
+
 END;
 $$;
 

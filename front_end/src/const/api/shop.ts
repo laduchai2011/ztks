@@ -17,4 +17,8 @@ export const SHOP_API = {
     DELETE_SHOP: `${BASE_URL}${apiString}/service__shop/mutate/delete_shop`,
     DELETE_DEPOT: `${BASE_URL}${apiString}/service__shop/mutate/delete_depot`,
     DELETE_STORE: `${BASE_URL}${apiString}/service__shop/mutate/delete_store`,
+    ADMIN_SET_SHOP_ROLE_FOR_ONE_ACCOUNT: `${BASE_URL}${apiString}/service__shop/mutate/admin_set_shop_role_for_one_account`,
+    ADMIN_SET_SHOP_ROLE_FOR_ONE_TEAM: `${BASE_URL}${apiString}/service__shop/mutate/admin_set_shop_role_for_one_team`,
+    LEADER_SET_SHOP_ROLE_FOR_ONE_ACCOUNT: `${BASE_URL}${apiString}/service__shop/mutate/leader_set_shop_role_for_one_account`,
+    LEADER_SET_SHOP_ROLE_FOR_ONE_TEAM: `${BASE_URL}${apiString}/service__shop/mutate/leader_set_shop_role_for_one_team`,
 };

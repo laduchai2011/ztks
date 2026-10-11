@@ -58,3 +58,23 @@ export interface Shop_Pay_Field {
     account_id: string;
     create_time: string;
 }
+
+export interface Shop_Role_Field {
+    id: string;
+    type: string;
+    is_lock: boolean;
+    is_delete: boolean;
+    shop_id: string;
+    account_id: string;
+    create_time: string;
+}
+
+export interface Cursor_Shop_Role_Field {
+    items: Shop_Role_Field[];
+    next_cursor: string | null;
+}
+
+export interface Shop_Role_Statistics_Field {
+    total_members: number;
+    locked_members: number;
+}

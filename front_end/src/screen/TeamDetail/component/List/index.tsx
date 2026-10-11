@@ -15,6 +15,9 @@ const List = () => {
     const new_team_member: Team_Member_Field | undefined = useSelector(
         (state: RootState) => state.Team_Detail_Slice.new_team_member
     );
+    const deleted_team_member: Team_Member_Field | undefined = useSelector(
+        (state: RootState) => state.Team_Detail_Slice.deleted_team_member
+    );
 
     const [team_members, set__team_members] = useState<Team_Member_Field[]>([]);
     const limit = 15;
@@ -48,6 +51,10 @@ const List = () => {
         if (!new_team_member) return;
         set__team_members((prev) => [new_team_member, ...prev]);
     }, [new_team_member]);
+    useEffect(() => {
+        if (!deleted_team_member) return;
+        set__team_members((prev) => prev.filter((team_member) => team_member.id !== deleted_team_member.id));
+    }, [deleted_team_member]);
 
     const handle_See_More = () => {
         if (!has_more) return;

@@ -43,6 +43,21 @@ CREATE TABLE recommend (
 );
 CREATE UNIQUE INDEX ux_recommend_your_code ON recommend(your_code) WHERE your_code IS NOT NULL;
 
+-- CREATE TABLE my_admin (
+-- 	name VARCHAR(255) NOT NULL,
+-- 	is_active BOOLEAN NOT NULL DEFAULT FALSE,
+-- 	type VARCHAR(50) NOT NULL,
+-- 	is_delete BOOLEAN NOT NULL DEFAULT FALSE,
+--     admin_account_id UUID NOT NULL,
+-- 	account_id UUID NOT NULL,
+	
+-- 	CONSTRAINT FK_account_information_added_by FOREIGN KEY (added_by_id) REFERENCES account(id),
+-- 	CONSTRAINT FK_account_information_account FOREIGN KEY (account_id) REFERENCES account(id),
+
+-- 	CONSTRAINT check_type_my_admin CHECK (account_type IN ('admin', 'member'))
+-- );
+-- CREATE INDEX idx_account_information_added_by_id ON account_information(added_by_id);
+
 CREATE TABLE team (
     id UUID PRIMARY KEY DEFAULT uuidv7(),
     name VARCHAR(255) NOT NULL,

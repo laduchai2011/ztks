@@ -90,3 +90,35 @@ export interface Get_Latest_Shop_Pay_With_Shop_Id_Body_Field {
     shop_id: string;
     account_id: string;
 }
+
+export interface Admin_Set_Shop_Role_For_One_Account_Body_Field {
+    type: string;
+    is_lock: boolean;
+    shop_id: string;
+    account_id: string;
+    admin_account_id: string;
+}
+
+export interface Admin_Set_Shop_Role_For_One_Team_Body_Field {
+    type: string;
+    is_lock: boolean;
+    shop_id: string;
+    team_id: string;
+    admin_account_id: string;
+}
+
+export interface Leader_Set_Shop_Role_For_One_Account_Body_Field {
+    type: string;
+    is_lock: boolean;
+    shop_id: string;
+    account_id: string;
+    leader_account_id: string;
+}
+
+export interface Leader_Set_Shop_Role_For_One_Team_Body_Field {
+    type: string;
+    is_lock: boolean;
+    shop_id: string;
+    team_id: string;
+    leader_account_id: string;
+}

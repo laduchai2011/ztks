@@ -825,17 +825,22 @@ BEGIN
         RAISE EXCEPTION 'Role không hợp lệ: %', p_role;
     END IF;
 
-    -- 5. Thêm thành viên
+    -- 5. Thêm mới hoặc khôi phục thành viên đã tồn tại
     INSERT INTO team_member (
         team_id,
         account_id,
-        role
+        role,
+        is_delete
     )
     VALUES (
         p_team_id,
         p_account_id,
-        p_role
+        p_role,
+        FALSE
     )
+    ON CONFLICT (team_id, account_id)
+    DO UPDATE SET
+        is_delete = FALSE
     RETURNING *
     INTO v_team_member;
 
