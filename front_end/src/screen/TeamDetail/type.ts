@@ -18,4 +18,7 @@ export interface state_props {
     is_show_delete_team_member: boolean;
     selected_delete_team_member?: Team_Member_Field;
     deleted_team_member?: Team_Member_Field;
+
+    //shop list dialog
+    is_show_shop_list_dialog: boolean;
 }

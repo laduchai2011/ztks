@@ -10,10 +10,12 @@ import GlobalLoading from '@src/Global/GlobalLoading';
 import GlobalToastMessage from '@src/Global/GlobalToastMessage';
 import Overview from './component/Overview';
 import AddMember from './component/AddMember';
+import StoreControl from './component/StoreControl';
 import List from './component/List';
 import EditTeamDialog from './component/EditTeamDialog';
 import DeleteTeamDialog from './component/DeleteTeamDialog';
 import DeleteTeamMemberDialog from './component/DeleteTeamMemberDialog';
+import ShopListDialog from './component/ShopListDialog';
 
 const TeamDetail = () => {
     const navigate = useNavigate();
@@ -48,6 +50,7 @@ const TeamDetail = () => {
                 </div>
                 <Overview />
                 <AddMember />
+                <StoreControl />
                 <List />
                 <div>
                     <GlobalLoading />
@@ -55,6 +58,7 @@ const TeamDetail = () => {
                     <EditTeamDialog />
                     <DeleteTeamDialog />
                     <DeleteTeamMemberDialog />
+                    <ShopListDialog />
                 </div>
             </div>
         </div>

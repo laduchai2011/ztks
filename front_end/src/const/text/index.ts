@@ -29,6 +29,7 @@ export const NOTE = 'Ghi chú';
 export const ORDER = 'Đơn hàng';
 export const CREATE_ORDER = 'Tạo đơn hàng';
 export const SEE_MORE = 'Xem thêm';
+export const HIDDEN = 'Ẩn bớt';
 export const SETTING = 'Cài đặt';
 export const SESSION_LIST = 'Danh sách phiên';
 export const CREATE_NEW_SESSION = 'Tạo phiên mới';

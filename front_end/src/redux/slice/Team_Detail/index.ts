@@ -20,6 +20,9 @@ const initialState: state_props = {
     is_show_delete_team_member: false,
     selected_delete_team_member: undefined,
     deleted_team_member: undefined,
+
+    //shop list dialog
+    is_show_shop_list_dialog: true,
 };
 
 const Team_Detail_Slice = createSlice({
@@ -65,6 +68,11 @@ const Team_Detail_Slice = createSlice({
         set__deleted_team_member: (state, action: PayloadAction<Team_Member_Field>) => {
             state.deleted_team_member = action.payload;
         },
+
+        //shop list dialog
+        set__is_show_shop_list_dialog: (state, action: PayloadAction<boolean>) => {
+            state.is_show_shop_list_dialog = action.payload;
+        },
     },
 });
 
@@ -86,5 +94,8 @@ export const {
     set__is_show_delete_team_member,
     set__selected_delete_team_member,
     set__deleted_team_member,
+
+    //shop list dialog
+    set__is_show_shop_list_dialog,
 } = Team_Detail_Slice.actions;
 export default Team_Detail_Slice.reducer;

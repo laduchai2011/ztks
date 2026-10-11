@@ -1,0 +1,44 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
+
+    > .option {
+        box-sizing: border-box;
+        padding: 5px;
+        @include center-of-row;
+
+        > .text {
+            width: 80px;
+        }
+
+        > .btn {
+            background-color: rgb(226, 226, 226);
+            box-sizing: border-box;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 0 10px;
+            user-select: none;
+            cursor: pointer;
+
+            &:hover {
+                background-color: rgb(185, 185, 185);
+            }
+
+            &:active {
+                background-color: rgb(241, 241, 241);
+            }
+        }
+
+        > .icons {
+            width: 80px;
+
+            svg {
+                margin: 0 5px;
+            }
+        }
+    }
+}
