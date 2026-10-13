@@ -14,6 +14,10 @@ import Handle_Admin_Set_Shop_Role_For_One_Account from './handle/Admin_Set_Shop_
 import Handle_Admin_Set_Shop_Role_For_One_Team from './handle/Admin_Set_Shop_Role_For_One_Team';
 import Handle_Leader_Set_Shop_Role_For_One_Account from './handle/Leader_Set_Shop_Role_For_One_Account';
 import Handle_Leader_Set_Shop_Role_For_One_Team from './handle/Leader_Set_Shop_Role_For_One_Team';
+import Handle_Admin_Set_Depot_Role_For_One_Account from './handle/Admin_Set_Depot_Role_For_One_Account';
+import Handle_Admin_Set_Depot_Role_For_One_Team from './handle/Admin_Set_Depot_Role_For_One_Team';
+import Handle_Leader_Set_Depot_Role_For_One_Account from './handle/Leader_Set_Depot_Role_For_One_Account';
+import Handle_Leader_Set_Depot_Role_For_One_Team from './handle/Leader_Set_Depot_Role_For_One_Team';
 
 dotenv.config();
 
@@ -32,6 +36,10 @@ const handle_admin_set_shop_role_for_one_account = new Handle_Admin_Set_Shop_Rol
 const handle_admin_set_shop_role_for_one_team = new Handle_Admin_Set_Shop_Role_For_One_Team();
 const handle_leader_set_shop_role_for_one_account = new Handle_Leader_Set_Shop_Role_For_One_Account();
 const handle_leader_set_shop_role_for_one_team = new Handle_Leader_Set_Shop_Role_For_One_Team();
+const handle_admin_set_depot_role_for_one_account = new Handle_Admin_Set_Depot_Role_For_One_Account();
+const handle_admin_set_depot_role_for_one_team = new Handle_Admin_Set_Depot_Role_For_One_Team();
+const handle_leader_set_depot_role_for_one_account = new Handle_Leader_Set_Depot_Role_For_One_Account();
+const handle_leader_set_depot_role_for_one_team = new Handle_Leader_Set_Depot_Role_For_One_Team();
 
 router_mutate_shop.post('/create_shop', authentication, handle_create_shop.setup, handle_create_shop.main);
 
@@ -77,6 +85,34 @@ router_mutate_shop.post(
     authentication,
     handle_leader_set_shop_role_for_one_team.setup,
     handle_leader_set_shop_role_for_one_team.main
+);
+
+router_mutate_shop.post(
+    '/admin_set_depot_role_for_one_account',
+    authentication,
+    handle_admin_set_depot_role_for_one_account.setup,
+    handle_admin_set_depot_role_for_one_account.main
+);
+
+router_mutate_shop.post(
+    '/admin_set_depot_role_for_one_team',
+    authentication,
+    handle_admin_set_depot_role_for_one_team.setup,
+    handle_admin_set_depot_role_for_one_team.main
+);
+
+router_mutate_shop.post(
+    '/leader_set_depot_role_for_one_account',
+    authentication,
+    handle_leader_set_depot_role_for_one_account.setup,
+    handle_leader_set_depot_role_for_one_account.main
+);
+
+router_mutate_shop.post(
+    '/leader_set_depot_role_for_one_team',
+    authentication,
+    handle_leader_set_depot_role_for_one_team.setup,
+    handle_leader_set_depot_role_for_one_team.main
 );
 
 export default router_mutate_shop;

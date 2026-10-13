@@ -1,3 +1,5 @@
+import { Shop_Role_Type_Type, Depot_Role_Type_Type } from '.';
+
 export interface Create_Shop_Body_Field {
     name: string;
     description: string;
@@ -92,7 +94,7 @@ export interface Get_Latest_Shop_Pay_With_Shop_Id_Body_Field {
 }
 
 export interface Admin_Set_Shop_Role_For_One_Account_Body_Field {
-    type: string;
+    type: Shop_Role_Type_Type;
     is_lock: boolean;
     shop_id: string;
     account_id: string;
@@ -100,7 +102,7 @@ export interface Admin_Set_Shop_Role_For_One_Account_Body_Field {
 }
 
 export interface Admin_Set_Shop_Role_For_One_Team_Body_Field {
-    type: string;
+    type: Shop_Role_Type_Type;
     is_lock: boolean;
     shop_id: string;
     team_id: string;
@@ -108,7 +110,7 @@ export interface Admin_Set_Shop_Role_For_One_Team_Body_Field {
 }
 
 export interface Leader_Set_Shop_Role_For_One_Account_Body_Field {
-    type: string;
+    type: Shop_Role_Type_Type;
     is_lock: boolean;
     shop_id: string;
     account_id: string;
@@ -116,7 +118,7 @@ export interface Leader_Set_Shop_Role_For_One_Account_Body_Field {
 }
 
 export interface Leader_Set_Shop_Role_For_One_Team_Body_Field {
-    type: string;
+    type: Shop_Role_Type_Type;
     is_lock: boolean;
     shop_id: string;
     team_id: string;
@@ -126,11 +128,56 @@ export interface Leader_Set_Shop_Role_For_One_Team_Body_Field {
 export interface Get_Shop_Role_Statistics_For_One_Team_Body_Field {
     team_id: string;
     shop_id: string;
-    type: string;
+    type: Shop_Role_Type_Type;
 }
 
 export interface Get_Shop_Role_For_One_Account_Body_Field {
     account_id: string;
     shop_id: string;
-    type: string;
+    type: Shop_Role_Type_Type;
+}
+
+//
+export interface Admin_Set_Depot_Role_For_One_Account_Body_Field {
+    type: Depot_Role_Type_Type;
+    is_lock: boolean;
+    depot_id: string;
+    account_id: string;
+    admin_account_id: string;
+}
+
+export interface Admin_Set_Depot_Role_For_One_Team_Body_Field {
+    type: Depot_Role_Type_Type;
+    is_lock: boolean;
+    depot_id: string;
+    team_id: string;
+    admin_account_id: string;
+}
+
+export interface Leader_Set_Depot_Role_For_One_Account_Body_Field {
+    type: Depot_Role_Type_Type;
+    is_lock: boolean;
+    depot_id: string;
+    account_id: string;
+    leader_account_id: string;
+}
+
+export interface Leader_Set_Depot_Role_For_One_Team_Body_Field {
+    type: Depot_Role_Type_Type;
+    is_lock: boolean;
+    depot_id: string;
+    team_id: string;
+    leader_account_id: string;
+}
+
+export interface Get_Depot_Role_Statistics_For_One_Team_Body_Field {
+    team_id: string;
+    depot_id: string;
+    type: Depot_Role_Type_Type;
+}
+
+export interface Get_Depot_Role_For_One_Account_Body_Field {
+    account_id: string;
+    depot_id: string;
+    type: Depot_Role_Type_Type;
 }

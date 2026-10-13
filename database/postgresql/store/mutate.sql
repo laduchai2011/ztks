@@ -496,6 +496,487 @@ BEGIN
 END;
 $$;
 
+
+CREATE OR REPLACE FUNCTION admin_set_depot_role_for_one_account (
+    p_type VARCHAR(50),
+    p_is_lock BOOLEAN,
+    p_depot_id UUID,
+    p_account_id UUID,
+    p_admin_account_id UUID
+)
+RETURNS SETOF depot_role
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- 1. Kiểm tra tài khoản có phải admin không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM account_information ai
+        WHERE ai.account_id = p_admin_account_id
+          AND ai.account_type = 'admin'
+    ) THEN
+        RAISE EXCEPTION 'Không phải tài khoản admin.'
+            USING ERRCODE = 'P0001';
+    END IF;
+
+    -- 2. Kiểm tra tài khoản admin có phải chủ shop
+    -- chứa depot này không, đồng thời depot và shop
+    -- phải chưa bị xóa
+    IF NOT EXISTS (
+        SELECT 1
+        FROM depot d
+        JOIN shop s ON s.id = d.shop_id
+        WHERE d.id = p_depot_id
+          AND d.is_delete = FALSE
+          AND s.is_delete = FALSE
+          AND s.account_id = p_admin_account_id
+    ) THEN
+        RAISE EXCEPTION 'Không phải tài khoản chủ shop quản lý depot này.'
+            USING ERRCODE = 'P0002';
+    END IF;
+
+    -- 3. Kiểm tra loại quyền hợp lệ
+    IF p_type IS NULL OR p_type NOT IN ('sales', 'store') THEN
+        RAISE EXCEPTION 'Loại quyền không hợp lệ: %.', p_type
+            USING ERRCODE = 'P0003';
+    END IF;
+
+    -- 4. Nếu đã có quyền thì cập nhật và trả về bản ghi
+    RETURN QUERY
+    UPDATE depot_role dr
+    SET is_lock = p_is_lock
+    WHERE dr.depot_id = p_depot_id
+      AND dr.account_id = p_account_id
+      AND dr.type = p_type
+    RETURNING dr.*;
+
+    -- 5. Nếu chưa có quyền thì thêm mới
+    IF NOT FOUND THEN
+        RETURN QUERY
+        INSERT INTO depot_role (
+            type,
+            is_lock,
+            is_delete,
+            depot_id,
+            account_id
+        )
+        VALUES (
+            p_type,
+            p_is_lock,
+            FALSE,
+            p_depot_id,
+            p_account_id
+        )
+        RETURNING *;
+    END IF;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION admin_set_depot_role_for_one_team (
+    p_type VARCHAR(50),
+    p_is_lock BOOLEAN,
+    p_depot_id UUID,
+    p_team_id UUID,
+    p_admin_account_id UUID
+)
+RETURNS SETOF depot_role
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- 1. Kiểm tra tài khoản có phải admin không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM account_information ai
+        WHERE ai.account_id = p_admin_account_id
+          AND ai.account_type = 'admin'
+    ) THEN
+        RAISE EXCEPTION 'Không phải tài khoản admin.'
+            USING ERRCODE = 'P0001';
+    END IF;
+
+    -- 2. Kiểm tra loại quyền hợp lệ
+    IF p_type IS NULL OR p_type NOT IN ('sales', 'store') THEN
+        RAISE EXCEPTION 'Loại quyền không hợp lệ: %.', p_type
+            USING ERRCODE = 'P0002';
+    END IF;
+
+    -- 3. Kiểm tra admin có phải chủ shop chứa depot không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM depot d
+        JOIN shop s ON s.id = d.shop_id
+        WHERE d.id = p_depot_id
+          AND d.is_delete = FALSE
+          AND s.is_delete = FALSE
+          AND s.account_id = p_admin_account_id
+    ) THEN
+        RAISE EXCEPTION
+            'Không phải chủ shop quản lý depot này.'
+            USING ERRCODE = 'P0003';
+    END IF;
+
+    -- 4. Kiểm tra team tồn tại và chưa bị xóa
+    IF NOT EXISTS (
+        SELECT 1
+        FROM team t
+        WHERE t.id = p_team_id
+          AND t.is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Team không tồn tại hoặc đã bị xóa.'
+            USING ERRCODE = 'P0004';
+    END IF;
+
+    -- 5. Cập nhật quyền của các thành viên đang tồn tại.
+    -- Xử lý cả thành viên đã bị xóa.
+    -- Bao gồm cả thành viên đang bị khóa và không bị khóa.
+    RETURN QUERY
+    INSERT INTO depot_role (
+        type,
+        is_lock,
+        is_delete,
+        depot_id,
+        account_id
+    )
+    SELECT
+        p_type,
+        p_is_lock,
+        FALSE,
+        p_depot_id,
+        tm.account_id
+    FROM team_member tm
+    WHERE tm.team_id = p_team_id
+    ON CONFLICT (depot_id, account_id, type)
+    DO UPDATE SET
+        is_lock = EXCLUDED.is_lock,
+        is_delete = FALSE
+    RETURNING *;
+
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION leader_set_depot_role_for_one_account (
+    p_type VARCHAR(50),
+    p_is_lock BOOLEAN,
+    p_depot_id UUID,
+    p_account_id UUID,
+    p_leader_account_id UUID
+)
+RETURNS SETOF depot_role
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- 1. Kiểm tra loại quyền hợp lệ
+    IF p_type IS NULL OR p_type NOT IN ('sales', 'store') THEN
+        RAISE EXCEPTION 'Loại quyền không hợp lệ: %.', p_type
+            USING ERRCODE = 'P0001';
+    END IF;
+
+    -- 2. Kiểm tra depot và shop tồn tại, chưa bị xóa
+    IF NOT EXISTS (
+        SELECT 1
+        FROM depot d
+        JOIN shop s ON s.id = d.shop_id
+        WHERE d.id = p_depot_id
+          AND d.is_delete = FALSE
+          AND s.is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Depot không tồn tại hoặc đã bị xóa.'
+            USING ERRCODE = 'P0002';
+    END IF;
+
+    -- 3. Kiểm tra leader thuộc team do admin sở hữu shop quản lý depot
+    -- Đồng thời kiểm tra loại team phù hợp với loại quyền
+    IF NOT EXISTS (
+        SELECT 1
+        FROM depot d
+        JOIN shop s
+            ON s.id = d.shop_id
+        JOIN team t
+            ON t.account_id = s.account_id
+        JOIN team_member tm
+            ON tm.team_id = t.id
+        WHERE d.id = p_depot_id
+          AND tm.account_id = p_leader_account_id
+          AND tm.role = 'leader'
+          AND tm.is_delete = FALSE
+          AND t.is_delete = FALSE
+          AND (
+              (p_type = 'sales' AND t.type = 'sales')
+              OR
+              (p_type = 'store' AND t.type = 'store')
+          )
+    ) THEN
+        RAISE EXCEPTION
+            'Leader không thuộc team của admin sở hữu shop quản lý depot.'
+            USING ERRCODE = 'P0003';
+    END IF;
+
+    -- 4. Kiểm tra tài khoản được phân quyền cùng team với leader
+    IF NOT EXISTS (
+        SELECT 1
+        FROM depot d
+        JOIN shop s
+            ON s.id = d.shop_id
+        JOIN team t
+            ON t.account_id = s.account_id
+        JOIN team_member leader_tm
+            ON leader_tm.team_id = t.id
+        JOIN team_member target_tm
+            ON target_tm.team_id = t.id
+           AND target_tm.account_id = p_account_id
+        WHERE d.id = p_depot_id
+          AND leader_tm.account_id = p_leader_account_id
+          AND leader_tm.role = 'leader'
+          AND leader_tm.is_delete = FALSE
+          AND target_tm.is_delete = FALSE
+          AND t.is_delete = FALSE
+          AND (
+              (p_type = 'sales' AND t.type = 'sale')
+              OR
+              (p_type = 'store' AND t.type = 'store')
+          )
+    ) THEN
+        RAISE EXCEPTION
+            'Tài khoản được phân quyền không thuộc cùng team với leader.'
+            USING ERRCODE = 'P0004';
+    END IF;
+
+    -- 5. Nếu đã có quyền thì cập nhật
+    RETURN QUERY
+    UPDATE depot_role dr
+    SET is_lock = p_is_lock
+    WHERE dr.depot_id = p_depot_id
+      AND dr.account_id = p_account_id
+      AND dr.type = p_type
+    RETURNING dr.*;
+
+    -- 6. Nếu chưa có quyền thì thêm mới
+    IF NOT FOUND THEN
+        RETURN QUERY
+        INSERT INTO depot_role (
+            type,
+            is_lock,
+            is_delete,
+            depot_id,
+            account_id
+        )
+        VALUES (
+            p_type,
+            p_is_lock,
+            FALSE,
+            p_depot_id,
+            p_account_id
+        )
+        RETURNING *;
+    END IF;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION leader_set_depot_role_for_one_team (
+    p_type VARCHAR(50),
+    p_is_lock BOOLEAN,
+    p_depot_id UUID,
+    p_team_id UUID,
+    p_leader_account_id UUID
+)
+RETURNS SETOF depot_role
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- 1. Kiểm tra loại quyền hợp lệ
+    IF p_type IS NULL OR p_type NOT IN ('sales', 'store') THEN
+        RAISE EXCEPTION 'Loại quyền không hợp lệ: %.', p_type
+            USING ERRCODE = 'P0001';
+    END IF;
+
+    -- 2. Kiểm tra depot và shop tồn tại, chưa bị xóa
+    IF NOT EXISTS (
+        SELECT 1
+        FROM depot d
+        JOIN shop s ON s.id = d.shop_id
+        WHERE d.id = p_depot_id
+          AND d.is_delete = FALSE
+          AND s.is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION 'Depot không tồn tại hoặc đã bị xóa.'
+            USING ERRCODE = 'P0002';
+    END IF;
+
+    -- 3. Kiểm tra leader thuộc team do admin sở hữu shop quản lý depot
+    -- Đồng thời kiểm tra loại team phù hợp với loại quyền
+    IF NOT EXISTS (
+        SELECT 1
+        FROM depot d
+        JOIN shop s
+            ON s.id = d.shop_id
+        JOIN team t
+            ON t.account_id = s.account_id
+        JOIN team_member tm
+            ON tm.team_id = t.id
+        WHERE d.id = p_depot_id
+          AND tm.account_id = p_leader_account_id
+          AND tm.role = 'leader'
+          AND tm.is_delete = FALSE
+          AND t.is_delete = FALSE
+          AND (
+              (p_type = 'sales' AND t.type = 'sales')
+              OR
+              (p_type = 'store' AND t.type = 'store')
+          )
+    ) THEN
+        RAISE EXCEPTION
+            'Leader không thuộc team của admin sở hữu shop quản lý depot.'
+            USING ERRCODE = 'P0003';
+    END IF;
+
+    -- 4. Kiểm tra tài khoản được phân quyền cùng team với leader
+    IF NOT EXISTS (
+        SELECT 1
+        FROM depot d
+        JOIN shop s
+            ON s.id = d.shop_id
+        JOIN team t
+            ON t.account_id = s.account_id
+        JOIN team_member leader_tm
+            ON leader_tm.team_id = t.id
+        JOIN team_member target_tm
+            ON target_tm.team_id = t.id
+           AND target_tm.account_id = p_account_id
+        WHERE d.id = p_depot_id
+          AND leader_tm.account_id = p_leader_account_id
+          AND leader_tm.role = 'leader'
+          AND leader_tm.is_delete = FALSE
+          AND target_tm.is_delete = FALSE
+          AND t.is_delete = FALSE
+          AND (
+              (p_type = 'sales' AND t.type = 'sale')
+              OR
+              (p_type = 'store' AND t.type = 'store')
+          )
+    ) THEN
+        RAISE EXCEPTION
+            'Tài khoản được phân quyền không thuộc cùng team với leader.'
+            USING ERRCODE = 'P0004';
+    END IF;
+
+    -- 5. Nếu đã có quyền thì cập nhật
+    RETURN QUERY
+    UPDATE depot_role dr
+    SET is_lock = p_is_lock
+    WHERE dr.depot_id = p_depot_id
+      AND dr.account_id = p_account_id
+      AND dr.type = p_type
+    RETURNING dr.*;
+
+    -- 6. Nếu chưa có quyền thì thêm mới
+    IF NOT FOUND THEN
+        RETURN QUERY
+        INSERT INTO depot_role (
+            type,
+            is_lock,
+            is_delete,
+            depot_id,
+            account_id
+        )
+        VALUES (
+            p_type,
+            p_is_lock,
+            FALSE,
+            p_depot_id,
+            p_account_id
+        )
+        RETURNING *;
+    END IF;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION leader_set_depot_role_for_one_team (
+    p_type VARCHAR(50),
+    p_is_lock BOOLEAN,
+    p_depot_id UUID,
+    p_team_id UUID,
+    p_leader_account_id UUID
+)
+RETURNS SETOF depot_role
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_admin_account_id UUID;
+BEGIN
+    -- 1. Kiểm tra loại quyền hợp lệ
+    IF p_type IS NULL OR p_type NOT IN ('sales', 'store') THEN
+        RAISE EXCEPTION 'Loại quyền không hợp lệ: %.', p_type
+            USING ERRCODE = 'P0001';
+    END IF;
+
+    -- 2. Kiểm tra depot và shop tồn tại, chưa bị xóa
+    -- Lấy tài khoản chủ shop
+    SELECT s.account_id
+    INTO v_admin_account_id
+    FROM depot d
+    JOIN shop s ON s.id = d.shop_id
+    WHERE d.id = p_depot_id
+      AND d.is_delete = FALSE
+      AND s.is_delete = FALSE;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION
+            'Depot không tồn tại hoặc shop quản lý depot đã bị xóa.'
+            USING ERRCODE = 'P0002';
+    END IF;
+
+    -- 3. Kiểm tra leader thuộc team của admin sở hữu shop
+    IF NOT EXISTS (
+        SELECT 1
+        FROM team t
+        JOIN team_member tm ON tm.team_id = t.id
+        WHERE t.id = p_team_id
+          AND t.account_id = v_admin_account_id
+          AND t.is_delete = FALSE
+          AND tm.account_id = p_leader_account_id
+          AND tm.role = 'leader'
+          AND tm.is_delete = FALSE
+          AND (
+              (p_type = 'sales' AND t.type = 'sales')
+              OR
+              (p_type = 'store' AND t.type = 'store')
+          )
+    ) THEN
+        RAISE EXCEPTION
+            'Leader không thuộc team hợp lệ của admin sở hữu shop.'
+            USING ERRCODE = 'P0003';
+    END IF;
+
+    -- 4. Cập nhật hoặc tạo depot_role cho tất cả thành viên
+    -- Bao gồm cả thành viên đã bị xóa mềm
+    RETURN QUERY
+    INSERT INTO depot_role AS dr (
+        type,
+        is_lock,
+        is_delete,
+        depot_id,
+        account_id
+    )
+    SELECT
+        p_type,
+        p_is_lock,
+        FALSE,
+        p_depot_id,
+        tm.account_id
+    FROM team_member tm
+    WHERE tm.team_id = p_team_id
+    ON CONFLICT (depot_id, account_id, type)
+    DO UPDATE SET
+        is_lock = EXCLUDED.is_lock,
+        is_delete = FALSE
+    RETURNING dr.*;
+
+END;
+$$;
+
+
 CREATE OR REPLACE FUNCTION create_depot (
     p_name VARCHAR(50),
     p_description VARCHAR(255),

@@ -18,6 +18,9 @@ const List = () => {
     const deleted_team_member: Team_Member_Field | undefined = useSelector(
         (state: RootState) => state.Team_Detail_Slice.deleted_team_member
     );
+    const team_leader: Team_Member_Field | undefined = useSelector(
+        (state: RootState) => state.Team_Detail_Slice.team_leader
+    );
 
     const [team_members, set__team_members] = useState<Team_Member_Field[]>([]);
     const limit = 15;
@@ -68,7 +71,10 @@ const List = () => {
 
     return (
         <div className={style.parent}>
-            <div>{list}</div>
+            <div>
+                {team_leader && <OneMember data={team_leader} index={0} />}
+                {list}
+            </div>
             <div>{has_more && <div onClick={() => handle_See_More()}>{SEE_MORE}</div>}</div>
         </div>
     );

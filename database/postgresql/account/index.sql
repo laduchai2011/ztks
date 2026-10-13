@@ -69,9 +69,10 @@ CREATE TABLE team (
 
 	CONSTRAINT fk_team_account_id FOREIGN KEY (account_id) REFERENCES account(id),
     CONSTRAINT type_team
-        CHECK (type IN ('sale', 'store'))
+        CHECK (type IN ('sales', 'store'))
 );
 CREATE INDEX idx_team_account_id ON team(account_id);
+
 
 CREATE TABLE team_member (
     id UUID PRIMARY KEY DEFAULT uuidv7(),

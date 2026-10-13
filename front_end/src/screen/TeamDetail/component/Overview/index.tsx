@@ -118,7 +118,7 @@ const Overview = () => {
 
     const handle_Type_Class = () => {
         switch (team?.type) {
-            case Team_Type_Enum.SALE: {
+            case Team_Type_Enum.SALES: {
                 return style.sale;
             }
             case Team_Type_Enum.STORE: {
@@ -306,7 +306,7 @@ const Overview = () => {
                     />
                 </div>
                 <div className={style.name}>{`${leader_account.first_name} ${leader_account.last_name}`}</div>
-                <div className={`${style.type} ${handle_Type_Class()}`}>Sales</div>
+                <div className={`${style.type} ${handle_Type_Class()}`}>{team.type}</div>
                 <div className={style.icons}>
                     {team.is_lock && <FaLock onClick={() => handle_Lock(false)} size={20} color="red" />}
                     {!team.is_lock && <FaLockOpen onClick={() => handle_Lock(true)} size={20} color="gray" />}

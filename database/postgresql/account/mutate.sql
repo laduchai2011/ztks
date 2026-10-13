@@ -893,7 +893,7 @@ BEGIN
           AND tm_leader.account_id = p_leader_account_id
           AND tm_leader.role = 'leader'
           AND tm_leader.is_delete = FALSE
-          AND tm_leader.is_lock = FALSE
+          -- AND tm_leader.is_lock = FALSE
     ) THEN
         RAISE EXCEPTION 'Account is not the leader of this team';
     END IF;

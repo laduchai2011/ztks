@@ -1,9 +1,9 @@
 export enum Team_Type_Enum {
-    SALE = 'sale',
+    SALES = 'sales',
     STORE = 'store',
 }
 
-export type Team_Type_Type = Team_Type_Enum.SALE | Team_Type_Enum.STORE;
+export type Team_Type_Type = Team_Type_Enum.SALES | Team_Type_Enum.STORE;
 
 export enum Team_Member_Role_Enum {
     LEADER = 'leader',

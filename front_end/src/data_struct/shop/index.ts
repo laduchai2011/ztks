@@ -59,9 +59,16 @@ export interface Shop_Pay_Field {
     create_time: string;
 }
 
+export enum Shop_Role_Type_Enum {
+    SALES = 'sales',
+    STORE = 'store',
+}
+
+export type Shop_Role_Type_Type = Shop_Role_Type_Enum.SALES | Shop_Role_Type_Enum.STORE;
+
 export interface Shop_Role_Field {
     id: string;
-    type: string;
+    type: Shop_Role_Type_Type;
     is_lock: boolean;
     is_delete: boolean;
     shop_id: string;
