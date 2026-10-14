@@ -312,7 +312,7 @@ BEGIN
         WHERE tm.team_id = v_leader_team_id
           AND tm.account_id = p_account_id
           AND tm.is_delete = FALSE
-          AND tm.is_lock = FALSE
+          -- AND tm.is_lock = FALSE
           AND a.is_delete = FALSE
           AND COALESCE(ai.added_by_id, ai.account_id)
               = v_admin_account_id
@@ -1602,5 +1602,366 @@ BEGIN
     INTO v_shop_pay;
 
     RETURN v_shop_pay;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION add_team_shop (
+    p_shop_id UUID,
+    p_team_id UUID,
+    p_admin_account_id UUID
+)
+RETURNS team_shop
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_team_shop team_shop%ROWTYPE;
+BEGIN
+    -- Kiểm tra shop thuộc admin và chưa bị xóa
+    IF NOT EXISTS (
+        SELECT 1
+        FROM shop s
+        WHERE s.id = p_shop_id
+          AND s.account_id = p_admin_account_id
+          AND s.is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION
+            'Shop không tồn tại, đã bị xóa hoặc không thuộc quyền quản lý của admin';
+    END IF;
+
+    -- Kiểm tra team thuộc admin và chưa bị xóa
+    IF NOT EXISTS (
+        SELECT 1
+        FROM team t
+        WHERE t.id = p_team_id
+          AND t.account_id = p_admin_account_id
+          AND t.is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION
+            'Team không tồn tại, đã bị xóa hoặc không thuộc quyền quản lý của admin';
+    END IF;
+
+    -- Thêm mới hoặc khôi phục liên kết
+    INSERT INTO team_shop (
+        shop_id,
+        team_id
+    )
+    VALUES (
+        p_shop_id,
+        p_team_id
+    )
+    ON CONFLICT (team_id, shop_id)
+    DO UPDATE SET
+        is_delete = FALSE
+    RETURNING * INTO v_team_shop;
+
+    RETURN v_team_shop;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION lock_team_shop (
+    p_id UUID,
+    p_is_lock BOOLEAN,
+    p_admin_account_id UUID
+)
+RETURNS team_shop
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_team_shop team_shop%ROWTYPE;
+BEGIN
+    -- Kiểm tra liên kết và quyền sở hữu
+    IF NOT EXISTS (
+        SELECT 1
+        FROM team_shop ts
+        INNER JOIN shop s
+            ON s.id = ts.shop_id
+        INNER JOIN team t
+            ON t.id = ts.team_id
+        WHERE ts.id = p_id
+          AND ts.is_delete = FALSE
+          AND s.is_delete = FALSE
+          AND t.is_delete = FALSE
+          AND s.account_id = p_admin_account_id
+          AND t.account_id = p_admin_account_id
+    ) THEN
+        RAISE EXCEPTION
+            'Liên kết team-shop không tồn tại, đã bị xóa hoặc không thuộc quyền quản lý của admin';
+    END IF;
+
+    UPDATE team_shop
+    SET is_lock = p_is_lock
+    WHERE id = p_id
+      AND is_delete = FALSE
+    RETURNING * INTO v_team_shop;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION
+            'Không thể cập nhật trạng thái khóa team-shop';
+    END IF;
+
+    RETURN v_team_shop;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION add_team_shop_depot (
+    p_team_shop_id UUID,
+    p_depot_id UUID,
+    p_admin_account_id UUID
+)
+RETURNS team_shop_depot
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_team_shop_depot team_shop_depot%ROWTYPE;
+BEGIN
+    -- Kiểm tra team_shop, shop, team và quyền sở hữu admin
+    IF NOT EXISTS (
+        SELECT 1
+        FROM team_shop ts
+        INNER JOIN shop s
+            ON s.id = ts.shop_id
+        INNER JOIN team t
+            ON t.id = ts.team_id
+        WHERE ts.id = p_team_shop_id
+          AND ts.is_delete = FALSE
+          AND s.is_delete = FALSE
+          AND t.is_delete = FALSE
+          AND s.account_id = p_admin_account_id
+          AND t.account_id = p_admin_account_id
+    ) THEN
+        RAISE EXCEPTION
+            'Liên kết team-shop không hợp lệ hoặc không thuộc quyền quản lý của admin';
+    END IF;
+
+    -- Depot phải thuộc đúng shop và chưa bị xóa
+    IF NOT EXISTS (
+        SELECT 1
+        FROM depot d
+        INNER JOIN team_shop ts
+            ON ts.shop_id = d.shop_id
+        WHERE ts.id = p_team_shop_id
+          AND d.id = p_depot_id
+          AND ts.is_delete = FALSE
+          AND d.is_delete = FALSE
+    ) THEN
+        RAISE EXCEPTION
+            'Depot không tồn tại, đã bị xóa hoặc không thuộc shop được liên kết';
+    END IF;
+
+    INSERT INTO team_shop_depot (
+        depot_id,
+        team_shop_id
+    )
+    VALUES (
+        p_depot_id,
+        p_team_shop_id
+    )
+    ON CONFLICT (team_shop_id, depot_id)
+    DO UPDATE SET
+        is_lock = FALSE,
+        is_delete = FALSE
+    RETURNING * INTO v_team_shop_depot;
+
+    RETURN v_team_shop_depot;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION lock_team_shop_depot (
+    p_id UUID,
+    p_is_lock BOOLEAN,
+    p_admin_account_id UUID
+)
+RETURNS team_shop_depot
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_team_shop_depot team_shop_depot%ROWTYPE;
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM team_shop_depot tsd
+        INNER JOIN team_shop ts
+            ON ts.id = tsd.team_shop_id
+        INNER JOIN shop s
+            ON s.id = ts.shop_id
+        INNER JOIN team t
+            ON t.id = ts.team_id
+        INNER JOIN depot d
+            ON d.id = tsd.depot_id
+           AND d.shop_id = s.id
+        WHERE tsd.id = p_id
+          AND tsd.is_delete = FALSE
+          AND ts.is_delete = FALSE
+          AND s.is_delete = FALSE
+          AND t.is_delete = FALSE
+          AND d.is_delete = FALSE
+          AND s.account_id = p_admin_account_id
+          AND t.account_id = p_admin_account_id
+    ) THEN
+        RAISE EXCEPTION
+            'Liên kết team-shop-depot không hợp lệ, đã bị xóa hoặc không thuộc quyền quản lý của admin';
+    END IF;
+
+    UPDATE team_shop_depot
+    SET is_lock = p_is_lock
+    WHERE id = p_id
+      AND is_delete = FALSE
+    RETURNING * INTO v_team_shop_depot;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION
+            'Không thể cập nhật trạng thái khóa team-shop-depot';
+    END IF;
+
+    RETURN v_team_shop_depot;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION add_team_shop_depot_store (
+    p_team_shop_depot_id UUID,
+    p_store_id UUID,
+    p_admin_account_id UUID
+)
+RETURNS team_shop_depot_store
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_team_shop_depot_store team_shop_depot_store%ROWTYPE;
+BEGIN
+    -- Kiểm tra toàn bộ quan hệ và quyền sở hữu
+    IF NOT EXISTS (
+        SELECT 1
+        FROM team_shop_depot tsd
+        INNER JOIN team_shop ts
+            ON ts.id = tsd.team_shop_id
+        INNER JOIN shop s
+            ON s.id = ts.shop_id
+        INNER JOIN team t
+            ON t.id = ts.team_id
+        INNER JOIN depot d
+            ON d.id = tsd.depot_id
+           AND d.shop_id = s.id
+        WHERE tsd.id = p_team_shop_depot_id
+          AND tsd.is_delete = FALSE
+          AND ts.is_delete = FALSE
+          AND s.is_delete = FALSE
+          AND t.is_delete = FALSE
+          AND d.is_delete = FALSE
+          AND s.account_id = p_admin_account_id
+          AND t.account_id = p_admin_account_id
+    ) THEN
+        RAISE EXCEPTION
+            'Liên kết team-shop-depot không hợp lệ hoặc không thuộc quyền quản lý của admin';
+    END IF;
+
+    -- Store phải thuộc đúng depot được liên kết
+    IF NOT EXISTS (
+        SELECT 1
+        FROM store st
+        INNER JOIN depot d
+            ON d.id = st.depot_id
+        INNER JOIN team_shop_depot tsd
+            ON tsd.depot_id = d.id
+        INNER JOIN team_shop ts
+            ON ts.id = tsd.team_shop_id
+        INNER JOIN shop s
+            ON s.id = ts.shop_id
+           AND s.id = d.shop_id
+        INNER JOIN team t
+            ON t.id = ts.team_id
+        WHERE tsd.id = p_team_shop_depot_id
+          AND st.id = p_store_id
+          AND st.is_delete = FALSE
+          AND d.is_delete = FALSE
+          AND tsd.is_delete = FALSE
+          AND ts.is_delete = FALSE
+          AND s.is_delete = FALSE
+          AND t.is_delete = FALSE
+          AND s.account_id = p_admin_account_id
+          AND t.account_id = p_admin_account_id
+    ) THEN
+        RAISE EXCEPTION
+            'Store không tồn tại, đã bị xóa hoặc không thuộc depot được liên kết';
+    END IF;
+
+    INSERT INTO team_shop_depot_store (
+        store_id,
+        team_shop_depot_id
+    )
+    VALUES (
+        p_store_id,
+        p_team_shop_depot_id
+    )
+    ON CONFLICT (team_shop_depot_id, store_id)
+    DO UPDATE SET
+        is_lock = FALSE,
+        is_delete = FALSE
+    RETURNING * INTO v_team_shop_depot_store;
+
+    RETURN v_team_shop_depot_store;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION lock_team_shop_depot_store (
+    p_id UUID,
+    p_is_lock BOOLEAN,
+    p_admin_account_id UUID
+)
+RETURNS team_shop_depot_store
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_team_shop_depot_store team_shop_depot_store%ROWTYPE;
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM team_shop_depot_store tsds
+        INNER JOIN team_shop_depot tsd
+            ON tsd.id = tsds.team_shop_depot_id
+        INNER JOIN team_shop ts
+            ON ts.id = tsd.team_shop_id
+        INNER JOIN shop s
+            ON s.id = ts.shop_id
+        INNER JOIN team t
+            ON t.id = ts.team_id
+        INNER JOIN depot d
+            ON d.id = tsd.depot_id
+           AND d.shop_id = s.id
+        INNER JOIN store st
+            ON st.id = tsds.store_id
+           AND st.depot_id = d.id
+        WHERE tsds.id = p_id
+          AND tsds.is_delete = FALSE
+          AND tsd.is_delete = FALSE
+          AND ts.is_delete = FALSE
+          AND s.is_delete = FALSE
+          AND t.is_delete = FALSE
+          AND d.is_delete = FALSE
+          AND st.is_delete = FALSE
+          AND s.account_id = p_admin_account_id
+          AND t.account_id = p_admin_account_id
+    ) THEN
+        RAISE EXCEPTION
+            'Liên kết team-shop-depot-store không hợp lệ, đã bị xóa hoặc không thuộc quyền quản lý của admin';
+    END IF;
+
+    UPDATE team_shop_depot_store
+    SET is_lock = p_is_lock
+    WHERE id = p_id
+      AND is_delete = FALSE
+    RETURNING * INTO v_team_shop_depot_store;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION
+            'Không thể cập nhật trạng thái khóa team-shop-depot-store';
+    END IF;
+
+    RETURN v_team_shop_depot_store;
 END;
 $$;

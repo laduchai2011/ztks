@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { FaLock, FaLockOpen } from 'react-icons/fa';
 import { set__is_show_shop_list_dialog } from '@src/redux/slice/Team_Detail';
-import { Shop_Field, Shop_Role_Statistics_Field } from '@src/data_struct/shop';
+import { Shop_Field, Shop_Role_Statistics_Field, Shop_Role_Type_Type } from '@src/data_struct/shop';
 import { Team_Field } from '@src/data_struct/team';
 import { useLazy_get_Shop_Role_Statistics_For_One_Team_Query } from '@src/redux/query/shop_RTK';
 import { useLazy_get_Team_By_Id_Query } from '@src/redux/query/team_RTK';
@@ -49,7 +49,12 @@ const SelectedShop = () => {
         if (!selected_shop) return;
         if (!team) return;
 
-        get_Shop_Role_Statistics_For_One_Team({ team_id: id, shop_id: selected_shop.id, type: team.type })
+        const _type = team.type as unknown as Shop_Role_Type_Type;
+        get_Shop_Role_Statistics_For_One_Team({
+            team_id: id,
+            shop_id: selected_shop.id,
+            type: _type,
+        })
             .then((res) => {
                 const res_data = res.data;
                 if (res_data?.is_success && res_data.data) {

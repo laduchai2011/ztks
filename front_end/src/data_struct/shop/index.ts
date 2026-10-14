@@ -85,3 +85,30 @@ export interface Shop_Role_Statistics_Field {
     total_members: number;
     locked_members: number;
 }
+
+export enum Depot_Role_Type_Enum {
+    SALES = 'sales',
+    STORE = 'store',
+}
+
+export type Depot_Role_Type_Type = Depot_Role_Type_Enum.SALES | Depot_Role_Type_Enum.STORE;
+
+export interface Depot_Role_Field {
+    id: string;
+    type: Depot_Role_Type_Type;
+    is_lock: boolean;
+    is_delete: boolean;
+    depot_id: string;
+    account_id: string;
+    create_time: string;
+}
+
+export interface Cursor_Depot_Role_Field {
+    items: Depot_Role_Field[];
+    next_cursor: string | null;
+}
+
+export interface Depot_Role_Statistics_Field {
+    total_members: number;
+    locked_members: number;
+}

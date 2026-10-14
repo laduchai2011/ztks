@@ -9,11 +9,11 @@ import { MdDelete } from 'react-icons/md';
 import { Team_Field, Team_Member_Field } from '@src/data_struct/team';
 import { Lock_Team_Member_Body_Field } from '@src/data_struct/team/body';
 import { Account_Field, Account_Information_Field, account_type_enum } from '@src/data_struct/account';
-import { Shop_Field, Shop_Role_Type_Enum, Shop_Role_Type_Type } from '@src/data_struct/shop';
-import {
-    Admin_Set_Shop_Role_For_One_Account_Body_Field,
-    Leader_Set_Shop_Role_For_One_Account_Body_Field,
-} from '@src/data_struct/shop/body';
+import { Shop_Field, Shop_Role_Type_Type } from '@src/data_struct/shop';
+// import {
+//     Admin_Set_Shop_Role_For_One_Account_Body_Field,
+//     Leader_Set_Shop_Role_For_One_Account_Body_Field,
+// } from '@src/data_struct/shop/body';
 import { useLazy_get_Account_With_Id_Query } from '@src/redux/query/account_RTK';
 import {
     useLazy_get_Shop_Role_For_One_Account_Query,
@@ -82,7 +82,11 @@ const OneMember: FC<{ data: Team_Member_Field; index: number }> = ({ data, index
         if (!selected_shop) return;
         if (!team) return;
 
-        get_Shop_Role_For_One_Account({ account_id: data.account_id, shop_id: selected_shop.id, type: team.type })
+        get_Shop_Role_For_One_Account({
+            account_id: data.account_id,
+            shop_id: selected_shop.id,
+            type: team.type as unknown as Shop_Role_Type_Type,
+        })
             .then((res) => {
                 const res_data = res.data;
                 if (res_data?.is_success && res_data.data) {
@@ -171,7 +175,7 @@ const OneMember: FC<{ data: Team_Member_Field; index: number }> = ({ data, index
         ) {
             // admin do it
             admin_Set_Shop_Role_For_One_Account({
-                type: team.type,
+                type: team.type as unknown as Shop_Role_Type_Type,
                 is_lock: is_lock,
                 shop_id: selected_shop.id,
                 account_id: data.account_id,
@@ -189,7 +193,7 @@ const OneMember: FC<{ data: Team_Member_Field; index: number }> = ({ data, index
         } else if (team_leader.account_id === account_information.account_id) {
             // leader do it
             leader_Set_Shop_Role_For_One_Account({
-                type: team.type,
+                type: team.type as unknown as Shop_Role_Type_Type,
                 is_lock: is_lock,
                 shop_id: selected_shop.id,
                 account_id: data.account_id,

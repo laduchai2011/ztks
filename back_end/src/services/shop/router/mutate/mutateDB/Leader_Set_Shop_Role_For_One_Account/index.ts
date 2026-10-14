@@ -13,6 +13,7 @@ class MutateDB_Leader_Set_Shop_Role_For_One_Account {
 
     async run(): Promise<Shop_Role_Field | undefined> {
         if (this._leader_set_shop_role_for_one_account_body !== undefined) {
+            console.log(111111, this._leader_set_shop_role_for_one_account_body);
             const client = await pool.connect();
 
             try {
