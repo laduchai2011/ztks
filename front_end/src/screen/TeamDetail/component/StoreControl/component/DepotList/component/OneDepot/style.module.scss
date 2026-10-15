@@ -1,0 +1,20 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    @include center-of-row;
+    box-sizing: border-box;
+    padding: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
+    width: min-content;
+
+    > div {
+        font-weight: 500;
+        margin: 0 5px;
+        width: max-content;
+    }
+
+    > svg {
+        margin: 0 5px;
+    }
+}

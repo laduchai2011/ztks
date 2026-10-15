@@ -1,15 +1,21 @@
 import { memo } from 'react';
 import style from './style.module.scss';
-import SelectedShop from './component/SelectedShop';
-import SelectedDepot from './component/SelectedDepot';
-import SelectedStore from './component/SelectedStore';
+import ShopList from './component/ShopList';
+import DepotList from './component/DepotList';
+import StoreList from './component/StoreList';
+// import SelectedShop from './component/SelectedShop';
+// import SelectedDepot from './component/SelectedDepot';
+// import SelectedStore from './component/SelectedStore';
 
 const StoreControl = () => {
     return (
         <div className={style.parent}>
-            <SelectedShop />
+            <ShopList />
+            <DepotList />
+            <StoreList />
+            {/* <SelectedShop />
             <SelectedDepot />
-            <SelectedStore />
+            <SelectedStore /> */}
         </div>
     );
 };
