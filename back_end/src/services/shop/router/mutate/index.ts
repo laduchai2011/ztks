@@ -23,6 +23,7 @@ import Handle_Lock_Team_Shop from './handle/Lock_Team_Shop';
 import Handle_Add_Team_Shop_Depot from './handle/Add_Team_Shop_Depot';
 import Handle_Lock_Team_Shop_Depot from './handle/Lock_Team_Shop_Depot';
 import Handle_Add_Team_Shop_Depot_Store from './handle/Add_Team_Shop_Depot_Store';
+import Handle_Lock_Team_Shop_Depot_Store from './handle/Lock_Team_Shop_Depot_Store';
 
 dotenv.config();
 
@@ -50,6 +51,7 @@ const handle_lock_team_shop = new Handle_Lock_Team_Shop();
 const handle_add_team_shop_depot = new Handle_Add_Team_Shop_Depot();
 const handle_lock_team_shop_depot = new Handle_Lock_Team_Shop_Depot();
 const handle_add_team_shop_depot_store = new Handle_Add_Team_Shop_Depot_Store();
+const handle_lock_team_shop_depot_store = new Handle_Lock_Team_Shop_Depot_Store();
 
 router_mutate_shop.post('/create_shop', authentication, handle_create_shop.setup, handle_create_shop.main);
 
@@ -148,6 +150,13 @@ router_mutate_shop.post(
     authentication,
     handle_add_team_shop_depot_store.setup,
     handle_add_team_shop_depot_store.main
+);
+
+router_mutate_shop.post(
+    '/lock_team_shop_depot_store',
+    authentication,
+    handle_lock_team_shop_depot_store.setup,
+    handle_lock_team_shop_depot_store.main
 );
 
 export default router_mutate_shop;

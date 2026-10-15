@@ -15,11 +15,11 @@ import { Shop_Field, Shop_Role_Type_Type } from '@src/data_struct/shop';
 //     Leader_Set_Shop_Role_For_One_Account_Body_Field,
 // } from '@src/data_struct/shop/body';
 import { useLazy_get_Account_With_Id_Query } from '@src/redux/query/account_RTK';
-import {
-    useLazy_get_Shop_Role_For_One_Account_Query,
-    use_admin_Set_Shop_Role_For_One_Account_Mutation,
-    use_leader_Set_Shop_Role_For_One_Account_Mutation,
-} from '@src/redux/query/shop_RTK';
+// import {
+//     useLazy_get_Shop_Role_For_One_Account_Query,
+//     use_admin_Set_Shop_Role_For_One_Account_Mutation,
+//     use_leader_Set_Shop_Role_For_One_Account_Mutation,
+// } from '@src/redux/query/shop_RTK';
 import { useLazy_get_Team_By_Id_Query } from '@src/redux/query/team_RTK';
 import { use_lock_Team_Member_Mutation } from '@src/redux/query/team_RTK';
 import { handleSrcImage } from '@src/utility/string';
@@ -49,9 +49,9 @@ const OneMember: FC<{ data: Team_Member_Field; index: number }> = ({ data, index
     const [get_Account] = useLazy_get_Account_With_Id_Query();
     const [lock_Team_Member] = use_lock_Team_Member_Mutation();
     const [get_Team_By_Id] = useLazy_get_Team_By_Id_Query();
-    const [get_Shop_Role_For_One_Account] = useLazy_get_Shop_Role_For_One_Account_Query();
-    const [admin_Set_Shop_Role_For_One_Account] = use_admin_Set_Shop_Role_For_One_Account_Mutation();
-    const [leader_Set_Shop_Role_For_One_Account] = use_leader_Set_Shop_Role_For_One_Account_Mutation();
+    // const [get_Shop_Role_For_One_Account] = useLazy_get_Shop_Role_For_One_Account_Query();
+    // const [admin_Set_Shop_Role_For_One_Account] = use_admin_Set_Shop_Role_For_One_Account_Mutation();
+    // const [leader_Set_Shop_Role_For_One_Account] = use_leader_Set_Shop_Role_For_One_Account_Mutation();
 
     useEffect(() => {
         get_Account({ id: team_member.account_id }).then((res) => {
@@ -78,25 +78,25 @@ const OneMember: FC<{ data: Team_Member_Field; index: number }> = ({ data, index
         get_Infor();
     }, [id, get_Team_By_Id]);
 
-    useEffect(() => {
-        if (!selected_shop) return;
-        if (!team) return;
+    // useEffect(() => {
+    //     if (!selected_shop) return;
+    //     if (!team) return;
 
-        get_Shop_Role_For_One_Account({
-            account_id: data.account_id,
-            shop_id: selected_shop.id,
-            type: team.type as unknown as Shop_Role_Type_Type,
-        })
-            .then((res) => {
-                const res_data = res.data;
-                if (res_data?.is_success && res_data.data) {
-                    set__is_lock_shop(res_data.data.is_lock);
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-    }, [id, get_Shop_Role_For_One_Account, selected_shop, data, team]);
+    //     get_Shop_Role_For_One_Account({
+    //         account_id: data.account_id,
+    //         shop_id: selected_shop.id,
+    //         type: team.type as unknown as Shop_Role_Type_Type,
+    //     })
+    //         .then((res) => {
+    //             const res_data = res.data;
+    //             if (res_data?.is_success && res_data.data) {
+    //                 set__is_lock_shop(res_data.data.is_lock);
+    //             }
+    //         })
+    //         .catch((err) => {
+    //             console.error(err);
+    //         });
+    // }, [id, get_Shop_Role_For_One_Account, selected_shop, data, team]);
 
     const handle_Lock = (is_lock: boolean) => {
         if (!account_information) {
@@ -163,60 +163,60 @@ const OneMember: FC<{ data: Team_Member_Field; index: number }> = ({ data, index
         dispatch(set__selected_delete_team_member(team_member));
     };
 
-    const handle_Set_Shop_Role_For_One_Account = (is_lock: boolean) => {
-        if (!team) return;
-        if (!selected_shop) return;
-        if (!account_information) return;
-        if (!team_leader) return;
+    // const handle_Set_Shop_Role_For_One_Account = (is_lock: boolean) => {
+    //     if (!team) return;
+    //     if (!selected_shop) return;
+    //     if (!account_information) return;
+    //     if (!team_leader) return;
 
-        if (
-            account_information.account_id === account_information?.added_by_id &&
-            account_information.account_type === account_type_enum.ADMIN
-        ) {
-            // admin do it
-            admin_Set_Shop_Role_For_One_Account({
-                type: team.type as unknown as Shop_Role_Type_Type,
-                is_lock: is_lock,
-                shop_id: selected_shop.id,
-                account_id: data.account_id,
-                admin_account_id: account_information.account_id,
-            })
-                .then((res) => {
-                    const res_data = res.data;
-                    if (res_data?.is_success && res_data.data) {
-                        set__is_lock_shop(res_data.data.is_lock);
-                    }
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
-        } else if (team_leader.account_id === account_information.account_id) {
-            // leader do it
-            leader_Set_Shop_Role_For_One_Account({
-                type: team.type as unknown as Shop_Role_Type_Type,
-                is_lock: is_lock,
-                shop_id: selected_shop.id,
-                account_id: data.account_id,
-                leader_account_id: account_information.account_id,
-            })
-                .then((res) => {
-                    const res_data = res.data;
-                    if (res_data?.is_success && res_data.data) {
-                        set__is_lock_shop(res_data.data.is_lock);
-                    }
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
-        } else {
-            dispatch(
-                global_set__data__toast_message({
-                    message: 'Bạn không có quyền này !',
-                    type: messageType_enum.WARN,
-                })
-            );
-        }
-    };
+    //     if (
+    //         account_information.account_id === account_information?.added_by_id &&
+    //         account_information.account_type === account_type_enum.ADMIN
+    //     ) {
+    //         // admin do it
+    //         admin_Set_Shop_Role_For_One_Account({
+    //             type: team.type as unknown as Shop_Role_Type_Type,
+    //             is_lock: is_lock,
+    //             shop_id: selected_shop.id,
+    //             account_id: data.account_id,
+    //             admin_account_id: account_information.account_id,
+    //         })
+    //             .then((res) => {
+    //                 const res_data = res.data;
+    //                 if (res_data?.is_success && res_data.data) {
+    //                     set__is_lock_shop(res_data.data.is_lock);
+    //                 }
+    //             })
+    //             .catch((err) => {
+    //                 console.error(err);
+    //             });
+    //     } else if (team_leader.account_id === account_information.account_id) {
+    //         // leader do it
+    //         leader_Set_Shop_Role_For_One_Account({
+    //             type: team.type as unknown as Shop_Role_Type_Type,
+    //             is_lock: is_lock,
+    //             shop_id: selected_shop.id,
+    //             account_id: data.account_id,
+    //             leader_account_id: account_information.account_id,
+    //         })
+    //             .then((res) => {
+    //                 const res_data = res.data;
+    //                 if (res_data?.is_success && res_data.data) {
+    //                     set__is_lock_shop(res_data.data.is_lock);
+    //                 }
+    //             })
+    //             .catch((err) => {
+    //                 console.error(err);
+    //             });
+    //     } else {
+    //         dispatch(
+    //             global_set__data__toast_message({
+    //                 message: 'Bạn không có quyền này !',
+    //                 type: messageType_enum.WARN,
+    //             })
+    //         );
+    //     }
+    // };
 
     return (
         <div className={style.parent}>
@@ -237,12 +237,12 @@ const OneMember: FC<{ data: Team_Member_Field; index: number }> = ({ data, index
                 </div>
             </div>
             <div className={style.row2}>
-                {selected_shop && is_lock_shop && (
+                {/* {selected_shop && is_lock_shop && (
                     <FaLock onClick={() => handle_Set_Shop_Role_For_One_Account(false)} size={16} color="#FF5C87" />
                 )}
                 {selected_shop && !is_lock_shop && (
                     <FaLockOpen onClick={() => handle_Set_Shop_Role_For_One_Account(true)} size={16} color="gray" />
-                )}
+                )} */}
                 {/* {is_lock_shop && <FaLock size={16} color="#FF5C87" />}
                 {!is_lock_shop && <FaLockOpen size={16} color="gray" />}
                 {is_lock_shop && <FaLock size={16} color="#FF5C87" />}

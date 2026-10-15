@@ -112,3 +112,45 @@ export interface Depot_Role_Statistics_Field {
     total_members: number;
     locked_members: number;
 }
+
+export interface Team_Shop_Field {
+    id: string;
+    is_lock: boolean;
+    is_delete: boolean;
+    shop_id: string;
+    team_id: string;
+    create_time: string;
+}
+
+export interface Cursor_Team_Shop_Field {
+    items: Team_Shop_Field[];
+    next_cursor: string | null;
+}
+
+export interface Team_Shop_Depot_Field {
+    id: string;
+    is_lock: boolean;
+    is_delete: boolean;
+    depot_id: string;
+    team_shop_id: string;
+    create_time: string;
+}
+
+export interface Cursor_Team_Shop_Depot_Field {
+    items: Team_Shop_Depot_Field[];
+    next_cursor: string | null;
+}
+
+export interface Team_Shop_Depot_Store_Field {
+    id: string;
+    is_lock: boolean;
+    is_delete: boolean;
+    store_id: string;
+    team_shop_depot_id: string;
+    create_time: string;
+}
+
+export interface Cursor_Team_Shop_Depot_Store_Field {
+    items: Team_Shop_Depot_Store_Field[];
+    next_cursor: string | null;
+}

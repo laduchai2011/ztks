@@ -10,6 +10,12 @@ import {
     Shop_Role_Statistics_Field,
     Depot_Role_Field,
     Depot_Role_Statistics_Field,
+    Team_Shop_Field,
+    Team_Shop_Depot_Field,
+    Team_Shop_Depot_Store_Field,
+    Cursor_Team_Shop_Field,
+    Cursor_Team_Shop_Depot_Field,
+    Cursor_Team_Shop_Depot_Store_Field,
 } from '@src/data_struct/shop';
 import {
     Get_My_Shops_Body_Field,
@@ -37,6 +43,15 @@ import {
     Admin_Set_Depot_Role_For_One_Team_Body_Field,
     Leader_Set_Depot_Role_For_One_Account_Body_Field,
     Leader_Set_Depot_Role_For_One_Team_Body_Field,
+    Get_Team_Shops_Body_Field,
+    Get_Team_Shop_Depots_Body_Field,
+    Get_Team_Shop_Depot_Stores_Body_Field,
+    Add_Team_Shop_Body_Field,
+    Add_Team_Shop_Depot_Body_Field,
+    Add_Team_Shop_Depot_Store_Body_Field,
+    Lock_Team_Shop_Body_Field,
+    Lock_Team_Shop_Depot_Body_Field,
+    Lock_Team_Shop_Depot_Store_Body_Field,
 } from '@src/data_struct/shop/body';
 import { SHOP_API } from '@src/const/api/shop';
 import { My_Response_Field } from '@src/data_struct/response';
@@ -52,7 +67,18 @@ export const shop_RTK = createApi({
             return headers;
         },
     }),
-    tagTypes: ['Shop', 'Depot', 'Store', 'Shop_Role_Statistics', 'Shop_Role', 'Depot_Role_Statistics', 'Depot_Role'],
+    tagTypes: [
+        'Shop',
+        'Depot',
+        'Store',
+        'Shop_Role_Statistics',
+        'Shop_Role',
+        'Depot_Role_Statistics',
+        'Depot_Role',
+        'Team_Shop',
+        'Team_Shop_Depot',
+        'Team_Shop_Depot_Store',
+    ],
     endpoints: (builder) => ({
         _get_My_Shops_: builder.query<My_Response_Field<Cursor_Shop_Field>, Get_My_Shops_Body_Field>({
             query: (body) => ({
@@ -96,6 +122,57 @@ export const shop_RTK = createApi({
                 ...(result?.data?.items ?? []).map((store) => ({
                     type: 'Store' as const,
                     id: store.id,
+                })),
+            ],
+        }),
+        _get_Team_Shops_: builder.query<My_Response_Field<Cursor_Team_Shop_Field>, Get_Team_Shops_Body_Field>({
+            query: (body) => ({
+                url: SHOP_API.GET_TEAM_SHOPS,
+                method: 'POST',
+                body,
+            }),
+            providesTags: (result) => [
+                { type: 'Team_Shop', id: 'LIST' },
+
+                ...(result?.data?.items ?? []).map((team_shop) => ({
+                    type: 'Team_Shop' as const,
+                    id: team_shop.id,
+                })),
+            ],
+        }),
+        _get_Team_Shop_Depots_: builder.query<
+            My_Response_Field<Cursor_Team_Shop_Depot_Field>,
+            Get_Team_Shop_Depots_Body_Field
+        >({
+            query: (body) => ({
+                url: SHOP_API.GET_TEAM_SHOP_DEPOTS,
+                method: 'POST',
+                body,
+            }),
+            providesTags: (result) => [
+                { type: 'Team_Shop_Depot', id: 'LIST' },
+
+                ...(result?.data?.items ?? []).map((team_shop_depot) => ({
+                    type: 'Team_Shop_Depot' as const,
+                    id: team_shop_depot.id,
+                })),
+            ],
+        }),
+        _get_Team_Shop_Depot_Stores_: builder.query<
+            My_Response_Field<Cursor_Team_Shop_Depot_Store_Field>,
+            Get_Team_Shop_Depot_Stores_Body_Field
+        >({
+            query: (body) => ({
+                url: SHOP_API.GET_TEAM_SHOP_DEPOT_STORES,
+                method: 'POST',
+                body,
+            }),
+            providesTags: (result) => [
+                { type: 'Team_Shop_Depot_Store', id: 'LIST' },
+
+                ...(result?.data?.items ?? []).map((team_shop_depot_store) => ({
+                    type: 'Team_Shop_Depot_Store' as const,
+                    id: team_shop_depot_store.id,
                 })),
             ],
         }),
@@ -303,6 +380,66 @@ export const shop_RTK = createApi({
             }),
             invalidatesTags: [{ type: 'Depot_Role', id: 'LIST' }],
         }),
+        _add_Team_Shop_: builder.mutation<My_Response_Field<Team_Shop_Field>, Add_Team_Shop_Body_Field>({
+            query: (body) => ({
+                url: SHOP_API.ADD_TEAM_SHOP,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: [{ type: 'Team_Shop', id: 'LIST' }],
+        }),
+        _add_Team_Shop_Depot_: builder.mutation<
+            My_Response_Field<Team_Shop_Depot_Field>,
+            Add_Team_Shop_Depot_Body_Field
+        >({
+            query: (body) => ({
+                url: SHOP_API.ADD_TEAM_SHOP_DEPOT,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: [{ type: 'Team_Shop_Depot', id: 'LIST' }],
+        }),
+        _add_Team_Shop_Depot_Store_: builder.mutation<
+            My_Response_Field<Team_Shop_Depot_Store_Field>,
+            Add_Team_Shop_Depot_Store_Body_Field
+        >({
+            query: (body) => ({
+                url: SHOP_API.ADD_TEAM_SHOP_DEPOT_STORE,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: [{ type: 'Team_Shop_Depot_Store', id: 'LIST' }],
+        }),
+        _lock_Team_Shop_: builder.mutation<My_Response_Field<Team_Shop_Field>, Lock_Team_Shop_Body_Field>({
+            query: (body) => ({
+                url: SHOP_API.LOCK_TEAM_SHOP,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: (_result, _error, body) => [{ type: 'Team_Shop', id: body.id }],
+        }),
+        _lock_Team_Shop_Depot_: builder.mutation<
+            My_Response_Field<Team_Shop_Depot_Field>,
+            Lock_Team_Shop_Depot_Body_Field
+        >({
+            query: (body) => ({
+                url: SHOP_API.LOCK_TEAM_SHOP_DEPOT,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: (_result, _error, body) => [{ type: 'Team_Shop_Depot', id: body.id }],
+        }),
+        _lock_Team_Shop_Depot_Store_: builder.mutation<
+            My_Response_Field<Team_Shop_Depot_Store_Field>,
+            Lock_Team_Shop_Depot_Store_Body_Field
+        >({
+            query: (body) => ({
+                url: SHOP_API.LOCK_TEAM_SHOP_DEPOT_STORE,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: (_result, _error, body) => [{ type: 'Team_Shop_Depot_Store', id: body.id }],
+        }),
     }),
 });
 
@@ -310,6 +447,9 @@ export const {
     useLazy_get_My_Shops_Query,
     useLazy_get_My_Depots_Query,
     useLazy_get_My_Stores_Query,
+    useLazy_get_Team_Shops_Query,
+    useLazy_get_Team_Shop_Depots_Query,
+    useLazy_get_Team_Shop_Depot_Stores_Query,
     useLazy_get_Shop_Role_Statistics_For_One_Team_Query,
     useLazy_get_Shop_Role_For_One_Account_Query,
     useLazy_get_Depot_Role_Statistics_For_One_Team_Query,
@@ -331,4 +471,10 @@ export const {
     use_admin_Set_Depot_Role_For_One_Team_Mutation,
     use_leader_Set_Depot_Role_For_One_Account_Mutation,
     use_leader_Set_Depot_Role_For_One_Team_Mutation,
+    use_add_Team_Shop_Mutation,
+    use_add_Team_Shop_Depot_Mutation,
+    use_add_Team_Shop_Depot_Store_Mutation,
+    use_lock_Team_Shop_Mutation,
+    use_lock_Team_Shop_Depot_Mutation,
+    use_lock_Team_Shop_Depot_Store_Mutation,
 } = shop_RTK;

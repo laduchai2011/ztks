@@ -181,3 +181,57 @@ export interface Get_Depot_Role_For_One_Account_Body_Field {
     depot_id: string;
     type: Depot_Role_Type_Type;
 }
+
+export interface Add_Team_Shop_Body_Field {
+    shop_id: string;
+    team_id: string;
+    admin_account_id: string;
+}
+
+export interface Lock_Team_Shop_Body_Field {
+    id: string;
+    is_lock: string;
+    admin_account_id: string;
+}
+
+export interface Add_Team_Shop_Depot_Body_Field {
+    team_shop_id: string;
+    depot_id: string;
+    admin_account_id: string;
+}
+
+export interface Lock_Team_Shop_Depot_Body_Field {
+    id: string;
+    is_lock: string;
+    admin_account_id: string;
+}
+
+export interface Add_Team_Shop_Depot_Store_Body_Field {
+    team_shop_depot_id: string;
+    store_id: string;
+    admin_account_id: string;
+}
+
+export interface Lock_Team_Shop_Depot_Store_Body_Field {
+    id: string;
+    is_lock: string;
+    admin_account_id: string;
+}
+
+export interface Get_Team_Shops_Body_Field {
+    cursor?: string;
+    limit: number;
+    team_id: string;
+}
+
+export interface Get_Team_Shop_Depots_Body_Field {
+    cursor?: string;
+    limit: number;
+    team_shop_id: string;
+}
+
+export interface Get_Team_Shop_Depot_Stores_Body_Field {
+    cursor?: string;
+    limit: number;
+    team_shop_depot_id: string;
+}

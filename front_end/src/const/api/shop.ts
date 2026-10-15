@@ -29,4 +29,13 @@ export const SHOP_API = {
     LEADER_SET_DEPOT_ROLE_FOR_ONE_TEAM: `${BASE_URL}${apiString}/service__shop/mutate/leader_set_depot_role_for_one_team`,
     GET_DEPOT_ROLE_STATISTICS_FOR_ONE_TEAM: `${BASE_URL}${apiString}/service__shop/query/get_depot_role_statistics_for_one_team`,
     GET_DEPOT_ROLE_FOR_ONE_ACCOUNT: `${BASE_URL}${apiString}/service__shop/query/get_depot_role_for_one_account`,
+    GET_TEAM_SHOPS: `${BASE_URL}${apiString}/service__shop/query/get_team_shops`,
+    GET_TEAM_SHOP_DEPOTS: `${BASE_URL}${apiString}/service__shop/query/get_team_shop_depots`,
+    GET_TEAM_SHOP_DEPOT_STORES: `${BASE_URL}${apiString}/service__shop/query/get_team_shop_depot_stores`,
+    ADD_TEAM_SHOP: `${BASE_URL}${apiString}/service__shop/mutate/add_team_shop`,
+    LOCK_TEAM_SHOP: `${BASE_URL}${apiString}/service__shop/mutate/lock_team_shop`,
+    ADD_TEAM_SHOP_DEPOT: `${BASE_URL}${apiString}/service__shop/mutate/add_team_shop_depot`,
+    LOCK_TEAM_SHOP_DEPOT: `${BASE_URL}${apiString}/service__shop/mutate/lock_team_shop_depot`,
+    ADD_TEAM_SHOP_DEPOT_STORE: `${BASE_URL}${apiString}/service__shop/mutate/add_team_shop_depot_store`,
+    LOCK_TEAM_SHOP_DEPOT_STORE: `${BASE_URL}${apiString}/service__shop/mutate/lock_team_shop_depot_store`,
 };

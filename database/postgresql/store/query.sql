@@ -362,131 +362,131 @@ END;
 $$;
 
 
-CREATE OR REPLACE FUNCTION get_shop_role_statistics_for_one_team (
-    p_team_id UUID,
-    p_shop_id UUID,
-    p_type VARCHAR(50)
-)
-RETURNS TABLE (
-    total_members BIGINT,
-    locked_members BIGINT
-)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    IF p_type NOT IN ('sales', 'store') OR p_type IS NULL THEN
-        RAISE EXCEPTION 'Invalid type: %. Allowed values: sales, store', p_type;
-    END IF;
+-- CREATE OR REPLACE FUNCTION get_shop_role_statistics_for_one_team (
+--     p_team_id UUID,
+--     p_shop_id UUID,
+--     p_type VARCHAR(50)
+-- )
+-- RETURNS TABLE (
+--     total_members BIGINT,
+--     locked_members BIGINT
+-- )
+-- LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     IF p_type NOT IN ('sales', 'store') OR p_type IS NULL THEN
+--         RAISE EXCEPTION 'Invalid type: %. Allowed values: sales, store', p_type;
+--     END IF;
 
-    RETURN QUERY
-    SELECT
-        COUNT(*) AS total_members,
-        COUNT(*) FILTER (
-            WHERE sr.id IS NULL
-               OR (
-                    sr.is_lock = TRUE
-                    AND sr.is_delete = FALSE
-               )
-        ) AS locked_members
-    FROM team_member tm
-    LEFT JOIN shop_role sr
-        ON sr.account_id = tm.account_id
-       AND sr.shop_id = p_shop_id
-       AND sr.type = p_type
-       AND sr.is_delete = FALSE
-    WHERE tm.team_id = p_team_id
-      AND tm.is_delete = FALSE;
-END;
-$$;
-
-
-CREATE OR REPLACE FUNCTION get_shop_role_for_one_account (
-    p_account_id UUID,
-    p_shop_id UUID,
-    p_type VARCHAR(50)
-)
-RETURNS SETOF shop_role
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    IF p_type IS NULL OR p_type NOT IN ('sales', 'store') THEN
-        RAISE EXCEPTION
-            'Invalid type: %. Allowed values: sales, store',
-            p_type;
-    END IF;
-
-    RETURN QUERY
-    SELECT sr.*
-    FROM shop_role sr
-    WHERE sr.account_id = p_account_id
-      AND sr.shop_id = p_shop_id
-      AND sr.type = p_type
-      AND sr.is_delete = FALSE;
-END;
-$$;
+--     RETURN QUERY
+--     SELECT
+--         COUNT(*) AS total_members,
+--         COUNT(*) FILTER (
+--             WHERE sr.id IS NULL
+--                OR (
+--                     sr.is_lock = TRUE
+--                     AND sr.is_delete = FALSE
+--                )
+--         ) AS locked_members
+--     FROM team_member tm
+--     LEFT JOIN shop_role sr
+--         ON sr.account_id = tm.account_id
+--        AND sr.shop_id = p_shop_id
+--        AND sr.type = p_type
+--        AND sr.is_delete = FALSE
+--     WHERE tm.team_id = p_team_id
+--       AND tm.is_delete = FALSE;
+-- END;
+-- $$;
 
 
-CREATE OR REPLACE FUNCTION get_depot_role_statistics_for_one_team (
-    p_team_id UUID,
-    p_depot_id UUID,
-    p_type VARCHAR(50)
-)
-RETURNS TABLE (
-    total_members BIGINT,
-    locked_members BIGINT
-)
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    IF p_type NOT IN ('sales', 'store') OR p_type IS NULL THEN
-        RAISE EXCEPTION 'Invalid type: %. Allowed values: sales, store', p_type;
-    END IF;
+-- CREATE OR REPLACE FUNCTION get_shop_role_for_one_account (
+--     p_account_id UUID,
+--     p_shop_id UUID,
+--     p_type VARCHAR(50)
+-- )
+-- RETURNS SETOF shop_role
+-- LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     IF p_type IS NULL OR p_type NOT IN ('sales', 'store') THEN
+--         RAISE EXCEPTION
+--             'Invalid type: %. Allowed values: sales, store',
+--             p_type;
+--     END IF;
 
-    RETURN QUERY
-    SELECT
-        COUNT(*) AS total_members,
-        COUNT(*) FILTER (
-            WHERE dr.id IS NULL
-               OR (
-                    dr.is_lock = TRUE
-                    AND dr.is_delete = FALSE
-               )
-        ) AS locked_members
-    FROM team_member tm
-    LEFT JOIN depot_role dr
-        ON dr.account_id = tm.account_id
-       AND dr.depot_id = p_depot_id
-       AND dr.type = p_type
-       AND dr.is_delete = FALSE
-    WHERE tm.team_id = p_team_id
-      AND tm.is_delete = FALSE;
-END;
-$$;
+--     RETURN QUERY
+--     SELECT sr.*
+--     FROM shop_role sr
+--     WHERE sr.account_id = p_account_id
+--       AND sr.shop_id = p_shop_id
+--       AND sr.type = p_type
+--       AND sr.is_delete = FALSE;
+-- END;
+-- $$;
 
-CREATE OR REPLACE FUNCTION get_depot_role_for_one_account (
-    p_account_id UUID,
-    p_depot_id UUID,
-    p_type VARCHAR(50)
-)
-RETURNS SETOF depot_role
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    IF p_type IS NULL OR p_type NOT IN ('sales', 'store') THEN
-        RAISE EXCEPTION
-            'Invalid type: %. Allowed values: sales, store',
-            p_type;
-    END IF;
 
-    RETURN QUERY
-    SELECT dr.*
-    FROM depot_role dr
-    WHERE dr.account_id = p_account_id
-      AND dr.shop_id = p_shop_id
-      AND dr.type = p_type
-      AND dr.is_delete = FALSE;
-END;
-$$;
+-- CREATE OR REPLACE FUNCTION get_depot_role_statistics_for_one_team (
+--     p_team_id UUID,
+--     p_depot_id UUID,
+--     p_type VARCHAR(50)
+-- )
+-- RETURNS TABLE (
+--     total_members BIGINT,
+--     locked_members BIGINT
+-- )
+-- LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     IF p_type NOT IN ('sales', 'store') OR p_type IS NULL THEN
+--         RAISE EXCEPTION 'Invalid type: %. Allowed values: sales, store', p_type;
+--     END IF;
+
+--     RETURN QUERY
+--     SELECT
+--         COUNT(*) AS total_members,
+--         COUNT(*) FILTER (
+--             WHERE dr.id IS NULL
+--                OR (
+--                     dr.is_lock = TRUE
+--                     AND dr.is_delete = FALSE
+--                )
+--         ) AS locked_members
+--     FROM team_member tm
+--     LEFT JOIN depot_role dr
+--         ON dr.account_id = tm.account_id
+--        AND dr.depot_id = p_depot_id
+--        AND dr.type = p_type
+--        AND dr.is_delete = FALSE
+--     WHERE tm.team_id = p_team_id
+--       AND tm.is_delete = FALSE;
+-- END;
+-- $$;
+
+-- CREATE OR REPLACE FUNCTION get_depot_role_for_one_account (
+--     p_account_id UUID,
+--     p_depot_id UUID,
+--     p_type VARCHAR(50)
+-- )
+-- RETURNS SETOF depot_role
+-- LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     IF p_type IS NULL OR p_type NOT IN ('sales', 'store') THEN
+--         RAISE EXCEPTION
+--             'Invalid type: %. Allowed values: sales, store',
+--             p_type;
+--     END IF;
+
+--     RETURN QUERY
+--     SELECT dr.*
+--     FROM depot_role dr
+--     WHERE dr.account_id = p_account_id
+--       AND dr.shop_id = p_shop_id
+--       AND dr.type = p_type
+--       AND dr.is_delete = FALSE;
+-- END;
+-- $$;
 
 CREATE OR REPLACE FUNCTION get_team_shops (
     p_team_id UUID,
