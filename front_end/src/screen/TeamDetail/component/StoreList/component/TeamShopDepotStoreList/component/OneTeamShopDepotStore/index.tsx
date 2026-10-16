@@ -57,15 +57,15 @@ const OneStore: FC<{ data: Team_Shop_Depot_Store_Field }> = ({ data }) => {
 
         if (!account_information) return;
 
-        // if (account_information.account_type !== account_type_enum.ADMIN) {
-        //     dispatch(
-        //         global_set__data__toast_message({
-        //             message: 'Bạn không phải admin !',
-        //             type: messageType_enum.WARN,
-        //         })
-        //     );
-        //     return;
-        // }
+        if (account_information.account_type !== account_type_enum.ADMIN) {
+            dispatch(
+                global_set__data__toast_message({
+                    message: 'Bạn không phải admin !',
+                    type: messageType_enum.WARN,
+                })
+            );
+            return;
+        }
 
         const body: Lock_Team_Shop_Depot_Store_Body_Field = {
             id: team_shop_depot_store.id,

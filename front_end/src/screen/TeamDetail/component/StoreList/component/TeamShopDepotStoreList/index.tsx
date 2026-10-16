@@ -7,6 +7,7 @@ import OneTeamShopDepotStore from './component/OneTeamShopDepotStore';
 import { SEE_MORE } from '@src/const/text';
 import { global_set__data__toast_message, global_set__is_loading } from '@src/redux/slice/Global';
 import { messageType_enum } from '@src/component/ToastMessage/type';
+import { set__is_show_store_list_dialog } from '@src/redux/slice/Team_Detail';
 import { Account_Information_Field, account_type_enum } from '@src/data_struct/account';
 import { Store_Field, Team_Shop_Depot_Field, Team_Shop_Depot_Store_Field } from '@src/data_struct/shop';
 import {
@@ -60,15 +61,15 @@ const StoreList = () => {
         if (!account_information) return;
         if (!selected_team_shop_depot) return;
 
-        // if (account_information.account_type !== account_type_enum.ADMIN) {
-        //     dispatch(
-        //         global_set__data__toast_message({
-        //             message: 'Bạn không phải admin !',
-        //             type: messageType_enum.WARN,
-        //         })
-        //     );
-        //     return;
-        // }
+        if (account_information.account_type !== account_type_enum.ADMIN) {
+            dispatch(
+                global_set__data__toast_message({
+                    message: 'Bạn không phải admin !',
+                    type: messageType_enum.WARN,
+                })
+            );
+            return;
+        }
 
         dispatch(global_set__is_loading(true));
         add_Team_Shop_Depot_Store({
@@ -109,6 +110,10 @@ const StoreList = () => {
             });
     }, [dispatch, selected_store, account_information, selected_team_shop_depot, add_Team_Shop_Depot_Store]);
 
+    const handle_Open_Store_List_Dialog = () => {
+        dispatch(set__is_show_store_list_dialog(true));
+    };
+
     const handle_See_More = () => {
         if (!has_more) return;
         if (!next_cursor) return;
@@ -122,7 +127,7 @@ const StoreList = () => {
     return (
         <div className={style.parent}>
             <div className={style.header}>
-                <IoIosAddCircleOutline size={20} color="green" />
+                <IoIosAddCircleOutline onClick={() => handle_Open_Store_List_Dialog()} size={20} color="green" />
                 <div>Danh sách gian hàng</div>
             </div>
             <div className={style.list}>{list}</div>

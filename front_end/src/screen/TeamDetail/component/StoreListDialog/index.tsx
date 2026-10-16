@@ -6,7 +6,7 @@ import { IoCloseOutline } from 'react-icons/io5';
 import { CLOSE, SEE_MORE } from '@src/const/text';
 import { set__is_show_store_list_dialog } from '@src/redux/slice/Team_Detail';
 import { useLazy_get_My_Stores_Query } from '@src/redux/query/shop_RTK';
-import { Depot_Field, Store_Field } from '@src/data_struct/shop';
+import { Team_Shop_Depot_Field, Store_Field } from '@src/data_struct/shop';
 import OneStore from './component/OneStore';
 
 const DepotListDialog = () => {
@@ -14,8 +14,8 @@ const DepotListDialog = () => {
 
     const parent_element = useRef<HTMLDivElement | null>(null);
 
-    const selected_depot: Depot_Field | undefined = useSelector(
-        (state: RootState) => state.Team_Detail_Slice.selected_depot
+    const selected_team_shop_depot: Team_Shop_Depot_Field | undefined = useSelector(
+        (state: RootState) => state.Team_Detail_Slice.selected_team_shop_depot
     );
     const is_show_store_list_dialog: boolean = useSelector(
         (state: RootState) => state.Team_Detail_Slice.is_show_store_list_dialog
@@ -50,8 +50,8 @@ const DepotListDialog = () => {
     }, [is_show_store_list_dialog]);
 
     useEffect(() => {
-        if (!selected_depot) return;
-        get_My_Stores({ cursor: cursor, limit: limit, depot_id: selected_depot.id })
+        if (!selected_team_shop_depot) return;
+        get_My_Stores({ cursor: cursor, limit: limit, depot_id: selected_team_shop_depot.depot_id })
             .then((res) => {
                 const res_data = res.data;
                 if (res_data?.is_success && res_data?.data) {
@@ -67,7 +67,7 @@ const DepotListDialog = () => {
             .catch((err) => {
                 console.error(err);
             });
-    }, [dispatch, get_My_Stores, cursor, selected_depot]);
+    }, [dispatch, get_My_Stores, cursor, selected_team_shop_depot]);
 
     const handle_Close = () => {
         dispatch(set__is_show_store_list_dialog(false));
@@ -87,7 +87,7 @@ const DepotListDialog = () => {
         <div className={style.parent} ref={parent_element}>
             <div className={style.main}>
                 <div className={style.header}>
-                    <div>Danh sách kho</div>
+                    <div>Danh sách gian hàng</div>
                     <IoCloseOutline onClick={() => handle_Close()} size={30} title={CLOSE} />
                 </div>
                 <div className={style.content}>

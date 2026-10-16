@@ -8,7 +8,7 @@ import { useLazy_get_Team_Members_Query } from '@src/redux/query/team_RTK';
 import { Team_Member_Field } from '@src/data_struct/team';
 import { SEE_MORE } from '@src/const/text';
 
-const List = () => {
+const MemberList = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { id } = useParams<{ id: string }>();
 
@@ -80,4 +80,4 @@ const List = () => {
     );
 };
 
-export default memo(List);
+export default memo(MemberList);

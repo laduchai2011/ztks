@@ -17,7 +17,7 @@ class MutateDB_Add_Team_Shop_Depot_Store {
                 await client.query('BEGIN');
 
                 const result = await pool.query<Team_Shop_Depot_Store_Field>(
-                    'SELECT * FROM add_team_shop_depot($1::UUID, $2::UUID, $3::UUID)',
+                    'SELECT * FROM add_team_shop_depot_store($1::UUID, $2::UUID, $3::UUID)',
                     [
                         this._add_team_shop_depot_store_body.team_shop_depot_id,
                         this._add_team_shop_depot_store_body.store_id,

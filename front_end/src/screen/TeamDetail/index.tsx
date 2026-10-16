@@ -10,8 +10,8 @@ import GlobalLoading from '@src/Global/GlobalLoading';
 import GlobalToastMessage from '@src/Global/GlobalToastMessage';
 import Overview from './component/Overview';
 import AddMember from './component/AddMember';
-import StoreControl from './component/StoreControl';
-import List from './component/List';
+import StoreList from './component/StoreList';
+import MemberList from './component/MemberList';
 import EditTeamDialog from './component/EditTeamDialog';
 import DeleteTeamDialog from './component/DeleteTeamDialog';
 import DeleteTeamMemberDialog from './component/DeleteTeamMemberDialog';
@@ -52,8 +52,8 @@ const TeamDetail = () => {
                 </div>
                 <Overview />
                 <AddMember />
-                <StoreControl />
-                <List />
+                <StoreList />
+                <MemberList />
                 <div>
                     <GlobalLoading />
                     <GlobalToastMessage />

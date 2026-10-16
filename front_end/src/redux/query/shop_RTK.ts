@@ -6,10 +6,10 @@ import {
     Cursor_Depot_Field,
     Store_Field,
     Cursor_Store_Field,
-    Shop_Role_Field,
-    Shop_Role_Statistics_Field,
-    Depot_Role_Field,
-    Depot_Role_Statistics_Field,
+    // Shop_Role_Field,
+    // Shop_Role_Statistics_Field,
+    // Depot_Role_Field,
+    // Depot_Role_Statistics_Field,
     Team_Shop_Field,
     Team_Shop_Depot_Field,
     Team_Shop_Depot_Store_Field,
@@ -34,18 +34,18 @@ import {
     Delete_Shop_Body_Field,
     Delete_Depot_Body_Field,
     Delete_Store_Body_Field,
-    Get_Shop_Role_Statistics_For_One_Team_Body_Field,
-    Get_Shop_Role_For_One_Account_Body_Field,
-    Admin_Set_Shop_Role_For_One_Account_Body_Field,
-    Admin_Set_Shop_Role_For_One_Team_Body_Field,
-    Leader_Set_Shop_Role_For_One_Account_Body_Field,
-    Leader_Set_Shop_Role_For_One_Team_Body_Field,
-    Get_Depot_Role_Statistics_For_One_Team_Body_Field,
-    Get_Depot_Role_For_One_Account_Body_Field,
-    Admin_Set_Depot_Role_For_One_Account_Body_Field,
-    Admin_Set_Depot_Role_For_One_Team_Body_Field,
-    Leader_Set_Depot_Role_For_One_Account_Body_Field,
-    Leader_Set_Depot_Role_For_One_Team_Body_Field,
+    // Get_Shop_Role_Statistics_For_One_Team_Body_Field,
+    // Get_Shop_Role_For_One_Account_Body_Field,
+    // Admin_Set_Shop_Role_For_One_Account_Body_Field,
+    // Admin_Set_Shop_Role_For_One_Team_Body_Field,
+    // Leader_Set_Shop_Role_For_One_Account_Body_Field,
+    // Leader_Set_Shop_Role_For_One_Team_Body_Field,
+    // Get_Depot_Role_Statistics_For_One_Team_Body_Field,
+    // Get_Depot_Role_For_One_Account_Body_Field,
+    // Admin_Set_Depot_Role_For_One_Account_Body_Field,
+    // Admin_Set_Depot_Role_For_One_Team_Body_Field,
+    // Leader_Set_Depot_Role_For_One_Account_Body_Field,
+    // Leader_Set_Depot_Role_For_One_Team_Body_Field,
     Get_Team_Shops_Body_Field,
     Get_Team_Shop_Depots_Body_Field,
     Get_Team_Shop_Depot_Stores_Body_Field,
@@ -212,50 +212,50 @@ export const shop_RTK = createApi({
                 })),
             ],
         }),
-        _get_Shop_Role_Statistics_For_One_Team_: builder.query<
-            My_Response_Field<Shop_Role_Statistics_Field>,
-            Get_Shop_Role_Statistics_For_One_Team_Body_Field
-        >({
-            query: (body) => ({
-                url: SHOP_API.GET_SHOP_ROLE_STATISTICS_FOR_ONE_TEAM,
-                method: 'POST',
-                body,
-            }),
-            providesTags: ['Shop_Role_Statistics'],
-        }),
-        _get_Shop_Role_For_One_Account_: builder.query<
-            My_Response_Field<Shop_Role_Field>,
-            Get_Shop_Role_For_One_Account_Body_Field
-        >({
-            query: (body) => ({
-                url: SHOP_API.GET_SHOP_ROLE_FOR_ONE_ACCOUNT,
-                method: 'POST',
-                body,
-            }),
-            providesTags: (result) => [{ type: 'Shop_Role', id: result?.data?.id }],
-        }),
-        _get_Depot_Role_Statistics_For_One_Team_: builder.query<
-            My_Response_Field<Depot_Role_Statistics_Field>,
-            Get_Depot_Role_Statistics_For_One_Team_Body_Field
-        >({
-            query: (body) => ({
-                url: SHOP_API.GET_DEPOT_ROLE_STATISTICS_FOR_ONE_TEAM,
-                method: 'POST',
-                body,
-            }),
-            providesTags: ['Depot_Role_Statistics'],
-        }),
-        _get_Depot_Role_For_One_Account_: builder.query<
-            My_Response_Field<Depot_Role_Field>,
-            Get_Depot_Role_For_One_Account_Body_Field
-        >({
-            query: (body) => ({
-                url: SHOP_API.GET_DEPOT_ROLE_FOR_ONE_ACCOUNT,
-                method: 'POST',
-                body,
-            }),
-            providesTags: (result) => [{ type: 'Depot_Role', id: result?.data?.id }],
-        }),
+        // _get_Shop_Role_Statistics_For_One_Team_: builder.query<
+        //     My_Response_Field<Shop_Role_Statistics_Field>,
+        //     Get_Shop_Role_Statistics_For_One_Team_Body_Field
+        // >({
+        //     query: (body) => ({
+        //         url: SHOP_API.GET_SHOP_ROLE_STATISTICS_FOR_ONE_TEAM,
+        //         method: 'POST',
+        //         body,
+        //     }),
+        //     providesTags: ['Shop_Role_Statistics'],
+        // }),
+        // _get_Shop_Role_For_One_Account_: builder.query<
+        //     My_Response_Field<Shop_Role_Field>,
+        //     Get_Shop_Role_For_One_Account_Body_Field
+        // >({
+        //     query: (body) => ({
+        //         url: SHOP_API.GET_SHOP_ROLE_FOR_ONE_ACCOUNT,
+        //         method: 'POST',
+        //         body,
+        //     }),
+        //     providesTags: (result) => [{ type: 'Shop_Role', id: result?.data?.id }],
+        // }),
+        // _get_Depot_Role_Statistics_For_One_Team_: builder.query<
+        //     My_Response_Field<Depot_Role_Statistics_Field>,
+        //     Get_Depot_Role_Statistics_For_One_Team_Body_Field
+        // >({
+        //     query: (body) => ({
+        //         url: SHOP_API.GET_DEPOT_ROLE_STATISTICS_FOR_ONE_TEAM,
+        //         method: 'POST',
+        //         body,
+        //     }),
+        //     providesTags: ['Depot_Role_Statistics'],
+        // }),
+        // _get_Depot_Role_For_One_Account_: builder.query<
+        //     My_Response_Field<Depot_Role_Field>,
+        //     Get_Depot_Role_For_One_Account_Body_Field
+        // >({
+        //     query: (body) => ({
+        //         url: SHOP_API.GET_DEPOT_ROLE_FOR_ONE_ACCOUNT,
+        //         method: 'POST',
+        //         body,
+        //     }),
+        //     providesTags: (result) => [{ type: 'Depot_Role', id: result?.data?.id }],
+        // }),
         _create_Shop_: builder.mutation<My_Response_Field<Shop_Field>, Create_Shop_Body_Field>({
             query: (body) => ({
                 url: SHOP_API.CREATE_SHOP,
@@ -328,94 +328,94 @@ export const shop_RTK = createApi({
             }),
             invalidatesTags: [{ type: 'Store', id: 'LIST' }],
         }),
-        _admin_Set_Shop_Role_For_One_Account_: builder.mutation<
-            My_Response_Field<Shop_Role_Field>,
-            Admin_Set_Shop_Role_For_One_Account_Body_Field
-        >({
-            query: (body) => ({
-                url: SHOP_API.ADMIN_SET_SHOP_ROLE_FOR_ONE_ACCOUNT,
-                method: 'POST',
-                body,
-            }),
-            invalidatesTags: (_result) => [{ type: 'Shop_Role', id: _result?.data?.id }],
-        }),
-        _admin_Set_Shop_Role_For_One_Team_: builder.mutation<
-            My_Response_Field<Shop_Role_Field[]>,
-            Admin_Set_Shop_Role_For_One_Team_Body_Field
-        >({
-            query: (body) => ({
-                url: SHOP_API.ADMIN_SET_SHOP_ROLE_FOR_ONE_TEAM,
-                method: 'POST',
-                body,
-            }),
-            invalidatesTags: [{ type: 'Shop_Role', id: 'LIST' }],
-        }),
-        _leader_Set_Shop_Role_For_One_Account_: builder.mutation<
-            My_Response_Field<Shop_Role_Field>,
-            Leader_Set_Shop_Role_For_One_Account_Body_Field
-        >({
-            query: (body) => ({
-                url: SHOP_API.LEADER_SET_SHOP_ROLE_FOR_ONE_ACCOUNT,
-                method: 'POST',
-                body,
-            }),
-            invalidatesTags: (_result) => [{ type: 'Shop_Role', id: _result?.data?.id }],
-        }),
-        _leader_Set_Shop_Role_For_One_Team_: builder.mutation<
-            My_Response_Field<Shop_Role_Field[]>,
-            Leader_Set_Shop_Role_For_One_Team_Body_Field
-        >({
-            query: (body) => ({
-                url: SHOP_API.LEADER_SET_SHOP_ROLE_FOR_ONE_TEAM,
-                method: 'POST',
-                body,
-            }),
-            invalidatesTags: [{ type: 'Shop_Role', id: 'LIST' }],
-        }),
-        _admin_Set_Depot_Role_For_One_Account_: builder.mutation<
-            My_Response_Field<Depot_Role_Field>,
-            Admin_Set_Depot_Role_For_One_Account_Body_Field
-        >({
-            query: (body) => ({
-                url: SHOP_API.ADMIN_SET_DEPOT_ROLE_FOR_ONE_ACCOUNT,
-                method: 'POST',
-                body,
-            }),
-            invalidatesTags: (_result) => [{ type: 'Depot_Role', id: _result?.data?.id }],
-        }),
-        _admin_Set_Depot_Role_For_One_Team_: builder.mutation<
-            My_Response_Field<Depot_Role_Field[]>,
-            Admin_Set_Depot_Role_For_One_Team_Body_Field
-        >({
-            query: (body) => ({
-                url: SHOP_API.ADMIN_SET_DEPOT_ROLE_FOR_ONE_TEAM,
-                method: 'POST',
-                body,
-            }),
-            invalidatesTags: [{ type: 'Depot_Role', id: 'LIST' }],
-        }),
-        _leader_Set_Depot_Role_For_One_Account_: builder.mutation<
-            My_Response_Field<Depot_Role_Field>,
-            Leader_Set_Depot_Role_For_One_Account_Body_Field
-        >({
-            query: (body) => ({
-                url: SHOP_API.LEADER_SET_DEPOT_ROLE_FOR_ONE_ACCOUNT,
-                method: 'POST',
-                body,
-            }),
-            invalidatesTags: (_result) => [{ type: 'Depot_Role', id: _result?.data?.id }],
-        }),
-        _leader_Set_Depot_Role_For_One_Team_: builder.mutation<
-            My_Response_Field<Depot_Role_Field[]>,
-            Leader_Set_Depot_Role_For_One_Team_Body_Field
-        >({
-            query: (body) => ({
-                url: SHOP_API.LEADER_SET_DEPOT_ROLE_FOR_ONE_TEAM,
-                method: 'POST',
-                body,
-            }),
-            invalidatesTags: [{ type: 'Depot_Role', id: 'LIST' }],
-        }),
+        // _admin_Set_Shop_Role_For_One_Account_: builder.mutation<
+        //     My_Response_Field<Shop_Role_Field>,
+        //     Admin_Set_Shop_Role_For_One_Account_Body_Field
+        // >({
+        //     query: (body) => ({
+        //         url: SHOP_API.ADMIN_SET_SHOP_ROLE_FOR_ONE_ACCOUNT,
+        //         method: 'POST',
+        //         body,
+        //     }),
+        //     invalidatesTags: (_result) => [{ type: 'Shop_Role', id: _result?.data?.id }],
+        // }),
+        // _admin_Set_Shop_Role_For_One_Team_: builder.mutation<
+        //     My_Response_Field<Shop_Role_Field[]>,
+        //     Admin_Set_Shop_Role_For_One_Team_Body_Field
+        // >({
+        //     query: (body) => ({
+        //         url: SHOP_API.ADMIN_SET_SHOP_ROLE_FOR_ONE_TEAM,
+        //         method: 'POST',
+        //         body,
+        //     }),
+        //     invalidatesTags: [{ type: 'Shop_Role', id: 'LIST' }],
+        // }),
+        // _leader_Set_Shop_Role_For_One_Account_: builder.mutation<
+        //     My_Response_Field<Shop_Role_Field>,
+        //     Leader_Set_Shop_Role_For_One_Account_Body_Field
+        // >({
+        //     query: (body) => ({
+        //         url: SHOP_API.LEADER_SET_SHOP_ROLE_FOR_ONE_ACCOUNT,
+        //         method: 'POST',
+        //         body,
+        //     }),
+        //     invalidatesTags: (_result) => [{ type: 'Shop_Role', id: _result?.data?.id }],
+        // }),
+        // _leader_Set_Shop_Role_For_One_Team_: builder.mutation<
+        //     My_Response_Field<Shop_Role_Field[]>,
+        //     Leader_Set_Shop_Role_For_One_Team_Body_Field
+        // >({
+        //     query: (body) => ({
+        //         url: SHOP_API.LEADER_SET_SHOP_ROLE_FOR_ONE_TEAM,
+        //         method: 'POST',
+        //         body,
+        //     }),
+        //     invalidatesTags: [{ type: 'Shop_Role', id: 'LIST' }],
+        // }),
+        // _admin_Set_Depot_Role_For_One_Account_: builder.mutation<
+        //     My_Response_Field<Depot_Role_Field>,
+        //     Admin_Set_Depot_Role_For_One_Account_Body_Field
+        // >({
+        //     query: (body) => ({
+        //         url: SHOP_API.ADMIN_SET_DEPOT_ROLE_FOR_ONE_ACCOUNT,
+        //         method: 'POST',
+        //         body,
+        //     }),
+        //     invalidatesTags: (_result) => [{ type: 'Depot_Role', id: _result?.data?.id }],
+        // }),
+        // _admin_Set_Depot_Role_For_One_Team_: builder.mutation<
+        //     My_Response_Field<Depot_Role_Field[]>,
+        //     Admin_Set_Depot_Role_For_One_Team_Body_Field
+        // >({
+        //     query: (body) => ({
+        //         url: SHOP_API.ADMIN_SET_DEPOT_ROLE_FOR_ONE_TEAM,
+        //         method: 'POST',
+        //         body,
+        //     }),
+        //     invalidatesTags: [{ type: 'Depot_Role', id: 'LIST' }],
+        // }),
+        // _leader_Set_Depot_Role_For_One_Account_: builder.mutation<
+        //     My_Response_Field<Depot_Role_Field>,
+        //     Leader_Set_Depot_Role_For_One_Account_Body_Field
+        // >({
+        //     query: (body) => ({
+        //         url: SHOP_API.LEADER_SET_DEPOT_ROLE_FOR_ONE_ACCOUNT,
+        //         method: 'POST',
+        //         body,
+        //     }),
+        //     invalidatesTags: (_result) => [{ type: 'Depot_Role', id: _result?.data?.id }],
+        // }),
+        // _leader_Set_Depot_Role_For_One_Team_: builder.mutation<
+        //     My_Response_Field<Depot_Role_Field[]>,
+        //     Leader_Set_Depot_Role_For_One_Team_Body_Field
+        // >({
+        //     query: (body) => ({
+        //         url: SHOP_API.LEADER_SET_DEPOT_ROLE_FOR_ONE_TEAM,
+        //         method: 'POST',
+        //         body,
+        //     }),
+        //     invalidatesTags: [{ type: 'Depot_Role', id: 'LIST' }],
+        // }),
         _add_Team_Shop_: builder.mutation<My_Response_Field<Team_Shop_Field>, Add_Team_Shop_Body_Field>({
             query: (body) => ({
                 url: SHOP_API.ADD_TEAM_SHOP,
@@ -489,10 +489,10 @@ export const {
     useLazy_get_Team_Shops_Query,
     useLazy_get_Team_Shop_Depots_Query,
     useLazy_get_Team_Shop_Depot_Stores_Query,
-    useLazy_get_Shop_Role_Statistics_For_One_Team_Query,
-    useLazy_get_Shop_Role_For_One_Account_Query,
-    useLazy_get_Depot_Role_Statistics_For_One_Team_Query,
-    useLazy_get_Depot_Role_For_One_Account_Query,
+    // useLazy_get_Shop_Role_Statistics_For_One_Team_Query,
+    // useLazy_get_Shop_Role_For_One_Account_Query,
+    // useLazy_get_Depot_Role_Statistics_For_One_Team_Query,
+    // useLazy_get_Depot_Role_For_One_Account_Query,
     use_create_Shop_Mutation,
     use_create_Depot_Mutation,
     use_create_Store_Mutation,
@@ -502,14 +502,14 @@ export const {
     use_delete_Shop_Mutation,
     use_delete_Depot_Mutation,
     use_delete_Store_Mutation,
-    use_admin_Set_Shop_Role_For_One_Account_Mutation,
-    use_admin_Set_Shop_Role_For_One_Team_Mutation,
-    use_leader_Set_Shop_Role_For_One_Account_Mutation,
-    use_leader_Set_Shop_Role_For_One_Team_Mutation,
-    use_admin_Set_Depot_Role_For_One_Account_Mutation,
-    use_admin_Set_Depot_Role_For_One_Team_Mutation,
-    use_leader_Set_Depot_Role_For_One_Account_Mutation,
-    use_leader_Set_Depot_Role_For_One_Team_Mutation,
+    // use_admin_Set_Shop_Role_For_One_Account_Mutation,
+    // use_admin_Set_Shop_Role_For_One_Team_Mutation,
+    // use_leader_Set_Shop_Role_For_One_Account_Mutation,
+    // use_leader_Set_Shop_Role_For_One_Team_Mutation,
+    // use_admin_Set_Depot_Role_For_One_Account_Mutation,
+    // use_admin_Set_Depot_Role_For_One_Team_Mutation,
+    // use_leader_Set_Depot_Role_For_One_Account_Mutation,
+    // use_leader_Set_Depot_Role_For_One_Team_Mutation,
     use_add_Team_Shop_Mutation,
     use_add_Team_Shop_Depot_Mutation,
     use_add_Team_Shop_Depot_Store_Mutation,
