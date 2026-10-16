@@ -6,7 +6,7 @@ import { IoCloseOutline } from 'react-icons/io5';
 import { CLOSE, SEE_MORE } from '@src/const/text';
 import { set__is_show_depot_list_dialog } from '@src/redux/slice/Team_Detail';
 import { useLazy_get_My_Depots_Query } from '@src/redux/query/shop_RTK';
-import { Shop_Field, Depot_Field } from '@src/data_struct/shop';
+import { Team_Shop_Field, Depot_Field } from '@src/data_struct/shop';
 import OneDepot from './component/OneDepot';
 
 const DepotListDialog = () => {
@@ -14,8 +14,8 @@ const DepotListDialog = () => {
 
     const parent_element = useRef<HTMLDivElement | null>(null);
 
-    const selected_shop: Shop_Field | undefined = useSelector(
-        (state: RootState) => state.Team_Detail_Slice.selected_shop
+    const selected_team_shop: Team_Shop_Field | undefined = useSelector(
+        (state: RootState) => state.Team_Detail_Slice.selected_team_shop
     );
     const is_show_depot_list_dialog: boolean = useSelector(
         (state: RootState) => state.Team_Detail_Slice.is_show_depot_list_dialog
@@ -50,8 +50,8 @@ const DepotListDialog = () => {
     }, [is_show_depot_list_dialog]);
 
     useEffect(() => {
-        if (!selected_shop) return;
-        get_My_Depots({ cursor: cursor, limit: limit, shop_id: selected_shop.id })
+        if (!selected_team_shop) return;
+        get_My_Depots({ cursor: cursor, limit: limit, shop_id: selected_team_shop.shop_id })
             .then((res) => {
                 const res_data = res.data;
                 if (res_data?.is_success && res_data?.data) {
@@ -67,7 +67,7 @@ const DepotListDialog = () => {
             .catch((err) => {
                 console.error(err);
             });
-    }, [dispatch, get_My_Depots, cursor, selected_shop]);
+    }, [dispatch, get_My_Depots, cursor, selected_team_shop]);
 
     const handle_Close = () => {
         dispatch(set__is_show_depot_list_dialog(false));

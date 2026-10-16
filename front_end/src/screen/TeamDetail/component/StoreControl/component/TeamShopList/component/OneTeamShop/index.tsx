@@ -9,6 +9,7 @@ import { Lock_Team_Shop_Body_Field } from '@src/data_struct/shop/body';
 import { useLazy_get_Shop_By_Id_Query, use_lock_Team_Shop_Mutation } from '@src/redux/query/shop_RTK';
 import { global_set__data__toast_message, global_set__is_loading } from '@src/redux/slice/Global';
 import { messageType_enum } from '@src/component/ToastMessage/type';
+import { set__selected_team_shop } from '@src/redux/slice/Team_Detail';
 
 const OneTeamShop: FC<{ data: Team_Shop_Field }> = ({ data }) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -16,9 +17,13 @@ const OneTeamShop: FC<{ data: Team_Shop_Field }> = ({ data }) => {
     const account_information: Account_Information_Field | undefined = useSelector(
         (state: RootState) => state.App_Slice.account_information
     );
+    const selected_team_shop: Team_Shop_Field | undefined = useSelector(
+        (state: RootState) => state.Team_Detail_Slice.selected_team_shop
+    );
 
     const [shop, set__shop] = useState<Shop_Field | undefined>(undefined);
     const [team_shop, set__team_shop] = useState<Team_Shop_Field>(data);
+    const [is_selected, set__is_selected] = useState(false);
 
     const [get_Shop_By_Id] = useLazy_get_Shop_By_Id_Query();
     const [lock_Team_Shop] = use_lock_Team_Shop_Mutation();
@@ -36,7 +41,20 @@ const OneTeamShop: FC<{ data: Team_Shop_Field }> = ({ data }) => {
             });
     }, [get_Shop_By_Id, data]);
 
-    const handle_lock_Team_Shop = (is_lock: boolean) => {
+    useEffect(() => {
+        if (!selected_team_shop) return;
+        if (selected_team_shop.id === team_shop.id) {
+            set__is_selected(true);
+        }
+    }, [selected_team_shop, team_shop]);
+
+    const handle_Selected = () => {
+        dispatch(set__selected_team_shop(team_shop));
+    };
+
+    const handle_Lock_Team_Shop = (e: React.MouseEvent<SVGElement, MouseEvent>, is_lock: boolean) => {
+        e.stopPropagation();
+
         if (!account_information) return;
 
         if (account_information.account_type !== account_type_enum.ADMIN) {
@@ -90,11 +108,18 @@ const OneTeamShop: FC<{ data: Team_Shop_Field }> = ({ data }) => {
             });
     };
 
+    const handle_Class_Parent = () => {
+        if (is_selected) {
+            return style.selected;
+        }
+        return '';
+    };
+
     return (
-        <div className={style.parent}>
+        <div className={`${style.parent} ${handle_Class_Parent()}`} onClick={() => handle_Selected()}>
             <div>{shop?.name}</div>
-            {team_shop.is_lock && <IoMdLock onClick={() => handle_lock_Team_Shop(false)} color="red" />}
-            {!team_shop.is_lock && <IoMdUnlock onClick={() => handle_lock_Team_Shop(true)} color="gray" />}
+            {team_shop.is_lock && <IoMdLock onClick={(e) => handle_Lock_Team_Shop(e, false)} color="red" />}
+            {!team_shop.is_lock && <IoMdUnlock onClick={(e) => handle_Lock_Team_Shop(e, true)} color="gray" />}
         </div>
     );
 };

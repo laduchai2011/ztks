@@ -1,5 +1,12 @@
 import { Team_Field, Team_Member_Field } from '@src/data_struct/team';
-import { Shop_Field, Depot_Field, Store_Field } from '@src/data_struct/shop';
+import {
+    Shop_Field,
+    Depot_Field,
+    Store_Field,
+    Team_Shop_Field,
+    Team_Shop_Depot_Field,
+    Team_Shop_Depot_Store_Field,
+} from '@src/data_struct/shop';
 
 export interface state_props {
     // common
@@ -31,4 +38,13 @@ export interface state_props {
     // store list dialog
     is_show_store_list_dialog: boolean;
     selected_store?: Store_Field;
+
+    // team_shop
+    selected_team_shop?: Team_Shop_Field;
+
+    // team_shop_depot
+    selected_team_shop_depot?: Team_Shop_Depot_Field;
+
+    // team_shop_depot_store
+    selected_team_shop_depot_store?: Team_Shop_Depot_Store_Field;
 }

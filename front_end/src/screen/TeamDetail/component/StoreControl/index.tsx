@@ -2,7 +2,7 @@ import { memo } from 'react';
 import style from './style.module.scss';
 import TeamShopList from './component/TeamShopList';
 import TeamShopDepotList from './component/TeamShopDepotList';
-import StoreList from './component/StoreList';
+import TeamShopDepotStoreList from './component/TeamShopDepotStoreList';
 // import SelectedShop from './component/SelectedShop';
 // import SelectedDepot from './component/SelectedDepot';
 // import SelectedStore from './component/SelectedStore';
@@ -12,7 +12,7 @@ const StoreControl = () => {
         <div className={style.parent}>
             <TeamShopList />
             <TeamShopDepotList />
-            <StoreList />
+            <TeamShopDepotStoreList />
             {/* <SelectedShop />
             <SelectedDepot />
             <SelectedStore /> */}

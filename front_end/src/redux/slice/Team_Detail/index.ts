@@ -1,7 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { state_props } from '@src/screen/TeamDetail/type';
 import { Team_Field, Team_Member_Field } from '@src/data_struct/team';
-import { Shop_Field, Depot_Field, Store_Field } from '@src/data_struct/shop';
+import {
+    Shop_Field,
+    Depot_Field,
+    Store_Field,
+    Team_Shop_Field,
+    Team_Shop_Depot_Field,
+    Team_Shop_Depot_Store_Field,
+} from '@src/data_struct/shop';
 
 const initialState: state_props = {
     //common
@@ -33,6 +40,15 @@ const initialState: state_props = {
     // store list dialog
     is_show_store_list_dialog: false,
     selected_store: undefined,
+
+    // team_shop
+    selected_team_shop: undefined,
+
+    // team_shop_depot
+    selected_team_shop_depot: undefined,
+
+    // team_shop_depot_store
+    selected_team_shop_depot_store: undefined,
 };
 
 const Team_Detail_Slice = createSlice({
@@ -102,6 +118,21 @@ const Team_Detail_Slice = createSlice({
         set__selected_store: (state, action: PayloadAction<Store_Field>) => {
             state.selected_store = action.payload;
         },
+
+        // team_shop
+        set__selected_team_shop: (state, action: PayloadAction<Team_Shop_Field>) => {
+            state.selected_team_shop = action.payload;
+        },
+
+        // team_shop_depot
+        set__selected_team_shop_depot: (state, action: PayloadAction<Team_Shop_Depot_Field>) => {
+            state.selected_team_shop_depot = action.payload;
+        },
+
+        // team_shop_depot_store
+        set__selected_team_shop_depot_store: (state, action: PayloadAction<Team_Shop_Depot_Store_Field>) => {
+            state.selected_team_shop_depot_store = action.payload;
+        },
     },
 });
 
@@ -135,5 +166,14 @@ export const {
     // store list dialog
     set__is_show_store_list_dialog,
     set__selected_store,
+
+    // team_shop
+    set__selected_team_shop,
+
+    // team_shop_depot
+    set__selected_team_shop_depot,
+
+    // team_shop_depot_store
+    set__selected_team_shop_depot_store,
 } = Team_Detail_Slice.actions;
 export default Team_Detail_Slice.reducer;
