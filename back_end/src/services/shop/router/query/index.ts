@@ -1,5 +1,8 @@
 import express, { Router } from 'express';
 import dotenv from 'dotenv';
+import Handle_Get_Shop_By_Id from './handle/Get_Shop_By_Id';
+import Handle_Get_Depot_By_Id from './handle/Get_Depot_By_Id';
+import Handle_Get_Store_By_Id from './handle/Get_Store_By_Id';
 import Handle_Get_My_Shops from './handle/Get_My_Shops';
 import Handle_Get_My_Depots from './handle/Get_My_Depots';
 import Handle_Get_My_Stores from './handle/Get_My_Stores';
@@ -15,6 +18,9 @@ import Handle_Get_Team_Shop_Depot_Stores from './handle/Get_Team_Shop_Depot_Stor
 dotenv.config();
 const router_query_shop: Router = express.Router();
 
+const handle_get_shop_by_id = new Handle_Get_Shop_By_Id();
+const handle_get_depot_by_id = new Handle_Get_Depot_By_Id();
+const handle_get_store_by_id = new Handle_Get_Store_By_Id();
 const handle_get_my_shops = new Handle_Get_My_Shops();
 const handle_get_my_depots = new Handle_Get_My_Depots();
 const handle_get_my_stores = new Handle_Get_My_Stores();
@@ -26,6 +32,12 @@ const handle_get_depot_role_for_one_account = new Handle_Get_Depot_Role_For_One_
 const handle_get_team_shops = new Handle_Get_Team_Shops();
 const handle_get_team_shop_depots = new Handle_Get_Team_Shop_Depots();
 const handle_get_team_shop_depot_stores = new Handle_Get_Team_Shop_Depot_Stores();
+
+router_query_shop.post('/get_shop_by_id', handle_get_shop_by_id.main);
+
+router_query_shop.post('/get_depot_by_id', handle_get_depot_by_id.main);
+
+router_query_shop.post('/get_store_by_id', handle_get_store_by_id.main);
 
 router_query_shop.post('/get_my_shops', handle_get_my_shops.main);
 

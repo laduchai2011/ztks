@@ -1611,11 +1611,9 @@ CREATE OR REPLACE FUNCTION add_team_shop (
     p_team_id UUID,
     p_admin_account_id UUID
 )
-RETURNS team_shop
+RETURNS SETOF team_shop
 LANGUAGE plpgsql
 AS $$
-DECLARE
-    v_team_shop team_shop%ROWTYPE;
 BEGIN
     -- Kiểm tra shop thuộc admin và chưa bị xóa
     IF NOT EXISTS (
@@ -1641,8 +1639,9 @@ BEGIN
             'Team không tồn tại, đã bị xóa hoặc không thuộc quyền quản lý của admin';
     END IF;
 
-    -- Thêm mới hoặc khôi phục liên kết
-    INSERT INTO team_shop (
+    -- Chỉ trả về bản ghi khi INSERT mới hoặc khôi phục thành công
+    RETURN QUERY
+    INSERT INTO team_shop AS ts (
         shop_id,
         team_id
     )
@@ -1652,10 +1651,10 @@ BEGIN
     )
     ON CONFLICT (team_id, shop_id)
     DO UPDATE SET
+		is_lock = FALSE,
         is_delete = FALSE
-    RETURNING * INTO v_team_shop;
-
-    RETURN v_team_shop;
+    WHERE ts.is_delete = TRUE
+    RETURNING ts.*;
 END;
 $$;
 
@@ -1763,6 +1762,7 @@ BEGIN
     DO UPDATE SET
         is_lock = FALSE,
         is_delete = FALSE
+	WHERE ts.is_delete = TRUE
     RETURNING * INTO v_team_shop_depot;
 
     RETURN v_team_shop_depot;

@@ -1,4 +1,42 @@
-﻿CREATE OR REPLACE FUNCTION get_my_shops (
+﻿CREATE OR REPLACE FUNCTION get_shop_by_id (
+    p_id UUID
+)
+RETURNS SETOF shop
+LANGUAGE sql
+STABLE
+AS $$
+    SELECT s.*
+    FROM shop s
+    WHERE s.id = p_id;
+$$;
+
+
+CREATE OR REPLACE FUNCTION get_depot_by_id (
+    p_id UUID
+)
+RETURNS SETOF depot
+LANGUAGE sql
+STABLE
+AS $$
+    SELECT d.*
+    FROM depot d
+    WHERE d.id = p_id;
+$$;
+
+CREATE OR REPLACE FUNCTION get_store_by_id (
+    p_id UUID
+)
+RETURNS SETOF store
+LANGUAGE sql
+STABLE
+AS $$
+    SELECT s.*
+    FROM store s
+    WHERE s.id = p_id;
+$$;
+
+
+CREATE OR REPLACE FUNCTION get_my_shops (
     p_limit INTEGER DEFAULT 20,
     p_cursor UUID DEFAULT NULL,
     p_account_id UUID DEFAULT NULL

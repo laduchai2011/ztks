@@ -16,7 +16,7 @@ class QueryDB_Get_Team_Shop_Depot_Stores {
                 : null;
 
             try {
-                const result = await pool.query<Cursor_Team_Shop_Depot_Store_Field>(
+                const result = await pool.query<{ get_team_shop_depot_stores: Cursor_Team_Shop_Depot_Store_Field }>(
                     'SELECT * FROM get_team_shop_depot_stores($1::UUID, $2, $3::UUID)',
                     [
                         this._get_team_shop_depot_stores_body.team_shop_depot_id,
@@ -26,7 +26,7 @@ class QueryDB_Get_Team_Shop_Depot_Stores {
                 );
 
                 if (result.rows.length > 0) {
-                    return result.rows[0];
+                    return result.rows[0].get_team_shop_depot_stores;
                 }
             } catch (error) {
                 console.error(error);

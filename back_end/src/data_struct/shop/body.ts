@@ -27,6 +27,18 @@ export interface Create_Store_Body_Field {
     account_id: string;
 }
 
+export interface Get_Shop_By_Id_Body_Field {
+    id: string;
+}
+
+export interface Get_Depot_By_Id_Body_Field {
+    id: string;
+}
+
+export interface Get_Store_By_Id_Body_Field {
+    id: string;
+}
+
 export interface Get_My_Shops_Body_Field {
     cursor?: string;
     limit: number;
@@ -190,7 +202,7 @@ export interface Add_Team_Shop_Body_Field {
 
 export interface Lock_Team_Shop_Body_Field {
     id: string;
-    is_lock: string;
+    is_lock: boolean;
     admin_account_id: string;
 }
 
@@ -202,7 +214,7 @@ export interface Add_Team_Shop_Depot_Body_Field {
 
 export interface Lock_Team_Shop_Depot_Body_Field {
     id: string;
-    is_lock: string;
+    is_lock: boolean;
     admin_account_id: string;
 }
 
@@ -214,7 +226,7 @@ export interface Add_Team_Shop_Depot_Store_Body_Field {
 
 export interface Lock_Team_Shop_Depot_Store_Body_Field {
     id: string;
-    is_lock: string;
+    is_lock: boolean;
     admin_account_id: string;
 }
 

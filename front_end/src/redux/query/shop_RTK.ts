@@ -18,6 +18,9 @@ import {
     Cursor_Team_Shop_Depot_Store_Field,
 } from '@src/data_struct/shop';
 import {
+    Get_Shop_By_Id_Body_Field,
+    Get_Depot_By_Id_Body_Field,
+    Get_Store_By_Id_Body_Field,
     Get_My_Shops_Body_Field,
     Get_My_Depots_Body_Field,
     Get_My_Stores_Body_Field,
@@ -80,6 +83,39 @@ export const shop_RTK = createApi({
         'Team_Shop_Depot_Store',
     ],
     endpoints: (builder) => ({
+        _get_Shop_By_Id_: builder.query<My_Response_Field<Shop_Field>, Get_Shop_By_Id_Body_Field>({
+            query: (body) => ({
+                url: SHOP_API.GET_SHOP_BY_ID,
+                method: 'POST',
+                body,
+            }),
+            providesTags: (result) => [
+                { type: 'Shop', id: 'LIST' },
+                ...(result?.data ? [{ type: 'Shop' as const, id: result.data.id }] : []),
+            ],
+        }),
+        _get_Depot_By_Id_: builder.query<My_Response_Field<Depot_Field>, Get_Depot_By_Id_Body_Field>({
+            query: (body) => ({
+                url: SHOP_API.GET_DEPOT_BY_ID,
+                method: 'POST',
+                body,
+            }),
+            providesTags: (result) => [
+                { type: 'Depot', id: 'LIST' },
+                ...(result?.data ? [{ type: 'Depot' as const, id: result.data.id }] : []),
+            ],
+        }),
+        _get_Store_By_Id_: builder.query<My_Response_Field<Store_Field>, Get_Store_By_Id_Body_Field>({
+            query: (body) => ({
+                url: SHOP_API.GET_STORE_BY_ID,
+                method: 'POST',
+                body,
+            }),
+            providesTags: (result) => [
+                { type: 'Store', id: 'LIST' },
+                ...(result?.data ? [{ type: 'Store' as const, id: result.data.id }] : []),
+            ],
+        }),
         _get_My_Shops_: builder.query<My_Response_Field<Cursor_Shop_Field>, Get_My_Shops_Body_Field>({
             query: (body) => ({
                 url: SHOP_API.GET_MY_SHOPS,
@@ -444,6 +480,9 @@ export const shop_RTK = createApi({
 });
 
 export const {
+    useLazy_get_Shop_By_Id_Query,
+    useLazy_get_Depot_By_Id_Query,
+    useLazy_get_Store_By_Id_Query,
     useLazy_get_My_Shops_Query,
     useLazy_get_My_Depots_Query,
     useLazy_get_My_Stores_Query,

@@ -4,6 +4,9 @@ const isProduct = process.env.NODE_ENV === 'production';
 const apiString = isProduct ? '' : '/api';
 
 export const SHOP_API = {
+    GET_SHOP_BY_ID: `${BASE_URL}${apiString}/service__shop/query/get_shop_by_id`,
+    GET_DEPOT_BY_ID: `${BASE_URL}${apiString}/service__shop/query/get_depot_by_id`,
+    GET_STORE_BY_ID: `${BASE_URL}${apiString}/service__shop/query/get_store_by_id`,
     GET_MY_SHOPS: `${BASE_URL}${apiString}/service__shop/query/get_my_shops`,
     GET_MY_DEPOTS: `${BASE_URL}${apiString}/service__shop/query/get_my_depots`,
     GET_MY_STORES: `${BASE_URL}${apiString}/service__shop/query/get_my_stores`,

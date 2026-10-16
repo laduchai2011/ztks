@@ -14,13 +14,13 @@ class QueryDB_Get_Team_Shops {
             const cursor = this._get_team_shops_body.cursor ? this._get_team_shops_body.cursor : null;
 
             try {
-                const result = await pool.query<Cursor_Team_Shop_Field>(
+                const result = await pool.query<{ get_team_shops: Cursor_Team_Shop_Field }>(
                     'SELECT * FROM get_team_shops($1::UUID, $2, $3::UUID)',
                     [this._get_team_shops_body.team_id, this._get_team_shops_body.limit, cursor]
                 );
 
                 if (result.rows.length > 0) {
-                    return result.rows[0];
+                    return result.rows[0].get_team_shops;
                 }
             } catch (error) {
                 console.error(error);
