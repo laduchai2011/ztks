@@ -1040,53 +1040,53 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION set_depot_role (
-    p_role VARCHAR(50),
-	p_type VARCHAR(50),
-	is_lock BOOLEAN,
-    p_depot_id UUID,
-    p_account_id UUID
-)
-RETURNS SETOF depot_role
-LANGUAGE plpgsql
-AS $$
-BEGIN
-	IF EXISTS (
-	    SELECT 1
-	    FROM depot_role sr
-	    WHERE sr.depot_id = p_depot_id
-	      AND sr.account_id = p_account_id
-		  AND sr.type = p_type
-	) THEN
+-- CREATE OR REPLACE FUNCTION set_depot_role (
+--     p_role VARCHAR(50),
+-- 	p_type VARCHAR(50),
+-- 	is_lock BOOLEAN,
+--     p_depot_id UUID,
+--     p_account_id UUID
+-- )
+-- RETURNS SETOF depot_role
+-- LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+-- 	IF EXISTS (
+-- 	    SELECT 1
+-- 	    FROM depot_role sr
+-- 	    WHERE sr.depot_id = p_depot_id
+-- 	      AND sr.account_id = p_account_id
+-- 		  AND sr.type = p_type
+-- 	) THEN
 	
-	    UPDATE depot_role
-	    SET
-	        type = p_type,
-	        is_lock = FALSE,
-	        is_delete = FALSE
-	    WHERE depot_id = p_depot_id
-	      AND account_id = p_account_id
-		  AND sr.type = p_type;
-	ELSE
+-- 	    UPDATE depot_role
+-- 	    SET
+-- 	        type = p_type,
+-- 	        is_lock = FALSE,
+-- 	        is_delete = FALSE
+-- 	    WHERE depot_id = p_depot_id
+-- 	      AND account_id = p_account_id
+-- 		  AND sr.type = p_type;
+-- 	ELSE
 	
-	    INSERT INTO depot_role (
-	        type,
-	        is_lock,
-	        is_delete,
-	        depot_id,
-	        account_id
-	    )
-	    VALUES (
-	        p_type,
-	        FALSE,
-	        FALSE,
-	        p_depot_id,
-	        p_account_id
-	    );
+-- 	    INSERT INTO depot_role (
+-- 	        type,
+-- 	        is_lock,
+-- 	        is_delete,
+-- 	        depot_id,
+-- 	        account_id
+-- 	    )
+-- 	    VALUES (
+-- 	        p_type,
+-- 	        FALSE,
+-- 	        FALSE,
+-- 	        p_depot_id,
+-- 	        p_account_id
+-- 	    );
 
-	END IF;
-END;
-$$;
+-- 	END IF;
+-- END;
+-- $$;
 
 CREATE OR REPLACE FUNCTION create_store (
     p_name VARCHAR(50),
@@ -1146,53 +1146,53 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION set_store_role (
-    p_role VARCHAR(50),
-	p_type VARCHAR(50),
-	is_lock BOOLEAN,
-    p_store_id UUID,
-    p_account_id UUID
-)
-RETURNS SETOF store_role
-LANGUAGE plpgsql
-AS $$
-BEGIN
-	IF EXISTS (
-	    SELECT 1
-	    FROM store_role sr
-	    WHERE sr.store_id = p_store_id
-	      AND sr.account_id = p_account_id
-		  AND sr.type = p_type
-	) THEN
+-- CREATE OR REPLACE FUNCTION set_store_role (
+--     p_role VARCHAR(50),
+-- 	p_type VARCHAR(50),
+-- 	is_lock BOOLEAN,
+--     p_store_id UUID,
+--     p_account_id UUID
+-- )
+-- RETURNS SETOF store_role
+-- LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+-- 	IF EXISTS (
+-- 	    SELECT 1
+-- 	    FROM store_role sr
+-- 	    WHERE sr.store_id = p_store_id
+-- 	      AND sr.account_id = p_account_id
+-- 		  AND sr.type = p_type
+-- 	) THEN
 	
-	    UPDATE store_role
-	    SET
-	        type = p_type,
-	        is_lock = FALSE,
-	        is_delete = FALSE
-	    WHERE store_id = p_store_id
-	      AND account_id = p_account_id
-		  AND sr.type = p_type;
-	ELSE
+-- 	    UPDATE store_role
+-- 	    SET
+-- 	        type = p_type,
+-- 	        is_lock = FALSE,
+-- 	        is_delete = FALSE
+-- 	    WHERE store_id = p_store_id
+-- 	      AND account_id = p_account_id
+-- 		  AND sr.type = p_type;
+-- 	ELSE
 	
-	    INSERT INTO store_role (
-	        type,
-	        is_lock,
-	        is_delete,
-	        store_id,
-	        account_id
-	    )
-	    VALUES (
-	        p_type,
-	        FALSE,
-	        FALSE,
-	        p_store_id,
-	        p_account_id
-	    );
+-- 	    INSERT INTO store_role (
+-- 	        type,
+-- 	        is_lock,
+-- 	        is_delete,
+-- 	        store_id,
+-- 	        account_id
+-- 	    )
+-- 	    VALUES (
+-- 	        p_type,
+-- 	        FALSE,
+-- 	        FALSE,
+-- 	        p_store_id,
+-- 	        p_account_id
+-- 	    );
 
-	END IF;
-END;
-$$;
+-- 	END IF;
+-- END;
+-- $$;
 
 CREATE OR REPLACE FUNCTION edit_shop (
 	p_id UUID,
@@ -1710,11 +1710,9 @@ CREATE OR REPLACE FUNCTION add_team_shop_depot (
     p_depot_id UUID,
     p_admin_account_id UUID
 )
-RETURNS team_shop_depot
+RETURNS SETOF team_shop_depot
 LANGUAGE plpgsql
 AS $$
-DECLARE
-    v_team_shop_depot team_shop_depot%ROWTYPE;
 BEGIN
     -- Kiểm tra team_shop, shop, team và quyền sở hữu admin
     IF NOT EXISTS (
@@ -1750,7 +1748,9 @@ BEGIN
             'Depot không tồn tại, đã bị xóa hoặc không thuộc shop được liên kết';
     END IF;
 
-    INSERT INTO team_shop_depot (
+	-- Chỉ trả về bản ghi khi INSERT mới hoặc khôi phục thành công
+    RETURN QUERY
+    INSERT INTO team_shop_depot AS tsd (
         depot_id,
         team_shop_id
     )
@@ -1762,10 +1762,8 @@ BEGIN
     DO UPDATE SET
         is_lock = FALSE,
         is_delete = FALSE
-	WHERE ts.is_delete = TRUE
-    RETURNING * INTO v_team_shop_depot;
-
-    RETURN v_team_shop_depot;
+	WHERE tsd.is_delete = TRUE
+    RETURNING tsd.*;
 END;
 $$;
 
@@ -1827,11 +1825,9 @@ CREATE OR REPLACE FUNCTION add_team_shop_depot_store (
     p_store_id UUID,
     p_admin_account_id UUID
 )
-RETURNS team_shop_depot_store
+RETURNS SETOF team_shop_depot_store
 LANGUAGE plpgsql
 AS $$
-DECLARE
-    v_team_shop_depot_store team_shop_depot_store%ROWTYPE;
 BEGIN
     -- Kiểm tra toàn bộ quan hệ và quyền sở hữu
     IF NOT EXISTS (
@@ -1889,7 +1885,9 @@ BEGIN
             'Store không tồn tại, đã bị xóa hoặc không thuộc depot được liên kết';
     END IF;
 
-    INSERT INTO team_shop_depot_store (
+	-- Chỉ trả về bản ghi khi INSERT mới hoặc khôi phục thành công
+    RETURN QUERY
+    INSERT INTO team_shop_depot_store AS tsds (
         store_id,
         team_shop_depot_id
     )
@@ -1901,9 +1899,8 @@ BEGIN
     DO UPDATE SET
         is_lock = FALSE,
         is_delete = FALSE
-    RETURNING * INTO v_team_shop_depot_store;
-
-    RETURN v_team_shop_depot_store;
+	WHERE tsds.is_delete = TRUE
+    RETURNING tsds.*;
 END;
 $$;
 

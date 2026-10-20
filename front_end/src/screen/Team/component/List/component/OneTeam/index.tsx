@@ -41,8 +41,8 @@ const OneTeam: FC<{ data: Team_Field }> = ({ data }) => {
 
     const handle_Type_Class = () => {
         switch (data.type) {
-            case Team_Type_Enum.SALE: {
-                return style.sale;
+            case Team_Type_Enum.SALES: {
+                return style.sales;
             }
             case Team_Type_Enum.STORE: {
                 return style.store;

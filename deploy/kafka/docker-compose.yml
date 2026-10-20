@@ -1,0 +1,78 @@
+services:
+  kafka:
+    image: apache/kafka:4.3.1
+    container_name: kafka_container
+    hostname: kafka
+    restart: unless-stopped
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # Không publish Kafka ra host.
+    # Client trong network_ztks dùng kafka:9092.
+    networks:
+      - network_ztks
+
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+
+      # Listener cho client có xác thực và controller KRaft.
+      KAFKA_LISTENERS: SASL_PLAINTEXT://:9092,CONTROLLER://:9093
+
+      # Chỉ dành cho client nằm trong Docker network.
+      KAFKA_ADVERTISED_LISTENERS: SASL_PLAINTEXT://kafka:9092
+
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,SASL_PLAINTEXT:SASL_PLAINTEXT
+
+      # Bật SASL/PLAIN.
+      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
+
+      # Tài khoản xác thực cho listener SASL.
+      KAFKA_LISTENER_NAME_SASL_PLAINTEXT_PLAIN_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="${ztks}" password="${ztks123}" user_admin="${adminztks}" user_ztks_app="${adminztksapp}";'
+
+      # Giữ cấu hình replication cho một broker.
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_NUM_PARTITIONS: 3
+
+    volumes:
+      - /var/docker_mount/kafka_data:/var/lib/kafka/data
+
+  kafka-ui:
+    image: ghcr.io/kafbat/kafka-ui:latest
+    container_name: kafka-ui_container
+    restart: unless-stopped
+
+    # Chỉ mở giao diện trên localhost của VPS.
+    ports:
+      - "8080:8080"
+
+    networks:
+      - network_ztks
+
+    environment:
+      # Đăng nhập trang quản trị.
+      AUTH_TYPE: LOGIN_FORM
+      SPRING_SECURITY_USER_NAME: admin
+      SPRING_SECURITY_USER_PASSWORD: admin
+
+      # Kết nối Kafka bằng SASL/PLAIN.
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL: SASL_PLAINTEXT
+      KAFKA_CLUSTERS_0_PROPERTIES_SASL_MECHANISM: PLAIN
+      KAFKA_CLUSTERS_0_PROPERTIES_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="${ztks}" password="${ztks123}";'
+
+networks:
+  network_ztks:
+    external: true

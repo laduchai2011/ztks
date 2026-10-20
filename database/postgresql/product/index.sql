@@ -22,6 +22,8 @@ CREATE TABLE product (
 	quantity_out INTEGER NOT NULL DEFAULT 0,
 	images TEXT[] DEFAULT '{}',
 	videos TEXT[] DEFAULT '{}',
+	is_compelled_price BOOLEAN NOT NULL DEFAULT FALSE,
+	unit_price NUMERIC(18, 2) NOT NULL CHECK (unit_price >= 0),
 	is_lock BOOLEAN NOT NULL DEFAULT FALSE,
 	is_delete BOOLEAN NOT NULL DEFAULT FALSE,
 	store_id UUID NOT NULL,
