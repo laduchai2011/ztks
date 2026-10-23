@@ -1,23 +1,30 @@
-CREATE OR REPLACE FUNCTION signin_customer(
-    p_phone VARCHAR(255),
-    p_password VARCHAR(255)
-)
-RETURNS SETOF customer
-LANGUAGE sql
+CREATE OR REPLACE FUNCTION get_unprocessed_kafka_event ()
+RETURNS JSONB
+LANGUAGE plpgsql
 AS $$
-    SELECT *
-    FROM customer
-    WHERE phone = p_phone
-      AND password = p_password;
-$$;
+DECLARE
+    v_result JSONB;
+BEGIN
+    SELECT jsonb_build_object(
+        'items',
+        COALESCE(
+            jsonb_agg(
+                to_jsonb(ke)
+                ORDER BY ke.created_at ASC, ke.id ASC
+            ),
+            '[]'::JSONB
+        ),
+        'total_count',
+        COUNT(*)
+    )
+    INTO v_result
+    FROM kafka_event ke
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM kafka_event_processed kep
+        WHERE kep.kafka_event_id = ke.id
+    );
 
-CREATE OR REPLACE FUNCTION customer_get_me(
-    p_id UUID
-)
-RETURNS SETOF customer
-LANGUAGE sql
-AS $$
-    SELECT *
-    FROM customer
-    WHERE id = p_id;
+    RETURN v_result;
+END;
 $$;

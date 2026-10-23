@@ -7,6 +7,7 @@ CREATE TABLE product_code (
 	videos TEXT[] DEFAULT '{}',
 	is_delete BOOLEAN NOT NULL DEFAULT FALSE,
 	account_id UUID NOT NULL,
+	update_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     create_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	
 	CONSTRAINT FK_product_account_id FOREIGN KEY (account_id) REFERENCES account(id)
@@ -29,6 +30,7 @@ CREATE TABLE product (
 	store_id UUID NOT NULL,
 	product_code_id UUID NOT NULL,
 	account_id UUID NOT NULL,
+	update_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     create_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	
 	CONSTRAINT FK_product_store_id FOREIGN KEY (store_id) REFERENCES store(id),
@@ -57,6 +59,7 @@ CREATE TABLE product_fluctuation (
 	product_id UUID NOT NULL,
 	account_id UUID NOT NULL,
 	finish_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	update_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     create_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
 	CONSTRAINT FK_product_fluctuation_re_order_v1_id FOREIGN KEY (re_order_v1_id) REFERENCES re_order_v1(id),
@@ -76,6 +79,7 @@ CREATE INDEX idx_product_fluctuation_source_account_id ON product_fluctuation(so
 CREATE INDEX idx_product_fluctuation_target_account_id ON product_fluctuation(target_account_id);
 CREATE INDEX idx_product_fluctuation_product_id ON product_fluctuation(product_id);
 CREATE INDEX idx_product_fluctuation_account_id ON product_fluctuation(account_id);
+
 
 -- ALTER TABLE product_fluctuation
 -- DROP CONSTRAINT IF EXISTS command_product_fluctuation;

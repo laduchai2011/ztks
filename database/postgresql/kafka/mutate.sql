@@ -1,53 +1,49 @@
-CREATE OR REPLACE FUNCTION create_customer (
-    p_phone VARCHAR(255),
-    p_password VARCHAR(255)
+CREATE OR REPLACE FUNCTION create_kafka_event (
+    p_aggregate_id UUID,
+    p_aggregate_type VARCHAR(100),
+    p_event_type VARCHAR(100),
+    p_payload JSONB
 )
-RETURNS SETOF customer
+RETURNS SETOF kafka_event
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    INSERT INTO customer (
-        phone,
-        password,
-        create_time
+    RETURN QUERY
+    INSERT INTO kafka_event (
+        id,
+        aggregate_id,
+        aggregate_type,
+        event_type,
+        payload
     )
     VALUES (
-        p_phone,
-        p_password,
-        CURRENT_TIMESTAMP
-    );
-
-    IF NOT FOUND THEN
-        RAISE EXCEPTION 'Đăng ký tài khoản không thành công.';
-    END IF;
-
-    RETURN QUERY
-    SELECT *
-    FROM customer
-    WHERE phone = p_phone;
+        uuidv7(),
+        p_aggregate_id,
+        p_aggregate_type,
+        p_event_type,
+        p_payload
+    )
+    RETURNING *;
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION customer_forget_password (
-    p_phone VARCHAR(255),
-    p_password VARCHAR(255)
+
+CREATE OR REPLACE FUNCTION mark_kafka_event_processed (
+    p_kafka_event_id UUID
 )
-RETURNS SETOF customer
+RETURNS SETOF kafka_event_processed
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    UPDATE customer
-    SET password = p_password
-    WHERE phone = p_phone;
-
-    IF NOT FOUND THEN
-        RAISE EXCEPTION 'Cập nhật mật khẩu không thành công.'
-            USING ERRCODE = 'P0001';
-    END IF;
-
     RETURN QUERY
-    SELECT *
-    FROM customer
-    WHERE phone = p_phone;
+    INSERT INTO kafka_event_processed (
+        kafka_event_id
+    )
+    VALUES (
+        p_kafka_event_id
+    )
+    ON CONFLICT (kafka_event_id)
+    DO NOTHING
+    RETURNING *;
 END;
 $$;

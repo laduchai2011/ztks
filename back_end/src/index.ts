@@ -112,6 +112,11 @@ app.use(`${apiString}/hello`, (req, res) => {
         app.use(`${prefix}/service__order`, service_order);
     }
 
+    if (services.includes('order_v1')) {
+        const service_order_v1 = (await import('@src/services/order_v1')).default;
+        app.use(`${prefix}/service__order_v1`, service_order_v1);
+    }
+
     if (services.includes('agent')) {
         const service_agent = (await import('@src/services/agent')).default;
         app.use(`${prefix}/service__agent`, service_agent);

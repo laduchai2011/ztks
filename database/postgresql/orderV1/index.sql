@@ -11,21 +11,26 @@ CREATE TABLE order_v1 (
 	type VARCHAR(255) NOT NULL,
 	
 	-- Trạng thái hiện tại
-    status VARCHAR(50) NOT NULL DEFAULT 'created',
+    status VARCHAR(50) NOT NULL DEFAULT 'creating',
 
     -- Lịch sử trạng thái
-    process JSONB NOT NULL DEFAULT '[]'::JSONB,
+    process TEXT[] NOT NULL DEFAULT ARRAY['creating']::TEXT[],
 	
 	is_pay BOOLEAN NOT NULL DEFAULT FALSE,
 	is_delete BOOLEAN NOT NULL DEFAULT FALSE,
+	
 	team_id UUID NOT NULL,
-	create_account_id UUID NOT NULL,
+	customer_v1_id UUID,
+	created_account_id UUID NOT NULL,
+	received_account_id UUID,
 	admin_account_id UUID NOT NULL,
 	update_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     create_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
 	CONSTRAINT FK_order_v1_team FOREIGN KEY (team_id) REFERENCES team(id),
-	CONSTRAINT FK_order_v1_create_account FOREIGN KEY (create_account_id) REFERENCES account(id),
+	CONSTRAINT FK_order_v1_customer_v1 FOREIGN KEY (customer_v1_id) REFERENCES customer_v1(id),
+	CONSTRAINT FK_order_v1_created_account FOREIGN KEY (created_account_id) REFERENCES account(id),
+	CONSTRAINT FK_order_v1_received_account FOREIGN KEY (received_account_id) REFERENCES account(id),
 	CONSTRAINT FK_order_v1_admin_account FOREIGN KEY (admin_account_id) REFERENCES account(id),
 	CONSTRAINT order_v1_type CHECK (type IN (
 			'product',
@@ -43,11 +48,35 @@ CREATE TABLE order_v1 (
 			'completed',
 			'cancelled'
 		)
-	)
+	),
+	CONSTRAINT uq_order_v1_create_account_idempotency_key UNIQUE (created_account_id, idempotency_key)
 );
-CREATE INDEX idx_order_v1_admin_phone ON order_v1(admin_account_id, phone);
-CREATE INDEX idx_order_v1_admin_create_type_status ON order_v1(admin_account_id, create_account_id, type, status);
-CREATE INDEX idx_order_v1_admin_type_status ON order_v1(admin_account_id, type, status);
+CREATE INDEX idx_order_v1_admin_type_status_created ON order_v1(admin_account_id, type, status, created_account_id);
+CREATE INDEX idx_order_v1_admin_custome_v1_created ON order_v1(admin_account_id, customer_v1_id, created_account_id);
+
+CREATE TABLE order_v1_inventory_reservation (
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
+    order_v1_id UUID NOT NULL REFERENCES order_v1(id),
+    product_id UUID NOT NULL REFERENCES product(id),
+    quantity INTEGER NOT NULL CHECK (quantity > 0),
+    status VARCHAR(20) NOT NULL DEFAULT 'reserved'
+        CHECK (
+            status IN (
+                'reserved',
+                'confirmed',
+                'released',
+                'expired'
+            )
+        ),
+	update_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    create_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+	-- CONSTRAINT FK_order_v1_inventory_reservation_order_v1 FOREIGN KEY (order_v1_id) REFERENCES order_v1(id),
+	-- CONSTRAINT FK_order_v1_inventory_reservation_product FOREIGN KEY (product_id) REFERENCES product(id),
+
+    CONSTRAINT uq_order_v1_inventory_reservation_order_product UNIQUE (order_v1_id, product_id)
+);
+CREATE INDEX idx_order_v1_inventory_reservation_product_status ON order_v1_inventory_reservation(product_id, status);
 
 CREATE TABLE re_order_v1 (
     id UUID PRIMARY KEY DEFAULT uuidv7(),
