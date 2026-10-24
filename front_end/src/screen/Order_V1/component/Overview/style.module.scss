@@ -1,0 +1,10 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+}

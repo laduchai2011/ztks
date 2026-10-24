@@ -1,0 +1,90 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    min-width: 0;
+    min-height: 120px;
+    padding: 20px;
+    box-sizing: border-box;
+
+    background-color: #ffffff;
+    border-radius: 12px;
+
+    // Đổ bóng đều cả 4 cạnh
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.12);
+
+    font-size: 16px;
+    font-weight: 600;
+    color: #333333;
+
+    transition: box-shadow 0.2s ease;
+
+    &:hover {
+        box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+    }
+
+    @include center-of-row;
+
+    > .icon_column {
+        height: 100%;
+        width: 25%;
+
+        > .icon_box {
+            background-color: rgb(255, 203, 32);
+            width: 40px;
+            height: 40px;
+            box-sizing: border-box;
+            padding: 5px;
+            border-radius: 5px;
+            @include center-of-rectangle;
+        }
+    }
+
+    > .txt_column {
+        height: 100%;
+        width: 75%;
+        line-height: 28px;
+
+        > div:nth-child(1) {
+            color: gray;
+            font-size: 0.9rem;
+        }
+
+        > div:nth-child(2) {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        > div:nth-child(3) {
+            color: gray;
+            font-size: 0.8rem;
+            @include center-of-row;
+
+            > .positive {
+                @include center-of-row;
+                color: rgb(0, 255, 0);
+                box-sizing: border-box;
+                padding: 0 5px;
+            }
+
+            > .negative {
+                @include center-of-row;
+                color: rgb(255, 48, 48);
+                box-sizing: border-box;
+                padding: 0 5px;
+            }
+        }
+
+        > div:nth-child(4) {
+            color: gray;
+            font-size: 0.8rem;
+            @include center-of-row;
+
+            > div:nth-child(1) {
+                @include center-of-row;
+                color: rgb(0, 255, 0);
+                box-sizing: border-box;
+                padding: 0 5px;
+            }
+        }
+    }
+}

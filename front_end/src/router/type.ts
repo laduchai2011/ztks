@@ -11,6 +11,7 @@ import {
     OA,
     OA_SETTING,
     ORDER,
+    ORDER_V1,
     ACCOUNT_RECEIVE_MESSAGE,
     MANAGE_AGENT,
     MEMBER,
@@ -41,6 +42,7 @@ const _PROFILE = PROFILE;
 const _OA = OA;
 const _OA_SETTING = OA_SETTING;
 const _ORDER = ORDER;
+const _ORDER_V1 = ORDER_V1;
 const _ACCOUNT_RECEIVE_MESSAGE = ACCOUNT_RECEIVE_MESSAGE;
 const _MANAGE_AGENT = MANAGE_AGENT;
 const _MEMBER = MEMBER;
@@ -71,6 +73,7 @@ export enum select_enum {
     OA = _OA,
     OA_SETTING = _OA_SETTING,
     ORDER = _ORDER,
+    ORDER_V1 = _ORDER_V1,
     ACCOUNT_RECEIVE_MESSAGE = _ACCOUNT_RECEIVE_MESSAGE,
     MANAGE_AGENT = _MANAGE_AGENT,
     MEMBER = _MEMBER,
@@ -103,6 +106,7 @@ export type selected_type =
     | select_enum.OA
     | select_enum.OA_SETTING
     | select_enum.ORDER
+    | select_enum.ORDER_V1
     | select_enum.ACCOUNT_RECEIVE_MESSAGE
     | select_enum.MANAGE_AGENT
     | select_enum.MEMBER
@@ -135,6 +139,7 @@ export enum route_enum {
     OA = '/oa',
     OA_SETTING = '/oa_setting',
     ORDER = '/order',
+    ORDER_V1 = '/order_v1',
     ACCOUNT_RECEIVE_MESSAGE = '/account_receive_message',
     MANAGE_AGENT = '/manage_agent',
     MEMBER = '/member',
@@ -167,6 +172,7 @@ export type routed_type =
     | route_enum.OA
     | route_enum.OA_SETTING
     | route_enum.ORDER
+    | route_enum.ORDER_V1
     | route_enum.ACCOUNT_RECEIVE_MESSAGE
     | route_enum.MANAGE_AGENT
     | route_enum.MEMBER

@@ -8,13 +8,13 @@ import { avatarnull } from '@src/utility/string';
 import { handleSrcImage } from '@src/utility/string';
 import { Account_Field } from '@src/data_struct/account';
 import { route_enum, selected_type, select_enum } from '@src/router/type';
-import { CHECK_IN_OUT, SHOP, TEAM } from '@src/const/text';
+import { CHECK_IN_OUT, SHOP, TEAM, ORDER } from '@src/const/text';
 import { MdDashboard } from 'react-icons/md';
 import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
-import { MdGroups } from 'react-icons/md';
+import { MdGroups, MdMenu } from 'react-icons/md';
 import { FcShop } from 'react-icons/fc';
-import { MdMenu } from 'react-icons/md';
 import { TbArrowsMoveHorizontal } from 'react-icons/tb';
+import { FaShoppingCart } from 'react-icons/fa';
 import { set__is_show, set__is_max_show } from '@src/redux/slice/Tool_Bar';
 
 const ToolBar: FC<{ selected: selected_type }> = ({ selected }) => {
@@ -89,6 +89,9 @@ const ToolBar: FC<{ selected: selected_type }> = ({ selected }) => {
             case select_enum.TEAM:
                 navigate(route_enum.TEAM);
                 break;
+            case select_enum.ORDER_V1:
+                navigate(route_enum.ORDER_V1);
+                break;
 
             default:
                 console.log('Không xác định');
@@ -134,6 +137,13 @@ const ToolBar: FC<{ selected: selected_type }> = ({ selected }) => {
                 <div className={handle_Selected_Class(select_enum.TEAM)} onClick={() => handle_Go_To(select_enum.TEAM)}>
                     {is_max_show && <div>{TEAM}</div>}
                     {!is_max_show && <MdGroups />}
+                </div>
+                <div
+                    className={handle_Selected_Class(select_enum.ORDER_V1)}
+                    onClick={() => handle_Go_To(select_enum.ORDER_V1)}
+                >
+                    {is_max_show && <div>{ORDER}</div>}
+                    {!is_max_show && <FaShoppingCart color="red" />}
                 </div>
             </div>
             <div className={style.avatar}>

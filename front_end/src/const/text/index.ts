@@ -27,6 +27,7 @@ export const ADD = 'Thêm';
 export const CLOSE = 'Đóng';
 export const NOTE = 'Ghi chú';
 export const ORDER = 'Đơn hàng';
+export const ORDER_V1 = 'Đơn hàng v1';
 export const CREATE_ORDER = 'Tạo đơn hàng';
 export const SEE_MORE = 'Xem thêm';
 export const HIDDEN = 'Ẩn bớt';
