@@ -40,12 +40,12 @@ const DeletedOrderView = () => {
                         {is_order_negative && <LuMoveDown />}
                         <div>12%</div>
                     </div>
-
                     <div>So với tuần trước</div>
                 </div>
                 <div>
-                    <div>
-                        <LuMoveUp />
+                    <div className={`${handle_Class_Name_Order_Negative()}`}>
+                        {!is_order_negative && <LuMoveUp />}
+                        {is_order_negative && <LuMoveDown />}
                         <div>12%</div>
                     </div>
                     <div>So với tháng trước</div>

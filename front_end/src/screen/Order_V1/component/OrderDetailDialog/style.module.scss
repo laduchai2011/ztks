@@ -1,0 +1,71 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(161, 161, 161, 0.3);
+    @include center-of-rectangle;
+    opacity: 0;
+    display: none;
+    transition: opacity 0.5s ease-in-out;
+
+    &.opacity {
+        opacity: 1;
+    }
+
+    &.display {
+        display: flex;
+    }
+
+    > .main {
+        background-color: white;
+        width: 80%;
+        border-radius: 10px;
+
+        @include responsive(sm) {
+            width: 100%;
+        }
+
+        > .closeContainer {
+            display: flex;
+            justify-content: flex-end;
+            box-sizing: border-box;
+            padding: 5px;
+
+            > svg {
+                cursor: pointer;
+            }
+        }
+
+        > .infor1 {
+            > .infor11 {
+                height: 80px;
+                box-sizing: border-box;
+                border-bottom: 1px solid rgb(236, 236, 236);
+                @include center-of-row;
+
+                > div:nth-child(1) {
+                    box-sizing: border-box;
+                    padding: 10px;
+
+                    > div {
+                        background-color: rgb(175, 255, 255);
+                        box-sizing: border-box;
+                        padding: 5px;
+                        border-radius: 8px;
+
+                        > div {
+                            background-color: aqua;
+                            box-sizing: border-box;
+                            padding: 5px;
+                            border-radius: 8px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

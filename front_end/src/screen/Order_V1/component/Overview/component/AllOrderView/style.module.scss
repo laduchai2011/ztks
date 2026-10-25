@@ -60,7 +60,7 @@
 
         > div:nth-child(3) {
             color: gray;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             @include center-of-row;
 
             > .positive {
@@ -80,12 +80,19 @@
 
         > div:nth-child(4) {
             color: gray;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             @include center-of-row;
 
-            > div:nth-child(1) {
+            > .positive {
                 @include center-of-row;
                 color: rgb(0, 255, 0);
+                box-sizing: border-box;
+                padding: 0 5px;
+            }
+
+            > .negative {
+                @include center-of-row;
+                color: rgb(255, 48, 48);
                 box-sizing: border-box;
                 padding: 0 5px;
             }

@@ -13,6 +13,7 @@ import GlobalToastMessage from '@src/Global/GlobalToastMessage';
 import Overview from './component/Overview';
 import Fillter from './component/Fillter';
 import List from './component/List';
+import OrderDetailDialog from './component/OrderDetailDialog';
 
 const Order_V1 = () => {
     const navigate = useNavigate();
@@ -68,6 +69,7 @@ const Order_V1 = () => {
                 <div>
                     <GlobalLoading />
                     <GlobalToastMessage />
+                    <OrderDetailDialog />
                 </div>
             </div>
         </div>

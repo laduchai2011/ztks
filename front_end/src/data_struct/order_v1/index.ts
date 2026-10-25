@@ -38,7 +38,7 @@ export interface Order_V1_Field {
     idempotency_key: string;
     type: Order_V1_Type_Type;
     status: Order_V1_Status_Type;
-    process: string;
+    process: string[];
     is_pay: boolean;
     is_delete: boolean;
     team_id: string;

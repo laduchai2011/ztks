@@ -100,6 +100,19 @@ export const formatMoney = (value: string | number) => {
     }).format(Number(value));
 };
 
+export const formatDate = (value: string | number) => {
+    if (!value) return '—';
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) return value;
+
+    return new Intl.DateTimeFormat('vi-VN', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+    }).format(date);
+};
+
 export const avatarnull =
     'https://www.shutterstock.com/image-vector/default-avatar-social-media-display-600nw-2632690107.jpg';
 

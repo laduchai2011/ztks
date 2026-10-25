@@ -1,6 +1,11 @@
 @use 'src/utility/style/mixin.scss' as *;
 
 .parent {
+    --status-background-color: white;
+    --status-color: black;
+}
+
+.parent {
     min-height: 40px;
     display: flex;
     align-items: stretch;
@@ -48,6 +53,15 @@
     > .status {
         width: 150px;
         min-width: 150px;
+
+        > div {
+            background-color: var(--status-background-color);
+            color: var(--status-color);
+            width: max-content;
+            box-sizing: border-box;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
     }
 
     > .type {
