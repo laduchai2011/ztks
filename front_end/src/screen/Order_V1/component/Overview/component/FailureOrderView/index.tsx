@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useState, useRef } from 'react';
 import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -6,9 +6,16 @@ import { RootState, AppDispatch } from '@src/redux';
 import { global_set__data__toast_message } from '@src/redux/slice/Global';
 import { LuMoveDown, LuMoveUp } from 'react-icons/lu';
 import { TbXboxX } from 'react-icons/tb';
+import { Order_Type_Color } from '@src/screen/Order_V1/util';
 
 const FailureOrderView = () => {
+    const parent_element = useRef<HTMLDivElement>(null);
+
     const [is_order_negative, set__is_order_negative] = useState<boolean>(true);
+
+    useEffect(() => {
+        parent_element.current?.style.setProperty('--icon-background-color', Order_Type_Color.Failure_Order);
+    }, []);
 
     const handle_Class_Name_Order_Negative = () => {
         if (is_order_negative) {
@@ -18,7 +25,7 @@ const FailureOrderView = () => {
     };
 
     return (
-        <div className={style.parent}>
+        <div className={style.parent} ref={parent_element}>
             <div className={style.icon_column}>
                 <div className={style.icon_box}>
                     <TbXboxX size={25} color="white" />

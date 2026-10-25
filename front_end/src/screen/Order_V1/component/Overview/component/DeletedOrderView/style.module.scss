@@ -1,6 +1,10 @@
 @use 'src/utility/style/mixin.scss' as *;
 
 .parent {
+    --icon-background-color: white;
+}
+
+.parent {
     min-width: 0;
     min-height: 120px;
     padding: 20px;
@@ -29,7 +33,7 @@
         width: 25%;
 
         > .icon_box {
-            background-color: rgb(255, 60, 0);
+            background-color: var(--icon-background-color);
             width: 40px;
             height: 40px;
             box-sizing: border-box;

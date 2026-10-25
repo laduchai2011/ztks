@@ -1,0 +1,155 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    margin: 10px 0;
+    box-sizing: border-box;
+    padding: 10px;
+    @include center-of-row;
+    justify-content: space-between;
+    border: 1px solid rgb(212, 212, 212);
+    border-radius: 10px;
+    margin: 0 10px;
+
+    > .filter1 {
+        @include center-of-row;
+
+        > .search_container {
+            @include center-of-row;
+            height: 60px;
+            // background-color: antiquewhite;
+
+            > .search {
+                @include center-of-row;
+                box-sizing: border-box;
+                padding: 5px;
+                border-radius: 10px;
+                border: 1px solid rgb(233, 233, 233);
+
+                > input {
+                    border: none;
+                    outline: none;
+                    width: 200px;
+                }
+            }
+        }
+
+        > .status_order,
+        .type_order {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 150px;
+            height: 60px;
+            box-sizing: border-box;
+            padding: 10px;
+            margin: 0 10px;
+
+            label {
+                font-size: 0.8rem;
+                color: gray;
+            }
+
+            > .select_box {
+                position: relative;
+                display: flex;
+                align-items: center;
+                width: 100%;
+                height: 30px;
+                box-sizing: border-box;
+                background: #ffffff;
+                border: 1px solid #d0d5dd;
+                border-radius: 5px;
+
+                transition:
+                    border-color 0.2s ease,
+                    box-shadow 0.2s ease;
+
+                > .filter_icon {
+                    position: absolute;
+                    left: 13px;
+                    width: 18px;
+                    height: 18px;
+                    color: #667085;
+                    pointer-events: none;
+                }
+
+                > select {
+                    width: 100%;
+                    height: 100%;
+
+                    border: none;
+                    outline: none;
+                    background: transparent;
+
+                    color: #101828;
+                    font-family: inherit;
+                    cursor: pointer;
+                }
+
+                &:focus-within {
+                    border-color: #3b82f6;
+                    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+                }
+            }
+        }
+    }
+
+    > .filter2 {
+        > div {
+            @include center-of-row;
+            background-color: #3b82f6;
+            border: 1px solid #3b82f6;
+            color: white;
+            box-sizing: border-box;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            user-select: none;
+
+            &:hover {
+                background-color: #2578ff;
+            }
+
+            &:active {
+                background-color: white;
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .parent {
+        flex-direction: column;
+        align-items: stretch;
+
+        > .filter1 {
+            flex: 1 1 auto;
+            width: 100%;
+
+            > .search_container {
+                > .search {
+                    > input {
+                        width: 150px;
+                    }
+                }
+            }
+        }
+    }
+
+    .search_container {
+        flex: 1 1 100%;
+    }
+
+    .status_order,
+    .type_order {
+        flex: 1 1 140px;
+    }
+
+    .filter2 {
+        width: 100%;
+
+        > div {
+            width: 100%;
+        }
+    }
+}

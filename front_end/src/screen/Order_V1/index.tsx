@@ -5,13 +5,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { global_set__data__toast_message } from '@src/redux/slice/Global';
 import { route_enum } from '@src/router/type';
-import { TEAM } from '@src/const/text';
+import { ORDER } from '@src/const/text';
 import ToolBar from '@src/screen/ToolBar';
 import { select_enum } from '@src/router/type';
 import GlobalLoading from '@src/Global/GlobalLoading';
 import GlobalToastMessage from '@src/Global/GlobalToastMessage';
 import Overview from './component/Overview';
-// import List from './component/List';
+import Fillter from './component/Fillter';
+import List from './component/List';
 
 const Order_V1 = () => {
     const navigate = useNavigate();
@@ -58,10 +59,10 @@ const Order_V1 = () => {
                 </div>
                 <div className={`${style.main1} ${hand_Is_Show()} ${hand_Is_Max_Show()}`}>
                     <div>
-                        <div className={style.header}>{TEAM}</div>
+                        <div className={style.header}>{ORDER}</div>
                         <Overview />
-                        {/* <CreateTeam />
-                        <List /> */}
+                        <Fillter />
+                        <List />
                     </div>
                 </div>
                 <div>

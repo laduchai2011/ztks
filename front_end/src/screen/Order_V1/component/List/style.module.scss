@@ -1,0 +1,96 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+    overflow-x: auto;
+
+    > .header {
+        @include center-of-row;
+
+        > div {
+            box-sizing: border-box;
+            padding: 5px;
+            height: 40px;
+            font-weight: 600;
+            background-color: rgb(240, 240, 240);
+            white-space: nowrap;
+            border-bottom: 1px solid rgb(219, 219, 219);
+        }
+
+        > .check {
+            width: 30px;
+            min-width: 30px;
+        }
+
+        > .order_code {
+            width: 150px;
+            min-width: 150px;
+        }
+
+        > .customer {
+            width: 200px;
+            min-width: 200px;
+        }
+
+        > .phone {
+            width: 150px;
+            min-width: 150px;
+        }
+
+        > .product {
+            width: 100px;
+            min-width: 100px;
+        }
+
+        > .money {
+            width: 150px;
+            min-width: 150px;
+        }
+
+        > .status {
+            width: 150px;
+            min-width: 150px;
+        }
+
+        > .type {
+            width: 150px;
+            min-width: 150px;
+        }
+
+        > .pay {
+            width: 150px;
+            min-width: 150px;
+        }
+
+        > .time {
+            width: 150px;
+            min-width: 150px;
+        }
+
+        > .image {
+            width: 100px;
+            min-width: 100px;
+        }
+
+        > .video {
+            width: 120px;
+            min-width: 120px;
+        }
+
+        > .detail {
+            width: 100px;
+            min-width: 100px;
+        }
+
+        > .store_agent {
+            width: 200px;
+            min-width: 200px;
+        }
+
+        > .sales_agent {
+            width: 200px;
+            min-width: 200px;
+        }
+    }
+}

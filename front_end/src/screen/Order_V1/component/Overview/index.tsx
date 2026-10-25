@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -24,4 +24,4 @@ const Overview = () => {
     );
 };
 
-export default Overview;
+export default memo(Overview);
