@@ -7,10 +7,16 @@ import { global_set__data__toast_message } from '@src/redux/slice/Global';
 import { CiSearch } from 'react-icons/ci';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import { IoAddOutline } from 'react-icons/io5';
+import { set__is_show_create_order_v1 } from '@src/redux/slice/Order_V1';
 
 const Fillter = () => {
+    const dispatch = useDispatch<AppDispatch>();
     const selected_option = '';
     const handle_Selected = () => {};
+
+    const handle_Open_Create_Order_V1 = () => {
+        dispatch(set__is_show_create_order_v1(true));
+    };
 
     return (
         <div className={style.parent}>
@@ -43,7 +49,7 @@ const Fillter = () => {
                 </div>
             </div>
             <div className={style.filter2}>
-                <div>
+                <div onClick={() => handle_Open_Create_Order_V1()}>
                     <IoAddOutline size={25} color="white" />
                     <div>Tạo đơn hàng</div>
                 </div>

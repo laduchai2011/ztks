@@ -14,6 +14,7 @@ import Overview from './component/Overview';
 import Fillter from './component/Fillter';
 import List from './component/List';
 import OrderDetailDialog from './component/OrderDetailDialog';
+import CreateOrderDialog from './component/CreateOrderDialog';
 
 const Order_V1 = () => {
     const navigate = useNavigate();
@@ -70,6 +71,7 @@ const Order_V1 = () => {
                     <GlobalLoading />
                     <GlobalToastMessage />
                     <OrderDetailDialog />
+                    <CreateOrderDialog />
                 </div>
             </div>
         </div>

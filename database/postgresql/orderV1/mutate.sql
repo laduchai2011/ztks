@@ -206,7 +206,7 @@ CREATE OR REPLACE FUNCTION create_order_v1 (
     p_content TEXT,
     p_idempotency_key VARCHAR(255),
     p_type VARCHAR(255),
-    p_team_id UUID,
+    p_sales_team_id UUID,
     p_created_account_id UUID,
     p_admin_account_id UUID,
 	p_is_pay BOOLEAN DEFAULT FALSE,
@@ -225,7 +225,7 @@ BEGIN
         FROM team t
         INNER JOIN team_member tm
             ON tm.team_id = t.id
-        WHERE t.id = p_team_id
+        WHERE t.id = p_sales_team_id
           AND t.account_id = p_admin_account_id
           AND t.type = 'sales'
           AND t.is_lock = FALSE
@@ -245,7 +245,7 @@ BEGIN
         money,
         idempotency_key,
         type,
-        team_id,
+        sales_team_id,
         customer_v1_id,
         created_account_id,
         received_account_id,
@@ -260,7 +260,7 @@ BEGIN
         p_money,
         p_idempotency_key,
         p_type,
-        p_team_id,
+        p_sales_team_id,
         p_customer_v1_id,
         p_created_account_id,
         p_received_account_id,
@@ -513,11 +513,11 @@ BEGIN
             v_order.status;
     END IF;
 
-    IF v_order.team_id IS NULL
+    IF v_order.sales_team_id IS NULL
        OR v_order.created_account_id IS NULL
        OR v_order.admin_account_id IS NULL THEN
         RAISE EXCEPTION
-            'Order must have team_id, created_account_id and admin_account_id';
+            'Order must have sales_team_id, created_account_id and admin_account_id';
     END IF;
 
     -- 3. Kiểm tra tài khoản người tạo đơn
@@ -535,7 +535,7 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM team t
-        WHERE t.id = v_order.team_id
+        WHERE t.id = v_order.sales_team_id
           AND t.account_id = v_order.admin_account_id
           AND t.type = 'sales'
           AND t.is_lock = FALSE
@@ -549,14 +549,14 @@ BEGIN
     IF NOT EXISTS (
         SELECT 1
         FROM team_member tm
-        WHERE tm.team_id = v_order.team_id
+        WHERE tm.team_id = v_order.sales_team_id
           AND tm.account_id = v_order.created_account_id
           AND tm.is_lock = FALSE
           AND tm.is_delete = FALSE
     ) THEN
         RAISE EXCEPTION
             'Order creator is not an active member of team %',
-            v_order.team_id;
+            v_order.sales_team_id;
     END IF;
 
     -- 6. Lấy và khóa sản phẩm
@@ -590,7 +590,7 @@ BEGIN
 
         JOIN team_shop ts
           ON ts.shop_id = sh.id
-         AND ts.team_id = v_order.team_id
+         AND ts.team_id = v_order.sales_team_id
 
         JOIN team_shop_depot tsd
           ON tsd.team_shop_id = ts.id

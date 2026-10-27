@@ -34,7 +34,7 @@ class MutateDB_Create_Order_V1 {
                         this._create_order_v1_body.content,
                         this._create_order_v1_body.idempotency_key,
                         this._create_order_v1_body.type,
-                        this._create_order_v1_body.team_id,
+                        this._create_order_v1_body.sales_team_id,
                         this._create_order_v1_body.created_account_id,
                         this._create_order_v1_body.admin_account_id,
                         this._create_order_v1_body.is_pay ?? false,

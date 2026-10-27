@@ -24,6 +24,7 @@
         background-color: rgb(232, 255, 255);
         width: 80%;
         border-radius: 10px;
+        overflow: hidden;
 
         @include responsive(sm) {
             width: 100%;
@@ -38,6 +39,12 @@
             > svg {
                 cursor: pointer;
             }
+        }
+
+        > .infor {
+            overflow-y: auto;
+            max-height: 90vh;
+            @include small-scroll-yy(3px);
         }
     }
 }

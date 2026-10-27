@@ -1,0 +1,50 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(161, 161, 161, 0.3);
+    @include center-of-rectangle;
+    opacity: 0;
+    display: none;
+    transition: opacity 0.5s ease-in-out;
+
+    &.opacity {
+        opacity: 1;
+    }
+
+    &.display {
+        display: flex;
+    }
+
+    > .main {
+        background-color: rgb(232, 255, 255);
+        width: 80%;
+        border-radius: 10px;
+        overflow: hidden;
+
+        @include responsive(sm) {
+            width: 100%;
+        }
+
+        > .closeContainer {
+            display: flex;
+            justify-content: flex-end;
+            box-sizing: border-box;
+            padding: 5px;
+
+            > svg {
+                cursor: pointer;
+            }
+        }
+
+        > .infor {
+            overflow-y: auto;
+            max-height: 90vh;
+            @include small-scroll-yy(3px);
+        }
+    }
+}

@@ -6,8 +6,10 @@ import { RootState, AppDispatch } from '@src/redux';
 import { global_set__data__toast_message } from '@src/redux/slice/Global';
 import { Order_V1_Status_Enum, Order_V1_Status_Type } from '@src/data_struct/order_v1';
 import { Order_Status_Text_Color, Order_Status_Text_Background_Color } from '@src/screen/Order_V1/util';
+import { set__is_show_order_v1_detail, set__order_v1_detail } from '@src/redux/slice/Order_V1';
 
 const OneRow = () => {
+    const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement>(null);
 
     const [status, set_status] = useState<Order_V1_Status_Type>(Order_V1_Status_Enum.COMPLETED);
@@ -49,6 +51,10 @@ const OneRow = () => {
         }
     }, [status]);
 
+    const handle_Open_Order_V1_Detail = () => {
+        dispatch(set__is_show_order_v1_detail(true));
+    };
+
     return (
         <div className={style.parent} ref={parent_element}>
             <div className={style.check}>
@@ -67,7 +73,9 @@ const OneRow = () => {
             <div className={style.time}>Thời gian</div>
             <div className={style.image}>Hình ảnh</div>
             <div className={style.video}>Thước phim</div>
-            <div className={style.detail}>Xem</div>
+            <div className={style.detail}>
+                <div onClick={() => handle_Open_Order_V1_Detail()}>Xem</div>
+            </div>
             <div className={style.sales_agent}>Nhân viên bán hàng</div>
             <div className={style.store_agent}>Nhân viên kho</div>
         </div>

@@ -63,7 +63,6 @@
             width: 50%;
             box-sizing: border-box;
             padding: 10px;
-
             @include responsive(sm) {
                 padding: 5px;
             }
@@ -72,6 +71,80 @@
                 box-sizing: border-box;
                 border-radius: 8px;
                 border: 1px solid rgb(216, 216, 216);
+                @include center-of-rectangle;
+                height: 180px;
+                @include responsive(sm) {
+                    height: 150px;
+                }
+            }
+
+            > .not_image {
+                > div {
+                    > div {
+                        @include center-of-rectangle;
+                        margin: 8px 0;
+                    }
+
+                    > div:nth-child(1) {
+                        > svg {
+                            color: gray;
+                            width: 25px;
+                            height: 25px;
+                            @include responsive(sm) {
+                                width: 20px;
+                                height: 20px;
+                            }
+                        }
+                    }
+
+                    > div:nth-child(2) {
+                        @include responsive(sm) {
+                            font-size: 0.9rem;
+                        }
+                    }
+
+                    > div:nth-child(3) {
+                        color: gray;
+                        font-size: 0.8rem;
+                        @include responsive(sm) {
+                            font-size: 0.7rem;
+                        }
+                    }
+                }
+            }
+
+            > .image {
+                position: relative;
+
+                > img {
+                    height: 100%;
+                    width: 100%;
+                    object-fit: contain;
+                    background-color: rgb(240, 240, 240);
+                }
+
+                > div {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgb(226, 226, 226, 0.3);
+                    @include center-of-rectangle;
+                    opacity: 0;
+
+                    &:hover {
+                        opacity: 1;
+                    }
+
+                    > div {
+                        width: max-content;
+                        background-color: white;
+                        box-sizing: border-box;
+                        padding: 5px 10px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        user-select: none;
+                    }
+                }
             }
         }
     }

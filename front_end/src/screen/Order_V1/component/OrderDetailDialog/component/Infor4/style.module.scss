@@ -1,0 +1,94 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 10px;
+
+    > .infor41 {
+        height: 50px;
+        @include center-of-row;
+
+        > div:nth-child(1) {
+            box-sizing: border-box;
+            padding: 5px;
+
+            > div {
+                box-sizing: border-box;
+                width: 30px;
+                height: 30px;
+                @include center-of-rectangle;
+                border-radius: 50%;
+                background-color: rgb(193, 255, 255);
+                transition:
+                    width 0.3s linear,
+                    height 0.3s linear;
+
+                > svg {
+                    color: aqua;
+                    width: 20px;
+                    height: 20px;
+                    transition:
+                        width 0.3s linear,
+                        height 0.3s linear;
+                }
+
+                @include responsive(sm) {
+                    width: 20px;
+                    height: 20px;
+
+                    > svg {
+                        width: 15px;
+                        height: 15px;
+                    }
+                }
+            }
+        }
+
+        > div:nth-child(2) {
+            font-weight: 600;
+        }
+    }
+
+    > .infor42 {
+        box-sizing: border-box;
+        padding: 10px;
+        @include responsive(sm) {
+            padding: 5px;
+        }
+
+        > div {
+            box-sizing: border-box;
+            padding: 10px;
+            border-top: 1px solid rgb(236, 236, 236);
+            line-height: 24px;
+            @include responsive(sm) {
+                padding: 5px;
+            }
+
+            > div:nth-child(1) {
+                color: gray;
+                font-size: 0.8rem;
+                @include responsive(sm) {
+                    font-size: 0.7rem;
+                }
+            }
+
+            > div:nth-child(3) {
+                color: gray;
+                font-size: 0.9rem;
+                @include responsive(sm) {
+                    font-size: 0.8rem;
+                }
+            }
+
+            > div:nth-child(4) {
+                color: gray;
+                font-size: 0.9rem;
+                @include responsive(sm) {
+                    font-size: 0.8rem;
+                }
+            }
+        }
+    }
+}

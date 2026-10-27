@@ -7,12 +7,14 @@ import { CLOSE } from '@src/const/text';
 import Infor1 from './component/Infor1';
 import Infor2 from './component/Infor2';
 import Infor3 from './component/Infor3';
+import Infor4 from './component/Infor4';
+import { set__is_show_order_v1_detail } from '@src/redux/slice/Order_V1';
 
 const OrderDetailDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
 
-    const [is_show, set__is_show] = useState<boolean>(true);
+    const is_show: boolean = useSelector((state: RootState) => state.Order_V1_Slice.is_show_order_v1_detail);
 
     useEffect(() => {
         if (!parent_element.current) return;
@@ -35,7 +37,7 @@ const OrderDetailDialog = () => {
     }, [is_show]);
 
     const handle_Close = () => {
-        set__is_show(false);
+        dispatch(set__is_show_order_v1_detail(false));
     };
 
     return (
@@ -44,10 +46,12 @@ const OrderDetailDialog = () => {
                 <div className={style.closeContainer}>
                     <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
-                <Infor1 />
-                <Infor2 />
-                <Infor3 />
-                <div className={style.infor4}></div>
+                <div className={style.infor}>
+                    <Infor1 />
+                    <Infor2 />
+                    <Infor3 />
+                    <Infor4 />
+                </div>
             </div>
         </div>
     );

@@ -41,7 +41,8 @@ export interface Order_V1_Field {
     process: string[];
     is_pay: boolean;
     is_delete: boolean;
-    team_id: string;
+    sales_team_id: string;
+    store_team_id: string | null;
     customer_v1_id: string | null;
     created_account_id: string;
     received_account_id: string | null;

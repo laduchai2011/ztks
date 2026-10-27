@@ -3,7 +3,7 @@ export interface Create_Order_V1_Body_Field {
     content: string;
     idempotency_key: string;
     type: string;
-    team_id: string;
+    sales_team_id: string;
     created_account_id: string;
     admin_account_id: string;
     is_pay: boolean;

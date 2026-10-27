@@ -19,7 +19,8 @@ CREATE TABLE order_v1 (
 	is_pay BOOLEAN NOT NULL DEFAULT FALSE,
 	is_delete BOOLEAN NOT NULL DEFAULT FALSE,
 	
-	team_id UUID NOT NULL,
+	sales_team_id UUID NOT NULL,
+	store_team_id UUID,
 	customer_v1_id UUID,
 	created_account_id UUID NOT NULL,
 	received_account_id UUID,
@@ -27,7 +28,8 @@ CREATE TABLE order_v1 (
 	update_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     create_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-	CONSTRAINT FK_order_v1_team FOREIGN KEY (team_id) REFERENCES team(id),
+	CONSTRAINT FK_order_v1_sales_team FOREIGN KEY (sales_team_id) REFERENCES team(id),
+	CONSTRAINT FK_order_v1_store_team FOREIGN KEY (store_team_id) REFERENCES team(id),
 	CONSTRAINT FK_order_v1_customer_v1 FOREIGN KEY (customer_v1_id) REFERENCES customer_v1(id),
 	CONSTRAINT FK_order_v1_created_account FOREIGN KEY (created_account_id) REFERENCES account(id),
 	CONSTRAINT FK_order_v1_received_account FOREIGN KEY (received_account_id) REFERENCES account(id),
