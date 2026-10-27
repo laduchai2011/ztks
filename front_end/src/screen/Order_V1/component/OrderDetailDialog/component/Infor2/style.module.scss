@@ -1,0 +1,125 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    --is_pay_text_color: black;
+    --status-color: black;
+}
+
+.parent {
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 10px;
+
+    > .infor21 {
+        height: 50px;
+        @include center-of-row;
+
+        > div:nth-child(1) {
+            box-sizing: border-box;
+            padding: 5px;
+
+            > div {
+                box-sizing: border-box;
+                width: 30px;
+                height: 30px;
+                @include center-of-rectangle;
+                border-radius: 50%;
+                background-color: rgb(193, 255, 255);
+                transition:
+                    width 0.3s linear,
+                    height 0.3s linear;
+
+                > svg {
+                    color: aqua;
+                    width: 20px;
+                    height: 20px;
+                    transition:
+                        width 0.3s linear,
+                        height 0.3s linear;
+                }
+
+                @include responsive(sm) {
+                    width: 20px;
+                    height: 20px;
+
+                    > svg {
+                        width: 15px;
+                        height: 15px;
+                    }
+                }
+            }
+        }
+
+        > div:nth-child(2) {
+            font-weight: 600;
+        }
+    }
+
+    > .infor22 {
+        box-sizing: border-box;
+        padding: 10px;
+
+        > div {
+            line-height: 22px;
+            box-sizing: border-box;
+            padding: 5px 0;
+
+            > div:nth-child(1) {
+                font-size: 0.9rem;
+                color: gray;
+            }
+        }
+    }
+
+    > .infor23 {
+        box-sizing: border-box;
+        padding: 10px;
+
+        @include responsive(sm) {
+            padding: 5px;
+        }
+
+        > div {
+            box-sizing: border-box;
+            padding: 10px 0;
+            border-top: 1px solid rgb(228, 228, 228);
+            @include center-of-row;
+
+            @include responsive(sm) {
+                padding: 5px 0;
+            }
+
+            > div {
+                width: 50%;
+                box-sizing: border-box;
+                padding: 10px;
+                line-height: 24px;
+
+                @include responsive(sm) {
+                    padding: 5px;
+                }
+
+                > div:nth-child(1) {
+                    color: gray;
+                    font-size: 0.8rem;
+                }
+            }
+
+            > div:nth-child(1) {
+                border-right: 1px solid rgb(228, 228, 228);
+
+                > div:nth-child(2) {
+                    color: var(--status-color);
+                }
+            }
+
+            > div:nth-child(2) {
+                border-left: 1px solid rgb(228, 228, 228);
+
+                > div:nth-child(2) {
+                    color: var(--is_pay_text_color);
+                }
+            }
+        }
+    }
+}

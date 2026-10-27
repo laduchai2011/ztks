@@ -6,7 +6,7 @@ import { RootState, AppDispatch } from '@src/redux';
 import { global_set__data__toast_message } from '@src/redux/slice/Global';
 import { LuMoveDown, LuMoveUp } from 'react-icons/lu';
 import { CiClock2 } from 'react-icons/ci';
-import { Order_Type_Color } from '@src/screen/Order_V1/util';
+import { Order_Status_Color } from '@src/screen/Order_V1/util';
 
 const UnFinishedOrderView = () => {
     const parent_element = useRef<HTMLDivElement>(null);
@@ -14,7 +14,7 @@ const UnFinishedOrderView = () => {
     const [is_order_negative, set__is_order_negative] = useState<boolean>(true);
 
     useEffect(() => {
-        parent_element.current?.style.setProperty('--icon-background-color', Order_Type_Color.Un_Finished_Order);
+        parent_element.current?.style.setProperty('--icon-background-color', Order_Status_Color.Un_Finished_Order);
     }, []);
 
     const handle_Class_Name_Order_Negative = () => {

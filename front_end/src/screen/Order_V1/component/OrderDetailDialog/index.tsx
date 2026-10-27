@@ -3,17 +3,16 @@ import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
-import { LiaShoppingBasketSolid } from 'react-icons/lia';
 import { CLOSE } from '@src/const/text';
-import { Order_V1_Field, Order_V1_Status_Enum } from '@src/data_struct/order_v1';
-import { formatMoney, formatDate } from '@src/utility/string';
+import Infor1 from './component/Infor1';
+import Infor2 from './component/Infor2';
+import Infor3 from './component/Infor3';
 
 const OrderDetailDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
 
     const [is_show, set__is_show] = useState<boolean>(true);
-    const [order, set__order] = useState<Order_V1_Field | undefined>(undefined);
 
     useEffect(() => {
         if (!parent_element.current) return;
@@ -45,26 +44,9 @@ const OrderDetailDialog = () => {
                 <div className={style.closeContainer}>
                     <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
-                <div className={style.infor1}>
-                    <div className={style.infor11}>
-                        <div>
-                            <div>
-                                <div>
-                                    <LiaShoppingBasketSolid size={35} color="white" />
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <div>
-                                <div>Mã đơn hàng</div>
-                                <div>dsfgdfgdfdf-dfg-dgdfgdfgdfg</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>sdfsdg</div>
-                </div>
-                <div className={style.infor2}></div>
-                <div className={style.infor3}></div>
+                <Infor1 />
+                <Infor2 />
+                <Infor3 />
                 <div className={style.infor4}></div>
             </div>
         </div>

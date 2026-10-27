@@ -1,0 +1,124 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    background-color: white;
+    border-radius: 10px;
+
+    > .infor11 {
+        height: 80px;
+        box-sizing: border-box;
+        border-bottom: 1px solid rgb(236, 236, 236);
+        @include center-of-row;
+
+        > div:nth-child(1) {
+            box-sizing: border-box;
+            padding: 10px;
+
+            > div {
+                background-color: rgb(212, 255, 255);
+                box-sizing: border-box;
+                padding: 5px;
+                border-radius: 8px;
+
+                > div {
+                    background-color: aqua;
+                    box-sizing: border-box;
+                    padding: 5px;
+                    border-radius: 8px;
+                }
+            }
+        }
+
+        > div:nth-child(2) {
+            line-height: 26px;
+
+            > div:nth-child(1) {
+                font-size: 0.8rem;
+                color: gray;
+            }
+
+            > div:nth-child(2) {
+                font-weight: 600;
+            }
+        }
+    }
+
+    > .infor12 {
+        @include center-of-row;
+        box-sizing: border-box;
+        padding: 10px 0;
+
+        > div {
+            width: calc(100% / 3);
+            box-sizing: border-box;
+            padding: 10px 20px;
+            @include center-of-row;
+
+            @include responsive(sm) {
+                padding: 3px 8px;
+            }
+
+            > div:nth-child(1) {
+                box-sizing: border-box;
+                padding: 5px;
+
+                > div {
+                    box-sizing: border-box;
+                    width: 30px;
+                    height: 30px;
+                    @include center-of-rectangle;
+                    border-radius: 50%;
+                    background-color: rgb(193, 255, 255);
+                    transition:
+                        width 0.3s linear,
+                        height 0.3s linear;
+
+                    > svg {
+                        color: aqua;
+                        width: 20px;
+                        height: 20px;
+                        transition:
+                            width 0.3s linear,
+                            height 0.3s linear;
+                    }
+
+                    @include responsive(sm) {
+                        width: 20px;
+                        height: 20px;
+
+                        > svg {
+                            width: 15px;
+                            height: 15px;
+                        }
+                    }
+                }
+            }
+
+            > div:nth-child(2) {
+                box-sizing: border-box;
+                padding: 5px;
+                line-height: 22px;
+
+                > div:nth-child(1) {
+                    color: gray;
+                    font-size: 0.8rem;
+
+                    @include responsive(sm) {
+                        font-size: 0.7rem;
+                    }
+                }
+
+                > div:nth-child(2) {
+                    @include responsive(sm) {
+                        font-size: 0.9rem;
+                    }
+                }
+            }
+        }
+
+        > div:nth-child(2) {
+            border-left: 1px solid rgb(226, 226, 226);
+            border-right: 1px solid rgb(226, 226, 226);
+        }
+    }
+}
