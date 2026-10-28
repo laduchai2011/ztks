@@ -5,6 +5,8 @@ import { AppDispatch, RootState } from '@src/redux';
 import { IoMdClose } from 'react-icons/io';
 import { CLOSE } from '@src/const/text';
 import { set__is_show_create_order_v1 } from '@src/redux/slice/Order_V1';
+import Infor1 from './component/Infor1';
+import Infor2 from './component/Infor2';
 
 const CreateOrderDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -43,7 +45,8 @@ const CreateOrderDialog = () => {
                     <IoMdClose onClick={() => handle_Close()} size={25} title={CLOSE} />
                 </div>
                 <div className={style.infor}>
-                    <div></div>
+                    <Infor1 />
+                    <Infor2 />
                 </div>
             </div>
         </div>

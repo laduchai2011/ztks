@@ -1,0 +1,196 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    border-radius: 10px;
+    background-color: white;
+
+    > .infor11 {
+        height: 80px;
+        box-sizing: border-box;
+        border-bottom: 1px solid rgb(236, 236, 236);
+        @include center-of-row;
+
+        > div:nth-child(1) {
+            box-sizing: border-box;
+            padding: 10px;
+
+            > div {
+                background-color: rgb(212, 255, 255);
+                box-sizing: border-box;
+                padding: 5px;
+                border-radius: 8px;
+
+                > div {
+                    background-color: aqua;
+                    box-sizing: border-box;
+                    padding: 5px;
+                    border-radius: 8px;
+                }
+            }
+        }
+
+        > div:nth-child(2) {
+            line-height: 26px;
+
+            > div:nth-child(1) {
+                font-size: 0.8rem;
+                color: gray;
+            }
+
+            > div:nth-child(2) {
+                font-weight: 600;
+            }
+        }
+    }
+
+    > .infor12 {
+        box-sizing: border-box;
+        padding: 10px;
+        @include responsive(sm) {
+            padding: 5px;
+        }
+
+        > div {
+            margin: 5px 0;
+        }
+
+        > div:nth-child(1) {
+            > span {
+                color: red;
+            }
+        }
+
+        > div:nth-child(2) {
+            max-width: 500px;
+            width: 100%;
+            @include responsive(sm) {
+                max-width: 100%;
+            }
+
+            > div {
+                width: 100%;
+                @include center-of-row;
+                justify-content: space-between;
+                box-sizing: border-box;
+                padding: 10px;
+                border: 1px solid rgb(221, 221, 221);
+                border-radius: 10px;
+                @include responsive(sm) {
+                    padding: 7px;
+                    border-radius: 7px;
+                }
+
+                > input {
+                    border: none;
+                    outline: none;
+                }
+
+                > div {
+                    color: gray;
+                    font-size: 0.8rem;
+                    width: max-content;
+
+                    @include responsive(sm) {
+                        font-size: 0.7rem;
+                    }
+                }
+            }
+        }
+    }
+
+    > .infor13 {
+        box-sizing: border-box;
+        padding: 10px;
+        @include responsive(sm) {
+            padding: 5px;
+        }
+
+        > div {
+            margin: 5px 0;
+        }
+
+        > div:nth-child(1) {
+            > span {
+                color: red;
+            }
+        }
+    }
+
+    > .infor14 {
+        box-sizing: border-box;
+        padding: 10px;
+        @include responsive(sm) {
+            padding: 5px;
+        }
+
+        > div {
+            @include center-of-row;
+
+            > div {
+                margin: 0 20px;
+                @include responsive(sm) {
+                    margin: 0 10px;
+                }
+
+                > div {
+                    margin: 5px 0;
+                }
+
+                > div:nth-child(1) {
+                    > span {
+                        color: red;
+                    }
+                }
+
+                > div:nth-child(2) {
+                    height: 40px;
+                }
+            }
+
+            > div:nth-child(1) {
+                > div:nth-child(2) {
+                    box-sizing: border-box;
+                    padding: 5px;
+                    border-radius: 5px;
+                    border: 1px solid rgb(224, 224, 224);
+                    @include center-of-rectangle;
+
+                    > select {
+                        box-sizing: border-box;
+                        padding: 5px 10px;
+                        width: 100%;
+                        border: none;
+                        outline: none;
+                    }
+                }
+            }
+
+            > div:nth-child(2) {
+                > div:nth-child(2) {
+                    @include center-of-row;
+                    box-sizing: border-box;
+                    padding: 5px 10px;
+                    border-radius: 5px;
+                    border: 1px solid rgb(224, 224, 224);
+
+                    > div {
+                        height: 100%;
+                        @include center-of-rectangle;
+                    }
+
+                    > div:nth-child(1) {
+                        > input {
+                            border: none;
+                            outline: none;
+                        }
+                    }
+
+                    > div:nth-child(2) {
+                        color: gray;
+                        margin-left: 5px;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -8,7 +8,7 @@ const initialState: state_props = {
     order_v1_detail: undefined,
 
     // create_order_v1
-    is_show_create_order_v1: false,
+    is_show_create_order_v1: true,
 };
 
 const Order_V1_Slice = createSlice({

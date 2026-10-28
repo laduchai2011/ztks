@@ -8,6 +8,10 @@ import { verify_Refresh_Token } from '@src/token';
 import MutateDB_Create_Order_V1 from '../../mutateDB/Create_Order_V1';
 import { Cache_Get_Chat_Room_With_Id } from '@src/const/redisKey/chat_room';
 import { getRefreshToken } from '@src/device/getDevice';
+import {
+    Create_Order_V1_Inventory_Reservation_Body_Field,
+    Create_Order_V1_Service_Body_Field,
+} from '@src/data_struct/order_v1/body';
 
 class Handle_Create_Order_V1 {
     private _serviceRedis = ServiceRedis.getInstance();
@@ -22,7 +26,10 @@ class Handle_Create_Order_V1 {
         req: Request<
             any,
             any,
-            { create_order_v1_body: Create_Order_V1_Body_Field; create_kafka_event_body: Create_Kafka_Event_Body_Field }
+            {
+                create_order_v1_body: Create_Order_V1_Body_Field;
+                payload: Create_Order_V1_Inventory_Reservation_Body_Field[] | Create_Order_V1_Service_Body_Field[];
+            }
         >,
         res: Response,
         next: NextFunction
@@ -66,12 +73,15 @@ class Handle_Create_Order_V1 {
         req: Request<
             any,
             any,
-            { create_order_v1_body: Create_Order_V1_Body_Field; create_kafka_event_body: Create_Kafka_Event_Body_Field }
+            {
+                create_order_v1_body: Create_Order_V1_Body_Field;
+                payload: Create_Order_V1_Inventory_Reservation_Body_Field[] | Create_Order_V1_Service_Body_Field[];
+            }
         >,
         res: Response
     ) => {
         const create_order_v1_body = res.locals.create_order_v1_body as Create_Order_V1_Body_Field;
-        const create_kafka_event_body = req.body.create_kafka_event_body;
+        const payload = req.body.payload;
 
         const my_response: My_Response_Field<Order_V1_Field> = {
             is_success: false,
@@ -80,7 +90,7 @@ class Handle_Create_Order_V1 {
 
         const mutateDB = new MutateDB_Create_Order_V1();
         mutateDB.set_Create_Order_V1_Body(create_order_v1_body);
-        mutateDB.set_Create_Kafka_Event_Body(create_kafka_event_body);
+        mutateDB.set_Payload(payload);
 
         try {
             const result = await mutateDB.run();
