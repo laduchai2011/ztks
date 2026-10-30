@@ -73,62 +73,75 @@
     > .infor22 {
         box-sizing: border-box;
         padding: 10px;
+        @include responsive(sm) {
+            padding: 5px;
+        }
 
         > div {
-            margin: 10px;
+            box-sizing: border-box;
+            padding: 10px;
+            border-top: 1px solid rgb(236, 236, 236);
+            line-height: 24px;
             @include responsive(sm) {
-                margin: 5px;
+                padding: 5px;
             }
 
-            > div:nth-child(2) {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, 100px);
-                gap: 8px;
-                width: 100%;
-                box-sizing: border-box;
-                padding: 8px;
+            > div {
+                margin: 10px;
+                @include responsive(sm) {
+                    margin: 5px;
+                }
 
-                > div {
-                    height: 100px;
+                > div:nth-child(2) {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, 100px);
+                    gap: 8px;
                     width: 100%;
-                    border-radius: 8px;
                     box-sizing: border-box;
-                    border: 1px solid rgb(212, 212, 212);
-                    overflow: hidden;
-                }
+                    padding: 8px;
 
-                > div:not(:last-child) {
-                    position: relative;
-
-                    > img {
+                    > div {
+                        height: 100px;
                         width: 100%;
-                        height: 100%;
-                        object-fit: contain;
+                        border-radius: 8px;
+                        box-sizing: border-box;
+                        border: 1px solid rgb(212, 212, 212);
+                        overflow: hidden;
                     }
 
-                    > video {
-                        width: 100%;
-                        height: 100%;
-                        object-fit: contain;
+                    > div:not(:last-child) {
+                        position: relative;
+
+                        > img {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: contain;
+                        }
+
+                        > video {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: contain;
+                        }
+
+                        > svg {
+                            position: absolute;
+                            top: 3px;
+                            right: 3px;
+                            color: gray;
+                        }
                     }
 
-                    > svg {
-                        position: absolute;
-                        top: 3px;
-                        right: 3px;
-                        color: gray;
-                    }
-                }
+                    > div:last-child {
+                        @include center-of-rectangle;
 
-                > div:last-child {
-                    @include center-of-rectangle;
+                        &:active {
+                            background-color: rgb(231, 231, 231);
+                        }
 
-                    &:active {
-                        background-color: rgb(231, 231, 231);
-                    }
-
-                    > input {
-                        display: none;
+                        > input {
+                            display: none;
+                        }
                     }
                 }
             }

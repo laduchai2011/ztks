@@ -7,6 +7,8 @@ import { CLOSE } from '@src/const/text';
 import { set__is_show_create_order_v1 } from '@src/redux/slice/Order_V1';
 import Infor1 from './component/Infor1';
 import Infor2 from './component/Infor2';
+import Infor3 from './component/Infor3';
+import Infor4 from './component/Infor4';
 
 const CreateOrderDialog = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -47,6 +49,8 @@ const CreateOrderDialog = () => {
                 <div className={style.infor}>
                     <Infor1 />
                     <Infor2 />
+                    <Infor3 />
+                    <Infor4 />
                 </div>
             </div>
         </div>

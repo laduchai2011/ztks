@@ -45,6 +45,7 @@
             overflow-y: auto;
             max-height: 90vh;
             @include small-scroll-yy(3px);
+            width: 100%;
         }
     }
 }

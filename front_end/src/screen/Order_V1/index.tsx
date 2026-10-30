@@ -25,9 +25,9 @@ const Order_V1 = () => {
     const is_max_show: boolean = useSelector((state: RootState) => state.Tool_Bar_Slice.is_max_show);
 
     useEffect(() => {
-        if (my_id === null) {
-            navigate(route_enum.SIGNIN);
-        }
+        // if (my_id === null) {
+        //     navigate(route_enum.SIGNIN);
+        // }
 
         return () => {
             dispatch(

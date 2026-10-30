@@ -31,7 +31,7 @@ const Infor1 = () => {
                 </div>
                 <div>
                     <div>
-                        <input placeholder="Nhập tiêu đề" />
+                        <input placeholder="Nhập tiêu đề" maxLength={255} />
                         <div>0/255</div>
                     </div>
                 </div>

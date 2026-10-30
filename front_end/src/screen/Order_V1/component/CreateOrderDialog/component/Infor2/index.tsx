@@ -70,13 +70,13 @@ const Infor2 = () => {
         set__image_previews((prev) => prev.filter((_, i) => i !== deleted_index));
         set__deleted_image(undefined);
     }, [deleted_image, images]);
-    useEffect(() => {
-        return () => {
-            for (let i: number = 0; i < image_previews.length; i++) {
-                URL.revokeObjectURL(image_previews[i]);
-            }
-        };
-    }, [image_previews]);
+    // useEffect(() => {
+    //     return () => {
+    //         for (let i: number = 0; i < image_previews.length; i++) {
+    //             URL.revokeObjectURL(image_previews[i]);
+    //         }
+    //     };
+    // }, [image_previews]);
     const handle_Click_Image = () => {
         imageInput_element.current?.click();
     };
@@ -118,13 +118,13 @@ const Infor2 = () => {
         set__video_previews((prev) => prev.filter((_, i) => i !== deleted_index));
         set__deleted_video(undefined);
     }, [deleted_video, videos]);
-    useEffect(() => {
-        return () => {
-            for (let i: number = 0; i < video_previews.length; i++) {
-                URL.revokeObjectURL(video_previews[i]);
-            }
-        };
-    }, [video_previews]);
+    // useEffect(() => {
+    //     return () => {
+    //         for (let i: number = 0; i < video_previews.length; i++) {
+    //             URL.revokeObjectURL(video_previews[i]);
+    //         }
+    //     };
+    // }, [video_previews]);
     const handle_Click_Video = () => {
         videoInput_element.current?.click();
     };
@@ -182,36 +182,38 @@ const Infor2 = () => {
             </div>
             <div className={style.infor22}>
                 <div>
-                    <div>. Hình ảnh</div>
                     <div>
-                        {list_mage}
-                        <div id={id_image_input} onClick={handle_Click_Image}>
-                            <IoMdAdd size={25} />
-                            <input
-                                ref={imageInput_element}
-                                onChange={handle_Image_Change}
-                                type="file"
-                                id={id_image_input}
-                                accept="image/*"
-                                multiple
-                            />
+                        <div>. Hình ảnh</div>
+                        <div>
+                            {list_mage}
+                            <div id={id_image_input} onClick={handle_Click_Image}>
+                                <IoMdAdd size={25} />
+                                <input
+                                    ref={imageInput_element}
+                                    onChange={handle_Image_Change}
+                                    type="file"
+                                    id={id_image_input}
+                                    accept="image/*"
+                                    multiple
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div>
-                    <div>. Thước phim</div>
                     <div>
-                        {list_video}
-                        <div id={id_video_input} onClick={handle_Click_Video}>
-                            <IoMdAdd size={25} />
-                            <input
-                                ref={videoInput_element}
-                                onChange={handle_Video_Change}
-                                type="file"
-                                id={id_video_input}
-                                accept="video/*"
-                                multiple
-                            />
+                        <div>. Thước phim</div>
+                        <div>
+                            {list_video}
+                            <div id={id_video_input} onClick={handle_Click_Video}>
+                                <IoMdAdd size={25} />
+                                <input
+                                    ref={videoInput_element}
+                                    onChange={handle_Video_Change}
+                                    type="file"
+                                    id={id_video_input}
+                                    accept="video/*"
+                                    multiple
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>

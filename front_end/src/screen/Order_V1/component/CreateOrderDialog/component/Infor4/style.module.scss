@@ -1,0 +1,355 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 10px;
+
+    > .infor41 {
+        height: 50px;
+        @include center-of-row;
+
+        > div:nth-child(1) {
+            box-sizing: border-box;
+            padding: 5px;
+
+            > div {
+                box-sizing: border-box;
+                width: 30px;
+                height: 30px;
+                @include center-of-rectangle;
+                border-radius: 50%;
+                background-color: rgb(193, 255, 255);
+                transition:
+                    width 0.3s linear,
+                    height 0.3s linear;
+
+                > svg {
+                    color: aqua;
+                    width: 20px;
+                    height: 20px;
+                    transition:
+                        width 0.3s linear,
+                        height 0.3s linear;
+                }
+
+                @include responsive(sm) {
+                    width: 20px;
+                    height: 20px;
+
+                    > svg {
+                        width: 15px;
+                        height: 15px;
+                    }
+                }
+            }
+        }
+
+        > div:nth-child(2) {
+            line-height: 24px;
+            @include responsive(sm) {
+                line-height: 22px;
+            }
+
+            > div:nth-child(1) {
+                font-size: 0.8rem;
+                color: gray;
+                @include responsive(sm) {
+                    font-size: 0.7rem;
+                }
+            }
+
+            > div:nth-child(2) {
+                font-weight: 600;
+            }
+        }
+    }
+
+    > .infor42 {
+        box-sizing: border-box;
+        padding: 10px;
+        @include responsive(sm) {
+            padding: 5px;
+        }
+
+        > .infor421 {
+            box-sizing: border-box;
+            padding: 10px;
+            border-top: 1px solid rgb(221, 221, 221);
+            @include responsive(sm) {
+                padding: 5px;
+            }
+
+            > div {
+                > div:nth-child(1) {
+                    color: gray;
+                    font-size: 0.8rem;
+                    margin: 5px 0;
+                    @include responsive(sm) {
+                        font-size: 0.7rem;
+                    }
+                }
+
+                > div:nth-child(2) {
+                    @include center-of-row;
+                    box-sizing: border-box;
+                    border: 1px solid rgb(228, 228, 228);
+                    border-radius: 8px;
+                    padding: 5px;
+                    width: max-content;
+                    @include responsive(sm) {
+                        width: 100%;
+                    }
+
+                    > input {
+                        border: none;
+                        outline: none;
+                        width: 350px;
+                        @include responsive(sm) {
+                            width: 100%;
+                        }
+                    }
+                }
+            }
+        }
+
+        > .infor422 {
+            > div:nth-child(1) {
+                color: gray;
+                font-size: 0.8rem;
+                margin: 5px 0;
+                @include responsive(sm) {
+                    font-size: 0.7rem;
+                }
+            }
+
+            > div:nth-child(2) {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, 250px);
+                gap: 20px;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 10px;
+
+                > div {
+                    box-sizing: border-box;
+                    border: 1px solid rgb(230, 230, 230);
+                    padding: 5px;
+                    border-radius: 8px;
+
+                    > div {
+                        @include center-of-row;
+                        justify-content: space-between;
+                        line-height: 24px;
+
+                        > div:nth-child(1) {
+                            color: gray;
+                            font-size: 0.8rem;
+                            width: 35%;
+
+                            > span {
+                                font-size: 0.7rem;
+                            }
+                        }
+
+                        > div:nth-child(2) {
+                            width: 65%;
+                        }
+                    }
+
+                    > div:nth-child(3) {
+                        > div:nth-child(2) {
+                            color: rgb(255, 115, 0);
+                        }
+                    }
+
+                    > div:nth-child(4) {
+                        > div:nth-child(2) {
+                            color: rgb(34, 204, 0);
+                        }
+                    }
+
+                    > div:nth-child(5) {
+                        > div:nth-child(2) {
+                            color: blue;
+                            cursor: pointer;
+                            user-select: none;
+
+                            &:hover {
+                                text-decoration: underline;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        > .infor423 {
+            > div:nth-child(1) {
+                color: gray;
+                font-size: 0.8rem;
+                margin: 5px 0;
+                @include responsive(sm) {
+                    font-size: 0.7rem;
+                }
+            }
+
+            > div:nth-child(2) {
+                box-sizing: border-box;
+                padding: 5px;
+                border: 1px solid rgb(226, 226, 226);
+                border-radius: 8px;
+                width: 100%;
+                overflow-x: auto;
+                @include small-scroll-xx(3px);
+
+                > div {
+                    @include center-of-row;
+                    box-sizing: border-box;
+                    padding: 5px;
+                    width: max-content;
+                    position: relative;
+
+                    > div {
+                        box-sizing: border-box;
+                        padding: 5px;
+
+                        > span {
+                            font-size: 0.6rem;
+                            color: gray;
+                        }
+                    }
+
+                    > div:nth-child(1) {
+                        position: absolute;
+                        top: -5px;
+                        left: -5px;
+                        @include center-of-row;
+
+                        > div {
+                            color: gray;
+                            font-size: 0.8rem;
+                            margin: 0 3px;
+                        }
+                    }
+
+                    > div:nth-child(2) {
+                        width: 50px;
+                        @include center-of-rectangle;
+                    }
+
+                    > div:nth-child(3) {
+                        width: 200px;
+                    }
+
+                    > div:nth-child(4) {
+                        width: 150px;
+                        color: rgb(255, 115, 0);
+                    }
+
+                    > div:nth-child(5) {
+                        width: 200px;
+                        color: rgb(34, 204, 0);
+                    }
+
+                    > div:nth-child(6) {
+                        width: 200px;
+                    }
+
+                    > div:nth-child(7) {
+                        width: 200px;
+                    }
+
+                    > div:nth-child(8) {
+                        width: 200px;
+                    }
+
+                    > div:nth-child(9) {
+                        @include center-of-row;
+
+                        > input {
+                            border: none;
+                            outline: none;
+                            box-sizing: border-box;
+                            padding: 5px;
+                            border-radius: 5px;
+                            background-color: rgb(255, 249, 228);
+                            width: 50px;
+                            margin: 0 5px;
+                            text-align: center;
+                            color: rgb(255, 115, 0);
+                        }
+
+                        > svg {
+                            color: rgb(255, 115, 0);
+
+                            &:active {
+                                scale: 1.5;
+                            }
+                        }
+                    }
+
+                    > div:nth-child(10) {
+                        width: 120px;
+                        @include center-of-rectangle;
+                    }
+
+                    > div:nth-child(11) {
+                        width: 120px;
+                        @include center-of-rectangle;
+
+                        > div {
+                            box-sizing: border-box;
+                            padding: 5px 10px;
+                            border-radius: 5px;
+                            background-color: rgb(198, 234, 255);
+                            color: rgb(0, 162, 255);
+                            user-select: none;
+                            cursor: pointer;
+
+                            &:hover {
+                                background-color: rgb(162, 221, 255);
+                            }
+
+                            &:active {
+                                background-color: rgb(198, 234, 255);
+                            }
+                        }
+                    }
+
+                    > div:nth-child(12) {
+                        width: 120px;
+                        @include center-of-rectangle;
+                        color: blue;
+                        user-select: none;
+                        cursor: pointer;
+
+                        &:hover {
+                            text-decoration: underline;
+                        }
+                    }
+                }
+            }
+
+            > div:nth-child(3) {
+                @include center-of-row;
+                justify-content: flex-end;
+
+                > div {
+                    background-color: rgb(216, 255, 255);
+                    user-select: none;
+                    cursor: default;
+                    color: aqua;
+
+                    &:hover {
+                        background-color: rgb(186, 255, 255);
+                    }
+
+                    &:active {
+                        background-color: rgb(216, 255, 255);
+                    }
+                }
+            }
+        }
+    }
+}
