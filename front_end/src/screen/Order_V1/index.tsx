@@ -4,14 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { global_set__data__toast_message } from '@src/redux/slice/Global';
-import { route_enum } from '@src/router/type';
+// import { route_enum } from '@src/router/type';
 import { ORDER } from '@src/const/text';
 import ToolBar from '@src/screen/ToolBar';
 import { select_enum } from '@src/router/type';
 import GlobalLoading from '@src/Global/GlobalLoading';
 import GlobalToastMessage from '@src/Global/GlobalToastMessage';
 import Overview from './component/Overview';
-import Fillter from './component/Fillter';
+import Filter from './component/Filter';
 import List from './component/List';
 import OrderDetailDialog from './component/OrderDetailDialog';
 import CreateOrderDialog from './component/CreateOrderDialog';
@@ -63,7 +63,7 @@ const Order_V1 = () => {
                     <div>
                         <div className={style.header}>{ORDER}</div>
                         <Overview />
-                        <Fillter />
+                        <Filter />
                         <List />
                     </div>
                 </div>

@@ -1,0 +1,25 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+    @include center-of-row;
+
+    > .search {
+        width: 80%;
+        @include center-of-rectangle;
+
+        > div {
+            @include center-of-row;
+        }
+    }
+
+    > .btn {
+        width: 20%;
+        @include center-of-rectangle;
+
+        > div {
+            @include center-of-row;
+        }
+    }
+}

@@ -29,6 +29,7 @@ import Shop from '@src/screen/Shop';
 import Team from '@src/screen/Team';
 import TeamDetail from '@src/screen/TeamDetail';
 import Order_V1 from '@src/screen/Order_V1';
+import Product from '@src/screen/Product';
 import { route_enum } from './type';
 
 const router = createBrowserRouter(
@@ -62,6 +63,7 @@ const router = createBrowserRouter(
         { path: route_enum.TEAM, element: <Team /> },
         { path: route_enum.TEAM_DETAIL + '/:id', element: <TeamDetail /> },
         { path: route_enum.ORDER_V1, element: <Order_V1 /> },
+        { path: route_enum.PRODUCT, element: <Product /> },
         { path: '*', element: <NotFoundPage /> }, // Trang 404
     ],
     {

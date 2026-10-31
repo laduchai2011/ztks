@@ -8,13 +8,14 @@ import { avatarnull } from '@src/utility/string';
 import { handleSrcImage } from '@src/utility/string';
 import { Account_Field } from '@src/data_struct/account';
 import { route_enum, selected_type, select_enum } from '@src/router/type';
-import { CHECK_IN_OUT, SHOP, TEAM, ORDER } from '@src/const/text';
+import { CHECK_IN_OUT, SHOP, TEAM, ORDER, PRODUCT } from '@src/const/text';
 import { MdDashboard } from 'react-icons/md';
 import { IoIosCheckmarkCircleOutline } from 'react-icons/io';
 import { MdGroups, MdMenu } from 'react-icons/md';
 import { FcShop } from 'react-icons/fc';
 import { TbArrowsMoveHorizontal } from 'react-icons/tb';
 import { FaShoppingCart } from 'react-icons/fa';
+import { FaProductHunt } from 'react-icons/fa';
 import { set__is_show, set__is_max_show } from '@src/redux/slice/Tool_Bar';
 
 const ToolBar: FC<{ selected: selected_type }> = ({ selected }) => {
@@ -92,6 +93,9 @@ const ToolBar: FC<{ selected: selected_type }> = ({ selected }) => {
             case select_enum.ORDER_V1:
                 navigate(route_enum.ORDER_V1);
                 break;
+            case select_enum.PRODUCT:
+                navigate(route_enum.PRODUCT);
+                break;
 
             default:
                 console.log('Không xác định');
@@ -144,6 +148,13 @@ const ToolBar: FC<{ selected: selected_type }> = ({ selected }) => {
                 >
                     {is_max_show && <div>{ORDER}</div>}
                     {!is_max_show && <FaShoppingCart color="red" />}
+                </div>
+                <div
+                    className={handle_Selected_Class(select_enum.PRODUCT)}
+                    onClick={() => handle_Go_To(select_enum.PRODUCT)}
+                >
+                    {is_max_show && <div>{PRODUCT}</div>}
+                    {!is_max_show && <FaProductHunt color="blue" />}
                 </div>
             </div>
             <div className={style.avatar}>

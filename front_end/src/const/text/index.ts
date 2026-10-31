@@ -98,3 +98,5 @@ export const STORE = 'Gian hàng';
 export const CREATE = 'Tạo';
 export const TEAM = 'Nhóm';
 export const TEAM_DETAIL = 'Chi tiết nhóm';
+export const PRODUCT = 'Sản phẩm';
+export const CREATE_PRODUCT = 'Tạo sản phẩm';

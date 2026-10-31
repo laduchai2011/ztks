@@ -9,7 +9,7 @@ import { MdKeyboardArrowDown } from 'react-icons/md';
 import { IoAddOutline } from 'react-icons/io5';
 import { set__is_show_create_order_v1 } from '@src/redux/slice/Order_V1';
 
-const Fillter = () => {
+const Filter = () => {
     const dispatch = useDispatch<AppDispatch>();
     const selected_option = '';
     const handle_Selected = () => {};
@@ -58,4 +58,4 @@ const Fillter = () => {
     );
 };
 
-export default memo(Fillter);
+export default memo(Filter);
