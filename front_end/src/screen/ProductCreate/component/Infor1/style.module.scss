@@ -28,7 +28,8 @@
         }
     }
 
-    > .description {
+    > .name,
+    .description {
         box-sizing: border-box;
         padding: 10px;
 
@@ -48,10 +49,15 @@
             padding: 5px;
             border: 1px solid rgb(226, 226, 226);
             border-radius: 8px;
+            width: 500px;
+            @include responsive(sm) {
+                width: 100%;
+            }
 
             > input {
                 border: none;
                 outline: none;
+                width: 100%;
             }
         }
     }

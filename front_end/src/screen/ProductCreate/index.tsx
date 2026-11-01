@@ -11,6 +11,10 @@ import { select_enum } from '@src/router/type';
 import GlobalLoading from '@src/Global/GlobalLoading';
 import GlobalToastMessage from '@src/Global/GlobalToastMessage';
 import Infor1 from './component/Infor1';
+import Infor2 from './component/Infor2';
+import Infor3 from './component/Infor3';
+import Infor4 from './component/Infor4';
+import Infor5 from './component/Infor5';
 
 const ProductCreate = () => {
     const navigate = useNavigate();
@@ -40,6 +44,10 @@ const ProductCreate = () => {
                     <span>{CREATE_PRODUCT}</span>
                 </div>
                 <Infor1 />
+                <Infor2 />
+                <Infor3 />
+                <Infor4 />
+                <Infor5 />
             </div>
         </div>
     );

@@ -14,12 +14,20 @@ const Infor1 = () => {
                 <div />
                 <div>Thông tin cơ bản</div>
             </div>
-            <div className={style.description}>
+            <div className={style.name}>
                 <div>
                     Tên sản phẩm <span>*</span>
                 </div>
                 <div>
                     <input placeholder="Nhập tên sản phẩm ..." />
+                </div>
+            </div>
+            <div className={style.description}>
+                <div>
+                    Mô tả ngắn <span>*</span>
+                </div>
+                <div>
+                    <input placeholder="Nhập mô tả ngắn ..." />
                 </div>
             </div>
         </div>
