@@ -1,0 +1,56 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    @include center-of-row;
+    box-sizing: border-box;
+    padding: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: white;
+    border-bottom: 1px solid rgb(216, 216, 216);
+
+    > div:nth-child(1) {
+        @include center-of-row;
+        width: 70%;
+
+        > svg {
+            width: 50px;
+            height: 50px;
+            color: aqua;
+        }
+
+        > span {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+    }
+
+    > div:nth-child(2) {
+        width: 30%;
+        @include center-of-row;
+        justify-content: flex-end;
+
+        > div {
+            background-color: aqua;
+            color: white;
+            box-sizing: border-box;
+            padding: 5px 10px;
+            border-radius: 8px;
+            border: 1px solid aqua;
+            cursor: pointer;
+            user-select: none;
+            font-size: 1.1rem;
+
+            &:hover {
+                background-color: rgb(173, 255, 255);
+                color: aqua;
+            }
+
+            &:active {
+                background-color: aqua;
+                color: white;
+            }
+        }
+    }
+}

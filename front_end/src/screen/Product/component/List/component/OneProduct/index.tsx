@@ -4,12 +4,18 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { global_set__data__toast_message } from '@src/redux/slice/Global';
+import { route_enum } from '@src/router/type';
 
 const OneProduct = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
 
+    const handle_Go_To_Product_Detail = () => {
+        navigate(route_enum.PRODUCT_DETAIL + '/' + `${1}`);
+    };
+
     return (
-        <div className={style.parent}>
+        <div className={style.parent} onClick={() => handle_Go_To_Product_Detail()}>
             <img
                 src={
                     'http://localhost:4000/api/service__image_v1/query/image/1790368982012_01a0a0c9-cf8c-7aaf-8348-faec9e683cfd_133962880188383301.jpg'

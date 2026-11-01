@@ -5,11 +5,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { global_set__data__toast_message } from '@src/redux/slice/Global';
 // import { route_enum } from '@src/router/type';
-import { HiOutlineCube } from 'react-icons/hi';
-import { CREATE_PRODUCT } from '@src/const/text';
 import { select_enum } from '@src/router/type';
 import GlobalLoading from '@src/Global/GlobalLoading';
 import GlobalToastMessage from '@src/Global/GlobalToastMessage';
+import Header from './component/Header';
 import Infor1 from './component/Infor1';
 import Infor2 from './component/Infor2';
 import Infor3 from './component/Infor3';
@@ -39,15 +38,16 @@ const ProductCreate = () => {
     return (
         <div className={style.parent}>
             <div>
-                <div className={style.header}>
-                    <HiOutlineCube />
-                    <span>{CREATE_PRODUCT}</span>
-                </div>
+                <Header />
                 <Infor1 />
                 <Infor2 />
                 <Infor3 />
                 <Infor4 />
                 <Infor5 />
+            </div>
+            <div>
+                <GlobalLoading />
+                <GlobalToastMessage />
             </div>
         </div>
     );

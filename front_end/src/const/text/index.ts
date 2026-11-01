@@ -100,3 +100,4 @@ export const TEAM = 'Nhóm';
 export const TEAM_DETAIL = 'Chi tiết nhóm';
 export const PRODUCT = 'Sản phẩm';
 export const CREATE_PRODUCT = 'Tạo sản phẩm';
+export const PRODUCT_DETAIL = 'Chi tiết sản phẩm';
