@@ -1,6 +1,10 @@
 @use 'src/utility/style/mixin.scss' as *;
 
 .parent {
+    @include responsive(md) {
+        margin-bottom: 180px;
+    }
+
     > .view1 {
         box-sizing: border-box;
         padding: 10px;

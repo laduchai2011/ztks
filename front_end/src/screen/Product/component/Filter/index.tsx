@@ -6,22 +6,27 @@ import { RootState, AppDispatch } from '@src/redux';
 import { global_set__data__toast_message } from '@src/redux/slice/Global';
 import { CiSearch } from 'react-icons/ci';
 import { IoMdAdd } from 'react-icons/io';
-import { set__is_show_create_order_v1 } from '@src/redux/slice/Order_V1';
 import { CREATE_PRODUCT } from '@src/const/text';
+import { route_enum } from '@src/router/type';
 
 const Filter = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
+
+    const handle_Go_To_Create_Product = () => {
+        navigate(route_enum.CREATE_PRODUCT);
+    };
 
     return (
         <div className={style.parent}>
             <div className={style.search}>
                 <div>
-                    <input />
+                    <input placeholder="Tìm kiếm" />
                     <CiSearch />
                 </div>
             </div>
             <div className={style.btn}>
-                <div>
+                <div onClick={() => handle_Go_To_Create_Product()}>
                     <IoMdAdd />
                     <div>{CREATE_PRODUCT}</div>
                 </div>

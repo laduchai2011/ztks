@@ -1,0 +1,37 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    border: 1px solid rgb(223, 223, 223);
+    border-radius: 10px;
+    overflow: hidden;
+
+    &:hover {
+        scale: 1.05;
+    }
+
+    > img {
+        width: 100%;
+        aspect-ratio: 3/2;
+        background-color: gray;
+    }
+
+    > .description {
+        @include line-clamp(2);
+        box-sizing: border-box;
+        padding: 2px 5px;
+        line-height: 24px;
+        font-weight: 600;
+    }
+
+    > .infor {
+        box-sizing: border-box;
+        padding: 5px;
+
+        > span {
+            font-size: 0.9rem;
+            margin: 0 5px;
+            color: gray;
+        }
+    }
+}

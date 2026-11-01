@@ -9,6 +9,7 @@ import { PRODUCT } from '@src/const/text';
 import ToolBar from '@src/screen/ToolBar';
 import Overview from './component/Overview';
 import Filter from './component/Filter';
+import List from './component/List';
 import { select_enum } from '@src/router/type';
 import GlobalLoading from '@src/Global/GlobalLoading';
 import GlobalToastMessage from '@src/Global/GlobalToastMessage';
@@ -61,6 +62,7 @@ const Product = () => {
                         <div className={style.header}>{PRODUCT}</div>
                         <Overview />
                         <Filter />
+                        <List />
                     </div>
                 </div>
                 <div>
