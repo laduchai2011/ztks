@@ -1,0 +1,139 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+    background-color: white;
+    margin-top: 20px;
+
+    > .name {
+        box-sizing: border-box;
+        padding: 5px;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    > .description {
+        box-sizing: border-box;
+        padding: 5px;
+    }
+
+    > .quantity_lock_price {
+        box-sizing: border-box;
+        padding: 10px;
+
+        > div {
+            border-top: 1px solid rgb(224, 224, 224);
+            @include center-of-row;
+
+            > div {
+                box-sizing: border-box;
+                padding: 5px;
+                width: calc(100% / 3);
+                @include center-of-row;
+
+                > div:nth-child(1) {
+                    width: 20%;
+                    height: 100%;
+                    @include center-of-rectangle;
+
+                    > svg {
+                        width: 25px;
+                        height: 25px;
+                        @include responsive(sm) {
+                            width: 20px;
+                            height: 20px;
+                        }
+                    }
+                }
+
+                > div:nth-child(2) {
+                    line-height: 22px;
+                    box-sizing: border-box;
+                    padding: 5px;
+
+                    > div:nth-child(1) {
+                        color: gray;
+                        font-size: 0.8rem;
+                        @include responsive(sm) {
+                            font-size: 0.7rem;
+                        }
+                    }
+
+                    > div:nth-child(2) {
+                        @include responsive(sm) {
+                            font-size: 0.9rem;
+                        }
+                    }
+                }
+            }
+
+            > div:nth-child(2) {
+                border-left: 1px solid rgb(224, 224, 224);
+                border-right: 1px solid rgb(224, 224, 224);
+            }
+        }
+    }
+
+    > .code_store {
+        box-sizing: border-box;
+        padding: 10px;
+
+        > div {
+            border-top: 1px solid rgb(224, 224, 224);
+            @include center-of-row;
+
+            > div {
+                box-sizing: border-box;
+                padding: 5px;
+                // width: calc(100% / 2);
+                @include center-of-row;
+
+                > div:nth-child(1) {
+                    width: 20%;
+                    height: 100%;
+                    @include center-of-rectangle;
+
+                    > svg {
+                        width: 25px;
+                        height: 25px;
+                        @include responsive(sm) {
+                            width: 20px;
+                            height: 20px;
+                        }
+                    }
+                }
+
+                > div:nth-child(2) {
+                    line-height: 22px;
+                    box-sizing: border-box;
+                    padding: 5px;
+
+                    > div:nth-child(1) {
+                        color: gray;
+                        font-size: 0.8rem;
+                        @include responsive(sm) {
+                            font-size: 0.7rem;
+                        }
+                    }
+
+                    > div:nth-child(2) {
+                        @include responsive(sm) {
+                            font-size: 0.9rem;
+                        }
+                    }
+                }
+            }
+
+            > div:nth-child(1) {
+                width: 35%;
+                border-right: 1px solid rgb(224, 224, 224);
+            }
+
+            > div:nth-child(2) {
+                width: 75%;
+                border-left: 1px solid rgb(224, 224, 224);
+            }
+        }
+    }
+}

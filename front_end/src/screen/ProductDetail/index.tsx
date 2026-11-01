@@ -9,6 +9,9 @@ import { select_enum } from '@src/router/type';
 import GlobalLoading from '@src/Global/GlobalLoading';
 import GlobalToastMessage from '@src/Global/GlobalToastMessage';
 import Header from './component/Header';
+import Infor1 from './component/Infor1';
+import Infor2 from './component/Infor2';
+import Infor3 from './component/Infor3';
 
 const ProductDetail = () => {
     const navigate = useNavigate();
@@ -36,6 +39,9 @@ const ProductDetail = () => {
         <div className={style.parent}>
             <div>
                 <Header />
+                <Infor1 />
+                <Infor2 />
+                <Infor3 />
             </div>
             <div>
                 <GlobalLoading />

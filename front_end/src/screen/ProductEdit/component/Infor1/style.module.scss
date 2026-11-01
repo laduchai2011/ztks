@@ -1,0 +1,65 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 10px;
+    background-color: white;
+    margin-top: 20px;
+
+    > .header {
+        height: 45px;
+        box-sizing: border-box;
+        padding: 10px;
+        @include center-of-row;
+
+        > div {
+            height: 100%;
+        }
+
+        > div:nth-child(1) {
+            width: 4px;
+            background-color: rgb(32, 136, 255);
+        }
+
+        > div:nth-child(2) {
+            @include center-of-row;
+            margin-left: 5px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+    }
+
+    > .name,
+    .description {
+        box-sizing: border-box;
+        padding: 10px;
+
+        > div:nth-child(1) {
+            font-weight: 600;
+            box-sizing: border-box;
+            padding: 5px;
+            @include center-of-row;
+
+            > span {
+                color: red;
+            }
+        }
+
+        > div:nth-child(2) {
+            box-sizing: border-box;
+            padding: 5px;
+            border: 1px solid rgb(226, 226, 226);
+            border-radius: 8px;
+            width: 500px;
+            @include responsive(sm) {
+                width: 100%;
+            }
+
+            > input {
+                border: none;
+                outline: none;
+                width: 100%;
+            }
+        }
+    }
+}
