@@ -1,5 +1,6 @@
 import { memo, useRef, useState, useEffect } from 'react';
 import style from './style.module.scss';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { TbBrandProducthunt } from 'react-icons/tb';
@@ -8,11 +9,16 @@ import { IoCloseOutline } from 'react-icons/io5';
 import { CgMathMinus, CgMathPlus } from 'react-icons/cg';
 import { FiLock, FiUnlock } from 'react-icons/fi';
 import { SEE_MORE } from '@src/const/text';
-import { avatarnull } from '@src/utility/string';
+import { route_enum } from '@src/router/type';
 
 const Infor4 = () => {
+    const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
     const parent_element = useRef<HTMLDivElement | null>(null);
+
+    const handle_Go_To_Product_Detail = () => {
+        navigate(route_enum.PRODUCT_DETAIL + '/' + `${1}`);
+    };
 
     const list_selected_product = [1, 2, 3, 4].map((item, index) => {
         return (
@@ -37,7 +43,7 @@ const Infor4 = () => {
                 </div>
                 <div>
                     <div>Sản phẩm</div>
-                    <div>Xem</div>
+                    <div onClick={() => handle_Go_To_Product_Detail()}>Xem</div>
                 </div>
                 <div>
                     <div>Gian hàng</div>
@@ -94,7 +100,7 @@ const Infor4 = () => {
                 <div>
                     <div>Thêm</div>
                 </div>
-                <div>Xem</div>
+                <div onClick={() => handle_Go_To_Product_Detail()}>Xem</div>
             </div>
         );
     });

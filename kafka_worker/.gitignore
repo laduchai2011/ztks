@@ -1,0 +1,5 @@
+/node_modules
+dist/
+build/
+data/
+backEnd/src/otp/serviceAccount.json

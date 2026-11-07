@@ -1,0 +1,6 @@
+docker stop kafka_worker_container
+docker rm kafka_worker_container
+docker build -t kafka_worker .
+docker run -dit --name kafka_worker_container --network network_ztks --restart=unless-stopped --memory=1024m --memory-swap=1024m -p 4000:4000 -v /root/photo5k:/app/data --log-driver=json-file --log-opt max-size=10m --log-opt max-file=3 kafka_worker
+docker logs -f kafka_worker_container
+

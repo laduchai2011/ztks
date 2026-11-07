@@ -143,6 +143,8 @@
         > div:nth-child(2) {
             > div {
                 @include center-of-row;
+                box-sizing: border-box;
+                padding: 0 10px;
 
                 > input {
                     background-color: red;

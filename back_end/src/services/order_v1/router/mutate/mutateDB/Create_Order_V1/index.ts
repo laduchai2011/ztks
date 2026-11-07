@@ -7,6 +7,7 @@ import {
 } from '@src/data_struct/order_v1/body';
 import {
     Kafka_Event_Field,
+    Kafka_Event_Topic_Enum,
     Kafka_Event_Event_Type_Enum,
     Kafka_Event_Aggregate_Type_Enum,
 } from '@src/data_struct/kafka';
@@ -54,6 +55,7 @@ class MutateDB_Create_Order_V1 {
 
                 if (result_order_v1.rows.length === 0) {
                     await client.query('ROLLBACK');
+                    throw new Error('CREATE_ORDER_FAILED');
                 }
 
                 const new_order_v1 = result_order_v1.rows[0];
@@ -64,6 +66,7 @@ class MutateDB_Create_Order_V1 {
                             aggregate_id: new_order_v1.id,
                             aggregate_type: Kafka_Event_Aggregate_Type_Enum.ORDER_V1,
                             event_type: Kafka_Event_Event_Type_Enum.ORDER_V1_CREATED,
+                            topic: Kafka_Event_Topic_Enum.ORDER_EVENTS,
                             payload: this._payload as unknown as Create_Order_V1_Inventory_Reservation_Body_Field[],
                         };
 
@@ -72,17 +75,19 @@ class MutateDB_Create_Order_V1 {
                         }
 
                         const result_kafka_event = await client.query<Kafka_Event_Field>(
-                            'SELECT * FROM create_kafka_event($1::UUID, $2::VARCHAR(100), $3::VARCHAR(100), $4::JSONB)',
+                            'SELECT * FROM create_kafka_event($1::UUID, $2, $3, $4, $5::JSONB)',
                             [
                                 create_kafka_event_body.aggregate_id,
                                 create_kafka_event_body.aggregate_type,
                                 create_kafka_event_body.event_type,
+                                create_kafka_event_body.topic,
                                 create_kafka_event_body.payload,
                             ]
                         );
 
                         if (result_kafka_event.rows.length === 0) {
                             await client.query('ROLLBACK');
+                            throw new Error('CREATE_KAFKA_EVENT_FAILED');
                         }
 
                         await client.query('COMMIT');
@@ -95,11 +100,11 @@ class MutateDB_Create_Order_V1 {
                         // break;
                     }
                     case Order_V1_Type_Enum.SERVICE: {
-                        //statements;
+                        await client.query('ROLLBACK');
                         break;
                     }
                     default: {
-                        //statements;
+                        await client.query('ROLLBACK');
                         break;
                     }
                 }

@@ -1,0 +1,64 @@
+Dưới đây là cấu hình cơ bản cho ESLint trong file eslint.config.mjs khi làm việc với JavaScript, TypeScript, và React:
+
+1. Cài đặt các package cần thiết
+sh
+Copy
+Edit
+npm install eslint @eslint/js @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-plugin-react eslint-plugin-prettier eslint-config-prettier prettier --save-dev
+2. Tạo file eslint.config.mjs
+Tạo file eslint.config.mjs ở thư mục gốc và thêm nội dung sau:
+
+js
+Copy
+Edit
+import js from "@eslint/js";
+import ts from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
+import react from "eslint-plugin-react";
+import prettier from "eslint-plugin-prettier";
+import prettierConfig from "eslint-config-prettier";
+
+export default [
+  js.configs.recommended, // Quy tắc mặc định cho JS
+  ts.configs.recommended, // Quy tắc cho TypeScript
+  react.configs.recommended, // Quy tắc cho React
+  prettier, // Tích hợp Prettier
+  prettierConfig, // Tắt các quy tắc ESLint có thể xung đột với Prettier
+  {
+    files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
+    languageOptions: {
+      parser: tsParser,
+      ecmaVersion: "latest",
+      sourceType: "module",
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
+    rules: {
+      "prettier/prettier": "error", // Báo lỗi nếu không tuân theo Prettier
+      "react/react-in-jsx-scope": "off", // Không yêu cầu import React trong JSX
+      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }], // Không báo lỗi biến `_`
+    },
+  },
+];
+3. Chạy ESLint
+Kiểm tra lỗi:
+
+sh
+Copy
+Edit
+npx eslint .
+Fix lỗi tự động:
+
+sh
+Copy
+Edit
+npx eslint . --fix
+Cấu hình trên giúp kiểm tra lỗi cho JavaScript, TypeScript, React và đồng bộ với Prettier khi sử dụng eslint.config.mjs. Bạn có thể mở rộng theo nhu cầu! 🚀
