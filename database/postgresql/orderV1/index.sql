@@ -87,7 +87,7 @@ CREATE TABLE re_order_v1 (
     money DECIMAL(20,2) NOT NULL DEFAULT 0.00,
 	phone VARCHAR(255) NOT NULL,
 	
-	- Trạng thái hiện tại
+	-- Trạng thái hiện tại
     status VARCHAR(50) NOT NULL DEFAULT 'created',
 
     -- Lịch sử trạng thái
@@ -100,7 +100,7 @@ CREATE TABLE re_order_v1 (
     create_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
 	CONSTRAINT FK_re_order_v1_account_id FOREIGN KEY (account_id) REFERENCES account(id),
-	CONSTRAINT FK_re_order_v1_account_id FOREIGN KEY (root_order_v1) REFERENCES order_v1(id),
+	CONSTRAINT FK_re_order_v1_root_order_v1 FOREIGN KEY (root_order_v1) REFERENCES order_v1(id),
 	CONSTRAINT re_re_order_v1_status CHECK (status IN (
 			'created',
 			'paid',
@@ -114,4 +114,4 @@ CREATE TABLE re_order_v1 (
 );
 CREATE INDEX idx_re_order_v1_phone ON re_order_v1(phone);
 CREATE INDEX idx_re_order_v1_account_id_phone ON re_order_v1(account_id, phone);
-CREATE INDEX idx_re_order_v1_account_status ON order_v1(account_id, status);
+CREATE INDEX idx_re_order_v1_account_status ON re_order_v1(account_id, status);

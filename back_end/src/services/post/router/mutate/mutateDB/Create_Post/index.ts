@@ -16,7 +16,7 @@ class MutateDB_Create_Post {
             try {
                 await client.query('BEGIN');
 
-                const result = await pool.query<Post_Field>(
+                const result = await client.query<Post_Field>(
                     'SELECT * FROM create_post($1, $2, $3, $4, $5, $6, $7, $8, $9::UUID)',
                     [
                         this._create_post_body.index,
@@ -37,7 +37,14 @@ class MutateDB_Create_Post {
                     return result.rows[0];
                 }
             } catch (error) {
-                console.error(error);
+                try {
+                    await client.query('ROLLBACK');
+                } catch (rollbackError) {
+                    console.error('Rollback error:', rollbackError);
+                }
+
+                console.error('Create order error:', error);
+                throw error;
             } finally {
                 client.release();
             }

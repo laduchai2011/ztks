@@ -29,8 +29,113 @@
         }
     }
 
-    > .product_code,
-    .shop,
+    > .product_code {
+        box-sizing: border-box;
+        padding: 10px;
+
+        > div:nth-child(1) {
+            font-weight: 600;
+            box-sizing: border-box;
+            padding: 5px;
+            @include center-of-row;
+
+            > span {
+                color: red;
+            }
+        }
+
+        > div:nth-child(2) {
+            box-sizing: border-box;
+            padding: 5px;
+            // border: 1px solid rgb(226, 226, 226);
+            // border-radius: 8px;
+            @include center-of-row;
+            width: 500px;
+            @include responsive(sm) {
+                width: 100%;
+            }
+
+            > div:nth-child(1) {
+                width: 65%;
+                box-sizing: border-box;
+                padding: 5px;
+                position: relative;
+
+                > div:nth-child(1) {
+                    box-sizing: border-box;
+                    padding: 5px;
+                    border: 1px solid rgb(226, 226, 226);
+                    border-radius: 8px;
+                    width: 100%;
+                    @include center-of-row;
+
+                    > input {
+                        flex: 1;
+                        border: none;
+                        outline: none;
+                    }
+                }
+
+                > div:nth-child(2) {
+                    box-sizing: border-box;
+                    width: 100%;
+                    position: absolute;
+                    border: 1px solid rgb(226, 226, 226);
+                    border-radius: 8px;
+                    background-color: white;
+                    max-height: 500px;
+                    overflow-y: auto;
+                    @include small-scroll-yy(1px);
+
+                    > div:nth-child(1) {
+                        padding: 5px;
+                        box-sizing: border-box;
+                    }
+
+                    > div:nth-child(2) {
+                        @include center-of-rectangle;
+
+                        > div {
+                            color: blue;
+                            cursor: pointer;
+                            user-select: none;
+
+                            &:hover {
+                                text-decoration: underline;
+                            }
+                        }
+                    }
+                }
+            }
+
+            > div:nth-child(2) {
+                @include center-of-rectangle;
+                width: 35%;
+                box-sizing: border-box;
+                padding: 5px;
+
+                > span {
+                    box-sizing: border-box;
+                    padding: 5px;
+                    border: 1px solid rgb(59, 242, 255);
+                    background-color: rgb(59, 242, 255);
+                    color: white;
+                    border-radius: 8px;
+                    width: 100%;
+                    @include center-of-rectangle;
+                    user-select: none;
+                    cursor: pointer;
+
+                    &:active {
+                        background-color: white;
+                        color: rgb(59, 242, 255);
+                    }
+                }
+            }
+        }
+    }
+
+    > .shop,
     .depot,
     .store {
         box-sizing: border-box;

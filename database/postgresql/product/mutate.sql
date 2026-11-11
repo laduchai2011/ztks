@@ -2,9 +2,9 @@
     p_name VARCHAR(255),
 	p_description VARCHAR(255),
 	p_detail TEXT,
-	p_images TEXT[],
-	p_videos TEXT[],
-	p_account_id UUID
+	p_account_id UUID,
+	p_images JSONB DEFAULT '[]'::JSONB,
+    p_videos JSONB DEFAULT '[]'::JSONB
 )
 RETURNS SETOF register_post
 LANGUAGE plpgsql
@@ -50,9 +50,10 @@ CREATE OR REPLACE FUNCTION edit_product_code (
     p_name VARCHAR(255),
     p_description VARCHAR(255),
     p_detail TEXT,
-    p_images TEXT[],
-    p_videos TEXT[],
-    p_account_id UUID
+	p_account_id UUID,
+   	p_images JSONB DEFAULT '[]'::JSONB,
+    p_videos JSONB DEFAULT '[]'::JSONB
+   
 )
 RETURNS SETOF product_code
 LANGUAGE plpgsql
@@ -78,12 +79,12 @@ CREATE OR REPLACE FUNCTION create_product (
     p_description VARCHAR(255),
     p_detail TEXT,
     p_quantity INTEGER,
-    p_images TEXT[],
-    p_videos TEXT[],
     p_store_id UUID,
     p_product_code_id UUID,
     p_account_id UUID,
-    p_note VARCHAR(255)
+    p_note VARCHAR(255),
+	p_images JSONB DEFAULT '[]'::JSONB,
+    p_videos JSONB DEFAULT '[]'::JSONB
 )
 RETURNS SETOF product
 LANGUAGE plpgsql

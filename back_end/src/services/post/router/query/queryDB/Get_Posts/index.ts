@@ -34,6 +34,7 @@ class QueryDB_Get_Posts {
                 }
             } catch (error) {
                 console.error(error);
+                throw error;
             }
         }
     }

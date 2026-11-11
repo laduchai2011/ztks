@@ -2,33 +2,11 @@ package org.kafka_tks_erp.config;
 
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsConfig;
-import io.github.cdimascio.dotenv.Dotenv;
+import org.kafka_tks_erp.config.EnvironmentConfig;
 
 import java.util.Properties;
 
 public class KafkaConfig {
-    private static final Dotenv dotenv = Dotenv.configure()
-            .ignoreIfMissing()
-            .load();
-
-    private static String getRequiredEnv(String name) {
-
-        // Ưu tiên biến môi trường hệ điều hành
-        String value = System.getenv(name);
-
-        // Nếu không có thì đọc từ .env
-        if (value == null || value.isBlank()) {
-            value = dotenv.get(name);
-        }
-
-        if (value == null || value.isBlank()) {
-            throw new IllegalStateException(
-                    "Missing environment variable: " + name
-            );
-        }
-
-        return value;
-    }
 
     public static Properties create(String applicationId) {
 
@@ -41,7 +19,7 @@ public class KafkaConfig {
 
         props.put(
                 StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
-                getRequiredEnv("KAFKA_BOOTSTRAP_SERVERS")
+                EnvironmentConfig.getEnv("KAFKA_BOOTSTRAP_SERVERS")
         );
 
         props.put(
@@ -55,13 +33,13 @@ public class KafkaConfig {
         );
 
         props.put("security.protocol",
-                getRequiredEnv("KAFKA_SECURITY_PROTOCOL"));
+                EnvironmentConfig.getEnv("KAFKA_SECURITY_PROTOCOL"));
 
         props.put("sasl.mechanism",
-                getRequiredEnv("KAFKA_SASL_MECHANISM"));
+                EnvironmentConfig.getEnv("KAFKA_SASL_MECHANISM"));
 
-        String username = getRequiredEnv("KAFKA_USERNAME");
-        String password = getRequiredEnv("KAFKA_PASSWORD");
+        String username = EnvironmentConfig.getEnv("KAFKA_USERNAME");
+        String password = EnvironmentConfig.getEnv("KAFKA_PASSWORD");
 
         props.put(
                 "sasl.jaas.config",

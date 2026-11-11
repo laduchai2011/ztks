@@ -21,6 +21,7 @@ class QueryDB_Get_Post_With_Id {
                 }
             } catch (error) {
                 console.error(error);
+                throw error;
             }
         }
     }

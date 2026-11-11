@@ -2,7 +2,9 @@ package org.kafka_tks_erp.core;
 
 public interface ManagedService {
 
-    void start();
+    String getName();
 
-    void close();
+    void start() throws Exception;
+
+    void stop();
 }

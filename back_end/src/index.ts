@@ -173,6 +173,11 @@ app.use(`${apiString}/hello`, (req, res) => {
         const service__team = (await import('@src/services/team')).default;
         app.use(`${prefix}/service__team`, service__team);
     }
+
+    if (services.includes('product')) {
+        const service__product = (await import('@src/services/product')).default;
+        app.use(`${prefix}/service__product`, service__product);
+    }
 })();
 
 app.listen(port, () => {

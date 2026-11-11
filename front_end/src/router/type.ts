@@ -31,6 +31,7 @@ import {
     CREATE_PRODUCT,
     PRODUCT_DETAIL,
     EDIT_PRODUCT,
+    CREATE_PRODUCT_CODE,
 } from '@src/const/text';
 
 const _HOME = HOME;
@@ -66,6 +67,7 @@ const _PRODUCT = PRODUCT;
 const _CREATE_PRODUCT = CREATE_PRODUCT;
 const _PRODUCT_DETAIL = PRODUCT_DETAIL;
 const _EDIT_PRODUCT = EDIT_PRODUCT;
+const _CREATE_PRODUCT_CODE = CREATE_PRODUCT_CODE;
 
 export enum select_enum {
     HOME = _HOME,
@@ -103,6 +105,7 @@ export enum select_enum {
     CREATE_PRODUCT = _CREATE_PRODUCT,
     PRODUCT_DETAIL = _PRODUCT_DETAIL,
     EDIT_PRODUCT = _EDIT_PRODUCT,
+    CREATE_PRODUCT_CODE = _CREATE_PRODUCT_CODE,
 }
 export type selected_type =
     | select_enum.HOME
@@ -139,7 +142,8 @@ export type selected_type =
     | select_enum.PRODUCT
     | select_enum.CREATE_PRODUCT
     | select_enum.PRODUCT_DETAIL
-    | select_enum.EDIT_PRODUCT;
+    | select_enum.EDIT_PRODUCT
+    | select_enum.CREATE_PRODUCT_CODE;
 
 export enum route_enum {
     HOME = '/',
@@ -177,6 +181,7 @@ export enum route_enum {
     CREATE_PRODUCT = '/create_product',
     PRODUCT_DETAIL = '/product_detail',
     EDIT_PRODUCT = '/edit_product',
+    CREATE_PRODUCT_CODE = '/create_product_code',
 }
 export type routed_type =
     | route_enum.HOME
@@ -213,4 +218,5 @@ export type routed_type =
     | route_enum.PRODUCT
     | route_enum.CREATE_PRODUCT
     | route_enum.PRODUCT_DETAIL
-    | route_enum.EDIT_PRODUCT;
+    | route_enum.EDIT_PRODUCT
+    | route_enum.CREATE_PRODUCT_CODE;

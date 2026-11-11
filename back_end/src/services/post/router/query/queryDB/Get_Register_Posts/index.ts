@@ -35,6 +35,7 @@ class QueryDB_Get_Register_Posts {
                 }
             } catch (error) {
                 console.error(error);
+                throw error;
             }
         }
     }

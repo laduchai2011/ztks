@@ -1,0 +1,11 @@
+docker compose up -d
+docker compose down -v
+docker logs -f elasticsearch_container
+
+- Cấp quyền cho thư mục:
+    sudo chown -R 10001:0 /var/docker_mount/elasticsearch_data
+    sudo chmod -R 770 /var/docker_mount/elasticsearch_data
+
+docker exec -it elasticsearch_container /usr/share/elasticsearch/bin/elasticsearch-reset-password -u kibana_system -i
+
+docker compose up -d --force-recreate kibana

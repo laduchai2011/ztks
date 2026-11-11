@@ -16,7 +16,7 @@ class MutateDB_Edit_Post {
             try {
                 await client.query('BEGIN');
 
-                const result = await pool.query<Post_Field>(
+                const result = await client.query<Post_Field>(
                     'SELECT * FROM edit_post($1::UUID, $2, $3, $4, $5, $6, $7, $8::UUID)',
                     [
                         this._edit_post_body.id,
@@ -36,7 +36,14 @@ class MutateDB_Edit_Post {
                     return result.rows[0];
                 }
             } catch (error) {
-                console.error(error);
+                try {
+                    await client.query('ROLLBACK');
+                } catch (rollbackError) {
+                    console.error('Rollback error:', rollbackError);
+                }
+
+                console.error('Create order error:', error);
+                throw error;
             } finally {
                 client.release();
             }

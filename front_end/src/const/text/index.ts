@@ -102,3 +102,4 @@ export const PRODUCT = 'Sản phẩm';
 export const CREATE_PRODUCT = 'Tạo sản phẩm';
 export const PRODUCT_DETAIL = 'Chi tiết sản phẩm';
 export const EDIT_PRODUCT = 'Chỉnh sửa sản phẩm';
+export const CREATE_PRODUCT_CODE = 'Tạo mã sản phẩm';

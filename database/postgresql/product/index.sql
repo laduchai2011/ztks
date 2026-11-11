@@ -3,13 +3,15 @@ CREATE TABLE product_code (
 	name VARCHAR(255) NOT NULL,
 	description VARCHAR(255) NOT NULL,
 	detail TEXT NOT NULL,
-	images TEXT[] DEFAULT '{}',
-	videos TEXT[] DEFAULT '{}',
+	images JSONB NOT NULL DEFAULT '[]'::JSONB,
+    videos JSONB NOT NULL DEFAULT '[]'::JSONB,
 	is_delete BOOLEAN NOT NULL DEFAULT FALSE,
 	account_id UUID NOT NULL,
 	update_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     create_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	
+
+	CONSTRAINT CK_product_code_images_array CHECK (jsonb_typeof(images) = 'array'),
+    CONSTRAINT CK_product_code_videos_array CHECK (jsonb_typeof(videos) = 'array'),
 	CONSTRAINT FK_product_account_id FOREIGN KEY (account_id) REFERENCES account(id)
 );
 CREATE INDEX idx_product_account_id ON product_code(account_id);
@@ -21,8 +23,8 @@ CREATE TABLE product (
 	detail TEXT NOT NULL,
 	quantity_in INTEGER NOT NULL DEFAULT 0,
 	quantity_out INTEGER NOT NULL DEFAULT 0,
-	images TEXT[] DEFAULT '{}',
-	videos TEXT[] DEFAULT '{}',
+	images JSONB NOT NULL DEFAULT '[]'::JSONB,
+    videos JSONB NOT NULL DEFAULT '[]'::JSONB,
 	is_compelled_price BOOLEAN NOT NULL DEFAULT FALSE,
 	unit_price NUMERIC(18, 2) NOT NULL CHECK (unit_price >= 0),
 	is_lock BOOLEAN NOT NULL DEFAULT FALSE,
@@ -32,7 +34,9 @@ CREATE TABLE product (
 	account_id UUID NOT NULL,
 	update_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     create_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	
+
+	CONSTRAINT CK_product_images_array CHECK (jsonb_typeof(images) = 'array'),
+    CONSTRAINT CK_product_videos_array CHECK (jsonb_typeof(videos) = 'array'),
 	CONSTRAINT FK_product_store_id FOREIGN KEY (store_id) REFERENCES store(id),
 	CONSTRAINT FK_product_product_code_id FOREIGN KEY (product_code_id) REFERENCES product_code(id),
 	CONSTRAINT FK_product_account_id FOREIGN KEY (account_id) REFERENCES account(id)
@@ -46,8 +50,8 @@ CREATE TABLE product_fluctuation (
 	quantity INTEGER DEFAULT 0,
 	actual_quantity INTEGER DEFAULT 0,
 	note VARCHAR(255) NOT NULL,
-	images TEXT[] DEFAULT '{}',
-	videos TEXT[] DEFAULT '{}',
+	images JSONB NOT NULL DEFAULT '[]'::JSONB,
+    videos JSONB NOT NULL DEFAULT '[]'::JSONB,
 	is_finish BOOLEAN NOT NULL DEFAULT FALSE,
 	is_delete BOOLEAN NOT NULL DEFAULT FALSE,
 	re_order_v1_id UUID,

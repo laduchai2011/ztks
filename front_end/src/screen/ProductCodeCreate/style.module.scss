@@ -1,0 +1,15 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgb(206, 255, 255);
+
+    > div {
+        width: 1280px;
+        @include responsive(lg) {
+            width: 100%;
+        }
+    }
+}

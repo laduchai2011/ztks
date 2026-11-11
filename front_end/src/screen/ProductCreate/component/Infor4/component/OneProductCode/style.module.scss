@@ -1,0 +1,17 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    box-sizing: border-box;
+    padding: 8px;
+
+    > div:nth-child(1) {
+        font-weight: 600;
+        @include line-clamp(1);
+    }
+
+    > div:nth-child(2) {
+        color: gray;
+        font-size: 0.9rem;
+        @include line-clamp(1);
+    }
+}

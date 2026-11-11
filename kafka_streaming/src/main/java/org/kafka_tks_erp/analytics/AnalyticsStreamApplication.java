@@ -2,8 +2,12 @@ package org.kafka_tks_erp.analytics;
 
 import org.kafka_tks_erp.core.ManagedService;
 
-public class AnalyticsStreamApplication
-        implements ManagedService {
+public class AnalyticsStreamApplication implements ManagedService {
+
+    @Override
+    public String getName() {
+        return "AnalyticsStreamApplication";
+    }
 
     @Override
     public void start() {
@@ -15,7 +19,14 @@ public class AnalyticsStreamApplication
     }
 
     @Override
-    public void close() {
-        System.out.println("Analytics Service closed");
+    public void stop() {
+        System.out.println("Analytics service stopped");
+
+        // Đóng Kafka Streams
     }
+
+//    @Override
+//    public void close() {
+//        System.out.println("Analytics Service closed");
+//    }
 }
