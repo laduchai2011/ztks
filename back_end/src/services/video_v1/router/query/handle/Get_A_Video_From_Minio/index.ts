@@ -2,9 +2,9 @@ import { Request, Response } from 'express';
 import { MinioServiceV1 } from '@src/connect/minio/service';
 import mime from 'mime-types';
 
-const minioService = new MinioServiceV1('videos-to-send-zalo');
+const minioService = new MinioServiceV1('videos');
 minioService.ensureBucket().catch((err) => {
-    console.error('Error ensuring bucket exists ( videos-to-send-zalo ):', err);
+    console.error('Error ensuring bucket exists ( videos ):', err);
 });
 
 // export async function getAVideoFromMinio(req: Request, res: Response) {

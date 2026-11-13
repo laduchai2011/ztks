@@ -81,7 +81,8 @@ BEGIN
 END;
 $$;
 
-
+SELECT *
+FROM claim_kafka_events('worker-001', 20, 120);
 CREATE OR REPLACE FUNCTION claim_kafka_events (
     p_worker_id VARCHAR,
     p_limit INTEGER DEFAULT 20,

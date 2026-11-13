@@ -76,5 +76,3 @@ CREATE TABLE processed_event_kafka (
 
     PRIMARY KEY (consumer_name, event_id)
 );
-
-

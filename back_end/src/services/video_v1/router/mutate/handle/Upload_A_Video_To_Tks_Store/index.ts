@@ -7,7 +7,7 @@ import fs from 'fs';
 
 const CHUNK_SIZE = 5 * 1024 * 1024;
 
-const minioService = new MinioServiceV1('videos-to-send-zalo');
+const minioService = new MinioServiceV1('videos');
 minioService.ensureBucket().catch((err) => {
     console.error('Error ensuring bucket exists ( videos ):', err);
 });

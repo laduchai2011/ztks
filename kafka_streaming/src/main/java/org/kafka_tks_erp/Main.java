@@ -1,38 +1,49 @@
 package org.kafka_tks_erp;
 
-import org.kafka_tks_erp.core.ServiceManager;
+import org.kafka_tks_erp.config.PostgresqlConfig;
 import org.kafka_tks_erp.services.outbox.OutboxApplication;
-//import org.kafka_tks_erp.services.inventory.InventoryApplication;
-//import org.kafka_tks_erp.services.analytics.AnalyticsApplication;
+import org.kafka_tks_erp.services.product.ProductStreamApplication;
 
 public class Main {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
-        ServiceManager manager = new ServiceManager();
+        System.out.println("Main Application started");
 
-        // Register services
-        if (Boolean.parseBoolean(
-                System.getenv("OUTBOX_ENABLED"))) {
-            manager.register(new OutboxApplication());
+        PostgresqlConfig.init();
+
+        OutboxApplication outbox =
+                new OutboxApplication();
+
+        ProductStreamApplication productStream =
+                new ProductStreamApplication();
+
+        try {
+
+            outbox.start();
+
+            productStream.start();
+
+        } catch (Exception e) {
+
+            productStream.stop();
+            outbox.stop();
+
+            PostgresqlConfig.close();
+
+            throw e;
         }
 
-//        if (Boolean.parseBoolean(
-//                System.getenv("INVENTORY_ENABLED"))) {
-//            manager.register(new InventoryApplication());
-//        }
-
-//        if (Boolean.parseBoolean(
-//                System.getenv("ANALYTICS_ENABLED"))) {
-//            manager.register(new AnalyticsApplication());
-//        }
-
-        // Shutdown hook
         Runtime.getRuntime().addShutdownHook(
-                new Thread(manager::stopAll)
-        );
+                new Thread(() -> {
 
-        // Start services
-        manager.startAll();
+                    productStream.stop();
+
+                    outbox.stop();
+
+                    PostgresqlConfig.close();
+
+                })
+        );
     }
 }

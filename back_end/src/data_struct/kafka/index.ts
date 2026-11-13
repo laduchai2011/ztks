@@ -39,22 +39,29 @@
 import { Create_Order_V1_Inventory_Reservation_Body_Field } from '../order_v1/body';
 
 export enum Kafka_Event_Topic_Enum {
-    ORDER_EVENTS = 'order-events',
+    ORDER_EVENTS = 'order_events',
+    PRODUCT_EVENTS = 'product_events',
 }
 
-export type Kafka_Event_Topic_Type = Kafka_Event_Topic_Enum.ORDER_EVENTS;
+export type Kafka_Event_Topic_Type = Kafka_Event_Topic_Enum.ORDER_EVENTS | Kafka_Event_Topic_Enum.PRODUCT_EVENTS;
 
 export enum Kafka_Event_Aggregate_Type_Enum {
     ORDER_V1 = 'order_v1',
+    PRODUCT = 'product',
 }
 
-export type Kafka_Event_Aggregate_Type_Type = Kafka_Event_Aggregate_Type_Enum.ORDER_V1;
+export type Kafka_Event_Aggregate_Type_Type =
+    | Kafka_Event_Aggregate_Type_Enum.ORDER_V1
+    | Kafka_Event_Aggregate_Type_Enum.PRODUCT;
 
 export enum Kafka_Event_Event_Type_Enum {
     ORDER_V1_CREATED = 'order_v1_created',
+    PRODUCT_CODE_CREATED = 'product_code_created',
 }
 
-export type Kafka_Event_Event_Type_Type = Kafka_Event_Event_Type_Enum.ORDER_V1_CREATED;
+export type Kafka_Event_Event_Type_Type =
+    | Kafka_Event_Event_Type_Enum.ORDER_V1_CREATED
+    | Kafka_Event_Event_Type_Enum.PRODUCT_CODE_CREATED;
 
 export enum Kafka_Event_Status_Enum {
     PENDING = 'pending',

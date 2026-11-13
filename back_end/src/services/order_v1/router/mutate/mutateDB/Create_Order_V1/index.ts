@@ -62,12 +62,14 @@ class MutateDB_Create_Order_V1 {
 
                 switch (new_order_v1.type) {
                     case Order_V1_Type_Enum.PRODUCT: {
-                        const create_kafka_event_body: Create_Kafka_Event_Body_Field = {
+                        const create_kafka_event_body: Create_Kafka_Event_Body_Field<
+                            Create_Order_V1_Inventory_Reservation_Body_Field[] | Create_Order_V1_Service_Body_Field[]
+                        > = {
                             aggregate_id: new_order_v1.id,
                             aggregate_type: Kafka_Event_Aggregate_Type_Enum.ORDER_V1,
                             event_type: Kafka_Event_Event_Type_Enum.ORDER_V1_CREATED,
                             topic: Kafka_Event_Topic_Enum.ORDER_EVENTS,
-                            payload: this._payload as unknown as Create_Order_V1_Inventory_Reservation_Body_Field[],
+                            payload: this._payload,
                         };
 
                         for (let i: number = 0; i < create_kafka_event_body.payload.length; i++) {

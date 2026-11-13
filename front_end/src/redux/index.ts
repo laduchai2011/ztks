@@ -29,6 +29,7 @@ import Tool_Bar_Reducer from '@src/redux/slice/Tool_Bar';
 import Shop_Reducer from '@src/redux/slice/Shop';
 import Team_Reducer from '@src/redux/slice/Team';
 import Team_Detail_Reducer from '@src/redux/slice/Team_Detail';
+import Product_Code_Create_Reducer from '@src/redux/slice/Product_Code_Create';
 import { account_RTK } from './query/account_RTK';
 import { call_RTK } from './query/call_RTK';
 import { call_agent_RTK } from './query/call_agent_RTK';
@@ -47,6 +48,7 @@ import { statistics_RTK } from './query/statistics_RTK';
 import { check_in_out_RTK } from './query/check_in_out_RTK';
 import { shop_RTK } from './query/shop_RTK';
 import { team_RTK } from './query/team_RTK';
+import { product_RTK } from './query/product_RTK';
 
 export const store = configureStore({
     reducer: {
@@ -81,6 +83,7 @@ export const store = configureStore({
         Shop_Slice: Shop_Reducer,
         Team_Slice: Team_Reducer,
         Team_Detail_Slice: Team_Detail_Reducer,
+        Product_Code_Create_Slice: Product_Code_Create_Reducer,
         [account_RTK.reducerPath]: account_RTK.reducer,
         [call_RTK.reducerPath]: call_RTK.reducer,
         [call_agent_RTK.reducerPath]: call_agent_RTK.reducer,
@@ -99,6 +102,7 @@ export const store = configureStore({
         [check_in_out_RTK.reducerPath]: check_in_out_RTK.reducer,
         [shop_RTK.reducerPath]: shop_RTK.reducer,
         [team_RTK.reducerPath]: team_RTK.reducer,
+        [product_RTK.reducerPath]: product_RTK.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
@@ -119,7 +123,8 @@ export const store = configureStore({
             statistics_RTK.middleware,
             check_in_out_RTK.middleware,
             shop_RTK.middleware,
-            team_RTK.middleware
+            team_RTK.middleware,
+            product_RTK.middleware
         ),
 });
 

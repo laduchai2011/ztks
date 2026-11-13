@@ -1,6 +1,13 @@
 import { pool } from '@src/connect/postgresql';
 import { Product_Code_Field } from '@src/data_struct/product';
 import { Create_Product_Code_Body_Field } from '@src/data_struct/product/body';
+import {
+    Kafka_Event_Field,
+    Kafka_Event_Topic_Enum,
+    Kafka_Event_Event_Type_Enum,
+    Kafka_Event_Aggregate_Type_Enum,
+} from '@src/data_struct/kafka';
+import { Create_Kafka_Event_Body_Field } from '@src/data_struct/kafka/body';
 
 class MutateDB_Create_Product_Code {
     private _create_product_code_body: Create_Product_Code_Body_Field | undefined;
@@ -23,15 +30,43 @@ class MutateDB_Create_Product_Code {
                         this._create_product_code_body.description,
                         this._create_product_code_body.detail,
                         this._create_product_code_body.account_id,
-                        this._create_product_code_body.images,
-                        this._create_product_code_body.videos,
+                        JSON.stringify(this._create_product_code_body.images),
+                        JSON.stringify(this._create_product_code_body.videos),
                     ]
                 );
 
-                await client.query('COMMIT');
+                if (result.rows.length === 0) {
+                    await client.query('ROLLBACK');
+                    throw new Error('CREATE_ORDER_FAILED');
+                } else {
+                    const product_code = result.rows[0];
 
-                if (result.rows.length > 0) {
-                    return result.rows[0];
+                    const create_kafka_event_body: Create_Kafka_Event_Body_Field<Product_Code_Field> = {
+                        aggregate_id: product_code.id,
+                        aggregate_type: Kafka_Event_Aggregate_Type_Enum.PRODUCT,
+                        event_type: Kafka_Event_Event_Type_Enum.PRODUCT_CODE_CREATED,
+                        topic: Kafka_Event_Topic_Enum.PRODUCT_EVENTS,
+                        payload: product_code,
+                    };
+
+                    const result_kafka_event = await client.query<Kafka_Event_Field>(
+                        'SELECT * FROM create_kafka_event($1::UUID, $2, $3, $4, $5::JSONB)',
+                        [
+                            create_kafka_event_body.aggregate_id,
+                            create_kafka_event_body.aggregate_type,
+                            create_kafka_event_body.event_type,
+                            create_kafka_event_body.topic,
+                            create_kafka_event_body.payload,
+                        ]
+                    );
+
+                    if (result_kafka_event.rows.length === 0) {
+                        await client.query('ROLLBACK');
+                        throw new Error('CREATE_KAFKA_EVENT_FAILED');
+                    }
+
+                    await client.query('COMMIT');
+                    return product_code;
                 }
             } catch (error) {
                 try {

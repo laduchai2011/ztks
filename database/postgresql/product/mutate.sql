@@ -1,4 +1,4 @@
-﻿CREATE OR REPLACE FUNCTION create_product_code (
+CREATE OR REPLACE FUNCTION create_product_code (
     p_name VARCHAR(255),
 	p_description VARCHAR(255),
 	p_detail TEXT,
@@ -6,11 +6,9 @@
 	p_images JSONB DEFAULT '[]'::JSONB,
     p_videos JSONB DEFAULT '[]'::JSONB
 )
-RETURNS SETOF register_post
+RETURNS SETOF product_code
 LANGUAGE plpgsql
 AS $$
-DECLARE
-    v_register_post_id UUID;
 BEGIN
     -- Kiểm tra tài khoản có phải admin không
     IF NOT EXISTS (
