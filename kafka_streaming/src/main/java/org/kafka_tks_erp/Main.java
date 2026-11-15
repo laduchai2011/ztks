@@ -15,18 +15,18 @@ public class Main {
         OutboxApplication outbox =
                 new OutboxApplication();
 
-        ProductStreamApplication productStream =
-                new ProductStreamApplication();
+//        ProductStreamApplication productStream =
+//                new ProductStreamApplication();
 
         try {
 
             outbox.start();
 
-            productStream.start();
+//            productStream.start();
 
         } catch (Exception e) {
 
-            productStream.stop();
+//            productStream.stop();
             outbox.stop();
 
             PostgresqlConfig.close();
@@ -37,7 +37,7 @@ public class Main {
         Runtime.getRuntime().addShutdownHook(
                 new Thread(() -> {
 
-                    productStream.stop();
+//                    productStream.stop();
 
                     outbox.stop();
 
