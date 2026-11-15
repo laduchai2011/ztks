@@ -1,7 +1,0 @@
-@use 'src/utility/style/mixin.scss' as *;
-
-.parent {
-    > audio {
-        max-width: 100%;
-    }
-}
