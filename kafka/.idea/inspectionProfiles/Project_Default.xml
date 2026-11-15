@@ -1,0 +1,53 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="VulnerableLibrariesLocal" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="isIgnoringEnabled" value="true" />
+      <option name="ignoredModules">
+        <list>
+          <option value="kafka" />
+          <option value="kafka" />
+          <option value="kafka" />
+          <option value="kafka" />
+          <option value="kafka" />
+          <option value="kafka" />
+          <option value="kafka" />
+          <option value="kafka" />
+          <option value="kafka" />
+          <option value="kafka" />
+          <option value="kafka" />
+        </list>
+      </option>
+      <option name="ignoredPackages">
+        <list>
+          <option value="tools.jackson.core:jackson-core:3.0.0" />
+          <option value="org.postgresql:postgresql:42.7.8" />
+          <option value="com.fasterxml.jackson.core:jackson-databind:2.20.1" />
+          <option value="org.apache.kafka:kafka-clients:4.3.2" />
+          <option value="com.github.luben:zstd-jni:1.5.6-10" />
+          <option value="org.apache.httpcomponents.client5:httpclient5:5.4.4" />
+          <option value="org.apache.httpcomponents.core5:httpcore5:5.3.4" />
+          <option value="org.apache.httpcomponents.core5:httpcore5-h2:5.3.4" />
+          <option value="org.eclipse.parsson:parsson:1.1.7" />
+          <option value="io.opentelemetry:opentelemetry-api:1.37.0" />
+          <option value="tools.jackson.core:jackson-databind:3.0.0" />
+        </list>
+      </option>
+      <option name="ignoredReasons">
+        <list>
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
