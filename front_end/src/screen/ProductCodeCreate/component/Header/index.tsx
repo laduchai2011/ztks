@@ -3,7 +3,7 @@ import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
-import { global_set__data__toast_message } from '@src/redux/slice/Global';
+import { global_set__data__toast_message, global_set__is_loading } from '@src/redux/slice/Global';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 // import { route_enum } from '@src/router/type';
 import { HiOutlineCube } from 'react-icons/hi';
@@ -39,6 +39,7 @@ const Header = () => {
 
     useEffect(() => {
         if (create_status === 'begin' && is_basic_info && is_detail_info && is_upload_images && is_upload_videos) {
+            dispatch(global_set__is_loading(true));
             const create_product_code_body: Create_Product_Code_Body_Field = {
                 name: name,
                 description: description,
@@ -76,6 +77,7 @@ const Header = () => {
                     );
                 })
                 .finally(() => {
+                    dispatch(global_set__is_loading(false));
                     dispatch(set__create_status('end'));
                 });
         }

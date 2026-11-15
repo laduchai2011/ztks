@@ -1,8 +1,15 @@
 package org.kafka_tks_erp.services.product;
 
+//import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.kafka_tks_erp.config.KafkaConsumerConfig;
-
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.kafka_tks_erp.dto.product.ProductCodeDTO;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import java.nio.charset.StandardCharsets;
 
 public class ProductConsumer implements Runnable {
 
@@ -32,16 +39,55 @@ public class ProductConsumer implements Runnable {
 
                 for (var record : records) {
 
+                    String event_type = new String(
+                            record.headers().lastHeader("event_type").value(),
+                            StandardCharsets.UTF_8
+                    );
+
                     System.out.println(
                             "Topic: " + record.topic()
+                                    + " " + event_type
                                     + " | Event: " + record.value()
                     );
 
                     // TODO: Gọi ProductEventHandler
                     // TODO: Gọi ProductCodeEventHandler
+
+                    switch (event_type) {
+                        case "product_code_created":
+                            String payload = record.value();
+
+                            ObjectMapper objectMapper = new ObjectMapper();
+
+                            objectMapper.setPropertyNamingStrategy(
+                                    PropertyNamingStrategies.SNAKE_CASE
+                            );
+                            // Hỗ trợ LocalDateTime, OffsetDateTime, Instant...
+                            objectMapper.registerModule(new JavaTimeModule());
+
+                            // Không chuyển ngày giờ thành timestamp dạng số
+                            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+                            try {
+                                ProductCodeDTO productCode = objectMapper.readValue(
+                                        payload,
+                                        ProductCodeDTO.class
+                                );
+
+                                ElasticProductCodeService elasticProductCodeService = new ElasticProductCodeService();
+                                elasticProductCodeService.create(productCode.id().toString(), productCode.accountId().toString(), productCode.name() + " " + productCode.description());
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            break;
+
+                        default:
+
+                            break;
+                    }
                 }
 
-                consumer.commitSync();
+//                consumer.commitSync();
             }
 
         } finally {

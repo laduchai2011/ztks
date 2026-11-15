@@ -2,7 +2,8 @@ package org.kafka_tks_erp;
 
 import org.kafka_tks_erp.config.PostgresqlConfig;
 import org.kafka_tks_erp.services.outbox.OutboxApplication;
-import org.kafka_tks_erp.services.product.ProductStreamApplication;
+import org.kafka_tks_erp.services.product.ProductConsumer;
+import org.kafka_tks_erp.services.product.ProductConsumer;
 
 public class Main {
 
@@ -17,10 +18,13 @@ public class Main {
 
 //        ProductStreamApplication productStream =
 //                new ProductStreamApplication();
+        ProductConsumer  productConsumer = new ProductConsumer();
 
         try {
 
             outbox.start();
+
+            productConsumer.run();
 
 //            productStream.start();
 

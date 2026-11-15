@@ -2,7 +2,7 @@ package org.kafka_tks_erp.services.outbox;
 
 import org.kafka_tks_erp.config.PostgresqlConfig;
 import org.kafka_tks_erp.dto.kafka.KafkaEventDTO;
-import org.kafka_tks_erp.utils.KafkaEventLogger;
+//import org.kafka_tks_erp.utils.KafkaEventLogger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -33,7 +33,7 @@ public class OutboxRepository {
 
         List<KafkaEventDTO> events = new ArrayList<>();
 
-        KafkaEventLogger.printEvents(events);
+//        KafkaEventLogger.printEvents(events);
 
         try (
                 Connection connection =
