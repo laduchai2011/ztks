@@ -81,4 +81,18 @@ const minio_config: my_interface['minio']['config'] = isProduct
           useSSL: false,
       };
 
-export { postgresql_config, redis_config, rabbitmq_config, mongo_config, minio_config };
+const elastic_config: my_interface['elastic']['config'] = isProduct
+    ? {
+          host: process.env.ELASTICSEARCH_HOST,
+          port: Number(process.env.ELASTICSEARCH_PORT),
+          username: process.env.ELASTICSEARCH_USERNAME,
+          password: process.env.ELASTICSEARCH_PASSWORD,
+      }
+    : {
+          host: '103.38.236.182',
+          port: 9200,
+          username: 'elastic',
+          password: 'admin',
+      };
+
+export { postgresql_config, redis_config, rabbitmq_config, mongo_config, minio_config, elastic_config };

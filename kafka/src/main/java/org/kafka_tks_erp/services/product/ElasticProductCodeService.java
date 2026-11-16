@@ -6,13 +6,16 @@ import co.elastic.clients.elasticsearch.core.UpdateResponse;
 import co.elastic.clients.elasticsearch.core.DeleteResponse;
 
 import org.kafka_tks_erp.config.ElasticsearchConfig;
+import org.kafka_tks_erp.config.EnvironmentConfig;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ElasticProductCodeService {
 
-    private static final String INDEX = "product_code";
+    private static final String prefix = EnvironmentConfig.getEnv("PREFIX");
+
+    private static final String INDEX = "product_code" + "_" + prefix;
 
     private final ElasticsearchClient client;
 

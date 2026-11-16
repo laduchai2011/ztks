@@ -9,7 +9,13 @@ import { messageType_enum } from '@src/component/ToastMessage/type';
 import { HiOutlineCube } from 'react-icons/hi';
 import { CREATE_PRODUCT_CODE } from '@src/const/text';
 import { select_enum } from '@src/router/type';
-import { set__create_status } from '@src/redux/slice/Product_Code_Create';
+import {
+    set__create_status,
+    set__is_basic_info,
+    set__is_detail_info,
+    set__is_upload_images,
+    set__is_upload_videos,
+} from '@src/redux/slice/Product_Code_Create';
 import { Create_Product_Code_Body_Field } from '@src/data_struct/product/body';
 import { use_create_Product_Code_Mutation } from '@src/redux/query/product_RTK';
 
@@ -78,6 +84,10 @@ const Header = () => {
                 })
                 .finally(() => {
                     dispatch(global_set__is_loading(false));
+                    dispatch(set__is_basic_info(false));
+                    dispatch(set__is_detail_info(false));
+                    dispatch(set__is_upload_images(false));
+                    dispatch(set__is_upload_videos(false));
                     dispatch(set__create_status('end'));
                 });
         }

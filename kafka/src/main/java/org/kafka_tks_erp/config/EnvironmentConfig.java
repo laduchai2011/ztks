@@ -26,7 +26,7 @@ public class EnvironmentConfig {
         // Ưu tiên biến môi trường của hệ điều hành / Docker
         String value = System.getenv(key);
 
-        // Nếu không có thì lấy từ file .env
+        // Nếu không có thì lấy từ file cấu hình môi trường tương ứng
         if (value == null || value.isBlank()) {
             value = dotenv.get(key);
         }

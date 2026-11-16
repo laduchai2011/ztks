@@ -1,0 +1,68 @@
+DELETE /product_code_dev
+PUT product_code_dev
+{
+  "mappings": {
+    "properties": {
+      "account_id": {
+        "type": "keyword"
+      },
+      "search_content": {
+        "type": "text"
+      }
+    }
+  }
+}
+
+GET /_cat/indices/product_code_dev?v
+
+DELETE /product_code_dev/_search
+POST /product_code_dev/_search
+{
+  "from": 0,
+  "size": 20,
+  "track_total_hits": true,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "account_id": "{{account_id}}"
+          }
+        }
+      ],
+      "should": [
+        {
+          "term": {
+            "_id": {
+              "value": "{{search_content}}",
+              "boost": 100
+            }
+          }
+        },
+        {
+          "match": {
+            "search_content": {
+              "query": "{{search_content}}",
+              "operator": "and"
+            }
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  },
+  "sort": [
+        {
+            "_score": {
+            "order": "desc"
+            }
+        }
+    ]
+}
+
+GET /product_code_dev/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}

@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import REDIS_Server from './redis';
 import { serviceRedlock } from './redlock';
 import { RabbitMQ } from '@src/connect/rabbitMQ';
+import elasticClient from '@src/connect/elastic';
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ const shutdown = async (signal: string) => {
 
         await redis_server.close(); // hoặc disconnect() nếu dùng ioredis
         await rabbit_server.close();
+        await elasticClient.cluster.health();
         console.log('Redis closed. Exiting now.');
     } catch (err) {
         console.error('Error during shutdown:', err);

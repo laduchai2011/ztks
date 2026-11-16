@@ -37,6 +37,10 @@
 // }
 
 import { Create_Order_V1_Inventory_Reservation_Body_Field } from '../order_v1/body';
+// import { getEnv } from '@src/mode';
+// import { myEnv } from '@src/mode/type';
+
+// const prefix = getEnv() === myEnv.Dev ? 'dev' : '';
 
 export enum Kafka_Event_Topic_Enum {
     ORDER_EVENTS = 'order_events',

@@ -8,6 +8,10 @@ import {
     Kafka_Event_Aggregate_Type_Enum,
 } from '@src/data_struct/kafka';
 import { Create_Kafka_Event_Body_Field } from '@src/data_struct/kafka/body';
+import { getEnv } from '@src/mode';
+import { myEnv } from '@src/mode/type';
+
+const prefix = getEnv() === myEnv.Dev ? '_dev' : '';
 
 class MutateDB_Create_Product_Code {
     private _create_product_code_body: Create_Product_Code_Body_Field | undefined;
@@ -55,7 +59,7 @@ class MutateDB_Create_Product_Code {
                             create_kafka_event_body.aggregate_id,
                             create_kafka_event_body.aggregate_type,
                             create_kafka_event_body.event_type,
-                            create_kafka_event_body.topic,
+                            create_kafka_event_body.topic + prefix,
                             create_kafka_event_body.payload,
                         ]
                     );

@@ -4,6 +4,7 @@ package org.kafka_tks_erp.services.product;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.kafka_tks_erp.config.EnvironmentConfig;
 import org.kafka_tks_erp.config.KafkaConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.kafka_tks_erp.dto.product.ProductCodeDTO;
@@ -13,9 +14,11 @@ import java.nio.charset.StandardCharsets;
 
 public class ProductConsumer implements Runnable {
 
-    private static final String TOPIC = "product_events";
+    private static final String prefix = EnvironmentConfig.getEnv("PREFIX");
 
-    private static final String GROUP_ID = "ztks-product";
+    private static final String TOPIC = "product_events" + "_" + prefix;
+
+    private static final String GROUP_ID = "ztks-product" + "_" + prefix;
 
     @Override
     public void run() {
@@ -25,11 +28,10 @@ public class ProductConsumer implements Runnable {
                         KafkaConsumerConfig.createProperties(GROUP_ID)
                 );
 
-        consumer.subscribe(
-                java.util.Collections.singletonList(TOPIC)
-        );
-
-        try {
+        try (consumer) {
+            consumer.subscribe(
+                    java.util.Collections.singletonList(TOPIC)
+            );
 
             while (!Thread.currentThread().isInterrupted()) {
 
@@ -44,54 +46,46 @@ public class ProductConsumer implements Runnable {
                             StandardCharsets.UTF_8
                     );
 
-                    System.out.println(
-                            "Topic: " + record.topic()
-                                    + " " + event_type
-                                    + " | Event: " + record.value()
-                    );
+//                    System.out.println(
+//                            "Topic: " + record.topic()
+//                                    + " " + event_type
+//                                    + " | Event: " + record.value()
+//                    );
 
                     // TODO: Gọi ProductEventHandler
                     // TODO: Gọi ProductCodeEventHandler
 
-                    switch (event_type) {
-                        case "product_code_created":
-                            String payload = record.value();
+                    if (event_type.equals("product_code_created")) {
+                        String payload = record.value();
 
-                            ObjectMapper objectMapper = new ObjectMapper();
+                        ObjectMapper objectMapper = new ObjectMapper();
 
-                            objectMapper.setPropertyNamingStrategy(
-                                    PropertyNamingStrategies.SNAKE_CASE
+                        objectMapper.setPropertyNamingStrategy(
+                                PropertyNamingStrategies.SNAKE_CASE
+                        );
+                        // Hỗ trợ LocalDateTime, OffsetDateTime, Instant...
+                        objectMapper.registerModule(new JavaTimeModule());
+
+                        // Không chuyển ngày giờ thành timestamp dạng số
+                        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+                        try {
+                            ProductCodeDTO productCode = objectMapper.readValue(
+                                    payload,
+                                    ProductCodeDTO.class
                             );
-                            // Hỗ trợ LocalDateTime, OffsetDateTime, Instant...
-                            objectMapper.registerModule(new JavaTimeModule());
 
-                            // Không chuyển ngày giờ thành timestamp dạng số
-                            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-                            try {
-                                ProductCodeDTO productCode = objectMapper.readValue(
-                                        payload,
-                                        ProductCodeDTO.class
-                                );
-
-                                ElasticProductCodeService elasticProductCodeService = new ElasticProductCodeService();
-                                elasticProductCodeService.create(productCode.id().toString(), productCode.accountId().toString(), productCode.name() + " " + productCode.description());
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                            break;
-
-                        default:
-
-                            break;
+                            ElasticProductCodeService elasticProductCodeService = new ElasticProductCodeService();
+                            elasticProductCodeService.create(productCode.id().toString(), productCode.accountId().toString(), productCode.name() + " " + productCode.description());
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
 
 //                consumer.commitSync();
             }
 
-        } finally {
-            consumer.close();
         }
     }
 }
