@@ -1,18 +1,17 @@
 import express, { Router } from 'express';
 import dotenv from 'dotenv';
-import authentication from '@src/auth';
-// import Handle_Create_Product_Code from './handle/Create_Product_Code';
+// import authentication from '@src/auth';
+import Handle_Product_Code_Search from './handle/Product_Code_Search';
+import Handle_Get_Product_Code_By_Id from './handle/Get_Product_Code_By_Id';
 
 dotenv.config();
 
 const router_query_product: Router = express.Router();
-// const handle_create_product_code = new Handle_Create_Product_Code();
+const handle_product_code_search = new Handle_Product_Code_Search();
+const handle_get_product_code_by_id = new Handle_Get_Product_Code_By_Id();
 
-// router_mutate_product.post(
-//     '/create_product_code',
-//     authentication,
-//     handle_create_product_code.setup,
-//     handle_create_product_code.main
-// );
+router_query_product.post('/product_code_search', handle_product_code_search.main);
+
+router_query_product.post('/get_product_code_by_id', handle_get_product_code_by_id.main);
 
 export default router_query_product;

@@ -2,7 +2,7 @@ import { Client } from '@elastic/elasticsearch';
 import { elastic_config } from '@src/config';
 
 const elasticClient = new Client({
-    node: `https://${elastic_config?.host}:${elastic_config?.port}`,
+    node: `http://${elastic_config?.host}:${elastic_config?.port}`,
 
     auth: {
         username: process.env.ELASTICSEARCH_USERNAME || 'elastic',

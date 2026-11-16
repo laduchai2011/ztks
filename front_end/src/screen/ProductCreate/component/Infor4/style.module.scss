@@ -92,19 +92,19 @@
                         box-sizing: border-box;
                     }
 
-                    > div:nth-child(2) {
-                        @include center-of-rectangle;
+                    // > div:nth-child(2) {
+                    //     @include center-of-rectangle;
 
-                        > div {
-                            color: blue;
-                            cursor: pointer;
-                            user-select: none;
+                    //     > div {
+                    //         color: blue;
+                    //         cursor: pointer;
+                    //         user-select: none;
 
-                            &:hover {
-                                text-decoration: underline;
-                            }
-                        }
-                    }
+                    //         &:hover {
+                    //             text-decoration: underline;
+                    //         }
+                    //     }
+                    // }
                 }
             }
 

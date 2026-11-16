@@ -31,3 +31,14 @@ export interface Edit_Product_Body_Field {
     images: Image_Field[];
     videos: Video_Field[];
 }
+
+export interface Product_Code_Search_Body_Field {
+    from: number;
+    size: number;
+    search_content: string;
+    account_id: string;
+}
+
+export interface Get_Product_Code_By_Id_Body_Field {
+    id: string;
+}

@@ -20,6 +20,23 @@ export interface Product_Code_Field {
     create_time: string;
 }
 
+export interface Product_Code_Hit_Field {
+    total: {
+        value: number;
+        relation: string;
+    };
+    max_score: number;
+    hits: {
+        _index: string;
+        _id: string;
+        _score: number;
+        _source: {
+            account_id: string;
+            search_content: string;
+        };
+    }[];
+}
+
 export interface Product_Field {
     id: string;
     name: string;
