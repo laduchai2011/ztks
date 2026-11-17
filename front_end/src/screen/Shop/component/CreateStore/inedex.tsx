@@ -176,7 +176,7 @@ const CreateStoreDialog = () => {
                                 <input
                                     value={create_store.name}
                                     onChange={(e) => handle_Create_Store('name', e)}
-                                    placeholder="Tên của hàng"
+                                    placeholder="Tên gian hàng"
                                     maxLength={50}
                                 />
                             </div>

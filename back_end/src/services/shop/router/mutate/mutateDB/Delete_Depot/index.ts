@@ -27,21 +27,21 @@ class MutateDB_Delete_Depot {
             try {
                 await client.query('BEGIN');
 
-                const result = await pool.query<Depot_Field>('SELECT * FROM delete_depot($1::UUID, $2::UUID)', [
+                const result = await client.query<Depot_Field>('SELECT * FROM delete_depot($1::UUID, $2::UUID)', [
                     this._delete_depot_body.id,
                     this._delete_depot_body.account_id,
                 ]);
 
                 if (result.rows.length === 0) {
                     await client.query('ROLLBACK');
-                    throw new Error('CREATE_ORDER_FAILED');
+                    throw new Error('DELETE_DEPOT_FAILED');
                 } else {
                     const depot = result.rows[0];
 
                     const create_kafka_event_body: Create_Kafka_Event_Body_Field<Depot_Field> = {
                         aggregate_id: depot.id,
                         aggregate_type: Kafka_Event_Aggregate_Type_Enum.SHOP,
-                        event_type: Kafka_Event_Event_Type_Enum.DEPOT_CREATE,
+                        event_type: Kafka_Event_Event_Type_Enum.DEPOT_DELETED,
                         topic: Kafka_Event_Topic_Enum.SHOP_EVENTS,
                         payload: depot,
                     };
@@ -72,7 +72,7 @@ class MutateDB_Delete_Depot {
                     console.error('Rollback error:', rollbackError);
                 }
 
-                console.error('Create_Depot error:', error);
+                console.error('Delete_Depot error:', error);
                 throw error;
             } finally {
                 client.release();

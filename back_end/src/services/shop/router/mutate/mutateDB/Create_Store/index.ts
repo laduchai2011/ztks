@@ -27,7 +27,7 @@ class MutateDB_Create_Store {
             try {
                 await client.query('BEGIN');
 
-                const result = await pool.query<Store_Field>(
+                const result = await client.query<Store_Field>(
                     'SELECT * FROM create_store($1, $2, $3, $4::UUID, $5::UUID)',
                     [
                         this._create_store_body.name,
@@ -40,14 +40,14 @@ class MutateDB_Create_Store {
 
                 if (result.rows.length === 0) {
                     await client.query('ROLLBACK');
-                    throw new Error('CREATE_ORDER_FAILED');
+                    throw new Error('CREATE_STORE_FAILED');
                 } else {
                     const store = result.rows[0];
 
                     const create_kafka_event_body: Create_Kafka_Event_Body_Field<Store_Field> = {
                         aggregate_id: store.id,
                         aggregate_type: Kafka_Event_Aggregate_Type_Enum.SHOP,
-                        event_type: Kafka_Event_Event_Type_Enum.STORE_CREATE,
+                        event_type: Kafka_Event_Event_Type_Enum.STORE_CREATED,
                         topic: Kafka_Event_Topic_Enum.SHOP_EVENTS,
                         payload: store,
                     };

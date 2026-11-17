@@ -183,7 +183,7 @@ const CreateDepotDialog = () => {
                                 <input
                                     value={create_depot.name}
                                     onChange={(e) => handle_Create_Depot('name', e)}
-                                    placeholder="Tên của hàng"
+                                    placeholder="Tên kho"
                                     maxLength={50}
                                 />
                             </div>

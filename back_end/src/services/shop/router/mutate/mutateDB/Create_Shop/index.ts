@@ -41,14 +41,14 @@ class MutateDB_Create_Shop {
 
                 if (result.rows.length === 0) {
                     await client.query('ROLLBACK');
-                    throw new Error('CREATE_ORDER_FAILED');
+                    throw new Error('CREATE_SHOP_FAILED');
                 } else {
                     const shop = result.rows[0];
 
                     const create_kafka_event_body: Create_Kafka_Event_Body_Field<Shop_Field> = {
                         aggregate_id: shop.id,
                         aggregate_type: Kafka_Event_Aggregate_Type_Enum.SHOP,
-                        event_type: Kafka_Event_Event_Type_Enum.SHOP_CREATE,
+                        event_type: Kafka_Event_Event_Type_Enum.SHOP_CREATED,
                         topic: Kafka_Event_Topic_Enum.SHOP_EVENTS,
                         payload: shop,
                     };

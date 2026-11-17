@@ -1,0 +1,117 @@
+DELETE /depot_dev
+PUT depot_dev
+{
+  "mappings": {
+    "properties": {
+      "shop_id": {
+        "type": "keyword"
+      },
+      "search_content": {
+        "type": "text"
+      }
+    }
+  }
+}
+
+GET /_cat/indices/depot_dev?v
+
+DELETE /depot_dev/_search
+POST /depot_dev/_search
+{
+  "from": 0,
+  "size": 20,
+  "track_total_hits": true,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "shop_id": "{{shop_id}}"
+          }
+        }
+      ],
+      "should": [
+        {
+          "term": {
+            "_id": {
+              "value": "{{search_content}}",
+              "boost": 100
+            }
+          }
+        },
+        {
+          "match": {
+            "search_content": {
+              "query": "{{search_content}}",
+              "operator": "and"
+            }
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  },
+  "sort": [
+        {
+            "_score": {
+            "order": "desc"
+            }
+        }
+    ]
+}
+
+PUT _scripts/depot_dev_search
+{
+  "script": {
+    "lang": "mustache",
+    "source": {
+      "from": 0,
+      "size": 20,
+      "track_total_hits": true,
+      "query": {
+        "bool": {
+          "filter": [
+            {
+              "term": {
+                "shop_id": "{{shop_id}}"
+              }
+            }
+          ],
+          "should": [
+            {
+              "term": {
+                "_id": {
+                  "value": "{{search_content}}",
+                  "boost": 100
+                }
+              }
+            },
+            {
+              "match": {
+                "search_content": {
+                  "query": "{{search_content}}",
+                  "operator": "and"
+                }
+              }
+            }
+          ],
+          "minimum_should_match": 1
+        }
+      },
+      "sort": [
+        {
+          "_score": {
+            "order": "desc"
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET /depot_dev/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}

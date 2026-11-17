@@ -139,14 +139,28 @@
             border: 1px solid rgb(226, 226, 226);
             border-radius: 8px;
             width: 500px;
+            @include center-of-row;
+            justify-content: space-between;
             @include responsive(sm) {
                 width: 100%;
             }
 
             > select {
-                width: 100%;
+                flex: 1;
                 border: none;
                 outline: none;
+            }
+
+            > div {
+                width: max-content;
+                font-size: 0.9rem;
+                cursor: pointer;
+                user-select: none;
+                color: blue;
+
+                &:hover {
+                    text-decoration: underline;
+                }
             }
         }
     }
