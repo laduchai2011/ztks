@@ -1,5 +1,6 @@
 package org.kafka_tks_erp.dto.product;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -18,3 +19,4 @@ public record ProductCodeDTO(
         OffsetDateTime updateTime
 ) {
 }
+

@@ -45,27 +45,41 @@ import { Create_Order_V1_Inventory_Reservation_Body_Field } from '../order_v1/bo
 export enum Kafka_Event_Topic_Enum {
     ORDER_EVENTS = 'order_events',
     PRODUCT_EVENTS = 'product_events',
+    SHOP_EVENTS = 'shop_events',
 }
 
-export type Kafka_Event_Topic_Type = Kafka_Event_Topic_Enum.ORDER_EVENTS | Kafka_Event_Topic_Enum.PRODUCT_EVENTS;
+export type Kafka_Event_Topic_Type =
+    | Kafka_Event_Topic_Enum.ORDER_EVENTS
+    | Kafka_Event_Topic_Enum.PRODUCT_EVENTS
+    | Kafka_Event_Topic_Enum.SHOP_EVENTS;
 
 export enum Kafka_Event_Aggregate_Type_Enum {
     ORDER_V1 = 'order_v1',
     PRODUCT = 'product',
+    SHOP = 'shop',
 }
 
 export type Kafka_Event_Aggregate_Type_Type =
     | Kafka_Event_Aggregate_Type_Enum.ORDER_V1
-    | Kafka_Event_Aggregate_Type_Enum.PRODUCT;
+    | Kafka_Event_Aggregate_Type_Enum.PRODUCT
+    | Kafka_Event_Aggregate_Type_Enum.SHOP;
 
 export enum Kafka_Event_Event_Type_Enum {
     ORDER_V1_CREATED = 'order_v1_created',
     PRODUCT_CODE_CREATED = 'product_code_created',
+    PRODUCT_CREATED = 'product_created',
+    SHOP_CREATE = 'shop_create',
+    DEPOT_CREATE = 'depot_create',
+    STORE_CREATE = 'store_create',
 }
 
 export type Kafka_Event_Event_Type_Type =
     | Kafka_Event_Event_Type_Enum.ORDER_V1_CREATED
-    | Kafka_Event_Event_Type_Enum.PRODUCT_CODE_CREATED;
+    | Kafka_Event_Event_Type_Enum.PRODUCT_CODE_CREATED
+    | Kafka_Event_Event_Type_Enum.PRODUCT_CREATED
+    | Kafka_Event_Event_Type_Enum.SHOP_CREATE
+    | Kafka_Event_Event_Type_Enum.DEPOT_CREATE
+    | Kafka_Event_Event_Type_Enum.STORE_CREATE;
 
 export enum Kafka_Event_Status_Enum {
     PENDING = 'pending',

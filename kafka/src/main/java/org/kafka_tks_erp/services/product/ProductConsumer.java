@@ -8,7 +8,9 @@ import org.kafka_tks_erp.config.EnvironmentConfig;
 import org.kafka_tks_erp.config.KafkaConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.kafka_tks_erp.dto.product.ProductCodeDTO;
+import org.kafka_tks_erp.dto.product.ProductDTO;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.kafka_tks_erp.services.kafka.ProcessedKafkaEventService;
 
 import java.nio.charset.StandardCharsets;
 
@@ -16,9 +18,12 @@ public class ProductConsumer implements Runnable {
 
     private static final String prefix = EnvironmentConfig.getEnv("PREFIX");
 
-    private static final String TOPIC = "product_events" + "_" + prefix;
+    private static final String TOPIC = "product_events" + prefix;
 
-    private static final String GROUP_ID = "ztks-product" + "_" + prefix;
+    private static final String GROUP_ID = "ztks-product" + prefix;
+
+    private final ProcessedKafkaEventService processedEventService =
+            new ProcessedKafkaEventService();
 
     @Override
     public void run() {
@@ -40,6 +45,11 @@ public class ProductConsumer implements Runnable {
                 );
 
                 for (var record : records) {
+
+                    String event_id = new String(
+                            record.headers().lastHeader("event_id").value(),
+                            StandardCharsets.UTF_8
+                    );
 
                     String event_type = new String(
                             record.headers().lastHeader("event_type").value(),
@@ -77,7 +87,58 @@ public class ProductConsumer implements Runnable {
 
                             ElasticProductCodeService elasticProductCodeService = new ElasticProductCodeService();
                             elasticProductCodeService.create(productCode.id().toString(), productCode.accountId().toString(), productCode.name() + " " + productCode.description());
+
+                            boolean registered = processedEventService.register(
+                                    GROUP_ID,
+                                    event_id,
+                                    event_type,
+                                    record.topic()
+                            );
+
+                            if (!registered) {
+                                System.out.println("Event already registered: " + event_id);
+                            }
+
+                            consumer.commitSync();
                         } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else if (event_type.equals("product_created")) {
+                        String payload = record.value();
+
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        objectMapper.setPropertyNamingStrategy(
+                                PropertyNamingStrategies.SNAKE_CASE
+                        );
+                        // Hỗ trợ LocalDateTime, OffsetDateTime, Instant...
+                        objectMapper.registerModule(new JavaTimeModule());
+
+                        // Không chuyển ngày giờ thành timestamp dạng số
+                        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+                        try {
+                            ProductDTO product = objectMapper.readValue(
+                                    payload,
+                                    ProductDTO.class
+                            );
+
+                            ElasticProductService elasticProductService = new ElasticProductService();
+                            elasticProductService.create(product.id().toString(), product.accountId().toString(), product.name() + " " + product.description());
+
+                            boolean registered = processedEventService.register(
+                                    GROUP_ID,
+                                    event_id,
+                                    event_type,
+                                    record.topic()
+                            );
+
+                            if (!registered) {
+                                System.out.println("Event already registered: " + event_id);
+                            }
+
+                            consumer.commitSync();
+                        }catch (Exception e) {
                             throw new RuntimeException(e);
                         }
                     }

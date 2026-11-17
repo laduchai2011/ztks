@@ -1,15 +1,15 @@
-import { memo, useRef, useState } from 'react';
+import { memo, useRef, useState, useEffect } from 'react';
 import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { global_set__data__toast_message } from '@src/redux/slice/Global';
-import { CiSearch } from 'react-icons/ci';
 import { route_enum } from '@src/router/type';
-import { SEE_MORE } from '@src/const/text';
+import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6';
 import OneProductCode from './component/OneProductCode';
 import { useLazy_product_Code_Search_Query } from '@src/redux/query/product_RTK';
 import { Account_Information_Field } from '@src/data_struct/account';
+import { Product_Code_Field } from '@src/data_struct/product';
 
 const Infor4 = () => {
     const navigate = useNavigate();
@@ -20,8 +20,16 @@ const Infor4 = () => {
     );
 
     const [product_code_id, set__product_code_id] = useState<string[]>([]);
+    const [selected_product_code, set__selected_product_code] = useState<Product_Code_Field | null>(null);
+    const [search_text, set__search_text] = useState<string>('');
 
     const [product_Code_Search] = useLazy_product_Code_Search_Query();
+
+    useEffect(() => {
+        document.addEventListener('click', () => {
+            set__product_code_id([]);
+        });
+    }, []);
 
     const handle_Selected_Product_Code = () => {};
 
@@ -29,12 +37,23 @@ const Infor4 = () => {
         navigate(route_enum.CREATE_PRODUCT_CODE);
     };
 
-    const timeout = useRef<any>(null);
     const handle_Product_Code_Search = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value.trim();
+        const value = e.target.value;
         // Call the API to search for product codes
 
-        if (value.length === 0) return;
+        set__search_text(value);
+        set__selected_product_code(null);
+    };
+
+    useEffect(() => {
+        if (!selected_product_code) return;
+        set__search_text(selected_product_code.name);
+    }, [selected_product_code]);
+
+    const timeout = useRef<any>(null);
+    useEffect(() => {
+        if (search_text.trim().length === 0) return;
+        if (selected_product_code) return;
 
         clearTimeout(timeout.current);
         timeout.current = setTimeout(() => {
@@ -42,7 +61,7 @@ const Infor4 = () => {
             product_Code_Search({
                 from: 0,
                 size: 20,
-                search_content: value,
+                search_content: search_text,
                 account_id: account_information.added_by_id || '', // Replace with actual account ID
             })
                 .then((res) => {
@@ -61,10 +80,10 @@ const Infor4 = () => {
                     console.error(err);
                 });
         }, 1000);
-    };
+    }, [search_text, account_information, product_Code_Search, selected_product_code]);
 
     const list_product_code = product_code_id.map((item, index) => {
-        return <OneProductCode key={index} id={item} />;
+        return <OneProductCode key={index} id={item} set__selected_product_code={set__selected_product_code} />;
     });
 
     return (
@@ -80,17 +99,20 @@ const Infor4 = () => {
                 <div>
                     <div>
                         <div>
-                            <input onChange={(e) => handle_Product_Code_Search(e)} placeholder="Tìm kiếm mã sản phẩm" />
+                            <input
+                                value={search_text}
+                                onChange={(e) => handle_Product_Code_Search(e)}
+                                placeholder="Tìm kiếm mã sản phẩm"
+                            />
                             <div>
-                                <CiSearch size={20} />
+                                <FaRegEye size={20} />
                             </div>
                         </div>
-                        <div>
-                            <div>{list_product_code}</div>
-                            {/* <div>
-                                <div>{SEE_MORE}</div>
-                            </div> */}
-                        </div>
+                        {product_code_id.length > 0 && (
+                            <div>
+                                <div>{list_product_code}</div>
+                            </div>
+                        )}
                     </div>
                     <div>
                         <span onClick={handle_Go_To_Create_Product_Code}>Tạo mã</span>

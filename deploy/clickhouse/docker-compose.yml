@@ -1,0 +1,34 @@
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse_container
+    hostname: clickhouse
+    restart: unless-stopped
+
+    environment:
+      CLICKHOUSE_DB: ${CLICKHOUSE_DB}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+
+    ports:
+      - "8123:8123" # Web UI + Node.js HTTP
+
+    expose:
+      - "9000" # Native TCP cho các container nội bộ
+
+    volumes:
+      - ${CLICKHOUSE_DATA_PATH}:/var/lib/clickhouse
+      - ${CLICKHOUSE_LOG_PATH}:/var/log/clickhouse-server
+
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+
+    networks:
+      - network_ztks
+
+networks:
+  network_ztks:
+    external: true

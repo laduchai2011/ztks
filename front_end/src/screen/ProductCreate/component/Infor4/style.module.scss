@@ -86,25 +86,6 @@
                     max-height: 500px;
                     overflow-y: auto;
                     @include small-scroll-yy(1px);
-
-                    > div:nth-child(1) {
-                        padding: 5px;
-                        box-sizing: border-box;
-                    }
-
-                    // > div:nth-child(2) {
-                    //     @include center-of-rectangle;
-
-                    //     > div {
-                    //         color: blue;
-                    //         cursor: pointer;
-                    //         user-select: none;
-
-                    //         &:hover {
-                    //             text-decoration: underline;
-                    //         }
-                    //     }
-                    // }
                 }
             }
 

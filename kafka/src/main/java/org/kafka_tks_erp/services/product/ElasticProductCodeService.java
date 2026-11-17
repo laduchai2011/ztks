@@ -15,7 +15,7 @@ public class ElasticProductCodeService {
 
     private static final String prefix = EnvironmentConfig.getEnv("PREFIX");
 
-    private static final String INDEX = "product_code" + "_" + prefix;
+    private static final String INDEX = "product_code" + prefix;
 
     private final ElasticsearchClient client;
 
