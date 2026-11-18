@@ -3,15 +3,17 @@ import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
-import { global_set__data__toast_message } from '@src/redux/slice/Global';
+// import { global_set__data__toast_message } from '@src/redux/slice/Global';
 import { route_enum } from '@src/router/type';
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6';
 import OneProductCode from './component/OneProductCode';
+import OneStore from './component/OneStore';
 import { useLazy_product_Code_Search_Query } from '@src/redux/query/product_RTK';
+import { useLazy_store_Search_Query } from '@src/redux/query/shop_RTK';
 import { useLazy_get_My_Shops_Query, useLazy_get_My_Depots_Query } from '@src/redux/query/shop_RTK';
 import { Account_Information_Field } from '@src/data_struct/account';
 import { Product_Code_Field } from '@src/data_struct/product';
-import { Shop_Field, Depot_Field } from '@src/data_struct/shop';
+import { Shop_Field, Depot_Field, Store_Field } from '@src/data_struct/shop';
 import { SEE_MORE } from '@src/const/text';
 
 const Infor4 = () => {
@@ -22,17 +24,23 @@ const Infor4 = () => {
         (state: RootState) => state.App_Slice.account_information
     );
 
-    const [product_code_id, set__product_code_id] = useState<string[]>([]);
+    const [product_code_ids, set__product_code_ids] = useState<string[]>([]);
     const [selected_product_code, set__selected_product_code] = useState<Product_Code_Field | null>(null);
-    const [search_text, set__search_text] = useState<string>('');
+    const [search_text_product_code, set__search_text_product_code] = useState<string>('');
+
+    const [store_ids, set__store_ids] = useState<string[]>([]);
+    const [selected_store, set__selected_store] = useState<Store_Field | null>(null);
+    const [search_text_store, set__search_text_store] = useState<string>('');
 
     const [product_Code_Search] = useLazy_product_Code_Search_Query();
+    const [store_Search] = useLazy_store_Search_Query();
     const [get_My_Shops] = useLazy_get_My_Shops_Query();
     const [get_My_Depots] = useLazy_get_My_Depots_Query();
 
     useEffect(() => {
         document.addEventListener('click', () => {
-            set__product_code_id([]);
+            set__product_code_ids([]);
+            set__store_ids([]);
         });
     }, []);
 
@@ -44,27 +52,34 @@ const Infor4 = () => {
         const value = e.target.value;
         // Call the API to search for product codes
 
-        set__search_text(value);
+        set__search_text_product_code(value);
         set__selected_product_code(null);
+    };
+
+    const handle_Store_Search = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        // Call the API to search for product codes
+
+        set__search_text_store(value);
+        set__selected_store(null);
     };
 
     useEffect(() => {
         if (!selected_product_code) return;
-        set__search_text(selected_product_code.name);
+        set__search_text_product_code(selected_product_code.name);
     }, [selected_product_code]);
-
-    const timeout = useRef<any>(null);
+    const timeout_search_product_code = useRef<any>(null);
     useEffect(() => {
-        if (search_text.trim().length === 0) return;
+        if (search_text_product_code.trim().length === 0) return;
         if (selected_product_code) return;
 
-        clearTimeout(timeout.current);
-        timeout.current = setTimeout(() => {
+        clearTimeout(timeout_search_product_code.current);
+        timeout_search_product_code.current = setTimeout(() => {
             if (!account_information) return;
             product_Code_Search({
                 from: 0,
                 size: 20,
-                search_content: search_text,
+                search_content: search_text_product_code,
                 account_id: account_information.added_by_id || '', // Replace with actual account ID
             })
                 .then((res) => {
@@ -74,16 +89,16 @@ const Infor4 = () => {
                         for (let i: number = 0; i < res_data.data.hits.length; i++) {
                             id_array.push(res_data.data.hits[i]._id);
                         }
-                        set__product_code_id(id_array);
+                        set__product_code_ids(id_array);
                     } else {
-                        set__product_code_id([]);
+                        set__product_code_ids([]);
                     }
                 })
                 .catch((err) => {
                     console.error(err);
                 });
         }, 1000);
-    }, [search_text, account_information, product_Code_Search, selected_product_code]);
+    }, [search_text_product_code, account_information, product_Code_Search, selected_product_code]);
 
     const [shop_list, set__shop_list] = useState<Shop_Field[]>([]);
     const [selected_shop, set__selected_shop] = useState<Shop_Field | undefined>(undefined);
@@ -156,7 +171,43 @@ const Infor4 = () => {
         set__selected_depot(depot);
     };
 
-    const list_product_code = product_code_id.map((item, index) => {
+    useEffect(() => {
+        if (!selected_store) return;
+        set__search_text_store(selected_store.name);
+    }, [selected_store]);
+    const timeout_search_store = useRef<any>(null);
+    useEffect(() => {
+        if (search_text_store.trim().length === 0) return;
+        if (selected_store) return;
+
+        clearTimeout(timeout_search_store.current);
+        timeout_search_store.current = setTimeout(() => {
+            if (!selected_depot) return;
+            store_Search({
+                from: 0,
+                size: 20,
+                search_content: search_text_store,
+                depot_id: selected_depot.id,
+            })
+                .then((res) => {
+                    const res_data = res.data;
+                    if (res_data?.is_success && res_data.data) {
+                        const id_array: string[] = [];
+                        for (let i: number = 0; i < res_data.data.hits.length; i++) {
+                            id_array.push(res_data.data.hits[i]._id);
+                        }
+                        set__store_ids(id_array);
+                    } else {
+                        set__store_ids([]);
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        }, 1000);
+    }, [search_text_store, selected_depot, store_Search, selected_store]);
+
+    const list_product_code = product_code_ids.map((item, index) => {
         return <OneProductCode key={index} id={item} set__selected_product_code={set__selected_product_code} />;
     });
 
@@ -176,6 +227,10 @@ const Infor4 = () => {
         );
     });
 
+    const list_store = store_ids.map((item, index) => {
+        return <OneStore key={index} id={item} set__selected_store={set__selected_store} />;
+    });
+
     return (
         <div className={style.parent}>
             <div className={style.header}>
@@ -190,7 +245,7 @@ const Infor4 = () => {
                     <div>
                         <div>
                             <input
-                                value={search_text}
+                                value={search_text_product_code}
                                 onChange={(e) => handle_Product_Code_Search(e)}
                                 placeholder="Tìm kiếm mã sản phẩm"
                             />
@@ -198,7 +253,7 @@ const Infor4 = () => {
                                 <FaRegEye size={20} />
                             </div>
                         </div>
-                        {product_code_id.length > 0 && (
+                        {product_code_ids.length > 0 && (
                             <div>
                                 <div>{list_product_code}</div>
                             </div>
@@ -246,11 +301,23 @@ const Infor4 = () => {
                     Gian hàng <span>*</span>
                 </div>
                 <div>
-                    <select value={'Chọn gian hàng'} id="product_code">
-                        <option>Chọn gian hàng</option>
-                        <option>Gian hàng 1</option>
-                        <option>Gian hàng 2</option>
-                    </select>
+                    <div>
+                        <div>
+                            <input
+                                value={search_text_store}
+                                onChange={(e) => handle_Store_Search(e)}
+                                placeholder="Tìm kiếm gian hàng"
+                            />
+                            <div>
+                                <FaRegEye size={20} />
+                            </div>
+                        </div>
+                        {store_ids.length > 0 && (
+                            <div>
+                                <div>{list_store}</div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

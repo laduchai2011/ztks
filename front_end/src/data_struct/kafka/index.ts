@@ -68,24 +68,30 @@ export enum Kafka_Event_Event_Type_Enum {
     ORDER_V1_CREATED = 'order_v1_created',
     PRODUCT_CODE_CREATED = 'product_code_created',
     PRODUCT_CREATED = 'product_created',
-    SHOP_CREATE = 'shop_create',
-    DEPOT_CREATE = 'depot_create',
-    STORE_CREATE = 'store_create',
-    SHOP_EDIT = 'shop_edit',
-    DEPOT_EDIT = 'depot_edit',
-    STORE_EDIT = 'store_edit',
+    SHOP_CREATED = 'shop_created',
+    DEPOT_CREATED = 'depot_created',
+    STORE_CREATED = 'store_created',
+    SHOP_EDITED = 'shop_edited',
+    DEPOT_EDITED = 'depot_edited',
+    STORE_EDITED = 'store_edited',
+    SHOP_DELETED = 'shop_deleted',
+    DEPOT_DELETED = 'depot_deleted',
+    STORE_DELETED = 'store_deleted',
 }
 
 export type Kafka_Event_Event_Type_Type =
     | Kafka_Event_Event_Type_Enum.ORDER_V1_CREATED
     | Kafka_Event_Event_Type_Enum.PRODUCT_CODE_CREATED
     | Kafka_Event_Event_Type_Enum.PRODUCT_CREATED
-    | Kafka_Event_Event_Type_Enum.SHOP_CREATE
-    | Kafka_Event_Event_Type_Enum.DEPOT_CREATE
-    | Kafka_Event_Event_Type_Enum.STORE_CREATE
-    | Kafka_Event_Event_Type_Enum.SHOP_EDIT
-    | Kafka_Event_Event_Type_Enum.DEPOT_EDIT
-    | Kafka_Event_Event_Type_Enum.STORE_EDIT;
+    | Kafka_Event_Event_Type_Enum.SHOP_CREATED
+    | Kafka_Event_Event_Type_Enum.DEPOT_CREATED
+    | Kafka_Event_Event_Type_Enum.STORE_CREATED
+    | Kafka_Event_Event_Type_Enum.SHOP_EDITED
+    | Kafka_Event_Event_Type_Enum.DEPOT_EDITED
+    | Kafka_Event_Event_Type_Enum.STORE_EDITED
+    | Kafka_Event_Event_Type_Enum.SHOP_DELETED
+    | Kafka_Event_Event_Type_Enum.DEPOT_DELETED
+    | Kafka_Event_Event_Type_Enum.STORE_DELETED;
 
 export enum Kafka_Event_Status_Enum {
     PENDING = 'pending',

@@ -5,7 +5,7 @@ import { myEnv } from '@src/mode/type';
 
 const prefix = getEnv() === myEnv.Dev ? '_dev' : '';
 
-export async function QueryDB_Product_Code_Search(product_code_search_body: Product_Code_Search_Body_Field) {
+export async function QueryElastic_Product_Code_Search(product_code_search_body: Product_Code_Search_Body_Field) {
     return await elasticClient.searchTemplate({
         index: `product_code${prefix}`,
         id: `product_code${prefix}_search`,

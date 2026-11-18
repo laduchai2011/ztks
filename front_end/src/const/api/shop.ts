@@ -41,4 +41,5 @@ export const SHOP_API = {
     LOCK_TEAM_SHOP_DEPOT: `${BASE_URL}${apiString}/service__shop/mutate/lock_team_shop_depot`,
     ADD_TEAM_SHOP_DEPOT_STORE: `${BASE_URL}${apiString}/service__shop/mutate/add_team_shop_depot_store`,
     LOCK_TEAM_SHOP_DEPOT_STORE: `${BASE_URL}${apiString}/service__shop/mutate/lock_team_shop_depot_store`,
+    STORE_SEARCH: `${BASE_URL}${apiString}/service__shop/query/store_search`,
 };

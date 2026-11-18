@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { My_Response_Field } from '@src/data_struct/response';
 import { Product_Code_Hit_Field } from '@src/data_struct/product';
 import { Product_Code_Search_Body_Field } from '@src/data_struct/product/body';
-import { QueryDB_Product_Code_Search } from '../../queryDB/Product_Code_Search';
+import { QueryElastic_Product_Code_Search } from '../../queryElastic/Product_Code_Search';
 
 class Handle_Product_Code_Search {
     main = async (req: Request<any, any, Product_Code_Search_Body_Field>, res: Response) => {
@@ -17,7 +17,7 @@ class Handle_Product_Code_Search {
             return;
         }
 
-        const result = await QueryDB_Product_Code_Search(product_code_search_body);
+        const result = await QueryElastic_Product_Code_Search(product_code_search_body);
 
         try {
             if (result) {

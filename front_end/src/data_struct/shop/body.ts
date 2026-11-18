@@ -245,3 +245,10 @@ export interface Get_Team_Shop_Depot_Stores_Body_Field {
     limit: number;
     team_shop_depot_id: string;
 }
+
+export interface Store_Search_Body_Field {
+    from: number;
+    size: number;
+    search_content: string;
+    depot_id: string;
+}

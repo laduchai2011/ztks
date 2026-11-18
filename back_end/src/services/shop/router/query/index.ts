@@ -14,6 +14,7 @@ import Handle_Get_Latest_Shop_Pay_With_Shop_Id from './handle/Get_Latest_Shop_Pa
 import Handle_Get_Team_Shops from './handle/Get_Team_Shops';
 import Handle_Get_Team_Shop_Depots from './handle/Get_Team_Shop_Depots';
 import Handle_Get_Team_Shop_Depot_Stores from './handle/Get_Team_Shop_Depot_Stores';
+import Handle_Store_Search from './handle/Store_Search';
 
 dotenv.config();
 const router_query_shop: Router = express.Router();
@@ -32,6 +33,7 @@ const handle_get_latest_shop_pay_with_shop_id = new Handle_Get_Latest_Shop_Pay_W
 const handle_get_team_shops = new Handle_Get_Team_Shops();
 const handle_get_team_shop_depots = new Handle_Get_Team_Shop_Depots();
 const handle_get_team_shop_depot_stores = new Handle_Get_Team_Shop_Depot_Stores();
+const handle_store_search = new Handle_Store_Search();
 
 router_query_shop.post('/get_shop_by_id', handle_get_shop_by_id.main);
 
@@ -60,5 +62,7 @@ router_query_shop.post('/get_team_shops', handle_get_team_shops.main);
 router_query_shop.post('/get_team_shop_depots', handle_get_team_shop_depots.main);
 
 router_query_shop.post('/get_team_shop_depot_stores', handle_get_team_shop_depot_stores.main);
+
+router_query_shop.post('/store_search', handle_store_search.main);
 
 export default router_query_shop;

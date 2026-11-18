@@ -154,3 +154,20 @@ export interface Cursor_Team_Shop_Depot_Store_Field {
     items: Team_Shop_Depot_Store_Field[];
     next_cursor: string | null;
 }
+
+export interface Store_Hit_Field {
+    total: {
+        value: number;
+        relation: string;
+    };
+    max_score: number;
+    hits: {
+        _index: string;
+        _id: string;
+        _score: number;
+        _source: {
+            depot_id: string;
+            search_content: string;
+        };
+    }[];
+}

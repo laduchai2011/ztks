@@ -16,6 +16,7 @@ import {
     Cursor_Team_Shop_Field,
     Cursor_Team_Shop_Depot_Field,
     Cursor_Team_Shop_Depot_Store_Field,
+    Store_Hit_Field,
 } from '@src/data_struct/shop';
 import {
     Get_Shop_By_Id_Body_Field,
@@ -55,6 +56,7 @@ import {
     Lock_Team_Shop_Body_Field,
     Lock_Team_Shop_Depot_Body_Field,
     Lock_Team_Shop_Depot_Store_Body_Field,
+    Store_Search_Body_Field,
 } from '@src/data_struct/shop/body';
 import { SHOP_API } from '@src/const/api/shop';
 import { My_Response_Field } from '@src/data_struct/response';
@@ -211,6 +213,13 @@ export const shop_RTK = createApi({
                     id: team_shop_depot_store.id,
                 })),
             ],
+        }),
+        _store_Search_: builder.query<My_Response_Field<Store_Hit_Field>, Store_Search_Body_Field>({
+            query: (body) => ({
+                url: SHOP_API.STORE_SEARCH,
+                method: 'POST',
+                body,
+            }),
         }),
         // _get_Shop_Role_Statistics_For_One_Team_: builder.query<
         //     My_Response_Field<Shop_Role_Statistics_Field>,
@@ -489,6 +498,7 @@ export const {
     useLazy_get_Team_Shops_Query,
     useLazy_get_Team_Shop_Depots_Query,
     useLazy_get_Team_Shop_Depot_Stores_Query,
+    useLazy_store_Search_Query,
     // useLazy_get_Shop_Role_Statistics_For_One_Team_Query,
     // useLazy_get_Shop_Role_For_One_Account_Query,
     // useLazy_get_Depot_Role_Statistics_For_One_Team_Query,
