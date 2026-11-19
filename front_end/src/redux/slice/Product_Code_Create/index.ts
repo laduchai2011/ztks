@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { state_props } from '@src/screen/ProductCodeCreate/type';
-import { Image_Field, Video_Field } from '@src/data_struct/product';
+import { Image_Field } from '@src/data_struct/image';
+import { Video_Field } from '@src/data_struct/video';
 
 const initialState: state_props = {
     create_status: 'end',

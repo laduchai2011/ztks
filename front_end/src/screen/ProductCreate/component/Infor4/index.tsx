@@ -15,6 +15,12 @@ import { Account_Information_Field } from '@src/data_struct/account';
 import { Product_Code_Field } from '@src/data_struct/product';
 import { Shop_Field, Depot_Field, Store_Field } from '@src/data_struct/shop';
 import { SEE_MORE } from '@src/const/text';
+import {
+    set__is_product_code_infor,
+    set__product_code_infor,
+    set__is_store_infor,
+    set__store_infor,
+} from '@src/redux/slice/Product_Create';
 
 const Infor4 = () => {
     const navigate = useNavigate();
@@ -23,6 +29,7 @@ const Infor4 = () => {
     const account_information: Account_Information_Field | undefined = useSelector(
         (state: RootState) => state.App_Slice.account_information
     );
+    const create_status: 'begin' | 'end' = useSelector((state: RootState) => state.Product_Create_Slice.create_status);
 
     const [product_code_ids, set__product_code_ids] = useState<string[]>([]);
     const [selected_product_code, set__selected_product_code] = useState<Product_Code_Field | null>(null);
@@ -36,6 +43,22 @@ const Infor4 = () => {
     const [store_Search] = useLazy_store_Search_Query();
     const [get_My_Shops] = useLazy_get_My_Shops_Query();
     const [get_My_Depots] = useLazy_get_My_Depots_Query();
+
+    useEffect(() => {
+        if (create_status === 'begin') {
+            if (!selected_product_code) return;
+            dispatch(set__product_code_infor(selected_product_code));
+            dispatch(set__is_product_code_infor(true));
+        }
+    }, [dispatch, selected_product_code, create_status]);
+
+    useEffect(() => {
+        if (create_status === 'begin') {
+            if (!selected_store) return;
+            dispatch(set__store_infor({ store: selected_store }));
+            dispatch(set__is_store_infor(true));
+        }
+    }, [dispatch, selected_store, create_status]);
 
     useEffect(() => {
         document.addEventListener('click', () => {
@@ -54,14 +77,6 @@ const Infor4 = () => {
 
         set__search_text_product_code(value);
         set__selected_product_code(null);
-    };
-
-    const handle_Store_Search = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        // Call the API to search for product codes
-
-        set__search_text_store(value);
-        set__selected_store(null);
     };
 
     useEffect(() => {
@@ -169,6 +184,14 @@ const Infor4 = () => {
     const handle_Selected_Depot = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const depot = depot_list.find((item) => item.id === e.target.value);
         set__selected_depot(depot);
+    };
+
+    const handle_Store_Search = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        // Call the API to search for product codes
+
+        set__search_text_store(value);
+        set__selected_store(null);
     };
 
     useEffect(() => {

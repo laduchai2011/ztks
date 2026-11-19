@@ -8,7 +8,6 @@ import { messageType_enum } from '@src/component/ToastMessage/type';
 // import { route_enum } from '@src/router/type';
 import { HiOutlineCube } from 'react-icons/hi';
 import { CREATE_PRODUCT_CODE } from '@src/const/text';
-import { select_enum } from '@src/router/type';
 import {
     set__create_status,
     set__is_basic_info,
@@ -45,6 +44,26 @@ const Header = () => {
 
     useEffect(() => {
         if (create_status === 'begin' && is_basic_info && is_detail_info && is_upload_images && is_upload_videos) {
+            if (name.trim().length === 0) {
+                dispatch(
+                    global_set__data__toast_message({
+                        message: 'Tên không được để trống',
+                        type: messageType_enum.WARN,
+                    })
+                );
+                return;
+            }
+
+            if (description.trim().length === 0) {
+                dispatch(
+                    global_set__data__toast_message({
+                        message: 'Mô tả ngắn không được để trống',
+                        type: messageType_enum.WARN,
+                    })
+                );
+                return;
+            }
+
             dispatch(global_set__is_loading(true));
             const create_product_code_body: Create_Product_Code_Body_Field = {
                 name: name,

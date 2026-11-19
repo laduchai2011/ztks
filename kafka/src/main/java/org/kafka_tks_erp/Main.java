@@ -5,6 +5,7 @@ import org.kafka_tks_erp.config.PostgresqlConfig;
 import org.kafka_tks_erp.services.outbox.OutboxApplication;
 import org.kafka_tks_erp.services.product.ProductConsumer;
 import org.kafka_tks_erp.services.shop.ShopConsumer;
+import org.kafka_tks_erp.services.shop.DeleteDepotOfDeletedShop;
 
 public class Main {
 
@@ -17,6 +18,9 @@ public class Main {
         ProductConsumer productConsumer = new ProductConsumer();
         ShopConsumer shopConsumer = new ShopConsumer();
 
+        DeleteDepotOfDeletedShop deleteDepotOfDeletedShop =
+                new DeleteDepotOfDeletedShop();
+
         Thread productThread = new Thread(
                 productConsumer,
                 "product-consumer"
@@ -27,6 +31,11 @@ public class Main {
                 "shop-consumer"
         );
 
+        Thread deleteDepotOfDeletedShopThread = new Thread(
+                deleteDepotOfDeletedShop::execute,
+                "delete-depot-of-deleted-shop"
+        );
+
         try {
 
             outbox.start();
@@ -35,10 +44,13 @@ public class Main {
 
             shopThread.start();
 
+            deleteDepotOfDeletedShopThread.start();
+
         } catch (Exception e) {
 
             productThread.interrupt();
             shopThread.interrupt();
+            deleteDepotOfDeletedShopThread.interrupt();
 
             outbox.stop();
 
@@ -54,17 +66,22 @@ public class Main {
 
                     productThread.interrupt();
                     shopThread.interrupt();
+                    deleteDepotOfDeletedShopThread.interrupt();
 
                     outbox.stop();
 
-                    PostgresqlConfig.close();
-
                     try {
+
                         productThread.join(5000);
                         shopThread.join(5000);
+                        deleteDepotOfDeletedShopThread.join(5000);
+
                     } catch (InterruptedException e) {
+
                         Thread.currentThread().interrupt();
                     }
+
+                    PostgresqlConfig.close();
 
                     System.out.println("Application stopped.");
 

@@ -10,7 +10,7 @@ export async function QueryElastic_Store_Search(store_search_body: Store_Search_
         index: `store${prefix}`,
         id: `store${prefix}_search`,
         params: {
-            account_id: store_search_body.depot_id,
+            depot_id: store_search_body.depot_id,
             search_content: store_search_body.search_content,
             from: store_search_body.from,
             size: store_search_body.size,

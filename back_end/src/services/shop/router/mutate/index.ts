@@ -1,6 +1,7 @@
 import express, { Router } from 'express';
 import dotenv from 'dotenv';
 import authentication from '@src/auth';
+import auth_Kafka from '@src/auth/auth_Kafka';
 import Handle_Create_Shop from './handle/Create_Shop';
 import Handle_Create_Depot from './handle/Create_Depot';
 import Handle_Create_Store from './handle/Create_Store';
@@ -68,8 +69,10 @@ router_mutate_shop.post('/edit_store', authentication, handle_edit_store.setup, 
 router_mutate_shop.post('/delete_shop', authentication, handle_delete_shop.setup, handle_delete_shop.main);
 
 router_mutate_shop.post('/delete_depot', authentication, handle_delete_depot.setup, handle_delete_depot.main);
+router_mutate_shop.post('/kafka_delete_depot', auth_Kafka, handle_delete_depot.main_For_Kafka);
 
 router_mutate_shop.post('/delete_store', authentication, handle_delete_store.setup, handle_delete_store.main);
+router_mutate_shop.post('/kafka_delete_store', auth_Kafka, handle_delete_store.main_For_Kafka);
 
 // router_mutate_shop.post(
 //     '/admin_set_shop_role_for_one_account',

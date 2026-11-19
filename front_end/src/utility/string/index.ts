@@ -25,7 +25,7 @@ export function isPositiveInteger(str: string): boolean {
     return (
         str.trim() !== '' && // không phải chuỗi rỗng
         Number.isInteger(num) && // là số nguyên
-        num > 0 // lớn hơn 0
+        num >= 0 // lớn hơn 0
     );
 }
 

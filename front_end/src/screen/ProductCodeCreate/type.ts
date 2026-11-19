@@ -1,4 +1,5 @@
-import { Image_Field, Video_Field } from '@src/data_struct/product';
+import { Image_Field } from '@src/data_struct/image';
+import { Video_Field } from '@src/data_struct/video';
 
 export interface state_props {
     create_status: 'begin' | 'end';

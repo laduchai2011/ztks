@@ -13,9 +13,10 @@ import {
     set__is_upload_videos,
 } from '@src/redux/slice/Product_Code_Create';
 import { upload_Image } from '@src/upload/upload_Image';
-import { upload_Video, generate_Video_Thumbnail } from '@src/upload/upload_video';
+import { upload_Video, generate_Video_Thumbnail } from '@src/upload/upload_Video';
 import { Account_Field } from '@src/data_struct/account';
-import { Image_Field, Video_Field } from '@src/data_struct/product';
+import { Image_Field } from '@src/data_struct/image';
+import { Video_Field } from '@src/data_struct/video';
 import { BASE_URL_API } from '@src/const/api/base_url';
 
 const Infor3 = () => {
@@ -150,7 +151,6 @@ const Infor3 = () => {
 
                     if (is_upload_images_success) {
                         dispatch(set__upload_images({ urls: image_urls }));
-                        dispatch(set__is_upload_images(true));
                     }
                 } catch (error) {
                     console.error('Error uploading images:', error);
@@ -162,6 +162,7 @@ const Infor3 = () => {
                     );
                 } finally {
                     dispatch(global_set__is_loading(false));
+                    dispatch(set__is_upload_images(true));
                 }
             }
         };
@@ -222,7 +223,6 @@ const Infor3 = () => {
 
                     if (is_upload_videos_success) {
                         dispatch(set__upload_videos({ urls: video_urls }));
-                        dispatch(set__is_upload_videos(true));
                     }
                 } catch (error) {
                     console.error('Error uploading videos:', error);
@@ -234,6 +234,7 @@ const Infor3 = () => {
                     );
                 } finally {
                     dispatch(global_set__is_loading(false));
+                    dispatch(set__is_upload_videos(true));
                 }
             }
         };

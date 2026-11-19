@@ -1,7 +1,7 @@
 package org.kafka_tks_erp.services.shop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+//import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.kafka_tks_erp.config.EnvironmentConfig;
 import org.kafka_tks_erp.config.KafkaConsumerConfig;
@@ -67,7 +67,7 @@ public class ShopConsumer implements Runnable {
                     // TODO: Gọi ProductEventHandler
                     // TODO: Gọi ProductCodeEventHandler
 
-                    if (event_type.equals("shop_created")) {
+                    if (event_type.equals("shop_created") || event_type.equals("shop_edited")) {
 
                         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -104,7 +104,7 @@ public class ShopConsumer implements Runnable {
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
-                    } else if (event_type.equals("depot_created")) {
+                    } else if (event_type.equals("depot_created") || event_type.equals("depot_edited")) {
 
                         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -141,7 +141,7 @@ public class ShopConsumer implements Runnable {
                         }catch (Exception e) {
                             throw new RuntimeException(e);
                         }
-                    } else if (event_type.equals("store_created")) {
+                    } else if (event_type.equals("store_created") || event_type.equals("store_edited")) {
 
                         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -176,6 +176,114 @@ public class ShopConsumer implements Runnable {
 
                             consumer.commitSync();
                         }catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else if (event_type.equals("shop_deleted")) {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+//                        objectMapper.setPropertyNamingStrategy(
+//                                PropertyNamingStrategies.SNAKE_CASE
+//                        );
+                        // Hỗ trợ LocalDateTime, OffsetDateTime, Instant...
+                        objectMapper.registerModule(new JavaTimeModule());
+
+                        // Không chuyển ngày giờ thành timestamp dạng số
+                        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+                        try {
+                            ShopDTO shop = objectMapper.readValue(
+                                    payload,
+                                    ShopDTO.class
+                            );
+
+                            ElasticShopService elasticShopService = new ElasticShopService();
+                            elasticShopService.delete(shop.id().toString());
+
+                            boolean registered = processedEventService.register(
+                                    GROUP_ID,
+                                    event_id,
+                                    event_type,
+                                    record.topic()
+                            );
+
+                            if (!registered) {
+                                System.out.println("Event already registered: " + event_id);
+                            }
+
+                            consumer.commitSync();
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else if (event_type.equals("depot_deleted")) {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+//                        objectMapper.setPropertyNamingStrategy(
+//                                PropertyNamingStrategies.SNAKE_CASE
+//                        );
+                        // Hỗ trợ LocalDateTime, OffsetDateTime, Instant...
+                        objectMapper.registerModule(new JavaTimeModule());
+
+                        // Không chuyển ngày giờ thành timestamp dạng số
+                        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+                        try {
+                            DepotDTO depot = objectMapper.readValue(
+                                    payload,
+                                    DepotDTO.class
+                            );
+
+                            ElasticDepotService elasticDepotService = new ElasticDepotService();
+                            elasticDepotService.delete(depot.id().toString());
+
+                            boolean registered = processedEventService.register(
+                                    GROUP_ID,
+                                    event_id,
+                                    event_type,
+                                    record.topic()
+                            );
+
+                            if (!registered) {
+                                System.out.println("Event already registered: " + event_id);
+                            }
+
+                            consumer.commitSync();
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else if (event_type.equals("store_deleted")) {
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+//                        objectMapper.setPropertyNamingStrategy(
+//                                PropertyNamingStrategies.SNAKE_CASE
+//                        );
+                        // Hỗ trợ LocalDateTime, OffsetDateTime, Instant...
+                        objectMapper.registerModule(new JavaTimeModule());
+
+                        // Không chuyển ngày giờ thành timestamp dạng số
+                        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+                        try {
+                            StoreDTO store = objectMapper.readValue(
+                                    payload,
+                                    StoreDTO.class
+                            );
+
+                            ElasticStoreService elasticStoreService = new ElasticStoreService();
+                            elasticStoreService.delete(store.id().toString());
+
+                            boolean registered = processedEventService.register(
+                                    GROUP_ID,
+                                    event_id,
+                                    event_type,
+                                    record.topic()
+                            );
+
+                            if (!registered) {
+                                System.out.println("Event already registered: " + event_id);
+                            }
+
+                            consumer.commitSync();
+                        } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
                     }

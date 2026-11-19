@@ -1,4 +1,5 @@
-import { Image_Field, Video_Field } from '.';
+import { Image_Field } from '../image';
+import { Video_Field } from '../video';
 
 export interface Create_Product_Code_Body_Field {
     name: string;

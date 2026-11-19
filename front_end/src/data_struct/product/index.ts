@@ -1,12 +1,5 @@
-export interface Image_Field {
-    url: string;
-}
-
-export interface Video_Field {
-    url: string;
-    thumbnail: string;
-}
-
+import { Image_Field } from '../image';
+import { Video_Field } from '../video';
 export interface Product_Code_Field {
     id: string;
     name: string;

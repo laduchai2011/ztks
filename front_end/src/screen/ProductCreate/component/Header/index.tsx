@@ -7,7 +7,13 @@ import { global_set__data__toast_message } from '@src/redux/slice/Global';
 // import { route_enum } from '@src/router/type';
 import { HiOutlineCube } from 'react-icons/hi';
 import { CREATE_PRODUCT } from '@src/const/text';
-import { select_enum } from '@src/router/type';
+import {
+    set__create_status,
+    set__is_basic_info,
+    set__is_detail_info,
+    set__is_upload_images,
+    set__is_upload_videos,
+} from '@src/redux/slice/Product_Create';
 
 const Header = () => {
     const navigate = useNavigate();

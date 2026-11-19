@@ -15,3 +15,8 @@ export function is_video_td(data: unknown): data is Video_TD_Body_Field {
         typeof (data as any).accountId === 'string'
     );
 }
+
+export interface Video_Field {
+    url: string;
+    thumbnail: string;
+}
