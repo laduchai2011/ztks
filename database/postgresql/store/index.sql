@@ -121,6 +121,7 @@ CREATE TABLE team_shop (
 );
 CREATE UNIQUE INDEX ux_team_shop_team_shop ON team_shop(team_id, shop_id);
 CREATE INDEX idx_team_shop_shop ON team_shop(shop_id);
+-- CREATE INDEX idx_team_shop_delete ON team_shop(is_delete);
 
 CREATE TABLE team_shop_depot (
     id UUID PRIMARY KEY DEFAULT uuidv7(),
@@ -135,6 +136,7 @@ CREATE TABLE team_shop_depot (
 );
 CREATE UNIQUE INDEX ux_team_shop_depot_team_shop_depot ON team_shop_depot(team_shop_id, depot_id);
 CREATE INDEX idx_team_shop_depot_depot ON team_shop_depot(depot_id);
+-- CREATE INDEX idx_team_shop_depot_delete ON team_shop_depot(is_delete);
 
 CREATE TABLE team_shop_depot_store (
     id UUID PRIMARY KEY DEFAULT uuidv7(),
@@ -149,3 +151,4 @@ CREATE TABLE team_shop_depot_store (
 );
 CREATE UNIQUE INDEX ux_team_shop_depot_store_team_shop_depot_store ON team_shop_depot_store(team_shop_depot_id, store_id);
 CREATE INDEX idx_team_shop_depot_store_store ON team_shop_depot_store(store_id);
+-- CREATE INDEX idx_team_shop_depot_store_delete ON team_shop_depot_store(is_delete);

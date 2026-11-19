@@ -14,6 +14,7 @@ public class DeleteDepotOfDeletedShop {
     private final DeleteDepotService deleteDepotService;
 
     private static final int BATCH_SIZE = 500;
+    private static final long RESTART_INTERVAL = 10_000;
 
     public DeleteDepotOfDeletedShop() {
         this.depotRepository = new DepotRepository();
@@ -22,72 +23,102 @@ public class DeleteDepotOfDeletedShop {
 
     public void execute() {
 
-        DepotCursor cursor = null;
-
         while (!Thread.currentThread().isInterrupted()) {
 
-            // Lấy từng batch Depot theo cursor
-            CursorResponse<DepotDTO, DepotCursor> response =
-                    depotRepository.getDepotsOfDeletedShops(
-                            BATCH_SIZE,
-                            cursor
-                    );
-            System.out.println(
-                    response
-            );
+            // Mỗi lần quét mới đều bắt đầu từ đầu
+            DepotCursor cursor = null;
 
-            List<DepotDTO> depots = response.items();
+            try {
+                boolean hasData = true;
 
-            // Không còn dữ liệu
-            if (depots.isEmpty()) {
-                break;
-            }
+                while (
+                        hasData &&
+                                !Thread.currentThread().isInterrupted()
+                ) {
 
-            // =====================================
-            // XỬ LÝ XÓA DEPOT
-            // =====================================
+                    CursorResponse<DepotDTO, DepotCursor> response =
+                            depotRepository.getDepotsOfDeletedShops(
+                                    BATCH_SIZE,
+                                    cursor
+                            );
 
-            for (DepotDTO depot : depots) {
+                    List<DepotDTO> depots = response.items();
 
-                // Kiểm tra tín hiệu dừng luồng
-                if (Thread.currentThread().isInterrupted()) {
-                    System.out.println(
-                            "DeleteDepotOfDeletedShop interrupted."
-                    );
-                    return;
-                }
+                    // Không còn dữ liệu
+                    if (depots.isEmpty()) {
+                        break;
+                    }
 
-                UUID depot_id = depot.id();
+                    for (DepotDTO depot : depots) {
 
-                System.out.println(
-                        "Processing depot: " + depot_id
-                );
+                        if (Thread.currentThread().isInterrupted()) {
+                            System.out.println(
+                                    "DeleteDepotOfDeletedShop interrupted."
+                            );
+                            return;
+                        }
 
-                // Lấy account_id từ depot_id
-                UUID account_id =
-                        depotRepository.getAccountIdByDepotId(
-                                depot_id
+                        UUID depot_id = depot.id();
+
+                        System.out.println(
+                                "Processing depot: " + depot_id
                         );
 
-                if (account_id == null) {
-                    throw new RuntimeException(
-                            "Account ID not found for depot: " + depot_id
-                    );
+                        UUID account_id =
+                                depotRepository.getAccountIdByDepotId(
+                                        depot_id
+                                );
+
+                        if (account_id == null) {
+                            throw new RuntimeException(
+                                    "Account ID not found for depot: "
+                                            + depot_id
+                            );
+                        }
+
+                        deleteDepotService.deleteDepot(
+                                depot_id,
+                                account_id
+                        );
+                    }
+
+                    cursor = response.nextCursor();
+                    hasData = response.hasNext();
                 }
 
-                // Gửi yêu cầu xóa sang Node.js
-                deleteDepotService.deleteDepot(
-                        depot_id,
-                        account_id
+                // Đã quét hết dữ liệu, chờ 10 giây
+                System.out.println(
+                        "No more depots. Restarting after 10 seconds..."
                 );
-            }
 
-            // Cập nhật cursor sau khi batch xử lý thành công
-            cursor = response.nextCursor();
+                Thread.sleep(RESTART_INTERVAL);
 
-            // Không còn trang tiếp theo
-            if (!response.hasNext()) {
-                break;
+            } catch (InterruptedException e) {
+
+                Thread.currentThread().interrupt();
+
+                System.out.println(
+                        "DeleteDepotOfDeletedShop interrupted."
+                );
+
+                return;
+
+            } catch (Exception e) {
+
+                System.err.println(
+                        "DeleteDepotOfDeletedShop error: "
+                                + e.getMessage()
+                );
+
+                e.printStackTrace();
+
+                // Nếu có lỗi, chờ 10 giây rồi thử lại
+                try {
+                    Thread.sleep(RESTART_INTERVAL);
+                } catch (InterruptedException interruptedException) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
             }
         }
 

@@ -88,7 +88,7 @@ class Handle_Delete_Store {
         mutateDB.set_Delete_Store_Body(delete_store_body);
 
         try {
-            const result = await mutateDB.run();
+            const result = await mutateDB.run_For_Kafka();
             if (result) {
                 my_response.message = 'Xóa gian hàng thành công !';
                 my_response.is_success = true;

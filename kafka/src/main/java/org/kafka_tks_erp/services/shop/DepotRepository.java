@@ -93,7 +93,7 @@ public class DepotRepository {
             if (cursor != null) {
                 statement.setObject(
                         parameterIndex++,
-                        cursor.createTime()
+                        cursor.create_time()
                 );
 
                 statement.setObject(

@@ -88,7 +88,7 @@ class Handle_Delete_Depot {
         mutateDB.set_Delete_Depot_Body(delete_depot_body);
 
         try {
-            const result = await mutateDB.run();
+            const result = await mutateDB.run_For_Kafka();
             if (result) {
                 my_response.message = 'Xóa kho thành công !';
                 my_response.is_success = true;

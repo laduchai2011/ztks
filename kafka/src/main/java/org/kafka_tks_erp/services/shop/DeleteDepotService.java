@@ -30,9 +30,9 @@ public class DeleteDepotService {
             String json = objectMapper.writeValueAsString(body);
 
             String secret = EnvironmentConfig.getEnv("KEY_JAVA_KAFKA_REQUEST");
-            System.out.println(
-                    "KEY_JAVA_KAFKA_REQUEST: " + secret
-            );
+//            System.out.println(
+//                    "KEY_JAVA_KAFKA_REQUEST: " + secret
+//            );
 
             String timestamp = String.valueOf(
                     System.currentTimeMillis()

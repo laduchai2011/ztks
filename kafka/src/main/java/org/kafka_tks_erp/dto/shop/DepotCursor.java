@@ -4,6 +4,6 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public record DepotCursor(
-        OffsetDateTime createTime,
+        OffsetDateTime create_time,
         UUID id
 ) {}

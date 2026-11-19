@@ -79,6 +79,66 @@ class MutateDB_Delete_Store {
             }
         }
     }
+
+    async run_For_Kafka(): Promise<Store_Field | undefined> {
+        if (this._delete_store_body !== undefined) {
+            const client = await pool.connect();
+
+            try {
+                await client.query('BEGIN');
+
+                const result = await pool.query<Store_Field>('SELECT * FROM kafka_delete_store($1::UUID, $2::UUID)', [
+                    this._delete_store_body.id,
+                    this._delete_store_body.account_id,
+                ]);
+
+                if (result.rows.length === 0) {
+                    await client.query('ROLLBACK');
+                    throw new Error('DELETE_STORE_FAILED');
+                } else {
+                    const store = result.rows[0];
+
+                    const create_kafka_event_body: Create_Kafka_Event_Body_Field<Store_Field> = {
+                        aggregate_id: store.id,
+                        aggregate_type: Kafka_Event_Aggregate_Type_Enum.SHOP,
+                        event_type: Kafka_Event_Event_Type_Enum.STORE_DELETED,
+                        topic: Kafka_Event_Topic_Enum.SHOP_EVENTS,
+                        payload: store,
+                    };
+
+                    const result_kafka_event = await client.query<Kafka_Event_Field>(
+                        'SELECT * FROM create_kafka_event($1::UUID, $2, $3, $4, $5::JSONB)',
+                        [
+                            create_kafka_event_body.aggregate_id,
+                            create_kafka_event_body.aggregate_type,
+                            create_kafka_event_body.event_type,
+                            create_kafka_event_body.topic + prefix,
+                            create_kafka_event_body.payload,
+                        ]
+                    );
+
+                    if (result_kafka_event.rows.length === 0) {
+                        await client.query('ROLLBACK');
+                        throw new Error('CREATE_KAFKA_EVENT_FAILED');
+                    }
+
+                    await client.query('COMMIT');
+                    return store;
+                }
+            } catch (error) {
+                try {
+                    await client.query('ROLLBACK');
+                } catch (rollbackError) {
+                    console.error('Rollback error:', rollbackError);
+                }
+
+                console.error('Delete_Store error:', error);
+                throw error;
+            } finally {
+                client.release();
+            }
+        }
+    }
 }
 
 export default MutateDB_Delete_Store;
