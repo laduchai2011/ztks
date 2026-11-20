@@ -1,18 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
 import { My_Response_Field } from '@src/data_struct/response';
 import { Product_Code_Field } from '@src/data_struct/product';
-import { Create_Product_Body_Field, Create_Product_Code_Body_Field } from '@src/data_struct/product/body';
+import { Create_Product_Code_Body_Field } from '@src/data_struct/product/body';
 import { verify_Refresh_Token } from '@src/token';
 import MutateDB_Create_Product_Code from '../../mutateDB/Create_Product_Code';
-import { Cache_Get_Posts } from '@src/const/redisKey/post';
+// import { Cache_Get_Posts } from '@src/const/redisKey/post';
 import { getRefreshToken } from '@src/device/getDevice';
-import { Create_Post_Body_Field } from '@src/data_struct/post/body';
 
 class Handle_Create_Product_Code {
-    private _cache_get_posts = new Cache_Get_Posts();
+    // private _cache_get_posts = new Cache_Get_Posts();
 
     constructor() {
-        this._cache_get_posts.init();
+        // this._cache_get_posts.init();
     }
 
     setup = async (req: Request<any, any, Create_Product_Code_Body_Field>, res: Response, next: NextFunction) => {

@@ -43,6 +43,28 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION upsert_product_code_total (
+    p_new_total INTEGER,
+    p_product_code_id UUID
+)
+RETURNS VOID
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO product_code_total (
+        product_code_id,
+        p_new_total
+    )
+    VALUES (
+        p_product_code_id,
+        p_new_total
+    )
+    ON CONFLICT (product_code_id)
+    DO UPDATE SET
+        total = product_code_total.total + EXCLUDED.total;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION edit_product_code (
     p_id UUID,
     p_name VARCHAR(255),
@@ -116,8 +138,8 @@ BEGIN
         p_detail,
         p_quantity,
         0,
-        COALESCE(p_images, '{}'),
-        COALESCE(p_videos, '{}'),
+       	p_images,
+		p_videos,
         p_store_id,
         p_product_code_id,
         p_account_id
@@ -155,6 +177,75 @@ BEGIN
 
 END;
 $$;
+
+CREATE OR REPLACE FUNCTION upsert_product_total (
+    p_new_total INTEGER,
+    p_product_id UUID
+)
+RETURNS VOID
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO product_total (
+        product_id,
+        p_new_total
+    )
+    VALUES (
+        p_product_id,
+        p_new_total
+    )
+    ON CONFLICT (product_id)
+    DO UPDATE SET
+        total = product_total.total + EXCLUDED.total;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION fluctuation_for_create_product (
+    p_quantity INTEGER,
+    p_images JSONB,
+    p_videos JSONB,
+    p_product_id UUID,
+    p_account_id UUID
+)
+RETURNS UUID
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_fluctuation_id UUID;
+BEGIN
+    INSERT INTO product_fluctuation (
+        type,
+        command,
+        quantity,
+        actual_quantity,
+        note,
+        images,
+        videos,
+        is_finish,
+        product_id,
+        account_id,
+        finish_time
+    )
+    VALUES (
+        'in',
+        'add_new',
+        p_quantity,
+        p_quantity,
+        '',
+        p_images,
+		p_videos,
+        TRUE,
+        p_product_id,
+        p_account_id,
+        CURRENT_TIMESTAMP
+    )
+    RETURNING id INTO v_fluctuation_id;
+
+    RETURN v_fluctuation_id;
+END;
+$$;
+
 
 CREATE OR REPLACE FUNCTION transfer_product (
     p_source_product_id UUID,

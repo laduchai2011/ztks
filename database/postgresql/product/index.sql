@@ -12,9 +12,15 @@ CREATE TABLE product_code (
 
 	CONSTRAINT CK_product_code_images_array CHECK (jsonb_typeof(images) = 'array'),
     CONSTRAINT CK_product_code_videos_array CHECK (jsonb_typeof(videos) = 'array'),
-	CONSTRAINT FK_product_account_id FOREIGN KEY (account_id) REFERENCES account(id)
+	CONSTRAINT FK_product_code_account_id FOREIGN KEY (account_id) REFERENCES account(id)
 );
-CREATE INDEX idx_product_account_id ON product_code(account_id);
+CREATE INDEX idx_product_code_account_id ON product_code(account_id);
+
+CREATE TABLE product_code_total (
+	total INTEGER NOT NULL DEFAULT 0,
+	product_code_id UUID NOT NULL UNIQUE,
+	CONSTRAINT FK_product_code_total_id FOREIGN KEY (product_code_id) REFERENCES product_code(id)
+);
 
 CREATE TABLE product (
 	id UUID PRIMARY KEY DEFAULT uuidv7(),
@@ -43,6 +49,12 @@ CREATE TABLE product (
 );
 CREATE INDEX idx_product_account_id_product_code_id ON product(account_id, product_code_id);
 
+CREATE TABLE product_total (
+	total INTEGER NOT NULL DEFAULT 0,
+	product_id UUID NOT NULL UNIQUE,
+	CONSTRAINT FK_product_total_id FOREIGN KEY (product_id) REFERENCES product(id)
+);
+
 CREATE TABLE product_fluctuation (
 	id UUID PRIMARY KEY DEFAULT uuidv7(),
 	type VARCHAR(255) NOT NULL,
@@ -54,8 +66,8 @@ CREATE TABLE product_fluctuation (
     videos JSONB NOT NULL DEFAULT '[]'::JSONB,
 	is_finish BOOLEAN NOT NULL DEFAULT FALSE,
 	is_delete BOOLEAN NOT NULL DEFAULT FALSE,
-	re_order_v1_id UUID,
-	order_v1_id UUID,
+	re_order_v1_id UUID UNIQUE,
+	order_v1_id UUID UNIQUE,
 	source_product_id UUID,
 	target_product_id UUID,
 	source_account_id UUID,
@@ -66,6 +78,8 @@ CREATE TABLE product_fluctuation (
 	update_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     create_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
+	CONSTRAINT CK_product_fluctuation_images_array CHECK (jsonb_typeof(images) = 'array'),
+    CONSTRAINT CK_product_fluctuation_videos_array CHECK (jsonb_typeof(videos) = 'array'),
 	CONSTRAINT FK_product_fluctuation_re_order_v1_id FOREIGN KEY (re_order_v1_id) REFERENCES re_order_v1(id),
 	CONSTRAINT FK_product_fluctuation_order_v1_id FOREIGN KEY (order_v1_id) REFERENCES order_v1(id),
 	CONSTRAINT FK_product_fluctuation_source_product_id FOREIGN KEY (source_product_id) REFERENCES product(id),
@@ -73,7 +87,7 @@ CREATE TABLE product_fluctuation (
 	CONSTRAINT FK_product_fluctuation_product_id FOREIGN KEY (product_id) REFERENCES product(id),
 	CONSTRAINT FK_product_fluctuation_account_id FOREIGN KEY (account_id) REFERENCES account(id),
 	CONSTRAINT type_product_fluctuation CHECK (type IN ('in', 'out')),
-	CONSTRAINT command_product_fluctuation CHECK (type IN ('add_new', 'add_from_other_product', 'sub_to_other_product', 'order', 're_order', 'redundant', 'lose', 'damaged'))
+	CONSTRAINT command_product_fluctuation CHECK (command IN ('add_new', 'add_from_other_product', 'sub_to_other_product', 'order', 're_order', 'redundant', 'lose', 'damaged'))
 );
 CREATE INDEX idx_product_fluctuation_re_order_v1_id ON product_fluctuation(re_order_v1_id);
 CREATE INDEX idx_product_fluctuation_order_v1_id ON product_fluctuation(order_v1_id);

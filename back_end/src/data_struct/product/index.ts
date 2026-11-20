@@ -14,6 +14,11 @@ export interface Product_Code_Field {
     create_time: string;
 }
 
+export interface Product_Code_Total_Field {
+    total: number;
+    product_code_id: string;
+}
+
 export interface Product_Code_Hit_Field {
     total: {
         value: number;

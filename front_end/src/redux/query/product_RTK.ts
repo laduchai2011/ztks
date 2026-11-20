@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { Product_Code_Field, Product_Code_Hit_Field } from '@src/data_struct/product';
+import { Product_Field, Product_Code_Field, Product_Code_Hit_Field } from '@src/data_struct/product';
 import {
     Get_Product_Code_By_Id_Body_Field,
     Product_Code_Search_Body_Field,
     Create_Product_Code_Body_Field,
+    Create_Product_Body_Field,
 } from '@src/data_struct/product/body';
 import { PRODUCT_API } from '@src/const/api/product';
 import { My_Response_Field } from '@src/data_struct/response';
@@ -47,6 +48,13 @@ export const product_RTK = createApi({
                 body,
             }),
         }),
+        _create_Product_: builder.mutation<My_Response_Field<Product_Field>, Create_Product_Body_Field>({
+            query: (body) => ({
+                url: PRODUCT_API.CREATE_PRODUCT,
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
@@ -54,4 +62,5 @@ export const {
     useLazy_get_Product_Code_By_Id_Query,
     useLazy_product_Code_Search_Query,
     use_create_Product_Code_Mutation,
+    use_create_Product_Mutation,
 } = product_RTK;

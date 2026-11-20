@@ -1,6 +1,6 @@
 import { pool } from '@src/connect/postgresql';
 import { Product_Code_Field } from '@src/data_struct/product';
-import { Create_Product_Code_Body_Field } from '@src/data_struct/product/body';
+import { Create_Product_Code_Body_Field, Upsert_Product_Code_Total_Body_Field } from '@src/data_struct/product/body';
 import {
     Kafka_Event_Field,
     Kafka_Event_Topic_Enum,
@@ -44,6 +44,15 @@ class MutateDB_Create_Product_Code {
                     throw new Error('CREATE_ORDER_FAILED');
                 } else {
                     const product_code = result.rows[0];
+
+                    const upsert_product_code_total_body: Upsert_Product_Code_Total_Body_Field = {
+                        new_total: 1,
+                        product_code_id: product_code.id,
+                    };
+                    await client.query<Product_Code_Field>('SELECT * FROM upsert_product_code_total($1, $2::UUID)', [
+                        upsert_product_code_total_body.new_total,
+                        upsert_product_code_total_body.product_code_id,
+                    ]);
 
                     const create_kafka_event_body: Create_Kafka_Event_Body_Field<Product_Code_Field> = {
                         aggregate_id: product_code.id,

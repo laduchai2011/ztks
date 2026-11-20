@@ -5,3 +5,5 @@ docker logs -f clickhouse_container
 - Cấp quyền cho thư mục:
     sudo chown -R 10001:0 /var/docker_mount/clickhouse_data
     sudo chmod -R 770 /var/docker_mount/clickhouse_data
+    sudo chown -R 10001:0 /var/docker_mount/clickhouse_logs
+    sudo chmod -R 770 /var/docker_mount/clickhouse_logs
