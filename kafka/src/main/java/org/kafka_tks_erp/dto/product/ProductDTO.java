@@ -11,22 +11,22 @@ public record ProductDTO(
         String description,
         String detail,
 
-        Integer quantityIn,
-        Integer quantityOut,
+        Integer quantity_in,
+        Integer quantity_out,
 
-        List<String> images,
-        List<String> videos,
+        List<ImageDTO> images,
+        List<VideoDTO> videos,
 
-        Boolean isCompelledPrice,
-        BigDecimal unitPrice,
+        Boolean is_compelled_price,
+        BigDecimal unit_price,
 
-        Boolean isLock,
-        Boolean isDelete,
+        Boolean is_lock,
+        Boolean is_delete,
 
-        UUID storeId,
-        UUID productCodeId,
-        UUID accountId,
+        UUID store_id,
+        UUID product_code_id,
+        UUID account_id,
 
-        OffsetDateTime updateTime,
-        OffsetDateTime createTime
+        OffsetDateTime update_time,
+        OffsetDateTime create_time
 ) {}

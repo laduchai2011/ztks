@@ -48,22 +48,22 @@ const Header = () => {
     const { urls: video_urls } = useSelector((state: RootState) => state.Product_Code_Create_Slice.upload_videos);
 
     useEffect(() => {
-        if (
-            !(
-                account_information?.account_id === account_information?.added_by_id &&
-                account_information?.account_type === account_type_enum.ADMIN
-            )
-        ) {
-            dispatch(
-                global_set__data__toast_message({
-                    message: 'Bạn không phải admin',
-                    type: messageType_enum.WARN,
-                })
-            );
-            return;
-        }
-
         if (create_status === 'begin' && is_basic_infor && is_detail_infor && is_upload_images && is_upload_videos) {
+            if (
+                !(
+                    account_information?.account_id === account_information?.added_by_id &&
+                    account_information?.account_type === account_type_enum.ADMIN
+                )
+            ) {
+                dispatch(
+                    global_set__data__toast_message({
+                        message: 'Bạn không phải admin',
+                        type: messageType_enum.WARN,
+                    })
+                );
+                return;
+            }
+
             if (name.trim().length === 0) {
                 dispatch(
                     global_set__data__toast_message({

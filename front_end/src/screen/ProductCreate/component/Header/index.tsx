@@ -56,20 +56,15 @@ const Header = () => {
     const { urls: video_urls } = useSelector((state: RootState) => state.Product_Create_Slice.upload_videos);
 
     useEffect(() => {
-        if (
-            !(
-                account_information?.account_id === account_information?.added_by_id &&
-                account_information?.account_type === account_type_enum.ADMIN
-            )
-        ) {
-            dispatch(
-                global_set__data__toast_message({
-                    message: 'Bạn không phải admin',
-                    type: messageType_enum.WARN,
-                })
-            );
-            return;
-        }
+        console.log('create_status', create_status);
+        console.log('is_basic_infor', is_basic_infor);
+        console.log('is_detail_infor', is_detail_infor);
+        console.log('is_amount_infor', is_amount_infor);
+        console.log('is_store_infor', is_store_infor);
+        console.log('is_product_code_infor', is_product_code_infor);
+        console.log('is_price_infor', is_price_infor);
+        console.log('is_upload_images', is_upload_images);
+        console.log('is_upload_videos', is_upload_videos);
 
         if (
             create_status === 'begin' &&
@@ -82,6 +77,25 @@ const Header = () => {
             is_upload_images &&
             is_upload_videos
         ) {
+            console.log('create_Product', 0);
+
+            if (
+                !(
+                    account_information?.account_id === account_information?.added_by_id &&
+                    account_information?.account_type === account_type_enum.ADMIN
+                )
+            ) {
+                dispatch(
+                    global_set__data__toast_message({
+                        message: 'Bạn không phải admin',
+                        type: messageType_enum.WARN,
+                    })
+                );
+                return;
+            }
+
+            console.log('create_Product', 1);
+
             if (name.trim().length === 0) {
                 dispatch(
                     global_set__data__toast_message({
@@ -136,6 +150,7 @@ const Header = () => {
                 images: image_urls,
                 videos: video_urls,
             };
+            console.log('create_Product', 2);
             create_Product(create_product_body)
                 .then((res) => {
                     const res_data = res.data;

@@ -103,6 +103,8 @@ CREATE OR REPLACE FUNCTION create_product (
     p_description VARCHAR(255),
     p_detail TEXT,
     p_quantity INTEGER,
+    p_is_compelled_price BOOLEAN,
+    p_unit_price NUMERIC(18, 2),
     p_store_id UUID,
     p_product_code_id UUID,
     p_account_id UUID,
@@ -115,7 +117,7 @@ AS $$
 DECLARE
     v_product_id UUID;
 BEGIN
-    -- 1. Kiểm tra tài khoản có phải admin không
+    -- 1. Kiểm tra tài khoản admin
     IF NOT EXISTS (
         SELECT 1
         FROM account_information
@@ -131,7 +133,12 @@ BEGIN
         RAISE EXCEPTION 'Quantity must be greater than or equal to 0';
     END IF;
 
-    -- 3. Tạo sản phẩm
+    -- 3. Kiểm tra đơn giá
+    IF p_unit_price < 0 THEN
+        RAISE EXCEPTION 'Unit price must be greater than or equal to 0';
+    END IF;
+
+    -- 4. Tạo sản phẩm
     INSERT INTO product (
         name,
         description,
@@ -140,6 +147,8 @@ BEGIN
         quantity_out,
         images,
         videos,
+        is_compelled_price,
+        unit_price,
         store_id,
         product_code_id,
         account_id
@@ -152,13 +161,15 @@ BEGIN
         0,
         p_images,
         p_videos,
+        p_is_compelled_price,
+        p_unit_price,
         p_store_id,
         p_product_code_id,
         p_account_id
     )
     RETURNING id INTO v_product_id;
 
-    -- 4. Trả về sản phẩm
+    -- 5. Trả về sản phẩm
     RETURN QUERY
     SELECT p.*
     FROM product p

@@ -99,8 +99,6 @@ public class ShopConsumer implements Runnable {
                             if (!registered) {
                                 System.out.println("Event already registered: " + event_id);
                             }
-
-                            consumer.commitSync();
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -136,8 +134,6 @@ public class ShopConsumer implements Runnable {
                             if (!registered) {
                                 System.out.println("Event already registered: " + event_id);
                             }
-
-                            consumer.commitSync();
                         }catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -173,8 +169,6 @@ public class ShopConsumer implements Runnable {
                             if (!registered) {
                                 System.out.println("Event already registered: " + event_id);
                             }
-
-                            consumer.commitSync();
                         }catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -209,8 +203,6 @@ public class ShopConsumer implements Runnable {
                             if (!registered) {
                                 System.out.println("Event already registered: " + event_id);
                             }
-
-                            consumer.commitSync();
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -245,8 +237,6 @@ public class ShopConsumer implements Runnable {
                             if (!registered) {
                                 System.out.println("Event already registered: " + event_id);
                             }
-
-                            consumer.commitSync();
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -281,15 +271,13 @@ public class ShopConsumer implements Runnable {
                             if (!registered) {
                                 System.out.println("Event already registered: " + event_id);
                             }
-
-                            consumer.commitSync();
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
                     }
                 }
 
-//                consumer.commitSync();
+                consumer.commitSync();
             }
 
         }

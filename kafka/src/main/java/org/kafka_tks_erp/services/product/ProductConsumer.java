@@ -97,8 +97,6 @@ public class ProductConsumer implements Runnable {
                             if (!registered) {
                                 System.out.println("Event already registered: " + event_id);
                             }
-
-                            consumer.commitSync();
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -123,7 +121,7 @@ public class ProductConsumer implements Runnable {
                             );
 
                             ElasticProductService elasticProductService = new ElasticProductService();
-                            elasticProductService.create(product.id().toString(), product.accountId().toString(), product.name() + " " + product.description());
+                            elasticProductService.create(product.id().toString(), product.account_id().toString(), product.name() + " " + product.description());
 
                             boolean registered = processedEventService.register(
                                     GROUP_ID,
@@ -135,15 +133,13 @@ public class ProductConsumer implements Runnable {
                             if (!registered) {
                                 System.out.println("Event already registered: " + event_id);
                             }
-
-                            consumer.commitSync();
                         }catch (Exception e) {
                             throw new RuntimeException(e);
                         }
                     }
                 }
 
-//                consumer.commitSync();
+                consumer.commitSync();
             }
 
         }

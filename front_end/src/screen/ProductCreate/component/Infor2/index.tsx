@@ -10,9 +10,7 @@ import { set__detail_infor, set__is_detail_infor } from '@src/redux/slice/Produc
 const Infor2 = () => {
     const dispatch = useDispatch<AppDispatch>();
 
-    const create_status: 'begin' | 'end' = useSelector(
-        (state: RootState) => state.Product_Code_Create_Slice.create_status
-    );
+    const create_status: 'begin' | 'end' = useSelector((state: RootState) => state.Product_Create_Slice.create_status);
 
     const [describe, set__describe] = useState<string>('');
 

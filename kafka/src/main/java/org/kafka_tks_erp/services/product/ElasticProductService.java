@@ -29,14 +29,14 @@ public class ElasticProductService {
 
     public IndexResponse create(
             String id,
-            String accountId,
-            String searchContent
+            String account_id,
+            String search_content
     ) throws Exception {
 
         Map<String, Object> document = new HashMap<>();
 
-        document.put("account_id", accountId);
-        document.put("search_content", searchContent);
+        document.put("account_id", account_id);
+        document.put("search_content", search_content);
 
         return client.index(i -> i
                 .index(INDEX)
@@ -51,18 +51,18 @@ public class ElasticProductService {
 
     public UpdateResponse<Map> update(
             String id,
-            String accountId,
-            String searchContent
+            String account_id,
+            String search_content
     ) throws Exception {
 
         Map<String, Object> document = new HashMap<>();
 
-        if (accountId != null) {
-            document.put("account_id", accountId);
+        if (account_id != null) {
+            document.put("account_id", account_id);
         }
 
-        if (searchContent != null) {
-            document.put("search_content", searchContent);
+        if (search_content != null) {
+            document.put("search_content", search_content);
         }
 
         if (document.isEmpty()) {

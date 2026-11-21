@@ -11,7 +11,7 @@ import {
     set__is_upload_images,
     set__upload_videos,
     set__is_upload_videos,
-} from '@src/redux/slice/Product_Code_Create';
+} from '@src/redux/slice/Product_Create';
 import { upload_Image } from '@src/upload/upload_Image';
 import { upload_Video, generate_Video_Thumbnail } from '@src/upload/upload_Video';
 import { Account_Field } from '@src/data_struct/account';
@@ -23,9 +23,7 @@ const Infor2 = () => {
     const dispatch = useDispatch<AppDispatch>();
 
     const account: Account_Field | undefined = useSelector((state: RootState) => state.App_Slice.account);
-    const create_status: 'begin' | 'end' = useSelector(
-        (state: RootState) => state.Product_Code_Create_Slice.create_status
-    );
+    const create_status: 'begin' | 'end' = useSelector((state: RootState) => state.Product_Create_Slice.create_status);
 
     const id_image_input = useId();
     const imageInput_element = useRef<HTMLInputElement | null>(null);
