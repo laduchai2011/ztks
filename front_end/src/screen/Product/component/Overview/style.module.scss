@@ -16,11 +16,24 @@
             > div:nth-child(1) {
                 font-size: 1.1rem;
                 font-weight: 500;
+                color: rgb(0, 207, 0);
+
+                > span {
+                    color: red;
+                    font-size: 0.9rem;
+                }
             }
 
             > div:nth-child(2) {
                 color: gray;
                 font-size: 0.9rem;
+                cursor: pointer;
+                user-select: none;
+
+                &:hover {
+                    color: blue;
+                    text-decoration: underline;
+                }
             }
         }
     }

@@ -4,7 +4,7 @@ import style from './style.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 // import { global_set__data__toast_message } from '@src/redux/slice/Global';
-import { set__basic_info, set__is_basic_info } from '@src/redux/slice/Product_Code_Create';
+import { set__basic_infor, set__is_basic_infor } from '@src/redux/slice/Product_Code_Create';
 
 const Infor1 = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -18,8 +18,8 @@ const Infor1 = () => {
 
     useEffect(() => {
         if (create_status === 'begin') {
-            dispatch(set__basic_info({ name, description }));
-            dispatch(set__is_basic_info(true));
+            dispatch(set__basic_infor({ name, description }));
+            dispatch(set__is_basic_infor(true));
         }
     }, [create_status, dispatch, name, description]);
 

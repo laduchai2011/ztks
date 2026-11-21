@@ -21,6 +21,7 @@ class QueryDB_Get_Product_Code_By_Id {
                 }
             } catch (error) {
                 console.error(error);
+                throw error;
             }
         }
     }

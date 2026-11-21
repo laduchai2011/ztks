@@ -17,9 +17,10 @@ CREATE TABLE product_code (
 CREATE INDEX idx_product_code_account_id ON product_code(account_id);
 
 CREATE TABLE product_code_total (
-	total INTEGER NOT NULL DEFAULT 0,
-	product_code_id UUID NOT NULL UNIQUE,
-	CONSTRAINT FK_product_code_total_id FOREIGN KEY (product_code_id) REFERENCES product_code(id)
+	active_total INTEGER NOT NULL DEFAULT 0,
+	deleted_total INTEGER NOT NULL DEFAULT 0,
+	admin_account_id UUID NOT NULL UNIQUE,
+	CONSTRAINT FK_product_code_total_id FOREIGN KEY (admin_account_id) REFERENCES account(id)
 );
 
 CREATE TABLE product (
@@ -50,9 +51,10 @@ CREATE TABLE product (
 CREATE INDEX idx_product_account_id_product_code_id ON product(account_id, product_code_id);
 
 CREATE TABLE product_total (
-	total INTEGER NOT NULL DEFAULT 0,
-	product_id UUID NOT NULL UNIQUE,
-	CONSTRAINT FK_product_total_id FOREIGN KEY (product_id) REFERENCES product(id)
+	active_total INTEGER NOT NULL DEFAULT 0,
+	deleted_total INTEGER NOT NULL DEFAULT 0,
+	admin_account_id UUID NOT NULL UNIQUE,
+	CONSTRAINT FK_product_total_id FOREIGN KEY (admin_account_id) REFERENCES account(id)
 );
 
 CREATE TABLE product_fluctuation (

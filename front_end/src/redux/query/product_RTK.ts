@@ -1,6 +1,14 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { Product_Field, Product_Code_Field, Product_Code_Hit_Field } from '@src/data_struct/product';
 import {
+    Product_Field,
+    Product_Code_Field,
+    Product_Code_Hit_Field,
+    Product_Code_Total_Field,
+    Product_Total_Field,
+} from '@src/data_struct/product';
+import {
+    Get_Product_Code_Total_Body_Field,
+    Get_Product_Total_Body_Field,
     Get_Product_Code_By_Id_Body_Field,
     Product_Code_Search_Body_Field,
     Create_Product_Code_Body_Field,
@@ -20,7 +28,7 @@ export const product_RTK = createApi({
             return headers;
         },
     }),
-    tagTypes: [],
+    tagTypes: ['Product_Code', 'Product'],
     endpoints: (builder) => ({
         _get_Product_Code_By_Id_: builder.query<
             My_Response_Field<Product_Code_Field>,
@@ -31,6 +39,29 @@ export const product_RTK = createApi({
                 method: 'POST',
                 body,
             }),
+            providesTags: (result) => [
+                { type: 'Product_Code', id: 'LIST' },
+                ...(result?.data ? [{ type: 'Product_Code' as const, id: result.data.id }] : []),
+            ],
+        }),
+        _get_Product_Code_Total_: builder.query<
+            My_Response_Field<Product_Code_Total_Field>,
+            Get_Product_Code_Total_Body_Field
+        >({
+            query: (body) => ({
+                url: PRODUCT_API.GET_PRODUCT_CODE_TOTAL,
+                method: 'POST',
+                body,
+            }),
+            providesTags: [{ type: 'Product_Code', id: 'LIST' }],
+        }),
+        _get_Product_Total_: builder.query<My_Response_Field<Product_Total_Field>, Get_Product_Total_Body_Field>({
+            query: (body) => ({
+                url: PRODUCT_API.GET_PRODUCT_TOTAL,
+                method: 'POST',
+                body,
+            }),
+            providesTags: [{ type: 'Product', id: 'LIST' }],
         }),
         _product_Code_Search_: builder.query<My_Response_Field<Product_Code_Hit_Field>, Product_Code_Search_Body_Field>(
             {
@@ -47,6 +78,7 @@ export const product_RTK = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: [{ type: 'Product_Code', id: 'LIST' }],
         }),
         _create_Product_: builder.mutation<My_Response_Field<Product_Field>, Create_Product_Body_Field>({
             query: (body) => ({
@@ -54,12 +86,15 @@ export const product_RTK = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: [{ type: 'Product', id: 'LIST' }],
         }),
     }),
 });
 
 export const {
     useLazy_get_Product_Code_By_Id_Query,
+    useLazy_get_Product_Code_Total_Query,
+    useLazy_get_Product_Total_Query,
     useLazy_product_Code_Search_Query,
     use_create_Product_Code_Mutation,
     use_create_Product_Mutation,

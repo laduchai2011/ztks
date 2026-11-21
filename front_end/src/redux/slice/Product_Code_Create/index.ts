@@ -6,16 +6,16 @@ import { Video_Field } from '@src/data_struct/video';
 const initialState: state_props = {
     create_status: 'end',
 
-    is_basic_info: false,
-    is_detail_info: false,
+    is_basic_infor: false,
+    is_detail_infor: false,
     is_upload_images: false,
     is_upload_videos: false,
 
-    basic_info: {
+    basic_infor: {
         name: '',
         description: '',
     },
-    detail_info: {
+    detail_infor: {
         detail: '',
     },
     upload_images: {
@@ -36,19 +36,19 @@ const Product_Code_Create_Slice = createSlice({
         },
 
         // basic_info
-        set__is_basic_info: (state, action: PayloadAction<boolean>) => {
-            state.is_basic_info = action.payload;
+        set__is_basic_infor: (state, action: PayloadAction<boolean>) => {
+            state.is_basic_infor = action.payload;
         },
-        set__basic_info: (state, action: PayloadAction<{ name: string; description: string }>) => {
-            state.basic_info = action.payload;
+        set__basic_infor: (state, action: PayloadAction<{ name: string; description: string }>) => {
+            state.basic_infor = action.payload;
         },
 
         // detail_info
-        set__is_detail_info: (state, action: PayloadAction<boolean>) => {
-            state.is_detail_info = action.payload;
+        set__is_detail_infor: (state, action: PayloadAction<boolean>) => {
+            state.is_detail_infor = action.payload;
         },
-        set__detail_info: (state, action: PayloadAction<{ detail: string }>) => {
-            state.detail_info = action.payload;
+        set__detail_infor: (state, action: PayloadAction<{ detail: string }>) => {
+            state.detail_infor = action.payload;
         },
 
         // upload_images
@@ -74,12 +74,12 @@ export const {
     set__create_status,
 
     // basic_info
-    set__is_basic_info,
-    set__basic_info,
+    set__is_basic_infor,
+    set__basic_infor,
 
     // detail_info
-    set__is_detail_info,
-    set__detail_info,
+    set__is_detail_infor,
+    set__detail_infor,
 
     // upload_images
     set__is_upload_images,

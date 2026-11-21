@@ -46,12 +46,14 @@ class MutateDB_Create_Product_Code {
                     const product_code = result.rows[0];
 
                     const upsert_product_code_total_body: Upsert_Product_Code_Total_Body_Field = {
-                        new_total: 1,
-                        product_code_id: product_code.id,
+                        active_total: 1,
+                        deleted_total: 0,
+                        admin_account_id: product_code.account_id,
                     };
-                    await client.query<Product_Code_Field>('SELECT * FROM upsert_product_code_total($1, $2::UUID)', [
-                        upsert_product_code_total_body.new_total,
-                        upsert_product_code_total_body.product_code_id,
+                    await client.query<Product_Code_Field>('SELECT * FROM upsert_product_code_total($1, $2,$3::UUID)', [
+                        upsert_product_code_total_body.active_total,
+                        upsert_product_code_total_body.deleted_total,
+                        upsert_product_code_total_body.admin_account_id,
                     ]);
 
                     const create_kafka_event_body: Create_Kafka_Event_Body_Field<Product_Code_Field> = {

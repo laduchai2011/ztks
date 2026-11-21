@@ -86,6 +86,10 @@ const Infor2 = () => {
         set__price((prev) => ({ ...prev, price: value }));
     };
 
+    const handle_Check_Price = (is_compelled: boolean) => {
+        set__price((prev) => ({ ...prev, is_compelled_price: is_compelled }));
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.header}>
@@ -110,11 +114,19 @@ const Infor2 = () => {
                 </div>
                 <div>
                     <div>
-                        <input checked={price.is_compelled_price} type="checkbox" />
+                        <input
+                            checked={price.is_compelled_price}
+                            onChange={() => handle_Check_Price(true)}
+                            type="checkbox"
+                        />
                         <span>Giá cố định</span>
                     </div>
                     <div>
-                        <input checked={!price.is_compelled_price} type="checkbox" />
+                        <input
+                            checked={!price.is_compelled_price}
+                            onChange={() => handle_Check_Price(false)}
+                            type="checkbox"
+                        />
                         <span>Giá tối thiểu</span>
                     </div>
                 </div>

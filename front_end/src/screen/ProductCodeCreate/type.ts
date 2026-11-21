@@ -4,16 +4,16 @@ import { Video_Field } from '@src/data_struct/video';
 export interface state_props {
     create_status: 'begin' | 'end';
 
-    is_basic_info: boolean;
-    is_detail_info: boolean;
+    is_basic_infor: boolean;
+    is_detail_infor: boolean;
     is_upload_images: boolean;
     is_upload_videos: boolean;
 
-    basic_info: {
+    basic_infor: {
         name: string;
         description: string;
     };
-    detail_info: {
+    detail_infor: {
         detail: string;
     };
     upload_images: {

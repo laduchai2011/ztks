@@ -1,5 +1,6 @@
 import { Image_Field } from '../image';
 import { Video_Field } from '../video';
+
 export interface Product_Code_Field {
     id: string;
     name: string;
@@ -11,6 +12,12 @@ export interface Product_Code_Field {
     account_id: string;
     update_time: string;
     create_time: string;
+}
+
+export interface Product_Code_Total_Field {
+    active_total: number;
+    deleted_total: number;
+    admin_account_id: string;
 }
 
 export interface Product_Code_Hit_Field {
@@ -48,6 +55,12 @@ export interface Product_Field {
     account_id: string;
     update_time: string;
     create_time: string;
+}
+
+export interface Product_Total_Field {
+    active_total: number;
+    deleted_total: number;
+    admin_account_id: string;
 }
 
 export interface Product_Fluctuation_Field {

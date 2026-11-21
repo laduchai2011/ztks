@@ -44,24 +44,28 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION upsert_product_code_total (
-    p_new_total INTEGER,
-    p_product_code_id UUID
+    p_active_total INTEGER,
+    p_deleted_total INTEGER,
+    p_admin_account_id UUID
 )
 RETURNS VOID
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO product_code_total (
-        product_code_id,
-        p_new_total
+        active_total,
+        deleted_total,
+        admin_account_id
     )
     VALUES (
-        p_product_code_id,
-        p_new_total
+        p_active_total,
+        p_deleted_total,
+        p_admin_account_id
     )
-    ON CONFLICT (product_code_id)
+    ON CONFLICT (admin_account_id)
     DO UPDATE SET
-        total = product_code_total.total + EXCLUDED.total;
+        active_total = EXCLUDED.active_total,
+        deleted_total = EXCLUDED.deleted_total;
 END;
 $$;
 
@@ -102,8 +106,7 @@ CREATE OR REPLACE FUNCTION create_product (
     p_store_id UUID,
     p_product_code_id UUID,
     p_account_id UUID,
-    p_note VARCHAR(255),
-	p_images JSONB DEFAULT '[]'::JSONB,
+    p_images JSONB DEFAULT '[]'::JSONB,
     p_videos JSONB DEFAULT '[]'::JSONB
 )
 RETURNS SETOF product
@@ -112,14 +115,23 @@ AS $$
 DECLARE
     v_product_id UUID;
 BEGIN
+    -- 1. Kiểm tra tài khoản có phải admin không
+    IF NOT EXISTS (
+        SELECT 1
+        FROM account_information
+        WHERE account_id = p_account_id
+          AND account_type = 'admin'
+    ) THEN
+        RAISE EXCEPTION 'Không phải tài khoản admin.'
+            USING ERRCODE = 'P0001';
+    END IF;
 
-    -- Kiểm tra số lượng
+    -- 2. Kiểm tra số lượng
     IF p_quantity < 0 THEN
         RAISE EXCEPTION 'Quantity must be greater than or equal to 0';
     END IF;
 
-
-    -- 1. Tạo product
+    -- 3. Tạo sản phẩm
     INSERT INTO product (
         name,
         description,
@@ -138,38 +150,15 @@ BEGIN
         p_detail,
         p_quantity,
         0,
-       	p_images,
-		p_videos,
+        p_images,
+        p_videos,
         p_store_id,
         p_product_code_id,
         p_account_id
     )
-    RETURNING id
-    INTO v_product_id;
+    RETURNING id INTO v_product_id;
 
-
-    -- 2. Tạo product fluctuation
-    INSERT INTO product_fluctuation (
-        type,
-        command,
-        quantity,
-        actual_quantity,
-        note,
-        product_id,
-        account_id
-    )
-    VALUES (
-        'in',
-        'add_new',
-        p_quantity,
-        p_quantity,
-        p_note,
-        v_product_id,
-        p_account_id
-    );
-
-
-    -- 3. Trả về product
+    -- 4. Trả về sản phẩm
     RETURN QUERY
     SELECT p.*
     FROM product p
@@ -179,24 +168,28 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION upsert_product_total (
-    p_new_total INTEGER,
-    p_product_id UUID
+    p_active_total INTEGER,
+    p_deleted_total INTEGER,
+    p_admin_account_id UUID
 )
 RETURNS VOID
 LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO product_total (
-        product_id,
-        p_new_total
+        active_total,
+        deleted_total,
+        admin_account_id
     )
     VALUES (
-        p_product_id,
-        p_new_total
+        p_active_total,
+        p_deleted_total,
+        p_admin_account_id
     )
-    ON CONFLICT (product_id)
+    ON CONFLICT (admin_account_id)
     DO UPDATE SET
-        total = product_total.total + EXCLUDED.total;
+        active_total = EXCLUDED.active_total,
+        deleted_total = EXCLUDED.deleted_total;
 END;
 $$;
 

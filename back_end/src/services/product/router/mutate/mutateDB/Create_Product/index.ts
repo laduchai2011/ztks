@@ -32,16 +32,17 @@ class MutateDB_Create_Product {
                 await client.query('BEGIN');
 
                 const result = await client.query<Product_Field>(
-                    'SELECT * FROM create_product($1, $2, $3, $4, $5, $6, $7, $8, $9::JSONB, $10::JSONB)',
+                    'SELECT * FROM create_product($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::JSONB, $11::JSONB)',
                     [
                         this._create_product_body.name,
                         this._create_product_body.description,
                         this._create_product_body.detail,
                         this._create_product_body.quantity,
+                        this._create_product_body.is_compelled_price,
+                        this._create_product_body.unit_price,
                         this._create_product_body.store_id,
                         this._create_product_body.product_code_id,
                         this._create_product_body.account_id,
-                        this._create_product_body.note,
                         JSON.stringify(this._create_product_body.images),
                         JSON.stringify(this._create_product_body.videos),
                     ]
@@ -54,12 +55,14 @@ class MutateDB_Create_Product {
                     const product = result.rows[0];
 
                     const upsert_product_total_body: Upsert_Product_Total_Body_Field = {
-                        new_total: 1,
-                        product_id: product.id,
+                        active_total: 1,
+                        deleted_total: 0,
+                        admin_account_id: product.account_id,
                     };
-                    await client.query<Product_Field>('SELECT * FROM upsert_product_total($1, $2::UUID)', [
-                        upsert_product_total_body.new_total,
-                        upsert_product_total_body.product_id,
+                    await client.query<Product_Field>('SELECT * FROM upsert_product_total($1, $2, $3::UUID)', [
+                        upsert_product_total_body.active_total,
+                        upsert_product_total_body.deleted_total,
+                        upsert_product_total_body.admin_account_id,
                     ]);
 
                     const fluctuation_for_create_product_body: Fluctuation_For_Create_Product_Body_Field = {

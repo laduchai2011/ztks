@@ -1,6 +1,6 @@
 import { memo, useEffect } from 'react';
 import style from './style.module.scss';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { global_set__data__toast_message, global_set__is_loading } from '@src/redux/slice/Global';
@@ -10,17 +10,22 @@ import { HiOutlineCube } from 'react-icons/hi';
 import { CREATE_PRODUCT_CODE } from '@src/const/text';
 import {
     set__create_status,
-    set__is_basic_info,
-    set__is_detail_info,
+    set__is_basic_infor,
+    set__is_detail_infor,
     set__is_upload_images,
     set__is_upload_videos,
 } from '@src/redux/slice/Product_Code_Create';
+import { Account_Information_Field, account_type_enum } from '@src/data_struct/account';
 import { Create_Product_Code_Body_Field } from '@src/data_struct/product/body';
 import { use_create_Product_Code_Mutation } from '@src/redux/query/product_RTK';
 
 const Header = () => {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
+
+    const account_information: Account_Information_Field | undefined = useSelector(
+        (state: RootState) => state.App_Slice.account_information
+    );
 
     const [create_Product_Code] = use_create_Product_Code_Mutation();
 
@@ -28,8 +33,8 @@ const Header = () => {
         (state: RootState) => state.Product_Code_Create_Slice.create_status
     );
 
-    const is_basic_info: boolean = useSelector((state: RootState) => state.Product_Code_Create_Slice.is_basic_info);
-    const is_detail_info: boolean = useSelector((state: RootState) => state.Product_Code_Create_Slice.is_detail_info);
+    const is_basic_infor: boolean = useSelector((state: RootState) => state.Product_Code_Create_Slice.is_basic_infor);
+    const is_detail_infor: boolean = useSelector((state: RootState) => state.Product_Code_Create_Slice.is_detail_infor);
     const is_upload_images: boolean = useSelector(
         (state: RootState) => state.Product_Code_Create_Slice.is_upload_images
     );
@@ -37,13 +42,28 @@ const Header = () => {
         (state: RootState) => state.Product_Code_Create_Slice.is_upload_videos
     );
 
-    const { name, description } = useSelector((state: RootState) => state.Product_Code_Create_Slice.basic_info);
-    const { detail } = useSelector((state: RootState) => state.Product_Code_Create_Slice.detail_info);
+    const { name, description } = useSelector((state: RootState) => state.Product_Code_Create_Slice.basic_infor);
+    const { detail } = useSelector((state: RootState) => state.Product_Code_Create_Slice.detail_infor);
     const { urls: image_urls } = useSelector((state: RootState) => state.Product_Code_Create_Slice.upload_images);
     const { urls: video_urls } = useSelector((state: RootState) => state.Product_Code_Create_Slice.upload_videos);
 
     useEffect(() => {
-        if (create_status === 'begin' && is_basic_info && is_detail_info && is_upload_images && is_upload_videos) {
+        if (
+            !(
+                account_information?.account_id === account_information?.added_by_id &&
+                account_information?.account_type === account_type_enum.ADMIN
+            )
+        ) {
+            dispatch(
+                global_set__data__toast_message({
+                    message: 'Bạn không phải admin',
+                    type: messageType_enum.WARN,
+                })
+            );
+            return;
+        }
+
+        if (create_status === 'begin' && is_basic_infor && is_detail_infor && is_upload_images && is_upload_videos) {
             if (name.trim().length === 0) {
                 dispatch(
                     global_set__data__toast_message({
@@ -103,8 +123,8 @@ const Header = () => {
                 })
                 .finally(() => {
                     dispatch(global_set__is_loading(false));
-                    dispatch(set__is_basic_info(false));
-                    dispatch(set__is_detail_info(false));
+                    dispatch(set__is_basic_infor(false));
+                    dispatch(set__is_detail_infor(false));
                     dispatch(set__is_upload_images(false));
                     dispatch(set__is_upload_videos(false));
                     dispatch(set__create_status('end'));
@@ -112,10 +132,11 @@ const Header = () => {
         }
     }, [
         dispatch,
+        account_information,
         create_Product_Code,
         create_status,
-        is_basic_info,
-        is_detail_info,
+        is_basic_infor,
+        is_detail_infor,
         is_upload_images,
         is_upload_videos,
         name,
