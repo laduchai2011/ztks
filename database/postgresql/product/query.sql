@@ -21,10 +21,10 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     RETURN QUERY
-    SELECT pc.*
+    SELECT p.*
     FROM product p
-    WHERE pc.id = p_id
-      AND pc.is_delete = FALSE;
+    WHERE p.id = p_id
+      AND p.is_delete = FALSE;
 END;
 $$;
 
@@ -56,6 +56,7 @@ BEGIN
 END;
 $$;
 
+
 CREATE OR REPLACE FUNCTION get_random_products (
     p_account_id UUID,
     p_seed UUID,
@@ -73,6 +74,7 @@ DECLARE
     v_has_more BOOLEAN;
     v_next_cursor TEXT;
 BEGIN
+    -- Validate input
     IF p_account_id IS NULL THEN
         RAISE EXCEPTION 'Account ID cannot be NULL';
     END IF;
@@ -81,15 +83,29 @@ BEGIN
         RAISE EXCEPTION 'Seed cannot be NULL';
     END IF;
 
+    -- Limit: 1 -> 100
     p_limit := LEAST(
         GREATEST(COALESCE(p_limit, 20), 1),
         100
     );
 
-    -- Giải mã cursor
+    -- Decode cursor
     IF p_cursor IS NOT NULL AND p_cursor <> '' THEN
-        v_last_random_key := p_cursor::JSONB ->> 'last_random_key';
-        v_last_id := (p_cursor::JSONB ->> 'last_id')::UUID;
+        BEGIN
+            v_last_random_key :=
+                (p_cursor::JSONB ->> 'last_random_key');
+
+            v_last_id :=
+                (p_cursor::JSONB ->> 'last_id')::UUID;
+
+            IF v_last_random_key IS NULL OR v_last_id IS NULL THEN
+                RAISE EXCEPTION 'Invalid cursor';
+            END IF;
+
+        EXCEPTION
+            WHEN OTHERS THEN
+                RAISE EXCEPTION 'Invalid cursor: %', p_cursor;
+        END;
     END IF;
 
     WITH products AS (
@@ -101,52 +117,76 @@ BEGIN
             p.account_id = p_account_id
             AND p.is_delete = FALSE
     ),
+
     filtered AS (
         SELECT *
         FROM products
         WHERE
             v_last_random_key IS NULL
             OR (random_key, id) > (v_last_random_key, v_last_id)
-        ORDER BY random_key, id
+        ORDER BY
+            random_key,
+            id
         LIMIT p_limit + 1
     ),
+
     limited AS (
         SELECT *
         FROM filtered
-        ORDER BY random_key, id
+        ORDER BY
+            random_key,
+            id
         LIMIT p_limit
+    ),
+
+    page_info AS (
+        SELECT
+            COALESCE(
+                jsonb_agg(
+                    to_jsonb(l) - 'random_key'
+                    ORDER BY l.random_key, l.id
+                ),
+                '[]'::JSONB
+            ) AS items,
+
+            (
+                SELECT COUNT(*) > p_limit
+                FROM filtered
+            ) AS has_more,
+
+            (
+                SELECT jsonb_build_object(
+                    'last_random_key', last_item.random_key,
+                    'last_id', last_item.id
+                )::TEXT
+                FROM limited last_item
+                ORDER BY
+                    last_item.random_key DESC,
+                    last_item.id DESC
+                LIMIT 1
+            ) AS next_cursor
+
+        FROM limited l
     )
+
     SELECT
-        COALESCE(
-            jsonb_agg(
-                to_jsonb(l) - 'random_key'
-                ORDER BY l.random_key, l.id
-            ),
-            '[]'::JSONB
-        ),
-        (SELECT COUNT(*) > p_limit FROM filtered)
+        items,
+        has_more,
+        CASE
+            WHEN has_more THEN next_cursor
+            ELSE NULL
+        END
     INTO
         v_items,
-        v_has_more
-    FROM limited l;
+        v_has_more,
+        v_next_cursor
+    FROM page_info;
 
-    -- Tạo cursor tiếp theo
-    IF v_has_more THEN
-        SELECT jsonb_build_object(
-            'last_random_key', random_key,
-            'last_id', id
-        )::TEXT
-        INTO v_next_cursor
-        FROM limited
-        ORDER BY random_key DESC, id DESC
-        LIMIT 1;
-    ELSE
-        v_next_cursor := NULL;
-    END IF;
-
+    -- Return result
     RETURN jsonb_build_object(
         'items', v_items,
         'next_cursor', v_next_cursor
     );
+
 END;
 $$;

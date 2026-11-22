@@ -20,13 +20,18 @@ const Filter = () => {
         (state: RootState) => state.App_Slice.account_information
     );
 
+    // const searched_product_ids: string[] = useSelector((state: RootState) => state.Product_Slice.searched_product_ids);
+
     const [search_text_product, set__search_text_product] = useState<string>('');
 
     const [product_Search] = useLazy_product_Search_Query();
 
     const timeout_search_product = useRef<any>(null);
     useEffect(() => {
-        if (search_text_product.trim().length === 0) return;
+        if (search_text_product.trim().length === 0) {
+            dispatch(set__searched_product_ids([]));
+            return;
+        }
 
         clearTimeout(timeout_search_product.current);
         timeout_search_product.current = setTimeout(() => {
@@ -67,6 +72,10 @@ const Filter = () => {
         set__search_text_product(value);
     };
 
+    const clear_Search_Text = () => {
+        set__search_text_product('');
+    };
+
     return (
         <div className={style.parent}>
             <div className={style.search}>
@@ -76,7 +85,7 @@ const Filter = () => {
                         onChange={(e) => handle_Product_Search(e)}
                         placeholder="Tìm kiếm"
                     />
-                    <IoCloseOutline />
+                    {search_text_product.length > 0 && <IoCloseOutline onClick={() => clear_Search_Text()} />}
                 </div>
             </div>
             <div className={style.btn}>

@@ -64,8 +64,8 @@ BEGIN
     )
     ON CONFLICT (admin_account_id)
     DO UPDATE SET
-        active_total = EXCLUDED.active_total,
-        deleted_total = EXCLUDED.deleted_total;
+        active_total = product_code_total.active_total + EXCLUDED.active_total,
+        deleted_total = product_code_total.deleted_total + EXCLUDED.deleted_total;
 END;
 $$;
 
@@ -199,8 +199,8 @@ BEGIN
     )
     ON CONFLICT (admin_account_id)
     DO UPDATE SET
-        active_total = EXCLUDED.active_total,
-        deleted_total = EXCLUDED.deleted_total;
+        active_total = product_total.active_total + EXCLUDED.active_total,
+        deleted_total = product_total.deleted_total + EXCLUDED.deleted_total;
 END;
 $$;
 

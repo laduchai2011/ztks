@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
 interface UseInfiniteScrollProps {
     loadMore: () => void;
@@ -17,31 +17,47 @@ export function useInfiniteScroll({
 }: UseInfiniteScrollProps) {
     const observerRef = useRef<IntersectionObserver | null>(null);
 
-    const lastElementRef = (node: HTMLDivElement | null) => {
-        observerRef.current?.disconnect();
-
-        if (!node || !hasMore || isLoading) return;
-
-        observerRef.current = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting) {
-                    loadMore();
-                }
-            },
-            {
-                root,
-                rootMargin: `0px 0px ${threshold}px 0px`,
-                threshold: 0,
-            }
-        );
-
-        observerRef.current.observe(node);
-    };
+    const loadMoreRef = useRef(loadMore);
 
     useEffect(() => {
-        return () => {
+        loadMoreRef.current = loadMore;
+    }, [loadMore]);
+
+    const lastElementRef = useCallback(
+        (node: HTMLDivElement | null) => {
             observerRef.current?.disconnect();
-        };
+
+            if (!node) return;
+
+            observerRef.current = new IntersectionObserver(
+                (entries) => {
+                    const entry = entries[0];
+
+                    if (entry?.isIntersecting) {
+                        loadMoreRef.current();
+                    }
+                },
+                {
+                    root,
+                    rootMargin: `0px 0px ${threshold}px 0px`,
+                    threshold: 0.3,
+                }
+            );
+
+            observerRef.current.observe(node);
+        },
+        [root, threshold]
+    );
+
+    useEffect(() => {
+        if (hasMore && !isLoading) {
+            // Observer sẽ được tạo lại khi node thay đổi.
+            // Không cần gọi loadMore ở đây.
+        }
+    }, [hasMore, isLoading]);
+
+    useEffect(() => {
+        return () => observerRef.current?.disconnect();
     }, []);
 
     return { lastElementRef };

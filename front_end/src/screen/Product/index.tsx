@@ -48,6 +48,7 @@ const Product = () => {
         if (is_max_show && is_show) {
             return style.is_max_show;
         }
+
         return;
     };
 
