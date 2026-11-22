@@ -29,6 +29,7 @@ import Tool_Bar_Reducer from '@src/redux/slice/Tool_Bar';
 import Shop_Reducer from '@src/redux/slice/Shop';
 import Team_Reducer from '@src/redux/slice/Team';
 import Team_Detail_Reducer from '@src/redux/slice/Team_Detail';
+import Product_Reducer from '@src/redux/slice/Product';
 import Product_Code_Create_Reducer from '@src/redux/slice/Product_Code_Create';
 import Product_Create_Reducer from '@src/redux/slice/Product_Create';
 import { account_RTK } from './query/account_RTK';
@@ -84,6 +85,7 @@ export const store = configureStore({
         Shop_Slice: Shop_Reducer,
         Team_Slice: Team_Reducer,
         Team_Detail_Slice: Team_Detail_Reducer,
+        Product_Slice: Product_Reducer,
         Product_Code_Create_Slice: Product_Code_Create_Reducer,
         Product_Create_Slice: Product_Create_Reducer,
         [account_RTK.reducerPath]: account_RTK.reducer,

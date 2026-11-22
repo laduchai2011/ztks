@@ -56,15 +56,15 @@ const Header = () => {
     const { urls: video_urls } = useSelector((state: RootState) => state.Product_Create_Slice.upload_videos);
 
     useEffect(() => {
-        console.log('create_status', create_status);
-        console.log('is_basic_infor', is_basic_infor);
-        console.log('is_detail_infor', is_detail_infor);
-        console.log('is_amount_infor', is_amount_infor);
-        console.log('is_store_infor', is_store_infor);
-        console.log('is_product_code_infor', is_product_code_infor);
-        console.log('is_price_infor', is_price_infor);
-        console.log('is_upload_images', is_upload_images);
-        console.log('is_upload_videos', is_upload_videos);
+        // console.log('create_status', create_status);
+        // console.log('is_basic_infor', is_basic_infor);
+        // console.log('is_detail_infor', is_detail_infor);
+        // console.log('is_amount_infor', is_amount_infor);
+        // console.log('is_store_infor', is_store_infor);
+        // console.log('is_product_code_infor', is_product_code_infor);
+        // console.log('is_price_infor', is_price_infor);
+        // console.log('is_upload_images', is_upload_images);
+        // console.log('is_upload_videos', is_upload_videos);
 
         if (
             create_status === 'begin' &&

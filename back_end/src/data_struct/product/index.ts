@@ -37,6 +37,23 @@ export interface Product_Code_Hit_Field {
     }[];
 }
 
+export interface Product_Hit_Field {
+    total: {
+        value: number;
+        relation: string;
+    };
+    max_score: number;
+    hits: {
+        _index: string;
+        _id: string;
+        _score: number;
+        _source: {
+            account_id: string;
+            search_content: string;
+        };
+    }[];
+}
+
 export interface Product_Field {
     id: string;
     name: string;
@@ -55,6 +72,11 @@ export interface Product_Field {
     account_id: string;
     update_time: string;
     create_time: string;
+}
+
+export interface Cursor_Product_Field {
+    items: Product_Field[];
+    next_cursor: string | null;
 }
 
 export interface Product_Total_Field {

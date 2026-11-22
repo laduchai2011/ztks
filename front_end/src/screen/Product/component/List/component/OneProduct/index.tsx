@@ -1,38 +1,31 @@
-import { memo, useEffect } from 'react';
+import { FC, memo, Ref } from 'react';
 import style from './style.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '@src/redux';
-import { global_set__data__toast_message } from '@src/redux/slice/Global';
+// import { useSelector, useDispatch } from 'react-redux';
+// import { RootState, AppDispatch } from '@src/redux';
+// import { global_set__data__toast_message } from '@src/redux/slice/Global';
 import { route_enum } from '@src/router/type';
+import { Product_Field } from '@src/data_struct/product';
+import { handleSrcImage } from '@src/utility/string';
 
-const OneProduct = () => {
+const OneProduct: FC<{ data: Product_Field; ref?: Ref<HTMLDivElement> }> = ({ data, ref }) => {
     const navigate = useNavigate();
-    const dispatch = useDispatch<AppDispatch>();
+    // const dispatch = useDispatch<AppDispatch>();
 
     const handle_Go_To_Product_Detail = () => {
-        navigate(route_enum.PRODUCT_DETAIL + '/' + `${1}`);
+        navigate(route_enum.PRODUCT_DETAIL + '/' + `${data.id}`);
     };
 
     return (
-        <div className={style.parent} onClick={() => handle_Go_To_Product_Detail()}>
-            <img
-                src={
-                    'http://localhost:4000/api/service__image_v1/query/image/1790368982012_01a0a0c9-cf8c-7aaf-8348-faec9e683cfd_133962880188383301.jpg'
-                }
-            />
-            <div className={style.description}>
-                Mèo là loài động vật nhỏ nhắn, đáng yêu và nhanh nhẹn. Chúng có bộ lông mềm mại, đôi mắt long lanh, hai
-                chiếc tai hình tam giác luôn vểnh lên nghe ngóng và chiếc đuôi dài uyển chuyển. Mèo có bốn chân nhỏ với
-                những chiếc móng vuốt sắc nhọn. Chúng thường thích nằm sưởi nắng, cuộn tròn ngủ, chơi đùa với cuộn len
-                và bắt chuột. Mèo rất sạch sẽ, thích được vuốt ve và thường phát ra tiếng kêu "meo meo" dễ thương. Tiếng
-                kêu ấy khiến mèo trở thành một trong những vật nuôi gần gũi và được nhiều người yêu thích.
-            </div>
+        <div className={style.parent} ref={ref} onClick={() => handle_Go_To_Product_Detail()}>
+            <img src={handleSrcImage(data.images[0].url)} />
+            <div className={style.name}>{data.name}</div>
+            <div className={style.description}>{data.description}</div>
             <div className={style.infor}>
-                <span>Hình ảnh (10)</span>
-                <span>Thước phim (10)</span>
-                <span>Số lượng (10.000)</span>
-                <span>Giá (1.000.000)</span>
+                <span>Hình ảnh ({data.images.length})</span>
+                <span>Thước phim ({data.videos.length})</span>
+                <span>Số lượng ({data.quantity_in - data.quantity_out})</span>
+                <span>Giá ({data.unit_price})</span>
             </div>
         </div>
     );

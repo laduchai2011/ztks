@@ -61,7 +61,18 @@ export interface Product_Code_Search_Body_Field {
     account_id: string;
 }
 
+export interface Product_Search_Body_Field {
+    from: number;
+    size: number;
+    search_content: string;
+    account_id: string;
+}
+
 export interface Get_Product_Code_By_Id_Body_Field {
+    id: string;
+}
+
+export interface Get_Product_By_Id_Body_Field {
     id: string;
 }
 
@@ -71,4 +82,11 @@ export interface Get_Product_Code_Total_Body_Field {
 
 export interface Get_Product_Total_Body_Field {
     admin_account_id: string;
+}
+
+export interface Get_Random_Products_Body_Field {
+    account_id: string;
+    seed: string;
+    limit: number;
+    cursor: string | null;
 }

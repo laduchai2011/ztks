@@ -16,12 +16,19 @@
         background-color: gray;
     }
 
+    > .name {
+        @include line-clamp(1);
+        box-sizing: border-box;
+        padding: 2px 5px;
+        font-weight: 600;
+    }
+
     > .description {
         @include line-clamp(2);
         box-sizing: border-box;
         padding: 2px 5px;
         line-height: 24px;
-        font-weight: 600;
+        font-weight: 500;
     }
 
     > .infor {
