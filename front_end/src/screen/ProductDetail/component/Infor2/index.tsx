@@ -1,15 +1,27 @@
-import { memo, useRef, useState, useEffect } from 'react';
+import { memo, useState, useEffect } from 'react';
 import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@src/redux';
 import { FaFolder, FaRegImage } from 'react-icons/fa';
 import { GoVideo } from 'react-icons/go';
+import { Product_Field } from '@src/data_struct/product';
+import { Image_Field } from '@src/data_struct/image';
+import { Video_Field } from '@src/data_struct/video';
+import { handleSrcImage } from '@src/utility/string';
 
 const Infor2 = () => {
     const dispatch = useDispatch<AppDispatch>();
 
-    const [image, set__image] = useState<string[]>([]);
-    const [video, set__video] = useState<string[]>([]);
+    const product: Product_Field | undefined = useSelector((state: RootState) => state.Product_Detail_Slice.product);
+
+    const [images, set__images] = useState<Image_Field[]>([]);
+    const [videos, set__videos] = useState<Video_Field[]>([]);
+
+    useEffect(() => {
+        if (!product) return;
+        set__images(product.images);
+        set__videos(product.videos);
+    }, [product]);
 
     return (
         <div className={style.parent}>
@@ -24,7 +36,7 @@ const Infor2 = () => {
             </div>
             <div className={style.infor22}>
                 <div>
-                    {image.length === 0 && (
+                    {images.length === 0 && (
                         <div className={style.not_image}>
                             <div>
                                 <div>
@@ -35,20 +47,17 @@ const Infor2 = () => {
                             </div>
                         </div>
                     )}
-                    {image.length > 0 && (
+                    {images.length > 0 && (
                         <div className={style.image}>
-                            <img
-                                src="http://localhost:4000/api/service__image_v1/query/image/1790368982012_01a0a0c9-cf8c-7aaf-8348-faec9e683cfd_133962880188383301.jpg"
-                                alt=""
-                            />
+                            <img src={handleSrcImage(images[0].url)} alt="" />
                             <div>
-                                <div>Xem ảnh 1/3</div>
+                                <div>{`Xem ảnh 1/${images.length}`}</div>
                             </div>
                         </div>
                     )}
                 </div>
                 <div>
-                    {video.length === 0 && (
+                    {videos.length === 0 && (
                         <div className={style.not_image}>
                             <div>
                                 <div>
@@ -59,14 +68,11 @@ const Infor2 = () => {
                             </div>
                         </div>
                     )}
-                    {video.length > 0 && (
+                    {videos.length > 0 && (
                         <div className={style.image}>
-                            <img
-                                src="http://localhost:4000/api/service__image_v1/query/image/1790368982012_01a0a0c9-cf8c-7aaf-8348-faec9e683cfd_133962880188383301.jpg"
-                                alt=""
-                            />
+                            <img src={handleSrcImage(videos[0].thumbnail)} alt="" />
                             <div>
-                                <div>Xem thước phim 1/3</div>
+                                <div>{`Xem thước phim 1/${videos.length}`}</div>
                             </div>
                         </div>
                     )}

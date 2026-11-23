@@ -1,19 +1,13 @@
 import { memo, useEffect, useRef, useCallback } from 'react';
 import style from './style.module.scss';
-
 import { useSelector } from 'react-redux';
 import { RootState } from '@src/redux';
-
 import { v7 as uuidv7 } from 'uuid';
-
 import OneProduct from './component/OneProduct';
 import OneProductWithSearch from './component/OneProductWithSearch';
-
 import { useLazy_get_Random_Products_Query } from '@src/redux/query/product_RTK';
-
 import { Account_Information_Field } from '@src/data_struct/account';
 import { Product_Field } from '@src/data_struct/product';
-
 import { useInfiniteScroll } from '@src/component/Hook/load_More/useInfiniteScroll';
 import { useLoadMore } from '@src/component/Hook/load_More/useLoadMore';
 

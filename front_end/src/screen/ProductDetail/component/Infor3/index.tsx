@@ -1,15 +1,14 @@
-import { memo, useRef, useState, useEffect } from 'react';
+import { memo } from 'react';
 import style from './style.module.scss';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '@src/redux';
+import { useSelector } from 'react-redux';
+import { RootState } from '@src/redux';
 import { GiNotebook } from 'react-icons/gi';
+import { Product_Field } from '@src/data_struct/product';
 
 const Infor2 = () => {
-    const dispatch = useDispatch<AppDispatch>();
+    const product: Product_Field | undefined = useSelector((state: RootState) => state.Product_Detail_Slice.product);
 
-    const [image, set__image] = useState<string[]>([]);
-    const [video, set__video] = useState<string[]>([]);
-
+    if (!product) return;
     return (
         <div className={style.parent}>
             <div className={style.infor31}>
@@ -21,7 +20,7 @@ const Infor2 = () => {
                 <div>Thông tin chi tiết</div>
             </div>
             <div className={style.infor32}>
-                <div>sdfsdujfgdsjgf</div>
+                <div dangerouslySetInnerHTML={{ __html: product.detail }} />
             </div>
         </div>
     );
