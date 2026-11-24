@@ -240,7 +240,7 @@ const Infor2 = () => {
         upload_videos();
     }, [create_status, dispatch, account, images, videos]);
 
-    const list_mage = image_previews.map((item, index) => {
+    const list_image = image_previews.map((item, index) => {
         return (
             <div key={index}>
                 <img src={item} alt="" />
@@ -269,7 +269,7 @@ const Infor2 = () => {
                     <div>
                         <div>Thêm hình ảnh</div>
                         <div>
-                            {list_mage}
+                            {list_image}
                             <div id={id_image_input} onClick={handle_Click_Image}>
                                 <IoMdAdd size={25} />
                                 <input

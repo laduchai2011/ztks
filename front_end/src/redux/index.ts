@@ -33,6 +33,7 @@ import Product_Reducer from '@src/redux/slice/Product';
 import Product_Code_Create_Reducer from '@src/redux/slice/Product_Code_Create';
 import Product_Create_Reducer from '@src/redux/slice/Product_Create';
 import Product_Detail_Reducer from '@src/redux/slice/Product_Detail';
+import Product_Edit_Reducer from '@src/redux/slice/Product_Edit';
 import { account_RTK } from './query/account_RTK';
 import { call_RTK } from './query/call_RTK';
 import { call_agent_RTK } from './query/call_agent_RTK';
@@ -90,6 +91,7 @@ export const store = configureStore({
         Product_Code_Create_Slice: Product_Code_Create_Reducer,
         Product_Create_Slice: Product_Create_Reducer,
         Product_Detail_Slice: Product_Detail_Reducer,
+        Product_Edit_Slice: Product_Edit_Reducer,
         [account_RTK.reducerPath]: account_RTK.reducer,
         [call_RTK.reducerPath]: call_RTK.reducer,
         [call_agent_RTK.reducerPath]: call_agent_RTK.reducer,

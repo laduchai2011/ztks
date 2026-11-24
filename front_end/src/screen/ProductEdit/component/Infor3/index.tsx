@@ -1,14 +1,25 @@
 import { memo, useEffect, useId, useRef, useState } from 'react';
 import style from './style.module.scss';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { global_set__data__toast_message } from '@src/redux/slice/Global';
 import { messageType_enum } from '@src/component/ToastMessage/type';
 import { IoMdCloseCircle, IoMdAdd } from 'react-icons/io';
+import { Product_Field } from '@src/data_struct/product';
+import { Image_Field } from '@src/data_struct/image';
+import { Video_Field } from '@src/data_struct/video';
+import { handleSrcImage, handleSrcVideo } from '@src/utility/string';
 
 const Infor2 = () => {
     const dispatch = useDispatch<AppDispatch>();
+
+    const product: Product_Field | undefined = useSelector((state: RootState) => state.Product_Edit_Slice.product);
+
+    const [old_images, set__old_images] = useState<Image_Field[]>([]);
+    const [old_videos, set__old_videos] = useState<Video_Field[]>([]);
+    const [deleted_old_image, set__deleted_old_image] = useState<Image_Field | undefined>(undefined);
+    const [deleted_old_video, set__deleted_old_video] = useState<Video_Field | undefined>(undefined);
 
     const id_image_input = useId();
     const imageInput_element = useRef<HTMLInputElement | null>(null);
@@ -23,6 +34,24 @@ const Infor2 = () => {
     const [new_videos, set__new_videos] = useState<File[]>([]);
     const [deleted_video, set__deleted_video] = useState<File | undefined>(undefined);
     const [video_previews, set__video_previews] = useState<string[]>([]);
+
+    useEffect(() => {
+        if (!product) return;
+        set__old_images(product.images);
+        set__old_videos(product.videos);
+    }, [product]);
+    useEffect(() => {
+        if (!deleted_old_image) return;
+        const deleted_index = old_images.indexOf(deleted_old_image);
+        set__old_images((prev) => prev.filter((_, i) => i !== deleted_index));
+        set__deleted_image(undefined);
+    }, [deleted_old_image, old_images]);
+    useEffect(() => {
+        if (!deleted_old_video) return;
+        const deleted_index = old_videos.indexOf(deleted_old_video);
+        set__old_videos((prev) => prev.filter((_, i) => i !== deleted_index));
+        set__deleted_video(undefined);
+    }, [deleted_old_video, old_videos]);
 
     useEffect(() => {
         if (!new_images) return;
@@ -106,11 +135,29 @@ const Infor2 = () => {
         set__new_videos(files);
     };
 
-    const list_mage = image_previews.map((item, index) => {
+    const list_old_image = old_images.map((item, index) => {
+        return (
+            <div key={index}>
+                <img src={handleSrcImage(item.url)} alt="" />
+                <IoMdCloseCircle onClick={() => set__deleted_old_image(item)} />
+            </div>
+        );
+    });
+
+    const list_image = image_previews.map((item, index) => {
         return (
             <div key={index}>
                 <img src={item} alt="" />
                 <IoMdCloseCircle onClick={() => set__deleted_image(images[index])} />
+            </div>
+        );
+    });
+
+    const list_old_video = old_videos.map((item, index) => {
+        return (
+            <div key={index}>
+                <video src={handleSrcVideo(item.url)} controls />
+                <IoMdCloseCircle onClick={() => set__deleted_old_video(item)} />
             </div>
         );
     });
@@ -135,7 +182,8 @@ const Infor2 = () => {
                     <div>
                         <div>Thêm hình ảnh</div>
                         <div>
-                            {list_mage}
+                            {list_old_image}
+                            {list_image}
                             <div id={id_image_input} onClick={handle_Click_Image}>
                                 <IoMdAdd size={25} />
                                 <input
@@ -152,6 +200,7 @@ const Infor2 = () => {
                     <div>
                         <div>Thêm thước phim</div>
                         <div>
+                            {list_old_video}
                             {list_video}
                             <div id={id_video_input} onClick={handle_Click_Video}>
                                 <IoMdAdd size={25} />

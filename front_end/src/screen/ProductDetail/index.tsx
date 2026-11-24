@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { global_set__data__toast_message } from '@src/redux/slice/Global';
-// import { route_enum } from '@src/router/type';
+import { route_enum } from '@src/router/type';
 // import { select_enum } from '@src/router/type';
 import GlobalLoading from '@src/Global/GlobalLoading';
 import GlobalToastMessage from '@src/Global/GlobalToastMessage';
@@ -34,9 +34,9 @@ const ProductDetail = () => {
     const [image_urls, set__image_urls] = useState<string[]>([]);
 
     useEffect(() => {
-        // if (my_id === null) {
-        //     navigate(route_enum.SIGNIN);
-        // }
+        if (my_id === null) {
+            navigate(route_enum.SIGNIN);
+        }
 
         return () => {
             dispatch(

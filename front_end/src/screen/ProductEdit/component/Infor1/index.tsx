@@ -1,12 +1,32 @@
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useState } from 'react';
 import style from './style.module.scss';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
-import { global_set__data__toast_message } from '@src/redux/slice/Global';
+// import { global_set__data__toast_message } from '@src/redux/slice/Global';
+import { Product_Field } from '@src/data_struct/product';
 
 const Infor1 = () => {
     const dispatch = useDispatch<AppDispatch>();
+
+    const product: Product_Field | undefined = useSelector((state: RootState) => state.Product_Edit_Slice.product);
+
+    const [name, set__name] = useState<string>('');
+    const [description, set__description] = useState<string>('');
+
+    useEffect(() => {
+        if (!product) return;
+        set__name(product.name);
+        set__description(product.description);
+    }, [product]);
+
+    const handle_Change_Name = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__name(e.target.value);
+    };
+
+    const handle_Change_Description = (e: React.ChangeEvent<HTMLInputElement>) => {
+        set__description(e.target.value);
+    };
 
     return (
         <div className={style.parent}>
@@ -19,7 +39,7 @@ const Infor1 = () => {
                     Tên sản phẩm <span>*</span>
                 </div>
                 <div>
-                    <input placeholder="Nhập tên sản phẩm ..." />
+                    <input value={name} onChange={(e) => handle_Change_Name(e)} placeholder="Nhập tên sản phẩm ..." />
                 </div>
             </div>
             <div className={style.description}>
@@ -27,7 +47,11 @@ const Infor1 = () => {
                     Mô tả ngắn <span>*</span>
                 </div>
                 <div>
-                    <input placeholder="Nhập mô tả ngắn ..." />
+                    <input
+                        value={description}
+                        onChange={(e) => handle_Change_Description(e)}
+                        placeholder="Nhập mô tả ngắn ..."
+                    />
                 </div>
             </div>
         </div>

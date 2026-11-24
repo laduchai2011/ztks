@@ -31,7 +31,7 @@ const OneProduct: FC<{ id: string }> = ({ id }) => {
     }, [get_Product_By_Id, id]);
 
     const handle_Go_To_Product_Detail = () => {
-        navigate(route_enum.PRODUCT_DETAIL + '/' + `${1}`);
+        navigate(route_enum.PRODUCT_DETAIL + '/' + `${id}`);
     };
 
     if (!data) {

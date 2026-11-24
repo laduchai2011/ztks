@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import style from './style.module.scss';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 import { global_set__data__toast_message } from '@src/redux/slice/Global';
-// import { route_enum } from '@src/router/type';
-import { select_enum } from '@src/router/type';
+import { route_enum } from '@src/router/type';
+// import { select_enum } from '@src/router/type';
 import GlobalLoading from '@src/Global/GlobalLoading';
 import GlobalToastMessage from '@src/Global/GlobalToastMessage';
 import Header from './component/Header';
@@ -14,16 +14,19 @@ import Infor2 from './component/Infor2';
 import Infor3 from './component/Infor3';
 import Infor4 from './component/Infor4';
 import Infor5 from './component/Infor5';
+import { useLazy_get_Product_By_Id_Query } from '@src/redux/query/product_RTK';
+import { set__product } from '@src/redux/slice/Product_Edit';
 
 const ProductEdit = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
     const my_id = sessionStorage.getItem('myId');
+    const { id } = useParams<{ id: string }>();
 
     useEffect(() => {
-        // if (my_id === null) {
-        //     navigate(route_enum.SIGNIN);
-        // }
+        if (my_id === null) {
+            navigate(route_enum.SIGNIN);
+        }
 
         return () => {
             dispatch(
@@ -34,6 +37,22 @@ const ProductEdit = () => {
             );
         };
     }, [navigate, my_id, dispatch]);
+
+    const [get_Product_By_Id] = useLazy_get_Product_By_Id_Query();
+
+    useEffect(() => {
+        if (!id) return;
+        get_Product_By_Id({ id: id })
+            .then((res) => {
+                const res_data = res.data;
+                if (res_data?.is_success && res_data.data) {
+                    dispatch(set__product(res_data.data));
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, [dispatch, get_Product_By_Id, id]);
 
     return (
         <div className={style.parent}>
