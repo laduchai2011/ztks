@@ -1,0 +1,165 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(143, 143, 143, 0.5);
+    @include center-of-rectangle;
+    opacity: 0;
+    display: none;
+    z-index: 1000;
+    transition: opacity 0.3s linear;
+
+    &.parent_show_opacity {
+        opacity: 1;
+    }
+
+    &.parent_show_display {
+        display: flex;
+    }
+
+    > .main {
+        background-color: white;
+        overflow: hidden;
+        width: 80%;
+        height: 80%;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+
+        @include responsive(md) {
+            width: 100%;
+        }
+
+        > .header {
+            @include center-of-row;
+            justify-content: space-between;
+            box-sizing: border-box;
+            padding: 10px;
+
+            > .optionContainer {
+                position: relative;
+
+                > .options {
+                    @include center-of-row;
+
+                    > .option {
+                        padding: 0 10px;
+                        font-size: 1.2rem;
+                        cursor: pointer;
+                        user-select: none;
+
+                        &:hover {
+                            background-color: rgb(196, 196, 196);
+                        }
+                    }
+                }
+
+                > .myCroll {
+                    position: absolute;
+                    height: 3px;
+                    background-color: gray;
+                    border-radius: 5px;
+                    transition:
+                        width 0.3s linear,
+                        left 0.3s linear;
+                }
+            }
+
+            > .iconContainer {
+                height: 100%;
+                width: max-content;
+                @include center-of-row;
+
+                > .amount {
+                    height: 100%;
+                    width: max-content;
+                    @include center-of-rectangle;
+                }
+
+                > .closeIcon {
+                    width: 25px;
+                    height: 25px;
+                    cursor: pointer;
+                    margin-left: 10px;
+                }
+            }
+        }
+
+        > .content {
+            width: 100%;
+            min-height: 0;
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+
+            > .contentContainer {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                @include center-of-row;
+                transition: left 0.5s ease-in-out;
+
+                > .videoContainer {
+                    height: 100%;
+                    transition:
+                        width 0.5s ease-in-out,
+                        flex-basis 0.5s ease-in-out;
+
+                    &.half {
+                        flex: 0 0 70%;
+                        width: 70%;
+                    }
+                    &.full {
+                        flex: 0 0 100%;
+                        width: 100%;
+                    }
+
+                    > .video {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                    }
+                }
+
+                > .videoListContainer {
+                    height: 100%;
+                    overflow-y: scroll;
+                    @include small-scroll-y();
+                    transition:
+                        width 0.5s ease-in-out,
+                        flex-basis 0.5s ease-in-out;
+
+                    &.half {
+                        flex: 0 0 30%;
+                        width: 30%;
+                    }
+                    &.full {
+                        flex: 0 0 100%;
+                        width: 100%;
+                    }
+
+                    > .videoList {
+                        max-height: 100%;
+                        width: 100%;
+                        height: max-content;
+                        display: grid;
+                        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                        gap: 10px;
+
+                        > .video1 {
+                            background-color: antiquewhite;
+                            width: 100%;
+                            max-height: 80px;
+                            height: 80px;
+                            user-select: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

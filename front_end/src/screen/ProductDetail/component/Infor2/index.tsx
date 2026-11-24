@@ -8,6 +8,12 @@ import { Product_Field } from '@src/data_struct/product';
 import { Image_Field } from '@src/data_struct/image';
 import { Video_Field } from '@src/data_struct/video';
 import { handleSrcImage } from '@src/utility/string';
+import {
+    set__is_show_image,
+    set__showed_images,
+    set__is_show_video,
+    set__showed_videos,
+} from '@src/redux/slice/Product_Detail';
 
 const Infor2 = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -22,6 +28,16 @@ const Infor2 = () => {
         set__images(product.images);
         set__videos(product.videos);
     }, [product]);
+
+    const show_Images = () => {
+        dispatch(set__is_show_image(true));
+        dispatch(set__showed_images(images));
+    };
+
+    const show_Videos = () => {
+        dispatch(set__is_show_video(true));
+        dispatch(set__showed_videos(videos));
+    };
 
     return (
         <div className={style.parent}>
@@ -51,7 +67,7 @@ const Infor2 = () => {
                         <div className={style.image}>
                             <img src={handleSrcImage(images[0].url)} alt="" />
                             <div>
-                                <div>{`Xem ảnh 1/${images.length}`}</div>
+                                <div onClick={() => show_Images()}>{`Xem ảnh 1/${images.length}`}</div>
                             </div>
                         </div>
                     )}
@@ -69,10 +85,10 @@ const Infor2 = () => {
                         </div>
                     )}
                     {videos.length > 0 && (
-                        <div className={style.image}>
+                        <div className={style.video}>
                             <img src={handleSrcImage(videos[0].thumbnail)} alt="" />
                             <div>
-                                <div>{`Xem thước phim 1/${videos.length}`}</div>
+                                <div onClick={() => show_Videos()}>{`Xem thước phim 1/${videos.length}`}</div>
                             </div>
                         </div>
                     )}

@@ -103,3 +103,6 @@ export const CREATE_PRODUCT = 'Tạo sản phẩm';
 export const PRODUCT_DETAIL = 'Chi tiết sản phẩm';
 export const EDIT_PRODUCT = 'Chỉnh sửa sản phẩm';
 export const CREATE_PRODUCT_CODE = 'Tạo mã sản phẩm';
+export const ALL = 'Tất cả';
+export const LIST = 'Danh sách';
+export const PLAY = 'Phát';

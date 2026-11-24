@@ -128,6 +128,11 @@ export const handleSrcImage = (file_name: string) => {
     return url;
 };
 
+export const handleSrcVideo = (file_name: string) => {
+    const url = `${BASE_URL_API}/service__video_v1/query/video/${file_name}`;
+    return url;
+};
+
 export function formatDuration(ms: number): string {
     const totalSeconds = Math.floor(ms / 1000);
 

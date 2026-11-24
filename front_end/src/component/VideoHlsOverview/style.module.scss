@@ -1,0 +1,17 @@
+@use 'src/utility/style/mixin.scss' as *;
+
+.parent {
+    width: 100%;
+    height: 100%;
+
+    > .image {
+        width: 100%;
+        height: 100%;
+        @include center-of-rectangle;
+    }
+
+    > .videoHls {
+        width: 100%;
+        height: 100%;
+    }
+}

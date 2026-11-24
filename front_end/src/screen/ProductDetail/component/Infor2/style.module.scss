@@ -113,7 +113,8 @@
                 }
             }
 
-            > .image {
+            > .image,
+            .video {
                 position: relative;
 
                 > img {
