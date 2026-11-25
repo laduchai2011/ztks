@@ -48,7 +48,7 @@ const Infor2 = () => {
                     </div>
                 </div>
                 <div>Hình ảnh và thước phim</div>
-                <div>0 Hình ảnh . 0 Thước phim</div>
+                <div>{`${images.length} Hình ảnh . ${videos.length} Thước phim`}</div>
             </div>
             <div className={style.infor22}>
                 <div>

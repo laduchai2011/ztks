@@ -100,7 +100,7 @@ public class ProductConsumer implements Runnable {
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
-                    } else if (event_type.equals("product_created")) {
+                    } else if (event_type.equals("product_created") || event_type.equals("product_edited") || event_type.equals("product_re_deleted")) {
                         String payload = record.value();
 
                         ObjectMapper objectMapper = new ObjectMapper();
@@ -122,6 +122,42 @@ public class ProductConsumer implements Runnable {
 
                             ElasticProductService elasticProductService = new ElasticProductService();
                             elasticProductService.create(product.id().toString(), product.account_id().toString(), product.name() + " " + product.description());
+
+                            boolean registered = processedEventService.register(
+                                    GROUP_ID,
+                                    event_id,
+                                    event_type,
+                                    record.topic()
+                            );
+
+                            if (!registered) {
+                                System.out.println("Event already registered: " + event_id);
+                            }
+                        }catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }  else if (event_type.equals("product_deleted")) {
+                        String payload = record.value();
+
+                        ObjectMapper objectMapper = new ObjectMapper();
+
+                        objectMapper.setPropertyNamingStrategy(
+                                PropertyNamingStrategies.SNAKE_CASE
+                        );
+                        // Hỗ trợ LocalDateTime, OffsetDateTime, Instant...
+                        objectMapper.registerModule(new JavaTimeModule());
+
+                        // Không chuyển ngày giờ thành timestamp dạng số
+                        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+                        try {
+                            ProductDTO product = objectMapper.readValue(
+                                    payload,
+                                    ProductDTO.class
+                            );
+
+                            ElasticProductService elasticProductService = new ElasticProductService();
+                            elasticProductService.delete(product.id().toString());
 
                             boolean registered = processedEventService.register(
                                     GROUP_ID,

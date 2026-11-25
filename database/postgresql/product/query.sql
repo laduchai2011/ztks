@@ -23,8 +23,8 @@ BEGIN
     RETURN QUERY
     SELECT p.*
     FROM product p
-    WHERE p.id = p_id
-      AND p.is_delete = FALSE;
+    WHERE p.id = p_id;
+      -- AND p.is_delete = FALSE;
 END;
 $$;
 
@@ -60,6 +60,7 @@ $$;
 CREATE OR REPLACE FUNCTION get_random_products (
     p_account_id UUID,
     p_seed UUID,
+	p_is_delete BOOLEAN,
     p_limit INTEGER DEFAULT 20,
     p_cursor TEXT DEFAULT NULL
 )
@@ -115,7 +116,7 @@ BEGIN
         FROM product p
         WHERE
             p.account_id = p_account_id
-            AND p.is_delete = FALSE
+            AND p.is_delete = p_is_delete
     ),
 
     filtered AS (

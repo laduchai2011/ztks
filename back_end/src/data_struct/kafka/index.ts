@@ -70,6 +70,7 @@ export enum Kafka_Event_Event_Type_Enum {
     PRODUCT_CREATED = 'product_created',
     PRODUCT_EDITED = 'product_edited',
     PRODUCT_DELETED = 'product_deleted',
+    PRODUCT_RE_DELETED = 'product_re_deleted',
     SHOP_CREATED = 'shop_created',
     DEPOT_CREATED = 'depot_created',
     STORE_CREATED = 'store_created',
@@ -87,6 +88,7 @@ export type Kafka_Event_Event_Type_Type =
     | Kafka_Event_Event_Type_Enum.PRODUCT_CREATED
     | Kafka_Event_Event_Type_Enum.PRODUCT_EDITED
     | Kafka_Event_Event_Type_Enum.PRODUCT_DELETED
+    | Kafka_Event_Event_Type_Enum.PRODUCT_RE_DELETED
     | Kafka_Event_Event_Type_Enum.SHOP_CREATED
     | Kafka_Event_Event_Type_Enum.DEPOT_CREATED
     | Kafka_Event_Event_Type_Enum.STORE_CREATED

@@ -32,7 +32,7 @@ class MutateDB_Create_Product {
                 await client.query('BEGIN');
 
                 const result = await client.query<Product_Field>(
-                    'SELECT * FROM create_product($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::JSONB, $11::JSONB)',
+                    'SELECT * FROM create_product($1, $2, $3, $4, $5, $6, $7, $8, $9::UUID, $10::JSONB, $11::JSONB)',
                     [
                         this._create_product_body.name,
                         this._create_product_body.description,
@@ -50,7 +50,7 @@ class MutateDB_Create_Product {
 
                 if (result.rows.length === 0) {
                     await client.query('ROLLBACK');
-                    throw new Error('CREATE_ORDER_FAILED');
+                    throw new Error('CREATE_PRODUCT_FAILED');
                 } else {
                     const product = result.rows[0];
 
@@ -117,7 +117,7 @@ class MutateDB_Create_Product {
                     console.error('Rollback error:', rollbackError);
                 }
 
-                console.error('Create_Product_Code error:', error);
+                console.error('Create_Product error:', error);
                 throw error;
             } finally {
                 client.release();

@@ -128,6 +128,31 @@ BEGIN
             USING ERRCODE = 'P0001';
     END IF;
 
+	-- 2. Kiểm tra product_code thuộc account_id
+	IF NOT EXISTS (
+	    SELECT 1
+	    FROM product_code pc
+	    WHERE pc.id = p_product_code_id
+	      AND pc.account_id = p_account_id
+	      AND pc.is_delete = FALSE
+	) THEN
+	    RAISE EXCEPTION 'PRODUCT_CODE_NOT_FOUND_OR_ACCESS_DENIED'
+	        USING ERRCODE = 'P0001';
+	END IF;
+
+	IF p_store_id IS NOT NULL AND NOT EXISTS (
+    SELECT 1
+    FROM store st
+    INNER JOIN depot d
+        ON d.id = st.depot_id
+    INNER JOIN shop s
+        ON s.id = d.shop_id
+    WHERE st.id = p_store_id
+      AND s.account_id = p_account_id
+	) THEN
+	    RAISE EXCEPTION 'STORE_NOT_FOUND_OR_ACCESS_DENIED';
+	END IF;
+
     -- 2. Kiểm tra số lượng
     IF p_quantity < 0 THEN
         RAISE EXCEPTION 'Quantity must be greater than or equal to 0';
@@ -177,6 +202,161 @@ BEGIN
 
 END;
 $$;
+
+
+CREATE OR REPLACE FUNCTION edit_product (
+    p_id UUID,
+    p_name VARCHAR(255),
+    p_description VARCHAR(255),
+    p_detail TEXT,
+    p_is_compelled_price BOOLEAN,
+    p_unit_price NUMERIC(18, 2),
+    p_is_lock BOOLEAN,
+    p_store_id UUID,
+    p_product_code_id UUID,
+	p_account_id UUID,
+	p_images JSONB DEFAULT '[]'::JSONB,
+    p_videos JSONB DEFAULT '[]'::JSONB
+)
+RETURNS product
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_product product%ROWTYPE;
+BEGIN
+	-- 1. Kiểm tra tài khoản admin
+    IF NOT EXISTS (
+        SELECT 1
+        FROM account_information
+        WHERE account_id = p_account_id
+          AND account_type = 'admin'
+    ) THEN
+        RAISE EXCEPTION 'Không phải tài khoản admin.'
+            USING ERRCODE = 'P0001';
+    END IF;
+
+	IF p_store_id IS NOT NULL AND NOT EXISTS (
+    SELECT 1
+    FROM store st
+    INNER JOIN depot d
+        ON d.id = st.depot_id
+    INNER JOIN shop s
+        ON s.id = d.shop_id
+    WHERE st.id = p_store_id
+      AND s.account_id = p_account_id
+	) THEN
+	    RAISE EXCEPTION 'STORE_NOT_FOUND_OR_ACCESS_DENIED';
+	END IF;
+	
+    -- Kiểm tra tham số
+    IF p_id IS NULL OR p_account_id IS NULL THEN
+        RAISE EXCEPTION 'INVALID_ARGUMENT';
+    END IF;
+
+    -- Lấy sản phẩm và khóa record
+    SELECT *
+    INTO v_product
+    FROM product
+    WHERE id = p_id
+      AND account_id = p_account_id
+    FOR UPDATE;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'PRODUCT_NOT_FOUND';
+    END IF;
+
+    IF p_unit_price IS NOT NULL AND p_unit_price < 0 THEN
+        RAISE EXCEPTION 'INVALID_UNIT_PRICE';
+    END IF;
+
+    IF p_images IS NOT NULL
+       AND jsonb_typeof(p_images) <> 'array' THEN
+        RAISE EXCEPTION 'INVALID_IMAGES';
+    END IF;
+
+    IF p_videos IS NOT NULL
+       AND jsonb_typeof(p_videos) <> 'array' THEN
+        RAISE EXCEPTION 'INVALID_VIDEOS';
+    END IF;
+
+    IF p_store_id IS NOT NULL AND NOT EXISTS (
+        SELECT 1 FROM store WHERE id = p_store_id
+    ) THEN
+        RAISE EXCEPTION 'STORE_NOT_FOUND';
+    END IF;
+
+    IF p_product_code_id IS NOT NULL AND NOT EXISTS (
+        SELECT 1 FROM product_code WHERE id = p_product_code_id
+    ) THEN
+        RAISE EXCEPTION 'PRODUCT_CODE_NOT_FOUND';
+    END IF;
+
+    UPDATE product
+    SET
+        name = COALESCE(p_name, name),
+        description = COALESCE(p_description, description),
+        detail = COALESCE(p_detail, detail),
+        images = COALESCE(p_images, images),
+        videos = COALESCE(p_videos, videos),
+        is_compelled_price = COALESCE(p_is_compelled_price, is_compelled_price),
+        unit_price = COALESCE(p_unit_price, unit_price),
+        is_lock = COALESCE(p_is_lock, is_lock),
+        store_id = COALESCE(p_store_id, store_id),
+        product_code_id = COALESCE(p_product_code_id, product_code_id),
+        update_time = CURRENT_TIMESTAMP
+    WHERE id = p_id
+      AND account_id = p_account_id
+    RETURNING *
+    INTO v_product;
+
+    RETURN v_product;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION delete_product (
+    p_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF product
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    UPDATE product
+    SET
+        is_delete = TRUE,
+        update_time = CURRENT_TIMESTAMP
+    WHERE
+        id = p_id
+        AND account_id = p_account_id
+        AND is_delete = FALSE
+    RETURNING *;
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION re_delete_product (
+    p_id UUID,
+    p_account_id UUID
+)
+RETURNS SETOF product
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    UPDATE product
+    SET
+        is_delete = FALSE,
+        update_time = CURRENT_TIMESTAMP
+    WHERE
+        id = p_id
+        AND account_id = p_account_id
+        AND is_delete = TRUE
+    RETURNING *;
+END;
+$$;
+
 
 CREATE OR REPLACE FUNCTION upsert_product_total (
     p_active_total INTEGER,

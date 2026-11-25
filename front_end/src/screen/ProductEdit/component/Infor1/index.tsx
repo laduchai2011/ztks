@@ -5,11 +5,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '@src/redux';
 // import { global_set__data__toast_message } from '@src/redux/slice/Global';
 import { Product_Field } from '@src/data_struct/product';
+import { set__is_basic_infor, set__basic_infor } from '@src/redux/slice/Product_Edit';
 
 const Infor1 = () => {
     const dispatch = useDispatch<AppDispatch>();
 
     const product: Product_Field | undefined = useSelector((state: RootState) => state.Product_Edit_Slice.product);
+    const create_status: 'begin' | 'end' = useSelector((state: RootState) => state.Product_Edit_Slice.create_status);
 
     const [name, set__name] = useState<string>('');
     const [description, set__description] = useState<string>('');
@@ -19,6 +21,13 @@ const Infor1 = () => {
         set__name(product.name);
         set__description(product.description);
     }, [product]);
+
+    useEffect(() => {
+        if (create_status === 'begin') {
+            dispatch(set__basic_infor({ name: name, description: description }));
+            dispatch(set__is_basic_infor(true));
+        }
+    }, [create_status, dispatch, name, description]);
 
     const handle_Change_Name = (e: React.ChangeEvent<HTMLInputElement>) => {
         set__name(e.target.value);

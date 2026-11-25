@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { My_Response_Field } from '@src/data_struct/response';
-import { Product_Code_Field } from '@src/data_struct/product';
+import { Product_Field } from '@src/data_struct/product';
 import { Create_Product_Body_Field } from '@src/data_struct/product/body';
 import { verify_Refresh_Token } from '@src/token';
 import MutateDB_Create_Product from '../../mutateDB/Create_Product';
@@ -15,7 +15,7 @@ class Handle_Create_Product {
     }
 
     setup = async (req: Request<any, any, Create_Product_Body_Field>, res: Response, next: NextFunction) => {
-        const my_response: My_Response_Field<Product_Code_Field> = {
+        const my_response: My_Response_Field<Product_Field> = {
             is_success: false,
             message: 'Bắt đầu (Handle_Create_Product-setup)',
         };
@@ -53,7 +53,7 @@ class Handle_Create_Product {
     main = async (_: Request, res: Response) => {
         const create_product_body = res.locals.create_product_body as Create_Product_Body_Field;
 
-        const my_response: My_Response_Field<Product_Code_Field> = {
+        const my_response: My_Response_Field<Product_Field> = {
             is_success: false,
             message: 'Bắt đầu (Handle_Create_Product-main)',
         };

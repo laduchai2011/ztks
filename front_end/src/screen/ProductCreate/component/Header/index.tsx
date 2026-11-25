@@ -77,8 +77,6 @@ const Header = () => {
             is_upload_images &&
             is_upload_videos
         ) {
-            console.log('create_Product', 0);
-
             if (
                 !(
                     account_information?.account_id === account_information?.added_by_id &&
@@ -93,8 +91,6 @@ const Header = () => {
                 );
                 return;
             }
-
-            console.log('create_Product', 1);
 
             if (name.trim().length === 0) {
                 dispatch(
@@ -150,11 +146,11 @@ const Header = () => {
                 images: image_urls,
                 videos: video_urls,
             };
-            console.log('create_Product', 2);
+
             create_Product(create_product_body)
                 .then((res) => {
                     const res_data = res.data;
-                    if (res_data) {
+                    if (res_data?.is_success && res_data.data) {
                         dispatch(
                             global_set__data__toast_message({
                                 message: 'Tạo sản phẩm thành công',

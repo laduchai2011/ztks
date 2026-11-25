@@ -31,7 +31,7 @@
         @include center-of-row;
         justify-content: flex-end;
 
-        > div {
+        > .edit {
             background-color: aqua;
             color: white;
             box-sizing: border-box;
@@ -51,6 +51,20 @@
                 background-color: aqua;
                 color: white;
             }
+        }
+
+        > .re_delete {
+            color: rgb(253, 186, 0);
+            user-select: none;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        > svg {
+            cursor: pointer;
         }
     }
 }

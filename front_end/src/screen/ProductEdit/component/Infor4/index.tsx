@@ -20,7 +20,7 @@ import {
     set__product_code_infor,
     set__is_store_infor,
     set__store_infor,
-} from '@src/redux/slice/Product_Create';
+} from '@src/redux/slice/Product_Edit';
 import { Product_Field } from '@src/data_struct/product';
 import {
     useLazy_get_Store_By_Id_Query,

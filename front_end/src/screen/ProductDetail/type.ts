@@ -4,6 +4,7 @@ import { Video_Field } from '@src/data_struct/video';
 
 export interface state_props {
     product?: Product_Field;
+    is_show_delete_product_dialog: boolean;
 
     is_show_image: boolean;
     showed_images: Image_Field[];

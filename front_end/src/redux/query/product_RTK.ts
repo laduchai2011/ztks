@@ -18,6 +18,9 @@ import {
     Product_Search_Body_Field,
     Create_Product_Code_Body_Field,
     Create_Product_Body_Field,
+    Edit_Product_Body_Field,
+    Delete_Product_Body_Field,
+    Re_Delete_Product_Body_Field,
 } from '@src/data_struct/product/body';
 import { PRODUCT_API } from '@src/const/api/product';
 import { My_Response_Field } from '@src/data_struct/response';
@@ -126,6 +129,30 @@ export const product_RTK = createApi({
             }),
             invalidatesTags: [{ type: 'Product', id: 'LIST' }],
         }),
+        _edit_Product_: builder.mutation<My_Response_Field<Product_Field>, Edit_Product_Body_Field>({
+            query: (body) => ({
+                url: PRODUCT_API.EDIT_PRODUCT,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: (_result, _error, body) => [{ type: 'Product', id: body.id }],
+        }),
+        _delete_Product_: builder.mutation<My_Response_Field<Product_Field>, Delete_Product_Body_Field>({
+            query: (body) => ({
+                url: PRODUCT_API.DELETE_PRODUCT,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: [{ type: 'Product', id: 'LIST' }],
+        }),
+        _re_Delete_Product_: builder.mutation<My_Response_Field<Product_Field>, Re_Delete_Product_Body_Field>({
+            query: (body) => ({
+                url: PRODUCT_API.RE_DELETE_PRODUCT,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: [{ type: 'Product', id: 'LIST' }],
+        }),
     }),
 });
 
@@ -139,4 +166,7 @@ export const {
     useLazy_product_Search_Query,
     use_create_Product_Code_Mutation,
     use_create_Product_Mutation,
+    use_edit_Product_Mutation,
+    use_delete_Product_Mutation,
+    use_re_Delete_Product_Mutation,
 } = product_RTK;

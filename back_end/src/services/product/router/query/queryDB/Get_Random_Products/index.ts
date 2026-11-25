@@ -13,10 +13,11 @@ class QueryDB_Get_Random_Products {
         if (this._get_random_products_body !== undefined) {
             try {
                 const result = await pool.query<{ get_random_products: Cursor_Product_Field }>(
-                    'SELECT * FROM get_random_products($1::UUID, $2::UUID, $3, $4)',
+                    'SELECT * FROM get_random_products($1::UUID, $2::UUID, $3, $4, $5)',
                     [
                         this._get_random_products_body.account_id,
                         this._get_random_products_body.seed,
+                        this._get_random_products_body.is_delete,
                         this._get_random_products_body.limit,
                         this._get_random_products_body.cursor,
                     ]

@@ -12,17 +12,17 @@ const Infor2 = () => {
 
     const create_status: 'begin' | 'end' = useSelector((state: RootState) => state.Product_Create_Slice.create_status);
 
-    const [describe, set__describe] = useState<string>('');
+    const [detail, set__detail] = useState<string>('');
 
     useEffect(() => {
         if (create_status === 'begin') {
-            dispatch(set__detail_infor({ detail: describe }));
+            dispatch(set__detail_infor({ detail: detail }));
             dispatch(set__is_detail_infor(true));
         }
-    }, [create_status, dispatch, describe]);
+    }, [create_status, dispatch, detail]);
 
-    const handle_Describe = (value: string) => {
-        set__describe(value);
+    const handle_Change_Detail = (value: string) => {
+        set__detail(value);
     };
 
     return (
@@ -36,7 +36,7 @@ const Infor2 = () => {
                     Mô tả chi tiết <span>*</span>
                 </div>
                 <div>
-                    <TextEditor onChange={(value) => handle_Describe(value)} />
+                    <TextEditor onChange={(value) => handle_Change_Detail(value)} />
                 </div>
             </div>
         </div>

@@ -13,4 +13,7 @@ export const PRODUCT_API = {
     PRODUCT_SEARCH: `${BASE_URL}${apiString}/service__product/query/product_search`,
     CREATE_PRODUCT_CODE: `${BASE_URL}${apiString}/service__product/mutate/create_product_code`,
     CREATE_PRODUCT: `${BASE_URL}${apiString}/service__product/mutate/create_product`,
+    EDIT_PRODUCT: `${BASE_URL}${apiString}/service__product/mutate/edit_product`,
+    DELETE_PRODUCT: `${BASE_URL}${apiString}/service__product/mutate/delete_product`,
+    RE_DELETE_PRODUCT: `${BASE_URL}${apiString}/service__product/mutate/re_delete_product`,
 };

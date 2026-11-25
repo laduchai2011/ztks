@@ -6,6 +6,7 @@ import { Video_Field } from '@src/data_struct/video';
 
 const initialState: state_props = {
     product: undefined,
+    is_show_delete_product_dialog: false,
 
     is_show_image: false,
     showed_images: [],
@@ -20,6 +21,9 @@ const Product_Detail_Slice = createSlice({
     reducers: {
         set__product: (state, action: PayloadAction<Product_Field>) => {
             state.product = action.payload;
+        },
+        set__is_show_delete_product_dialog: (state, action: PayloadAction<boolean>) => {
+            state.is_show_delete_product_dialog = action.payload;
         },
 
         set__is_show_image: (state, action: PayloadAction<boolean>) => {
@@ -38,6 +42,12 @@ const Product_Detail_Slice = createSlice({
     },
 });
 
-export const { set__product, set__is_show_image, set__showed_images, set__is_show_video, set__showed_videos } =
-    Product_Detail_Slice.actions;
+export const {
+    set__product,
+    set__is_show_delete_product_dialog,
+    set__is_show_image,
+    set__showed_images,
+    set__is_show_video,
+    set__showed_videos,
+} = Product_Detail_Slice.actions;
 export default Product_Detail_Slice.reducer;

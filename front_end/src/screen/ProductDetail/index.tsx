@@ -14,6 +14,7 @@ import Header from './component/Header';
 import Infor1 from './component/Infor1';
 import Infor2 from './component/Infor2';
 import Infor3 from './component/Infor3';
+import DeleteDialog from './component/DeleteDialog';
 import { useLazy_get_Product_By_Id_Query } from '@src/redux/query/product_RTK';
 import { Image_Field } from '@src/data_struct/image';
 import { Video_Field } from '@src/data_struct/video';
@@ -93,6 +94,7 @@ const ProductDetail = () => {
                     data={showed_videos}
                     onClose={() => dispatch(set__is_show_video(false))}
                 />
+                <DeleteDialog />
             </div>
         </div>
     );

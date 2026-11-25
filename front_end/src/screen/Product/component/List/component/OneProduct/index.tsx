@@ -18,7 +18,8 @@ const OneProduct: FC<{ data: Product_Field; ref?: Ref<HTMLDivElement> }> = ({ da
 
     return (
         <div className={style.parent} ref={ref} onClick={() => handle_Go_To_Product_Detail()}>
-            <img src={handleSrcImage(data.images[0].url)} />
+            {data.images.length === 0 && <div className={style.empty_img}>Chưa có hình ảnh</div>}
+            {data.images.length > 0 && <img src={handleSrcImage(data.images[0].url)} />}
             <div className={style.name}>{data.name}</div>
             <div className={style.description}>{data.description}</div>
             <div className={style.infor}>

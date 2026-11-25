@@ -41,9 +41,24 @@ export interface Edit_Product_Body_Field {
     name: string;
     description: string;
     detail: string;
+    is_compelled_price: boolean;
+    unit_price: number;
+    is_lock: boolean;
+    store_id: string;
+    product_code_id: string;
     account_id: string;
     images: Image_Field[];
     videos: Video_Field[];
+}
+
+export interface Delete_Product_Body_Field {
+    id: string;
+    account_id: string;
+}
+
+export interface Re_Delete_Product_Body_Field {
+    id: string;
+    account_id: string;
 }
 
 export interface Fluctuation_For_Create_Product_Body_Field {
