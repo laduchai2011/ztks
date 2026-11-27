@@ -9,6 +9,8 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.kafka_tks_erp.dto.product.ProductCodeDTO;
 import org.kafka_tks_erp.dto.product.ProductDTO;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.kafka_tks_erp.elastic.product.ElasticProductCodeService;
+import org.kafka_tks_erp.elastic.product.ElasticProductService;
 import org.kafka_tks_erp.services.kafka.ProcessedKafkaEventService;
 
 import java.nio.charset.StandardCharsets;
@@ -31,6 +33,9 @@ public class ProductConsumer implements Runnable {
                 new KafkaConsumer<>(
                         KafkaConsumerConfig.createProperties(GROUP_ID)
                 );
+
+        ElasticProductCodeService elasticProductCodeService = new ElasticProductCodeService();
+        ElasticProductService elasticProductService = new ElasticProductService();
 
         try (consumer) {
             consumer.subscribe(
@@ -69,9 +74,9 @@ public class ProductConsumer implements Runnable {
 
                         ObjectMapper objectMapper = new ObjectMapper();
 
-                        objectMapper.setPropertyNamingStrategy(
-                                PropertyNamingStrategies.SNAKE_CASE
-                        );
+//                        objectMapper.setPropertyNamingStrategy(
+//                                PropertyNamingStrategies.SNAKE_CASE
+//                        );
                         // Hỗ trợ LocalDateTime, OffsetDateTime, Instant...
                         objectMapper.registerModule(new JavaTimeModule());
 
@@ -84,8 +89,7 @@ public class ProductConsumer implements Runnable {
                                     ProductCodeDTO.class
                             );
 
-                            ElasticProductCodeService elasticProductCodeService = new ElasticProductCodeService();
-                            elasticProductCodeService.create(productCode.id().toString(), productCode.accountId().toString(), productCode.name() + " " + productCode.description());
+                            elasticProductCodeService.create(productCode.id().toString(), productCode.account_id().toString(), productCode.name() + " " + productCode.description(), productCode.is_delete());
 
                             boolean registered = processedEventService.register(
                                     GROUP_ID,
@@ -120,8 +124,7 @@ public class ProductConsumer implements Runnable {
                                     ProductDTO.class
                             );
 
-                            ElasticProductService elasticProductService = new ElasticProductService();
-                            elasticProductService.create(product.id().toString(), product.account_id().toString(), product.name() + " " + product.description());
+                            elasticProductService.create(product.id().toString(), product.account_id().toString(), product.name() + " " + product.description(), product.is_delete());
 
                             boolean registered = processedEventService.register(
                                     GROUP_ID,
@@ -156,7 +159,6 @@ public class ProductConsumer implements Runnable {
                                     ProductDTO.class
                             );
 
-                            ElasticProductService elasticProductService = new ElasticProductService();
                             elasticProductService.delete(product.id().toString());
 
                             boolean registered = processedEventService.register(

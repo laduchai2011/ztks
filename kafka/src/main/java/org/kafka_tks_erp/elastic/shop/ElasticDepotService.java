@@ -1,4 +1,4 @@
-package org.kafka_tks_erp.services.product;
+package org.kafka_tks_erp.elastic.shop;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.IndexResponse;
@@ -11,15 +11,15 @@ import org.kafka_tks_erp.config.EnvironmentConfig;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ElasticProductService {
+public class ElasticDepotService {
 
     private static final String prefix = EnvironmentConfig.getEnv("PREFIX");
 
-    private static final String INDEX = "product"  + prefix;
+    private static final String INDEX = "depot"  + prefix;
 
     private final ElasticsearchClient client;
 
-    public ElasticProductService() {
+    public ElasticDepotService() {
         this.client = ElasticsearchConfig.getClient();
     }
 
@@ -29,13 +29,13 @@ public class ElasticProductService {
 
     public IndexResponse create(
             String id,
-            String account_id,
+            String shop_id,
             String search_content
     ) throws Exception {
 
         Map<String, Object> document = new HashMap<>();
 
-        document.put("account_id", account_id);
+        document.put("shop_id", shop_id);
         document.put("search_content", search_content);
 
         return client.index(i -> i
@@ -51,14 +51,14 @@ public class ElasticProductService {
 
     public UpdateResponse<Map> update(
             String id,
-            String account_id,
+            String shop_id,
             String search_content
     ) throws Exception {
 
         Map<String, Object> document = new HashMap<>();
 
-        if (account_id != null) {
-            document.put("account_id", account_id);
+        if (shop_id != null) {
+            document.put("shop_id", shop_id);
         }
 
         if (search_content != null) {

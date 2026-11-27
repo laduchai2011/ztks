@@ -9,8 +9,17 @@
     top: 0;
     z-index: 100;
 
+    > .options {
+        width: 10%;
+        @include center-of-row;
+
+        > span {
+            margin: 0 5px;
+        }
+    }
+
     > .search {
-        width: 80%;
+        width: 60%;
         @include center-of-rectangle;
         @include responsive(md) {
             width: 65%;

@@ -1,4 +1,4 @@
-package org.kafka_tks_erp.services.shop;
+package org.kafka_tks_erp.elastic.shop;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.IndexResponse;

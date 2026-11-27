@@ -10,6 +10,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.kafka_tks_erp.dto.shop.DepotDTO;
 import org.kafka_tks_erp.dto.shop.ShopDTO;
 import org.kafka_tks_erp.dto.shop.StoreDTO;
+import org.kafka_tks_erp.elastic.shop.ElasticDepotService;
+import org.kafka_tks_erp.elastic.shop.ElasticShopService;
+import org.kafka_tks_erp.elastic.shop.ElasticStoreService;
 import org.kafka_tks_erp.services.kafka.ProcessedKafkaEventService;
 
 import java.nio.charset.StandardCharsets;

@@ -17,11 +17,13 @@ const List = () => {
     );
 
     const searched_product_ids: string[] = useSelector((state: RootState) => state.Product_Slice.searched_product_ids);
+    const { is_delete } = useSelector((state: RootState) => state.Product_Slice.filter);
 
     // Giữ seed ổn định trong suốt vòng đời component
     const seed_ref = useRef<string>(uuidv7());
 
     const initializedAccountRef = useRef<string | null>(null);
+    const initializedIsDeleteRef = useRef<boolean | null>(null);
 
     const [get_Random_Products] = useLazy_get_Random_Products_Query();
 
@@ -37,6 +39,7 @@ const List = () => {
             const res = await get_Random_Products({
                 account_id,
                 seed: seed_ref.current,
+                is_delete: is_delete,
                 limit: 20,
                 cursor,
             });
@@ -49,7 +52,7 @@ const List = () => {
 
             throw new Error(res_data?.message || 'API returned unsuccessful response');
         },
-        [get_Random_Products, account_id]
+        [get_Random_Products, account_id, is_delete]
     );
 
     // Quản lý danh sách
@@ -70,18 +73,21 @@ const List = () => {
     useEffect(() => {
         if (!account_id) {
             initializedAccountRef.current = null;
+            initializedIsDeleteRef.current = null;
             clear();
             return;
         }
 
-        if (initializedAccountRef.current === account_id) {
-            return;
+        const accountChanged = initializedAccountRef.current !== account_id;
+        const lockChanged = initializedIsDeleteRef.current !== is_delete;
+
+        if (accountChanged || lockChanged) {
+            initializedAccountRef.current = account_id;
+            initializedIsDeleteRef.current = is_delete;
+
+            void refresh();
         }
-
-        initializedAccountRef.current = account_id;
-
-        void refresh();
-    }, [account_id, refresh, clear]);
+    }, [account_id, is_delete, refresh, clear]);
 
     // Danh sách sản phẩm ngẫu nhiên
     const list_product = items.map((item, index) => (

@@ -1,5 +1,5 @@
 DELETE /product
-PUT product_code
+PUT /product
 {
   "mappings": {
     "properties": {
@@ -8,6 +8,9 @@ PUT product_code
       },
       "search_content": {
         "type": "text"
+      },
+      "is_delete": {
+        "type": "boolean"
       }
     }
   }
@@ -27,6 +30,11 @@ POST /product/_search
         {
           "term": {
             "account_id": "{{account_id}}"
+          }
+        },
+        {
+          "term": {
+            "is_delete": false
           }
         }
       ],
@@ -52,12 +60,12 @@ POST /product/_search
     }
   },
   "sort": [
-        {
-            "_score": {
-            "order": "desc"
-            }
-        }
-    ]
+    {
+      "_score": {
+        "order": "desc"
+      }
+    }
+  ]
 }
 
 PUT _scripts/product_search
@@ -74,6 +82,11 @@ PUT _scripts/product_search
             {
               "term": {
                 "account_id": "{{account_id}}"
+              }
+            },
+            {
+              "term": {
+                "is_delete": "{{is_delete}}"
               }
             }
           ],
@@ -111,7 +124,27 @@ PUT _scripts/product_search
 
 GET /product/_search
 {
+  "size": "100",
   "query": {
     "match_all": {}
+  }
+}
+
+POST /product/_update_by_query
+{
+  "query": {
+    "bool": {
+      "must_not": [
+        {
+          "exists": {
+            "field": "is_delete"
+          }
+        }
+      ]
+    }
+  },
+  "script": {
+    "lang": "painless",
+    "source": "ctx._source.is_delete = false"
   }
 }

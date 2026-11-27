@@ -1,4 +1,4 @@
-package org.kafka_tks_erp.services.product;
+package org.kafka_tks_erp.elastic.shop;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.IndexResponse;
@@ -11,15 +11,15 @@ import org.kafka_tks_erp.config.EnvironmentConfig;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ElasticProductCodeService {
+public class ElasticStoreService {
 
     private static final String prefix = EnvironmentConfig.getEnv("PREFIX");
 
-    private static final String INDEX = "product_code" + prefix;
+    private static final String INDEX = "store"  + prefix;
 
     private final ElasticsearchClient client;
 
-    public ElasticProductCodeService() {
+    public ElasticStoreService() {
         this.client = ElasticsearchConfig.getClient();
     }
 
@@ -29,14 +29,14 @@ public class ElasticProductCodeService {
 
     public IndexResponse create(
             String id,
-            String accountId,
-            String searchContent
+            String depot_id,
+            String search_content
     ) throws Exception {
 
         Map<String, Object> document = new HashMap<>();
 
-        document.put("account_id", accountId);
-        document.put("search_content", searchContent);
+        document.put("depot_id", depot_id);
+        document.put("search_content", search_content);
 
         return client.index(i -> i
                 .index(INDEX)
@@ -51,18 +51,18 @@ public class ElasticProductCodeService {
 
     public UpdateResponse<Map> update(
             String id,
-            String accountId,
-            String searchContent
+            String depot_id,
+            String search_content
     ) throws Exception {
 
         Map<String, Object> document = new HashMap<>();
 
-        if (accountId != null) {
-            document.put("account_id", accountId);
+        if (depot_id != null) {
+            document.put("depot_id", depot_id);
         }
 
-        if (searchContent != null) {
-            document.put("search_content", searchContent);
+        if (search_content != null) {
+            document.put("search_content", search_content);
         }
 
         if (document.isEmpty()) {

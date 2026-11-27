@@ -102,6 +102,7 @@ export interface Get_Product_Total_Body_Field {
 export interface Get_Random_Products_Body_Field {
     account_id: string;
     seed: string;
+    is_delete: boolean;
     limit: number;
     cursor: string | null;
 }

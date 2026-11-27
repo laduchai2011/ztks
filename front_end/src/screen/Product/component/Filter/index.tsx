@@ -10,7 +10,7 @@ import { CREATE_PRODUCT } from '@src/const/text';
 import { route_enum } from '@src/router/type';
 import { useLazy_product_Search_Query } from '@src/redux/query/product_RTK';
 import { Account_Information_Field } from '@src/data_struct/account';
-import { set__searched_product_ids } from '@src/redux/slice/Product';
+import { set__searched_product_ids, set__filter } from '@src/redux/slice/Product';
 
 const Filter = () => {
     const navigate = useNavigate();
@@ -19,6 +19,7 @@ const Filter = () => {
     const account_information: Account_Information_Field | undefined = useSelector(
         (state: RootState) => state.App_Slice.account_information
     );
+    const { is_delete } = useSelector((state: RootState) => state.Product_Slice.filter);
 
     // const searched_product_ids: string[] = useSelector((state: RootState) => state.Product_Slice.searched_product_ids);
 
@@ -72,12 +73,21 @@ const Filter = () => {
         set__search_text_product(value);
     };
 
+    const handle_Filter = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const checked = e.target.checked;
+        dispatch(set__filter({ is_delete: checked }));
+    };
+
     const clear_Search_Text = () => {
         set__search_text_product('');
     };
 
     return (
         <div className={style.parent}>
+            <div className={style.options}>
+                <input checked={is_delete} onChange={(e) => handle_Filter(e)} type="checkbox" />
+                <span>Đã xóa</span>
+            </div>
             <div className={style.search}>
                 <div>
                     <input

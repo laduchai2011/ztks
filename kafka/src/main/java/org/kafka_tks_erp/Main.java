@@ -3,6 +3,8 @@ package org.kafka_tks_erp;
 
 import org.kafka_tks_erp.config.PostgresqlConfig;
 import org.kafka_tks_erp.services.outbox.OutboxApplication;
+import org.kafka_tks_erp.services.product.ProductBatchService;
+import org.kafka_tks_erp.services.product.ProductCodeBatchService;
 import org.kafka_tks_erp.services.product.ProductConsumer;
 import org.kafka_tks_erp.services.shop.DeleteStoreOfDeletedDepot;
 import org.kafka_tks_erp.services.shop.ShopConsumer;
@@ -36,6 +38,10 @@ public class Main {
 
         DeleteTeamShopDepotStoreOfDeletedFk deleteTeamShopDepotStoreOfDeletedFk =
                 new DeleteTeamShopDepotStoreOfDeletedFk();
+
+        ProductBatchService productBatchService = new ProductBatchService();
+
+        ProductCodeBatchService productCodeBatchService = new ProductCodeBatchService();
 
         Thread productThread = new Thread(
                 productConsumer,
@@ -72,6 +78,54 @@ public class Main {
                 "delete-team-shop-depot-store-of-deleted-fk"
         );
 
+        Thread productBatchThread = new Thread(
+                () -> {
+                    try {
+                        System.out.println("Starting product batch sync...");
+
+                        long startTime = System.currentTimeMillis();
+
+                        productBatchService.syncAll(500);
+
+                        long endTime = System.currentTimeMillis();
+
+                        System.out.println(
+                                "Product batch sync completed in "
+                                        + (endTime - startTime) + " ms"
+                        );
+
+                    } catch (Exception e) {
+                        System.err.println("Product batch sync failed:");
+                        e.printStackTrace();
+                    }
+                },
+                "product-batch-sync"
+        );
+
+        Thread productCodeBatchThread = new Thread(
+                () -> {
+                    try {
+                        System.out.println("Starting productCode batch sync...");
+
+                        long startTime = System.currentTimeMillis();
+
+                        productCodeBatchService.syncAll(500);
+
+                        long endTime = System.currentTimeMillis();
+
+                        System.out.println(
+                                "ProductCode batch sync completed in "
+                                        + (endTime - startTime) + " ms"
+                        );
+
+                    } catch (Exception e) {
+                        System.err.println("ProductCode batch sync failed:");
+                        e.printStackTrace();
+                    }
+                },
+                "productCode-batch-sync"
+        );
+
         try {
 
             outbox.start();
@@ -82,6 +136,8 @@ public class Main {
             deleteTeamShopOfDeletedFkThread.start();
             deleteTeamShopDepotOfDeletedFkThread.start();
             deleteTeamShopDepotStoreOfDeletedFkThread.start();
+            productBatchThread.start();
+            productCodeBatchThread.start();
 
         } catch (Exception e) {
 
@@ -93,6 +149,8 @@ public class Main {
             deleteTeamShopOfDeletedFkThread.interrupt();
             deleteTeamShopDepotOfDeletedFkThread.interrupt();
             deleteTeamShopDepotStoreOfDeletedFkThread.interrupt();
+            productBatchThread.interrupt();
+            productCodeBatchThread.interrupt();
 
             PostgresqlConfig.close();
 
@@ -112,6 +170,8 @@ public class Main {
                     deleteTeamShopOfDeletedFkThread.interrupt();
                     deleteTeamShopDepotOfDeletedFkThread.interrupt();
                     deleteTeamShopDepotStoreOfDeletedFkThread.interrupt();
+                    productBatchThread.interrupt();
+                    productCodeBatchThread.interrupt();
 
                     try {
 
@@ -122,6 +182,8 @@ public class Main {
                         deleteTeamShopOfDeletedFkThread.join(5000);
                         deleteTeamShopDepotOfDeletedFkThread.join(5000);
                         deleteTeamShopDepotStoreOfDeletedFkThread.join(5000);
+                        productBatchThread.join(5000);
+                        productCodeBatchThread.join(5000);
 
                     } catch (InterruptedException e) {
 
